@@ -3,6 +3,10 @@ System in From the Depths. Written by Ao Kishuba.
 Special thanks to HerpeDerpeDerp and MrNukealizer, without whom this project
 would not have been possible.
 
+HOW TO RUN
+Be sure to use "ApsCalcUI" to run the GUI version. "ApsCalc" is the old
+console version.
+
 TEST PARAMETERS
 NOTE: Results for each test will be written to a text file in the ApsCalcUI
 folder. Filenames are automatically generated from current time. An example
