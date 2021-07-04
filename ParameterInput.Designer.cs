@@ -103,6 +103,8 @@ namespace ApsCalcUI
             this.ArmorLayerLB = new System.Windows.Forms.ListBox();
             this.TargetSchemeLabel = new System.Windows.Forms.Label();
             this.QueueErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            this.RunErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            this.LabelsCB = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).BeginInit();
@@ -128,6 +130,7 @@ namespace ApsCalcUI
             this.TargetACPanel.SuspendLayout();
             this.TargetSchemePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.QueueErrorProvider)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.RunErrorProvider)).BeginInit();
             this.SuspendLayout();
             // 
             // BarrelCountDD
@@ -574,6 +577,7 @@ namespace ApsCalcUI
             this.RunButton.Text = "Run Queued Tests";
             this.ToolTip.SetToolTip(this.RunButton, "Run all tests in queue");
             this.RunButton.UseVisualStyleBackColor = false;
+            this.RunButton.Click += new System.EventHandler(this.RunButton_Click);
             // 
             // VariableModulesLabel
             // 
@@ -969,11 +973,29 @@ namespace ApsCalcUI
             // 
             this.QueueErrorProvider.ContainerControl = this;
             // 
+            // RunErrorProvider
+            // 
+            this.RunErrorProvider.ContainerControl = this;
+            // 
+            // LabelsCB
+            // 
+            this.LabelsCB.AutoSize = true;
+            this.LabelsCB.Location = new System.Drawing.Point(661, 497);
+            this.LabelsCB.Name = "LabelsCB";
+            this.LabelsCB.Size = new System.Drawing.Size(111, 19);
+            this.LabelsCB.TabIndex = 46;
+            this.LabelsCB.Text = "Label Every Row";
+            this.ToolTip.SetToolTip(this.LabelsCB, "Check to include labels on every row of the output file.\r\nLabels make it easier t" +
+        "o read the results at a glance, but\r\nare inconvenient if the data will be copied" +
+        " to a spreadsheet.");
+            this.LabelsCB.UseVisualStyleBackColor = true;
+            // 
             // ParameterInput
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 583);
+            this.Controls.Add(this.LabelsCB);
             this.Controls.Add(this.RunButton);
             this.Controls.Add(this.AddParametersButton);
             this.Controls.Add(this.MinRangeUD);
@@ -1010,7 +1032,7 @@ namespace ApsCalcUI
             this.Controls.Add(this.MaxGaugeLabel);
             this.Controls.Add(this.MinGaugeLabel);
             this.Name = "ParameterInput";
-            this.Text = "Parameter Input";
+            this.Text = "ApsCalc";
             this.Load += new System.EventHandler(this.ParameterInput_Load);
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGaugeUD)).EndInit();
@@ -1040,6 +1062,7 @@ namespace ApsCalcUI
             this.TargetACPanel.ResumeLayout(false);
             this.TargetSchemePanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.QueueErrorProvider)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.RunErrorProvider)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1119,6 +1142,8 @@ namespace ApsCalcUI
         private System.Windows.Forms.Button AddParametersButton;
         private System.Windows.Forms.Button RunButton;
         private System.Windows.Forms.ErrorProvider QueueErrorProvider;
+        private System.Windows.Forms.ErrorProvider RunErrorProvider;
+        private System.Windows.Forms.CheckBox LabelsCB;
     }
 }
 
