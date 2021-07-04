@@ -63,6 +63,7 @@ namespace ApsCalcUI
             this.AddParametersButton = new System.Windows.Forms.Button();
             this.RunButton = new System.Windows.Forms.Button();
             this.VariableModulesLabel = new System.Windows.Forms.Label();
+            this.LabelsCB = new System.Windows.Forms.CheckBox();
             this.BarrelCountLabel = new System.Windows.Forms.Label();
             this.MinGaugeLabel = new System.Windows.Forms.Label();
             this.MaxGaugeLabel = new System.Windows.Forms.Label();
@@ -104,7 +105,6 @@ namespace ApsCalcUI
             this.TargetSchemeLabel = new System.Windows.Forms.Label();
             this.QueueErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.RunErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-            this.LabelsCB = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).BeginInit();
@@ -140,7 +140,7 @@ namespace ApsCalcUI
             this.BarrelCountDD.Location = new System.Drawing.Point(12, 31);
             this.BarrelCountDD.Name = "BarrelCountDD";
             this.BarrelCountDD.Size = new System.Drawing.Size(110, 23);
-            this.BarrelCountDD.TabIndex = 1;
+            this.BarrelCountDD.TabIndex = 0;
             this.ToolTip.SetToolTip(this.BarrelCountDD, "Number of barrels on the firing piece.\nMultiple barrels increase cooling effectiv" +
         "eness, but restrict max gauge.\nBarrels : Max gauge\n1 : 500\n2 : 250\n3 : 225\n4 : 2" +
         "00\n5 : 175\n6 : 150");
@@ -162,7 +162,7 @@ namespace ApsCalcUI
             this.SupercavRB.Location = new System.Drawing.Point(112, 50);
             this.SupercavRB.Name = "SupercavRB";
             this.SupercavRB.Size = new System.Drawing.Size(73, 19);
-            this.SupercavRB.TabIndex = 1;
+            this.SupercavRB.TabIndex = 4;
             this.SupercavRB.Text = "Supercav";
             this.ToolTip.SetToolTip(this.SupercavRB, "Supercavitation Base");
             this.SupercavRB.UseVisualStyleBackColor = true;
@@ -173,7 +173,7 @@ namespace ApsCalcUI
             this.GravRB.Location = new System.Drawing.Point(112, 72);
             this.GravRB.Name = "GravRB";
             this.GravRB.Size = new System.Drawing.Size(76, 19);
-            this.GravRB.TabIndex = 3;
+            this.GravRB.TabIndex = 4;
             this.GravRB.Text = "Grav Ram";
             this.ToolTip.SetToolTip(this.GravRB, "Graviton Ram");
             this.GravRB.UseVisualStyleBackColor = true;
@@ -187,7 +187,7 @@ namespace ApsCalcUI
             this.BoreEvacuatorCB.Location = new System.Drawing.Point(476, 58);
             this.BoreEvacuatorCB.Name = "BoreEvacuatorCB";
             this.BoreEvacuatorCB.Size = new System.Drawing.Size(127, 19);
-            this.BoreEvacuatorCB.TabIndex = 21;
+            this.BoreEvacuatorCB.TabIndex = 16;
             this.BoreEvacuatorCB.Text = "Use Bore Evacuator";
             this.ToolTip.SetToolTip(this.BoreEvacuatorCB, "Bore evacuator is a barrel attachment which improves cooling");
             this.BoreEvacuatorCB.UseVisualStyleBackColor = true;
@@ -199,7 +199,7 @@ namespace ApsCalcUI
             this.DamageTypeDD.Location = new System.Drawing.Point(504, 241);
             this.DamageTypeDD.Name = "DamageTypeDD";
             this.DamageTypeDD.Size = new System.Drawing.Size(121, 23);
-            this.DamageTypeDD.TabIndex = 28;
+            this.DamageTypeDD.TabIndex = 23;
             this.ToolTip.SetToolTip(this.DamageTypeDD, "Damage type to optimize");
             this.DamageTypeDD.SelectedIndexChanged += new System.EventHandler(this.DamageTypeDD_SelectedIndexChanged);
             // 
@@ -221,7 +221,7 @@ namespace ApsCalcUI
             this.PerVolumeRB.Location = new System.Drawing.Point(4, 3);
             this.PerVolumeRB.Name = "PerVolumeRB";
             this.PerVolumeRB.Size = new System.Drawing.Size(65, 19);
-            this.PerVolumeRB.TabIndex = 0;
+            this.PerVolumeRB.TabIndex = 24;
             this.PerVolumeRB.TabStop = true;
             this.PerVolumeRB.Text = "Volume";
             this.ToolTip.SetToolTip(this.PerVolumeRB, "Optimize DPS per volume");
@@ -234,7 +234,7 @@ namespace ApsCalcUI
             this.ArmorLayerDD.Location = new System.Drawing.Point(6, 33);
             this.ArmorLayerDD.Name = "ArmorLayerDD";
             this.ArmorLayerDD.Size = new System.Drawing.Size(121, 23);
-            this.ArmorLayerDD.TabIndex = 2;
+            this.ArmorLayerDD.TabIndex = 26;
             this.ToolTip.SetToolTip(this.ArmorLayerDD, "Select an armor type to add to target armor scheme.\r\nAdd outermost layer first");
             // 
             // AddLayerButton
@@ -242,7 +242,7 @@ namespace ApsCalcUI
             this.AddLayerButton.Location = new System.Drawing.Point(6, 60);
             this.AddLayerButton.Name = "AddLayerButton";
             this.AddLayerButton.Size = new System.Drawing.Size(50, 23);
-            this.AddLayerButton.TabIndex = 3;
+            this.AddLayerButton.TabIndex = 27;
             this.AddLayerButton.Text = "Add";
             this.ToolTip.SetToolTip(this.AddLayerButton, "Add selected layer to list");
             this.AddLayerButton.UseVisualStyleBackColor = true;
@@ -253,7 +253,7 @@ namespace ApsCalcUI
             this.RemoveLayerButton.Location = new System.Drawing.Point(77, 60);
             this.RemoveLayerButton.Name = "RemoveLayerButton";
             this.RemoveLayerButton.Size = new System.Drawing.Size(50, 23);
-            this.RemoveLayerButton.TabIndex = 4;
+            this.RemoveLayerButton.TabIndex = 28;
             this.RemoveLayerButton.Text = "Del";
             this.ToolTip.SetToolTip(this.RemoveLayerButton, "Remove most recently-added layer");
             this.RemoveLayerButton.UseVisualStyleBackColor = true;
@@ -274,7 +274,7 @@ namespace ApsCalcUI
             0});
             this.MinGaugeUD.Name = "MinGaugeUD";
             this.MinGaugeUD.Size = new System.Drawing.Size(45, 23);
-            this.MinGaugeUD.TabIndex = 35;
+            this.MinGaugeUD.TabIndex = 1;
             this.MinGaugeUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ToolTip.SetToolTip(this.MinGaugeUD, "Smallest gauge to test");
             this.MinGaugeUD.Value = new decimal(new int[] {
@@ -299,7 +299,7 @@ namespace ApsCalcUI
             0});
             this.MaxGaugeUD.Name = "MaxGaugeUD";
             this.MaxGaugeUD.Size = new System.Drawing.Size(45, 23);
-            this.MaxGaugeUD.TabIndex = 36;
+            this.MaxGaugeUD.TabIndex = 2;
             this.MaxGaugeUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ToolTip.SetToolTip(this.MaxGaugeUD, "Largest gauge to test");
             this.MaxGaugeUD.Value = new decimal(new int[] {
@@ -319,7 +319,7 @@ namespace ApsCalcUI
             0});
             this.SolidBodyFixedUD.Name = "SolidBodyFixedUD";
             this.SolidBodyFixedUD.Size = new System.Drawing.Size(40, 23);
-            this.SolidBodyFixedUD.TabIndex = 37;
+            this.SolidBodyFixedUD.TabIndex = 5;
             this.SolidBodyFixedUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ToolTip.SetToolTip(this.SolidBodyFixedUD, "Minimum solid bodies to include in every shell");
             this.SolidBodyFixedUD.ValueChanged += new System.EventHandler(this.SolidBodyFixedUD_ValueChanged);
@@ -334,7 +334,7 @@ namespace ApsCalcUI
             0});
             this.SabotBodyFixedUD.Name = "SabotBodyFixedUD";
             this.SabotBodyFixedUD.Size = new System.Drawing.Size(40, 23);
-            this.SabotBodyFixedUD.TabIndex = 38;
+            this.SabotBodyFixedUD.TabIndex = 6;
             this.SabotBodyFixedUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ToolTip.SetToolTip(this.SabotBodyFixedUD, "Minimum sabot bodies to include in every shell");
             // 
@@ -348,7 +348,7 @@ namespace ApsCalcUI
             0});
             this.EmpBodyFixedUD.Name = "EmpBodyFixedUD";
             this.EmpBodyFixedUD.Size = new System.Drawing.Size(40, 23);
-            this.EmpBodyFixedUD.TabIndex = 38;
+            this.EmpBodyFixedUD.TabIndex = 7;
             this.EmpBodyFixedUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ToolTip.SetToolTip(this.EmpBodyFixedUD, "Minimum EMP bodies to include in every shell");
             // 
@@ -362,7 +362,7 @@ namespace ApsCalcUI
             0});
             this.FlaKBodyFixedUD.Name = "FlaKBodyFixedUD";
             this.FlaKBodyFixedUD.Size = new System.Drawing.Size(40, 23);
-            this.FlaKBodyFixedUD.TabIndex = 38;
+            this.FlaKBodyFixedUD.TabIndex = 8;
             this.FlaKBodyFixedUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ToolTip.SetToolTip(this.FlaKBodyFixedUD, "Minimum FlaK bodies to include in every shell");
             // 
@@ -376,7 +376,7 @@ namespace ApsCalcUI
             0});
             this.FragBodyFixedUD.Name = "FragBodyFixedUD";
             this.FragBodyFixedUD.Size = new System.Drawing.Size(40, 23);
-            this.FragBodyFixedUD.TabIndex = 38;
+            this.FragBodyFixedUD.TabIndex = 9;
             this.FragBodyFixedUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ToolTip.SetToolTip(this.FragBodyFixedUD, "Minimum Frag bodies to include in every shell");
             // 
@@ -390,7 +390,7 @@ namespace ApsCalcUI
             0});
             this.HEBodyFixedUD.Name = "HEBodyFixedUD";
             this.HEBodyFixedUD.Size = new System.Drawing.Size(40, 23);
-            this.HEBodyFixedUD.TabIndex = 38;
+            this.HEBodyFixedUD.TabIndex = 10;
             this.HEBodyFixedUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ToolTip.SetToolTip(this.HEBodyFixedUD, "Minimum HE bodies to include in every shell");
             // 
@@ -404,7 +404,7 @@ namespace ApsCalcUI
             0});
             this.FuseFixedUD.Name = "FuseFixedUD";
             this.FuseFixedUD.Size = new System.Drawing.Size(40, 23);
-            this.FuseFixedUD.TabIndex = 38;
+            this.FuseFixedUD.TabIndex = 11;
             this.FuseFixedUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ToolTip.SetToolTip(this.FuseFixedUD, "Minimum Fuse bodies to include in every shell");
             this.FuseFixedUD.ValueChanged += new System.EventHandler(this.FuseFixedUD_ValueChanged);
@@ -419,7 +419,7 @@ namespace ApsCalcUI
             0});
             this.FinFixedUD.Name = "FinFixedUD";
             this.FinFixedUD.Size = new System.Drawing.Size(40, 23);
-            this.FinFixedUD.TabIndex = 38;
+            this.FinFixedUD.TabIndex = 12;
             this.FinFixedUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ToolTip.SetToolTip(this.FinFixedUD, "Minimum Fin bodies to include in every shell");
             this.FinFixedUD.ValueChanged += new System.EventHandler(this.FinFixedUD_ValueChanged);
@@ -434,7 +434,7 @@ namespace ApsCalcUI
             0});
             this.GravCompFixedUD.Name = "GravCompFixedUD";
             this.GravCompFixedUD.Size = new System.Drawing.Size(40, 23);
-            this.GravCompFixedUD.TabIndex = 38;
+            this.GravCompFixedUD.TabIndex = 13;
             this.GravCompFixedUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ToolTip.SetToolTip(this.GravCompFixedUD, "Minimum Gravity Compensators to include in every shell");
             this.GravCompFixedUD.ValueChanged += new System.EventHandler(this.GravCompFixedUD_ValueChanged);
@@ -450,7 +450,7 @@ namespace ApsCalcUI
             0});
             this.MaxGPUD.Name = "MaxGPUD";
             this.MaxGPUD.Size = new System.Drawing.Size(65, 23);
-            this.MaxGPUD.TabIndex = 37;
+            this.MaxGPUD.TabIndex = 15;
             this.MaxGPUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ToolTip.SetToolTip(this.MaxGPUD, "Max Gunpowder casings");
             this.MaxGPUD.ValueChanged += new System.EventHandler(this.MaxGPUD_ValueChanged);
@@ -465,7 +465,7 @@ namespace ApsCalcUI
             0});
             this.MaxRGUD.Name = "MaxRGUD";
             this.MaxRGUD.Size = new System.Drawing.Size(65, 23);
-            this.MaxRGUD.TabIndex = 38;
+            this.MaxRGUD.TabIndex = 17;
             this.MaxRGUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ToolTip.SetToolTip(this.MaxRGUD, "Max Railgun casings");
             this.MaxRGUD.ValueChanged += new System.EventHandler(this.MaxRGUD_ValueChanged);
@@ -480,7 +480,7 @@ namespace ApsCalcUI
             0});
             this.MaxDrawUD.Name = "MaxDrawUD";
             this.MaxDrawUD.Size = new System.Drawing.Size(65, 23);
-            this.MaxDrawUD.TabIndex = 39;
+            this.MaxDrawUD.TabIndex = 18;
             this.MaxDrawUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.MaxDrawUD.ThousandsSeparator = true;
             this.ToolTip.SetToolTip(this.MaxDrawUD, "Max 200,000");
@@ -495,7 +495,7 @@ namespace ApsCalcUI
             0});
             this.MaxRecoilUD.Name = "MaxRecoilUD";
             this.MaxRecoilUD.Size = new System.Drawing.Size(65, 23);
-            this.MaxRecoilUD.TabIndex = 40;
+            this.MaxRecoilUD.TabIndex = 19;
             this.MaxRecoilUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.MaxRecoilUD.ThousandsSeparator = true;
             this.ToolTip.SetToolTip(this.MaxRecoilUD, "Includes rail draw and gunpowder recoil.\r\nMax 250,000");
@@ -515,7 +515,7 @@ namespace ApsCalcUI
             0});
             this.MaxLengthUD.Name = "MaxLengthUD";
             this.MaxLengthUD.Size = new System.Drawing.Size(65, 23);
-            this.MaxLengthUD.TabIndex = 41;
+            this.MaxLengthUD.TabIndex = 20;
             this.MaxLengthUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.MaxLengthUD.ThousandsSeparator = true;
             this.ToolTip.SetToolTip(this.MaxLengthUD, "Max 8,000");
@@ -536,7 +536,7 @@ namespace ApsCalcUI
             0});
             this.MinVelocityUD.Name = "MinVelocityUD";
             this.MinVelocityUD.Size = new System.Drawing.Size(65, 23);
-            this.MinVelocityUD.TabIndex = 42;
+            this.MinVelocityUD.TabIndex = 21;
             this.MinVelocityUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.MinVelocityUD.ThousandsSeparator = true;
             this.ToolTip.SetToolTip(this.MinVelocityUD, "Max 5,000");
@@ -551,7 +551,7 @@ namespace ApsCalcUI
             0});
             this.MinRangeUD.Name = "MinRangeUD";
             this.MinRangeUD.Size = new System.Drawing.Size(65, 23);
-            this.MinRangeUD.TabIndex = 43;
+            this.MinRangeUD.TabIndex = 22;
             this.MinRangeUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.MinRangeUD.ThousandsSeparator = true;
             this.ToolTip.SetToolTip(this.MinRangeUD, "Max 2,000");
@@ -561,7 +561,7 @@ namespace ApsCalcUI
             this.AddParametersButton.Location = new System.Drawing.Point(458, 515);
             this.AddParametersButton.Name = "AddParametersButton";
             this.AddParametersButton.Size = new System.Drawing.Size(157, 51);
-            this.AddParametersButton.TabIndex = 44;
+            this.AddParametersButton.TabIndex = 29;
             this.AddParametersButton.Text = "Add Parameters to Queue";
             this.ToolTip.SetToolTip(this.AddParametersButton, "Add currently-selected parameters to the test queue");
             this.AddParametersButton.UseVisualStyleBackColor = true;
@@ -573,7 +573,7 @@ namespace ApsCalcUI
             this.RunButton.Location = new System.Drawing.Point(661, 515);
             this.RunButton.Name = "RunButton";
             this.RunButton.Size = new System.Drawing.Size(121, 51);
-            this.RunButton.TabIndex = 45;
+            this.RunButton.TabIndex = 31;
             this.RunButton.Text = "Run Queued Tests";
             this.ToolTip.SetToolTip(this.RunButton, "Run all tests in queue");
             this.RunButton.UseVisualStyleBackColor = false;
@@ -588,6 +588,19 @@ namespace ApsCalcUI
             this.VariableModulesLabel.Text = "Variable Modules";
             this.VariableModulesLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.ToolTip.SetToolTip(this.VariableModulesLabel, "Modules to be tested in varying combinations");
+            // 
+            // LabelsCB
+            // 
+            this.LabelsCB.AutoSize = true;
+            this.LabelsCB.Location = new System.Drawing.Point(661, 497);
+            this.LabelsCB.Name = "LabelsCB";
+            this.LabelsCB.Size = new System.Drawing.Size(111, 19);
+            this.LabelsCB.TabIndex = 30;
+            this.LabelsCB.Text = "Label Every Row";
+            this.ToolTip.SetToolTip(this.LabelsCB, "Check to include labels on every row of the output file.\r\nLabels make it easier t" +
+        "o read the results at a glance, but\r\nare inconvenient if the data will be copied" +
+        " to a spreadsheet.");
+            this.LabelsCB.UseVisualStyleBackColor = true;
             // 
             // BarrelCountLabel
             // 
@@ -623,7 +636,7 @@ namespace ApsCalcUI
             this.HeadModulesCL.Location = new System.Drawing.Point(13, 97);
             this.HeadModulesCL.Name = "HeadModulesCL";
             this.HeadModulesCL.Size = new System.Drawing.Size(205, 364);
-            this.HeadModulesCL.TabIndex = 8;
+            this.HeadModulesCL.TabIndex = 3;
             // 
             // BasePanel
             // 
@@ -636,7 +649,7 @@ namespace ApsCalcUI
             this.BasePanel.Location = new System.Drawing.Point(12, 469);
             this.BasePanel.Name = "BasePanel";
             this.BasePanel.Size = new System.Drawing.Size(206, 97);
-            this.BasePanel.TabIndex = 10;
+            this.BasePanel.TabIndex = 4;
             // 
             // BaseModulesLabel
             // 
@@ -664,7 +677,7 @@ namespace ApsCalcUI
             this.TracerRB.Location = new System.Drawing.Point(14, 72);
             this.TracerRB.Name = "TracerRB";
             this.TracerRB.Size = new System.Drawing.Size(93, 19);
-            this.TracerRB.TabIndex = 2;
+            this.TracerRB.TabIndex = 4;
             this.TracerRB.Text = "Visible Tracer";
             this.TracerRB.UseVisualStyleBackColor = true;
             // 
@@ -675,7 +688,7 @@ namespace ApsCalcUI
             this.BaseBleederRB.Location = new System.Drawing.Point(14, 51);
             this.BaseBleederRB.Name = "BaseBleederRB";
             this.BaseBleederRB.Size = new System.Drawing.Size(91, 19);
-            this.BaseBleederRB.TabIndex = 0;
+            this.BaseBleederRB.TabIndex = 4;
             this.BaseBleederRB.TabStop = true;
             this.BaseBleederRB.Text = "Base Bleeder";
             this.BaseBleederRB.UseVisualStyleBackColor = true;
@@ -811,7 +824,7 @@ namespace ApsCalcUI
             this.VariableModulesCL.Location = new System.Drawing.Point(4, 31);
             this.VariableModulesCL.Name = "VariableModulesCL";
             this.VariableModulesCL.Size = new System.Drawing.Size(147, 166);
-            this.VariableModulesCL.TabIndex = 1;
+            this.VariableModulesCL.TabIndex = 14;
             // 
             // MaxGPLabel
             // 
@@ -918,7 +931,7 @@ namespace ApsCalcUI
             this.TargetACCL.Location = new System.Drawing.Point(0, 31);
             this.TargetACCL.Name = "TargetACCL";
             this.TargetACCL.Size = new System.Drawing.Size(190, 166);
-            this.TargetACCL.TabIndex = 1;
+            this.TargetACCL.TabIndex = 25;
             // 
             // TargetACLabel
             // 
@@ -976,19 +989,6 @@ namespace ApsCalcUI
             // RunErrorProvider
             // 
             this.RunErrorProvider.ContainerControl = this;
-            // 
-            // LabelsCB
-            // 
-            this.LabelsCB.AutoSize = true;
-            this.LabelsCB.Location = new System.Drawing.Point(661, 497);
-            this.LabelsCB.Name = "LabelsCB";
-            this.LabelsCB.Size = new System.Drawing.Size(111, 19);
-            this.LabelsCB.TabIndex = 46;
-            this.LabelsCB.Text = "Label Every Row";
-            this.ToolTip.SetToolTip(this.LabelsCB, "Check to include labels on every row of the output file.\r\nLabels make it easier t" +
-        "o read the results at a glance, but\r\nare inconvenient if the data will be copied" +
-        " to a spreadsheet.");
-            this.LabelsCB.UseVisualStyleBackColor = true;
             // 
             // ParameterInput
             // 
