@@ -105,6 +105,7 @@ namespace ApsCalcUI
             this.TargetSchemeLabel = new System.Windows.Forms.Label();
             this.QueueErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.RunErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            this.TestsInQueueLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).BeginInit();
@@ -570,6 +571,7 @@ namespace ApsCalcUI
             // RunButton
             // 
             this.RunButton.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.RunButton.Enabled = false;
             this.RunButton.Location = new System.Drawing.Point(661, 515);
             this.RunButton.Name = "RunButton";
             this.RunButton.Size = new System.Drawing.Size(121, 51);
@@ -592,7 +594,7 @@ namespace ApsCalcUI
             // LabelsCB
             // 
             this.LabelsCB.AutoSize = true;
-            this.LabelsCB.Location = new System.Drawing.Point(661, 497);
+            this.LabelsCB.Location = new System.Drawing.Point(462, 497);
             this.LabelsCB.Name = "LabelsCB";
             this.LabelsCB.Size = new System.Drawing.Size(111, 19);
             this.LabelsCB.TabIndex = 30;
@@ -990,11 +992,21 @@ namespace ApsCalcUI
             // 
             this.RunErrorProvider.ContainerControl = this;
             // 
+            // TestsInQueueLabel
+            // 
+            this.TestsInQueueLabel.AutoSize = true;
+            this.TestsInQueueLabel.Location = new System.Drawing.Point(661, 497);
+            this.TestsInQueueLabel.Name = "TestsInQueueLabel";
+            this.TestsInQueueLabel.Size = new System.Drawing.Size(95, 15);
+            this.TestsInQueueLabel.TabIndex = 35;
+            this.TestsInQueueLabel.Text = "Tests in Queue: 0";
+            // 
             // ParameterInput
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 583);
+            this.Controls.Add(this.TestsInQueueLabel);
             this.Controls.Add(this.LabelsCB);
             this.Controls.Add(this.RunButton);
             this.Controls.Add(this.AddParametersButton);
@@ -1144,6 +1156,7 @@ namespace ApsCalcUI
         private System.Windows.Forms.ErrorProvider QueueErrorProvider;
         private System.Windows.Forms.ErrorProvider RunErrorProvider;
         private System.Windows.Forms.CheckBox LabelsCB;
+        private System.Windows.Forms.Label TestsInQueueLabel;
     }
 }
 

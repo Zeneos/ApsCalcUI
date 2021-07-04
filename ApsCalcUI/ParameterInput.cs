@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ApsCalc;
@@ -15,6 +11,7 @@ namespace ApsCalcUI
     public partial class ParameterInput : Form
     {
         List<TestParameters> parameterList = new();
+        int testsInQueue = 0;
 
         readonly Dictionary<int, int> gaugeHardCaps = new()
         {
@@ -341,6 +338,13 @@ namespace ApsCalcUI
 
             if (!error)
             {
+                // Run button is off by default
+                RunButton.Enabled = true;
+
+                // Update "Tests in Queue" text
+                testsInQueue += 1;
+                TestsInQueueLabel.Text = "Tests in Queue: " + testsInQueue.ToString();
+
                 TestParameters testParameters = new();
                 testParameters.BarrelCount = ((BarrelCountItem)BarrelCountDD.SelectedItem).ID;
                 testParameters.MinGauge = (int)MinGaugeUD.Value;

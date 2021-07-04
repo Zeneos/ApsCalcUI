@@ -655,7 +655,7 @@ namespace ApsCalc
 
             if (HeadModule == Module.HollowPoint)
             {
-                DamageDict[DamageType.Kinetic] = 
+                DamageDict[DamageType.Kinetic] =
                     GaugeCoefficient
                     * EffectiveProjectileModuleCount
                     * Velocity
@@ -664,7 +664,7 @@ namespace ApsCalc
             }
             else
             {
-                DamageDict[DamageType.Kinetic] = 
+                DamageDict[DamageType.Kinetic] =
                     MathF.Pow(500 / MathF.Max(Gauge, 100f), 0.15f)
                     * GaugeCoefficient
                     * EffectiveProjectileModuleCount
@@ -797,7 +797,7 @@ namespace ApsCalc
             }
 
             // Weighted average of damage percentages
-            DamageDict[DamageType.Pendepth] = 
+            DamageDict[DamageType.Pendepth] =
                 (flaKPercentage * flaKBodies + fragPercentage * fragBodies + hePercentage * heBodies)
                 / (flaKBodies + fragBodies + heBodies);
         }
