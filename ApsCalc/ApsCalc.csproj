@@ -3,6 +3,12 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>ApsCalc</RootNamespace>
+    <StartupObject>ApsCalc.Program</StartupObject>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PenCalc\PenCalc.csproj" />
+  </ItemGroup>
 
 </Project>

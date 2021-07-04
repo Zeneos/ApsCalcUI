@@ -1000,7 +1000,7 @@ namespace ApsCalc
             // Check non-damage body mods for inclusion
             for (int index = 6; index < Module.AllModules.Length; index++)
             {
-                if (Module.AllModules[index].ModulePosition == Module.Position.Middle &&
+                if (Module.AllModules[index].ModulePosition == Module.Position.Middle && 
                     (FixedModuleCounts[index] > 0 || VariableModuleIndices.Contains(index)))
                 {
                     modsToShow.Add(index);

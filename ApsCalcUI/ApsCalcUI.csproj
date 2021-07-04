@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ApsCalc\ApsCalc\ApsCalc.csproj" />
-    <ProjectReference Include="..\..\ApsCalc\PenCalc\PenCalc.csproj" />
+    <ProjectReference Include="..\ApsCalc\ApsCalc.csproj" />
+    <ProjectReference Include="..\PenCalc\PenCalc.csproj" />
   </ItemGroup>
 
 </Project>
