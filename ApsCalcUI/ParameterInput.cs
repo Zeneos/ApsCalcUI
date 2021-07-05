@@ -513,6 +513,7 @@ namespace ApsCalcUI
             if (!error)
             {
                 // Lock buttons
+                TestsInQueueLabel.Text = "Tests Remaining: " + testsInQueue.ToString();
                 AddParametersButton.Enabled = false;
                 RunButton.Enabled = false;
                 RunButton.Text = "Running...";
@@ -657,10 +658,16 @@ namespace ApsCalcUI
                         calcFinal.AddTopShellsToDictionary();
                         calcFinal.WriteTopShells(testParameters.MinGauge, testParameters.MaxGauge);
                     }
+
+                    testsInQueue -= 1;
+                    TestsInQueueLabel.Text = "Tests Remaining: " + testsInQueue.ToString();
                 }
 
-                // Unlock buttons
+                // Unlock buttons and update queue count
                 parameterList.Clear();
+                testsInQueue = 0;
+                TestsInQueueLabel.Text = "Tests in Queue: " + testsInQueue.ToString();
+
                 AddParametersButton.Enabled = true;
                 RunButton.Enabled = true;
                 RunButton.Text = "Run Queued Tests";
