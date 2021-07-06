@@ -219,14 +219,6 @@ namespace ApsCalcUI
         private void MaxGPUD_ValueChanged(object sender, EventArgs e)
         {
             UpdateModuleCounts();
-            if (MaxGPUD.Value > 0)
-            {
-                BoreEvacuatorCB.Enabled = true;
-            }
-            else
-            {
-                BoreEvacuatorCB.Enabled = false;
-            }
         }
 
         private void MaxRGUD_ValueChanged(object sender, EventArgs e)
@@ -418,15 +410,6 @@ namespace ApsCalcUI
                 testParameters.VariableModuleIndices = variableModuleIndices;
 
                 testParameters.MaxGPCasingCount = (float)MaxGPUD.Value;
-                if (BoreEvacuatorCB.Checked)
-                {
-                    testParameters.UseEvacuator = true;
-                }
-                else
-                {
-                    testParameters.UseEvacuator = false;
-                }
-
                 testParameters.MaxRGCasingCount = (float)MaxRGUD.Value;
                 testParameters.MaxLength = (float)MaxLengthUD.Value;
                 testParameters.MaxDraw = (float)MaxDrawUD.Value;
@@ -537,7 +520,6 @@ namespace ApsCalcUI
                                     testParameters.MinModulecount,
                                     testParameters.VariableModuleIndices,
                                     testParameters.MaxGPCasingCount,
-                                    testParameters.UseEvacuator,
                                     testParameters.MaxRGCasingCount,
                                     testParameters.MaxLength,
                                     testParameters.MaxDraw,
@@ -571,7 +553,6 @@ namespace ApsCalcUI
                                     testParameters.MinModulecount,
                                     testParameters.VariableModuleIndices,
                                     testParameters.MaxGPCasingCount,
-                                    testParameters.UseEvacuator,
                                     testParameters.MaxRGCasingCount,
                                     testParameters.MaxLength,
                                     testParameters.MaxDraw,
@@ -606,7 +587,6 @@ namespace ApsCalcUI
                                 testParameters.MinModulecount,
                                 testParameters.VariableModuleIndices,
                                 testParameters.MaxGPCasingCount,
-                                testParameters.UseEvacuator,
                                 testParameters.MaxRGCasingCount,
                                 testParameters.MaxLength,
                                 testParameters.MaxDraw,
@@ -639,7 +619,6 @@ namespace ApsCalcUI
                                 testParameters.MinModulecount,
                                 testParameters.VariableModuleIndices,
                                 testParameters.MaxGPCasingCount,
-                                testParameters.UseEvacuator,
                                 testParameters.MaxRGCasingCount,
                                 testParameters.MaxLength,
                                 testParameters.MaxDraw,

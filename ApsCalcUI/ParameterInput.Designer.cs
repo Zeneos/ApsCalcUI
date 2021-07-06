@@ -35,7 +35,6 @@ namespace ApsCalcUI
             this.HeadModulesLabel = new System.Windows.Forms.Label();
             this.SupercavRB = new System.Windows.Forms.RadioButton();
             this.GravRB = new System.Windows.Forms.RadioButton();
-            this.BoreEvacuatorCB = new System.Windows.Forms.CheckBox();
             this.DamageTypeDD = new System.Windows.Forms.ComboBox();
             this.PerCostRB = new System.Windows.Forms.RadioButton();
             this.PerVolumeRB = new System.Windows.Forms.RadioButton();
@@ -178,20 +177,6 @@ namespace ApsCalcUI
             this.GravRB.Text = "Grav Ram";
             this.ToolTip.SetToolTip(this.GravRB, "Graviton Ram");
             this.GravRB.UseVisualStyleBackColor = true;
-            // 
-            // BoreEvacuatorCB
-            // 
-            this.BoreEvacuatorCB.AutoSize = true;
-            this.BoreEvacuatorCB.Checked = true;
-            this.BoreEvacuatorCB.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.BoreEvacuatorCB.Enabled = false;
-            this.BoreEvacuatorCB.Location = new System.Drawing.Point(476, 58);
-            this.BoreEvacuatorCB.Name = "BoreEvacuatorCB";
-            this.BoreEvacuatorCB.Size = new System.Drawing.Size(127, 19);
-            this.BoreEvacuatorCB.TabIndex = 16;
-            this.BoreEvacuatorCB.Text = "Use Bore Evacuator";
-            this.ToolTip.SetToolTip(this.BoreEvacuatorCB, "Bore evacuator is a barrel attachment which improves cooling");
-            this.BoreEvacuatorCB.UseVisualStyleBackColor = true;
             // 
             // DamageTypeDD
             // 
@@ -458,7 +443,7 @@ namespace ApsCalcUI
             // 
             // MaxRGUD
             // 
-            this.MaxRGUD.Location = new System.Drawing.Point(550, 84);
+            this.MaxRGUD.Location = new System.Drawing.Point(550, 59);
             this.MaxRGUD.Maximum = new decimal(new int[] {
             19,
             0,
@@ -473,7 +458,7 @@ namespace ApsCalcUI
             // 
             // MaxDrawUD
             // 
-            this.MaxDrawUD.Location = new System.Drawing.Point(550, 109);
+            this.MaxDrawUD.Location = new System.Drawing.Point(550, 84);
             this.MaxDrawUD.Maximum = new decimal(new int[] {
             200000,
             0,
@@ -488,7 +473,7 @@ namespace ApsCalcUI
             // 
             // MaxRecoilUD
             // 
-            this.MaxRecoilUD.Location = new System.Drawing.Point(550, 134);
+            this.MaxRecoilUD.Location = new System.Drawing.Point(550, 109);
             this.MaxRecoilUD.Maximum = new decimal(new int[] {
             250000,
             0,
@@ -508,7 +493,7 @@ namespace ApsCalcUI
             // 
             // MaxLengthUD
             // 
-            this.MaxLengthUD.Location = new System.Drawing.Point(550, 159);
+            this.MaxLengthUD.Location = new System.Drawing.Point(550, 134);
             this.MaxLengthUD.Maximum = new decimal(new int[] {
             8000,
             0,
@@ -529,7 +514,7 @@ namespace ApsCalcUI
             // 
             // MinVelocityUD
             // 
-            this.MinVelocityUD.Location = new System.Drawing.Point(550, 184);
+            this.MinVelocityUD.Location = new System.Drawing.Point(550, 159);
             this.MinVelocityUD.Maximum = new decimal(new int[] {
             5000,
             0,
@@ -544,7 +529,7 @@ namespace ApsCalcUI
             // 
             // MinRangeUD
             // 
-            this.MinRangeUD.Location = new System.Drawing.Point(550, 209);
+            this.MinRangeUD.Location = new System.Drawing.Point(550, 184);
             this.MinRangeUD.Maximum = new decimal(new int[] {
             2000,
             0,
@@ -840,7 +825,7 @@ namespace ApsCalcUI
             // MaxRGLabel
             // 
             this.MaxRGLabel.AutoSize = true;
-            this.MaxRGLabel.Location = new System.Drawing.Point(446, 88);
+            this.MaxRGLabel.Location = new System.Drawing.Point(446, 63);
             this.MaxRGLabel.Name = "MaxRGLabel";
             this.MaxRGLabel.Size = new System.Drawing.Size(92, 15);
             this.MaxRGLabel.TabIndex = 15;
@@ -849,7 +834,7 @@ namespace ApsCalcUI
             // MaxDrawLabel
             // 
             this.MaxDrawLabel.AutoSize = true;
-            this.MaxDrawLabel.Location = new System.Drawing.Point(446, 113);
+            this.MaxDrawLabel.Location = new System.Drawing.Point(446, 88);
             this.MaxDrawLabel.Name = "MaxDrawLabel";
             this.MaxDrawLabel.Size = new System.Drawing.Size(82, 15);
             this.MaxDrawLabel.TabIndex = 17;
@@ -858,7 +843,7 @@ namespace ApsCalcUI
             // MaxRecoilLabel
             // 
             this.MaxRecoilLabel.AutoSize = true;
-            this.MaxRecoilLabel.Location = new System.Drawing.Point(446, 138);
+            this.MaxRecoilLabel.Location = new System.Drawing.Point(446, 113);
             this.MaxRecoilLabel.Name = "MaxRecoilLabel";
             this.MaxRecoilLabel.Size = new System.Drawing.Size(65, 15);
             this.MaxRecoilLabel.TabIndex = 19;
@@ -867,7 +852,7 @@ namespace ApsCalcUI
             // MaxLengthLabel
             // 
             this.MaxLengthLabel.AutoSize = true;
-            this.MaxLengthLabel.Location = new System.Drawing.Point(446, 163);
+            this.MaxLengthLabel.Location = new System.Drawing.Point(446, 138);
             this.MaxLengthLabel.Name = "MaxLengthLabel";
             this.MaxLengthLabel.Size = new System.Drawing.Size(103, 15);
             this.MaxLengthLabel.TabIndex = 22;
@@ -876,7 +861,7 @@ namespace ApsCalcUI
             // MinVelocityLabel
             // 
             this.MinVelocityLabel.AutoSize = true;
-            this.MinVelocityLabel.Location = new System.Drawing.Point(446, 188);
+            this.MinVelocityLabel.Location = new System.Drawing.Point(446, 163);
             this.MinVelocityLabel.Name = "MinVelocityLabel";
             this.MinVelocityLabel.Size = new System.Drawing.Size(104, 15);
             this.MinVelocityLabel.TabIndex = 24;
@@ -885,7 +870,7 @@ namespace ApsCalcUI
             // MinRangeLabel
             // 
             this.MinRangeLabel.AutoSize = true;
-            this.MinRangeLabel.Location = new System.Drawing.Point(446, 213);
+            this.MinRangeLabel.Location = new System.Drawing.Point(446, 188);
             this.MinRangeLabel.Name = "MinRangeLabel";
             this.MinRangeLabel.Size = new System.Drawing.Size(106, 15);
             this.MinRangeLabel.TabIndex = 26;
@@ -1029,7 +1014,6 @@ namespace ApsCalcUI
             this.Controls.Add(this.MinRangeLabel);
             this.Controls.Add(this.MinVelocityLabel);
             this.Controls.Add(this.MaxLengthLabel);
-            this.Controls.Add(this.BoreEvacuatorCB);
             this.Controls.Add(this.MaxRecoilLabel);
             this.Controls.Add(this.MaxDrawLabel);
             this.Controls.Add(this.MaxRGLabel);
@@ -1113,7 +1097,6 @@ namespace ApsCalcUI
         private System.Windows.Forms.Label MaxRGLabel;
         private System.Windows.Forms.Label MaxDrawLabel;
         private System.Windows.Forms.Label MaxRecoilLabel;
-        private System.Windows.Forms.CheckBox BoreEvacuatorCB;
         private System.Windows.Forms.Label MaxLengthLabel;
         private System.Windows.Forms.Label MinVelocityLabel;
         private System.Windows.Forms.Label MinRangeLabel;
