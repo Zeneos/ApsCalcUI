@@ -754,7 +754,7 @@ namespace ApsCalc
             }
 
             // Weighted average of damage equivalents * 1 000 000 for easier reading
-            DamageDict[DamageType.Pendepth] = 
+            DamageDict[DamageType.Pendepth] =
                 (flakDamageEquivalent * flaKBodies + fragDamageEquivalent * fragBodies + heDamageEquivalent * heBodies)
                 / (flaKBodies + fragBodies + heBodies)
                 * 1000000;
