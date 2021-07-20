@@ -60,7 +60,7 @@ namespace ApsCalc
         public static Module FlaKHead { get; } = new Module("FlaK head", 1.3f, 1.0f, 0.1f, 1.0f, 1.0f, 500, Position.Head);
         public static Module FragHead { get; } = new Module("Frag head", 1.3f, 1.0f, 0.1f, 1.0f, 1.0f, 500, Position.Head);
         public static Module HEHead { get; } = new Module("HE head", 1.3f, 1.0f, 0.1f, 1.0f, 1.0f, 500, Position.Head);
-        public static Module SpecialHead { get; } = new Module("Squash or Shaped charge head", 1.45f, 0.1f, 0.1f, 1.0f, 1.0f, 500, Position.Head);
+        public static Module ShapedChargeHead { get; } = new Module("Shaped charge head", 1.45f, 0.1f, 0.1f, 1.0f, 1.0f, 500, Position.Head);
         public static Module APHead { get; } = new Module("AP head", 1.6f, 1.0f, 1.65f, 1.0f, 1.0f, 500, Position.Head);
         public static Module SabotHead { get; } = new Module("Sabot head", 1.6f, 0.85f, 2.5f, 0.25f, 1.0f, 500, Position.Head);
         public static Module HeavyHead { get; } = new Module("Heavy head", 1.45f, 1.65f, 1.0f, 1.0f, 1.0f, 500, Position.Head);
@@ -88,7 +88,7 @@ namespace ApsCalc
         FlaKHead,
         FragHead,
         HEHead,
-        SpecialHead,
+        ShapedChargeHead,
         APHead,
         SabotHead,
         HeavyHead,

@@ -67,6 +67,7 @@ namespace ApsCalcUI
                 new DamageTypeItem { ID = DamageType.FlaK, Text = "FlaK" },
                 new DamageTypeItem { ID = DamageType.Frag, Text = "Frag" },
                 new DamageTypeItem { ID = DamageType.HE, Text = "HE" },
+                new DamageTypeItem { ID = DamageType.HEAT, Text = "HEAT" },
                 new DamageTypeItem { ID = DamageType.Pendepth, Text = "Pendepth" },
                 new DamageTypeItem { ID = DamageType.Disruptor, Text = "Disruptor" }
             };
@@ -418,7 +419,22 @@ namespace ApsCalcUI
                 testParameters.MinEffectiverange = (float)MinRangeUD.Value;
                 testParameters.DamageType = ((DamageTypeItem)DamageTypeDD.SelectedItem).ID;
 
-                if (testParameters.DamageType == DamageType.Disruptor)
+                if (testParameters.DamageType == DamageType.HEAT)
+                {
+                    // Overwrite head list with shaped charge head
+                    testParameters.HeadIndices.Clear();
+                    int modIndex = 0;
+                    foreach (Module head in Module.AllModules)
+                    {
+                        if (head == Module.ShapedChargeHead)
+                        {
+                            testParameters.HeadIndices.Add(modIndex);
+                            break;
+                        }
+                        modIndex++;
+                    }
+                }
+                else if (testParameters.DamageType == DamageType.Disruptor)
                 {
                     // Overwrite head list with disruptor conduit
                     testParameters.HeadIndices.Clear();

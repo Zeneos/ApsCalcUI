@@ -74,9 +74,16 @@ shells may have an effective range of less than 1 km, and may not be suitable
 for use on certain craft.
 
 Damage Type: damage type to optimize.
-  Kinetic. Prompts entry of target AC value/s. Note that more than one AC value can be entered; each will be run as a separate test
+  Kinetic. Prompts entry of target AC value/s. Note that more than one AC
+  value can be entered; each will be run as a separate test
   
-  EMP, FlaK, Frag, or HE.
+  EMP, FlaK, Frag, and HE speak for themselves.
+
+  HEAT. Calculates HEAT damage for a shell. Note that the resulting
+  configurations will be optimal for every pen metric and special factor,
+  and even for HESH shells; however, the damage numbers will only match
+  what is shown ingame for HEAT shells with a special factor of 1 and a
+  penetration metric of 0.5.
   
   Pendepth. Prompts entry of target armor configuration. Optimizes for a 
   weighted average of FlaK, Frag, and HE damage, according to how many 

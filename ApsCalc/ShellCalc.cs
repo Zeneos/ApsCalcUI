@@ -23,7 +23,7 @@ namespace ApsCalc
         public float RGCount;
     }
 
-    // Module positions.  Enum is faster than strings.
+    // Damage types.  Enum is faster than strings.
     public enum DamageType : int
     {
         Kinetic,
@@ -31,6 +31,7 @@ namespace ApsCalc
         FlaK,
         Frag,
         HE,
+        HEAT,
         Pendepth,
         Disruptor
     }
@@ -144,6 +145,10 @@ namespace ApsCalc
 
         /// <summary>
         /// The iterable generator for shells.  Generates all shell possible permutations of shell within given parameters.
+        /// The "var_Max" and such represent number of each variable module. During test parameter creation, user selects variable
+        /// module types; these are represented by indices corresponding to position in Module.AllModules array
+        /// There must always be 9 indices; unassigned/unused indices are set to value of first index (index 0) - this allows
+        /// GenerateModuleCounts() to ignore unused indices to avoid generating duplicate shell configurations.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<ModuleCount> GenerateModuleCounts()

@@ -87,6 +87,7 @@ namespace ApsCalc
             { DamageType.FlaK, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
+            { DamageType.HEAT, 0 },
             { DamageType.Pendepth, 0 },
             { DamageType.Disruptor, 0 }
         };
@@ -98,6 +99,7 @@ namespace ApsCalc
             { DamageType.FlaK, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
+            { DamageType.HEAT, 0 },
             { DamageType.Pendepth, 0 },
             { DamageType.Disruptor, 0 }
         };
@@ -109,6 +111,7 @@ namespace ApsCalc
             { DamageType.FlaK, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
+            { DamageType.HEAT, 0 },
             { DamageType.Pendepth, 0 },
             { DamageType.Disruptor, 0 }
         };
@@ -120,6 +123,7 @@ namespace ApsCalc
             { DamageType.FlaK, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
+            { DamageType.HEAT, 0 },
             { DamageType.Pendepth, 0 },
             { DamageType.Disruptor, 0 }
         };
@@ -695,15 +699,35 @@ namespace ApsCalc
         {
             float heBodies = BodyModuleCounts[5];
 
-            if (HeadModule == Module.SpecialHead)
+            if (HeadModule == Module.ShapedChargeHead)
             {
-                heBodies += 0.8f;
+                heBodies += 0.2f;
             }
             else if (HeadModule == Module.HEHead || HeadModule == Module.HEBody)
             {
                 heBodies++;
             }
             DamageDict[DamageType.HE] = MathF.Pow(GaugeCoefficient * heBodies * 24 / 30, 0.9f) * OverallChemModifier * 3000;
+        }
+
+        /// <summary>
+        /// Calculates damage from HEAT, assuming special factor of 1 for all HE bodies and a penetration metric of 0.5
+        /// HESH damage scales same as HEAT, so optimal configurations work for both types
+        /// </summary>
+        void CalculateHeatDamage()
+        {
+            if (HeadModule == Module.ShapedChargeHead)
+            {
+                float heBodies = BodyModuleCounts[5];
+                // Special heads count as HE body with special factor of 0.8
+                DamageDict[DamageType.HE] = MathF.Pow(GaugeCoefficient * 0.2f * 24 / 30, 0.9f) * OverallChemModifier * 3000;
+                DamageDict[DamageType.HEAT] = GaugeCoefficient * (heBodies + 0.8f) * 60000f * 0.35f / MathF.Sqrt(0.5f) * (2 + MathF.Sqrt(30)) / 16f;
+            }
+            else
+            {
+                DamageDict[DamageType.HE] = 0;
+                DamageDict[DamageType.HEAT] = 0;
+            }
         }
 
         /// <summary>
@@ -811,7 +835,7 @@ namespace ApsCalc
         }
 
         /// <summary>
-        /// Calculates EMP damage per second
+        /// Calculates EMP damage per second for beltfed loaders
         /// </summary>
         public void CalculateEmpDpsBelt()
         {
@@ -830,7 +854,7 @@ namespace ApsCalc
         }
 
         /// <summary>
-        /// Calculates all chemical damage types
+        /// Calculates FlaK damage per second
         /// </summary>
         public void CalculateFlaKDps()
         {
@@ -840,7 +864,7 @@ namespace ApsCalc
         }
 
         /// <summary>
-        /// Calculates all chemical damage types
+        /// Calculates FlaK damage per second for beltfed loaders
         /// </summary>
         public void CalculateFlaKDpsBelt()
         {
@@ -859,7 +883,7 @@ namespace ApsCalc
         }
 
         /// <summary>
-        /// Calculates all chemical damage types
+        /// Calculates Frag damage per second
         /// </summary>
         public void CalculateFragDps()
         {
@@ -869,7 +893,7 @@ namespace ApsCalc
         }
 
         /// <summary>
-        /// Calculates all chemical damage types
+        /// Calculates Frag damage per second for beltfed loaders
         /// </summary>
         public void CalculateFragDpsBelt()
         {
@@ -888,7 +912,7 @@ namespace ApsCalc
         }
 
         /// <summary>
-        /// Calculates all chemical damage types
+        /// Calculates HE damage per second
         /// </summary>
         public void CalculateHEDps()
         {
@@ -898,7 +922,7 @@ namespace ApsCalc
         }
 
         /// <summary>
-        /// Calculates all chemical damage types
+        /// Calculates HE damage per second for beltfed loaders
         /// </summary>
         public void CalculateHEDpsBelt()
         {
@@ -913,6 +937,60 @@ namespace ApsCalc
                 DpsDict[DamageType.HE] = 0;
                 DpsPerVolumeDict[DamageType.HE] = 0;
                 DpsPerCostDict[DamageType.HE] = 0;
+            }
+        }
+
+        /// <summary>
+        /// Calculates HEAT damage per second (HESH scales similarly)
+        /// </summary>
+        public void CalculateHeatDps()
+        {
+            if (HeadModule == Module.ShapedChargeHead)
+            {
+                DpsDict[DamageType.HE] = DamageDict[DamageType.HE] / ReloadTime;
+                DpsPerVolumeDict[DamageType.HE] = DpsDict[DamageType.HE] / VolumePerIntake;
+                DpsPerCostDict[DamageType.HE] = DpsDict[DamageType.HE] / CostPerIntake;
+
+                DpsDict[DamageType.HEAT] = DamageDict[DamageType.HEAT] / ReloadTime;
+                DpsPerVolumeDict[DamageType.HEAT] = DpsDict[DamageType.HEAT] / VolumePerIntake;
+                DpsPerCostDict[DamageType.HEAT] = DpsDict[DamageType.HEAT] / CostPerIntake;
+            }
+            else
+            {
+                DpsDict[DamageType.HE] = 0;
+                DpsPerVolumeDict[DamageType.HE] = 0;
+                DpsPerCostDict[DamageType.HE] = 0;
+
+                DpsDict[DamageType.HEAT] = 0;
+                DpsPerVolumeDict[DamageType.HEAT] = 0;
+                DpsPerCostDict[DamageType.HEAT] = 0;
+            }
+        }
+
+        /// <summary>
+        /// Calculates HEAT damage per second for beltfed loaders
+        /// </summary>
+        public void CalculateHeatDpsBelt()
+        {   
+            if (HeadModule == Module.ShapedChargeHead)
+            {
+                DpsDict[DamageType.HE] = DamageDict[DamageType.HE] / ReloadTimeBelt * UptimeBelt;
+                DpsPerVolumeDict[DamageType.HE] = DpsDict[DamageType.HE] / VolumePerIntakeBelt;
+                DpsPerCostDict[DamageType.HE] = DpsDict[DamageType.HE] / CostPerIntakeBelt;
+
+                DpsDict[DamageType.HEAT] = DamageDict[DamageType.HEAT] / ReloadTimeBelt * UptimeBelt;
+                DpsPerVolumeDict[DamageType.HEAT] = DpsDict[DamageType.HEAT] / VolumePerIntakeBelt;
+                DpsPerCostDict[DamageType.HEAT] = DpsDict[DamageType.HEAT] / CostPerIntakeBelt;
+            }
+            else
+            {
+                DpsDict[DamageType.HE] = 0;
+                DpsPerVolumeDict[DamageType.HE] = 0;
+                DpsPerCostDict[DamageType.HE] = 0;
+
+                DpsDict[DamageType.HEAT] = 0;
+                DpsPerVolumeDict[DamageType.HEAT] = 0;
+                DpsPerCostDict[DamageType.HEAT] = 0;
             }
         }
 
@@ -1045,6 +1123,10 @@ namespace ApsCalc
             {
                 CalculateHEDamage();
             }
+            else if (dt == DamageType.HEAT)
+            {
+                CalculateHeatDamage();
+            }
             else if (dt == DamageType.Disruptor)
             {
                 CalculateShieldReduction();
@@ -1086,6 +1168,10 @@ namespace ApsCalc
             {
                 CalculateHEDps();
             }
+            else if (dt == DamageType.HEAT)
+            {
+                CalculateHeatDps();
+            }
             else if (dt == DamageType.Disruptor)
             {
                 CalculateShieldRps();
@@ -1123,6 +1209,10 @@ namespace ApsCalc
             else if (dt == DamageType.HE)
             {
                 CalculateHEDpsBelt();
+            }
+            else if (dt == DamageType.HEAT)
+            {
+                CalculateHeatDpsBelt();
             }
             else if (dt == DamageType.Disruptor)
             {

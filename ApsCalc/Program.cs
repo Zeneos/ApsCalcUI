@@ -841,6 +841,23 @@ namespace ApsCalc
             }
             else if (damageTypeInput == 5)
             {
+                damageType = DamageType.HEAT;
+                // Overwrite head list with Special head
+                headIndices.Clear();
+                modIndex = 0;
+                foreach (Module head in Module.AllModules)
+                {
+                    if (head == Module.ShapedChargeHead)
+                    {
+                        headIndices.Add(modIndex);
+                        break;
+                    }
+                    modIndex++;
+                }
+                Console.WriteLine("\nHead set to Shaped charge head. Will optimize HEAT damage (HESH damage scales the same way).\n");
+            }
+            else if (damageTypeInput == 6)
+            {
                 damageType = DamageType.Pendepth;
                 Console.WriteLine("\n");
                 armorScheme.GetLayerList();
@@ -977,7 +994,7 @@ namespace ApsCalc
         /// Gathers shell parameters from user
         /// </summary>
         /// <param name="args"></param>
-        static void Main(string[] args)
+        static void Main()
         {
             Console.WriteLine("From the Depths APS Shell Optimizer\nWritten by Ao Kishuba\nhttps://github.com/AoKishuba/ApsCalc");
 
