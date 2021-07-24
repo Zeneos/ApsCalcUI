@@ -104,7 +104,8 @@ namespace ApsCalcUI
         }
 
         /// <summary>
-        /// Updates max module counts in each category according to length and module count limits
+        /// Updates max module counts in each category according to module count limits
+        /// Alse updates length restrictions
         /// </summary>
         private void UpdateModuleCounts()
         {
@@ -129,8 +130,26 @@ namespace ApsCalcUI
             maxCasingCount = GravCompFixedUD.Maximum - GravCompFixedUD.Value;
             MaxGPUD.Maximum = maxCasingCount;
             MaxRGUD.Maximum = maxCasingCount;
-        }
 
+            // Set length restrictions
+            float minLength = (float)MinGaugeUD.Value;
+            if (!NoBaseRB.Checked)
+            {
+                minLength *= 2;
+            }
+            minLength += (float)SolidBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.SolidBody.MaxLength);
+            minLength += (float)SabotBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.SabotBody.MaxLength);
+            minLength += (float)EmpBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.EmpBody.MaxLength);
+            minLength += (float)FlaKBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.FlaKBody.MaxLength);
+            minLength += (float)FragBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.FragBody.MaxLength);
+            minLength += (float)HEBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.HEBody.MaxLength);
+            minLength += (float)FuseFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.FuseBody.MaxLength);
+            minLength += (float)FinFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.FinBody.MaxLength);
+            minLength += (float)GravCompFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.GravCompensator.MaxLength);
+
+            MinLengthUD.Minimum = (decimal)minLength;
+            MaxLengthUD.Minimum = Math.Max(MinLengthUD.Minimum + 1, MinLengthUD.Value + 1);
+        }
 
         /// <summary>
         /// Set max gauge according to barrel count
@@ -230,7 +249,6 @@ namespace ApsCalcUI
         private void MinLengthUD_ValueChanged(object sender, EventArgs e)
         {
             UpdateModuleCounts();
-            MaxLengthUD.Minimum = MinLengthUD.Value;
         }
 
         private void MaxLengthUD_ValueChanged(object sender, EventArgs e)

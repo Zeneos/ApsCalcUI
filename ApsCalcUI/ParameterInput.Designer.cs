@@ -596,7 +596,7 @@ namespace ApsCalcUI
             // 
             this.MinLengthUD.Location = new System.Drawing.Point(550, 134);
             this.MinLengthUD.Maximum = new decimal(new int[] {
-            8000,
+            7999,
             0,
             0,
             0});
@@ -605,7 +605,7 @@ namespace ApsCalcUI
             this.MinLengthUD.TabIndex = 37;
             this.MinLengthUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.MinLengthUD.ThousandsSeparator = true;
-            this.ToolTip.SetToolTip(this.MinLengthUD, "Min shell length, exclusive.\r\nMax 8,000");
+            this.ToolTip.SetToolTip(this.MinLengthUD, "Min shell length, exclusive.\r\nMax 7,999");
             this.MinLengthUD.ValueChanged += new System.EventHandler(this.MinLengthUD_ValueChanged);
             // 
             // BarrelCountLabel
