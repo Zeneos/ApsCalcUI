@@ -62,9 +62,11 @@ max rail draw, determined by the size of the shell (gauge and number of
 non-GP components), and the optimizer will use that limit or this one,
 whichever is lower for a particular shell.
 
-Max Shell Length: maximum length of the shell. Must be greater than the
-smallest possible shell - ie, one with the minimum gauge, made up only of
-fixed modules (the form automatically enforces this restriction)
+Min Shell Length: minimum length of the shell, exclusive.
+
+Max Shell Length: maximum length of the shell, inclusive. Must be greater
+than the smallest possible shell - ie, one with the minimum gauge, made up
+only of fixed modules (the form automatically enforces this restriction).
 
 Minimum Velocity: minimum shell velocity. Note that a high minimum velocity
 may be impossible to meet within the casing and rail draw restrictions.
