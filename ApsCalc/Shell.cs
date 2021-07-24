@@ -437,10 +437,20 @@ namespace ApsCalc
                 LoaderVolume = 4f;
                 LoaderCost = 360f;
             }
+            else if (TotalLength <= 5000f)
+            {
+                LoaderVolume = 5f;
+                LoaderCost = 390f;
+            }
             else if (TotalLength <= 6000f)
             {
                 LoaderVolume = 6f;
                 LoaderCost = 420f;
+            }
+            else if (TotalLength <= 7000f)
+            {
+                LoaderVolume = 7f;
+                LoaderCost = 450f;
             }
             else if (TotalLength <= 8000f)
             {
