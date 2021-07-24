@@ -63,6 +63,7 @@ namespace ApsCalcUI
             this.RunButton = new System.Windows.Forms.Button();
             this.VariableModulesLabel = new System.Windows.Forms.Label();
             this.LabelsCB = new System.Windows.Forms.CheckBox();
+            this.MinLengthUD = new System.Windows.Forms.NumericUpDown();
             this.BarrelCountLabel = new System.Windows.Forms.Label();
             this.MinGaugeLabel = new System.Windows.Forms.Label();
             this.MaxGaugeLabel = new System.Windows.Forms.Label();
@@ -105,6 +106,7 @@ namespace ApsCalcUI
             this.QueueErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.RunErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.TestsInQueueLabel = new System.Windows.Forms.Label();
+            this.MinLengthLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).BeginInit();
@@ -123,6 +125,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.MaxLengthUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MinVelocityUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MinRangeUD)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MinLengthUD)).BeginInit();
             this.BasePanel.SuspendLayout();
             this.FixedModulesPanel.SuspendLayout();
             this.VariableModulesPanel.SuspendLayout();
@@ -493,7 +496,7 @@ namespace ApsCalcUI
             // 
             // MaxLengthUD
             // 
-            this.MaxLengthUD.Location = new System.Drawing.Point(550, 134);
+            this.MaxLengthUD.Location = new System.Drawing.Point(550, 159);
             this.MaxLengthUD.Maximum = new decimal(new int[] {
             8000,
             0,
@@ -504,7 +507,7 @@ namespace ApsCalcUI
             this.MaxLengthUD.TabIndex = 20;
             this.MaxLengthUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.MaxLengthUD.ThousandsSeparator = true;
-            this.ToolTip.SetToolTip(this.MaxLengthUD, "Max 8,000");
+            this.ToolTip.SetToolTip(this.MaxLengthUD, "Max shell length, inclusive.\r\nMax 8,000");
             this.MaxLengthUD.Value = new decimal(new int[] {
             8000,
             0,
@@ -514,7 +517,7 @@ namespace ApsCalcUI
             // 
             // MinVelocityUD
             // 
-            this.MinVelocityUD.Location = new System.Drawing.Point(550, 159);
+            this.MinVelocityUD.Location = new System.Drawing.Point(550, 184);
             this.MinVelocityUD.Maximum = new decimal(new int[] {
             5000,
             0,
@@ -529,7 +532,7 @@ namespace ApsCalcUI
             // 
             // MinRangeUD
             // 
-            this.MinRangeUD.Location = new System.Drawing.Point(550, 184);
+            this.MinRangeUD.Location = new System.Drawing.Point(550, 209);
             this.MinRangeUD.Maximum = new decimal(new int[] {
             2000,
             0,
@@ -588,6 +591,22 @@ namespace ApsCalcUI
         "o read the results at a glance, but\r\nare inconvenient if the data will be copied" +
         " to a spreadsheet.");
             this.LabelsCB.UseVisualStyleBackColor = true;
+            // 
+            // MinLengthUD
+            // 
+            this.MinLengthUD.Location = new System.Drawing.Point(550, 134);
+            this.MinLengthUD.Maximum = new decimal(new int[] {
+            8000,
+            0,
+            0,
+            0});
+            this.MinLengthUD.Name = "MinLengthUD";
+            this.MinLengthUD.Size = new System.Drawing.Size(65, 23);
+            this.MinLengthUD.TabIndex = 37;
+            this.MinLengthUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.MinLengthUD.ThousandsSeparator = true;
+            this.ToolTip.SetToolTip(this.MinLengthUD, "Min shell length, exclusive.\r\nMax 8,000");
+            this.MinLengthUD.ValueChanged += new System.EventHandler(this.MinLengthUD_ValueChanged);
             // 
             // BarrelCountLabel
             // 
@@ -852,7 +871,7 @@ namespace ApsCalcUI
             // MaxLengthLabel
             // 
             this.MaxLengthLabel.AutoSize = true;
-            this.MaxLengthLabel.Location = new System.Drawing.Point(446, 138);
+            this.MaxLengthLabel.Location = new System.Drawing.Point(446, 163);
             this.MaxLengthLabel.Name = "MaxLengthLabel";
             this.MaxLengthLabel.Size = new System.Drawing.Size(103, 15);
             this.MaxLengthLabel.TabIndex = 22;
@@ -861,7 +880,7 @@ namespace ApsCalcUI
             // MinVelocityLabel
             // 
             this.MinVelocityLabel.AutoSize = true;
-            this.MinVelocityLabel.Location = new System.Drawing.Point(446, 163);
+            this.MinVelocityLabel.Location = new System.Drawing.Point(446, 188);
             this.MinVelocityLabel.Name = "MinVelocityLabel";
             this.MinVelocityLabel.Size = new System.Drawing.Size(104, 15);
             this.MinVelocityLabel.TabIndex = 24;
@@ -870,7 +889,7 @@ namespace ApsCalcUI
             // MinRangeLabel
             // 
             this.MinRangeLabel.AutoSize = true;
-            this.MinRangeLabel.Location = new System.Drawing.Point(446, 188);
+            this.MinRangeLabel.Location = new System.Drawing.Point(446, 213);
             this.MinRangeLabel.Name = "MinRangeLabel";
             this.MinRangeLabel.Size = new System.Drawing.Size(106, 15);
             this.MinRangeLabel.TabIndex = 26;
@@ -986,11 +1005,22 @@ namespace ApsCalcUI
             this.TestsInQueueLabel.TabIndex = 35;
             this.TestsInQueueLabel.Text = "Tests in Queue: 0";
             // 
+            // MinLengthLabel
+            // 
+            this.MinLengthLabel.AutoSize = true;
+            this.MinLengthLabel.Location = new System.Drawing.Point(446, 138);
+            this.MinLengthLabel.Name = "MinLengthLabel";
+            this.MinLengthLabel.Size = new System.Drawing.Size(101, 15);
+            this.MinLengthLabel.TabIndex = 36;
+            this.MinLengthLabel.Text = "Min Length (mm)";
+            // 
             // ParameterInput
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 583);
+            this.Controls.Add(this.MinLengthUD);
+            this.Controls.Add(this.MinLengthLabel);
             this.Controls.Add(this.TestsInQueueLabel);
             this.Controls.Add(this.LabelsCB);
             this.Controls.Add(this.RunButton);
@@ -1048,6 +1078,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.MaxLengthUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MinVelocityUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MinRangeUD)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MinLengthUD)).EndInit();
             this.BasePanel.ResumeLayout(false);
             this.BasePanel.PerformLayout();
             this.FixedModulesPanel.ResumeLayout(false);
@@ -1140,6 +1171,8 @@ namespace ApsCalcUI
         private System.Windows.Forms.ErrorProvider RunErrorProvider;
         private System.Windows.Forms.CheckBox LabelsCB;
         private System.Windows.Forms.Label TestsInQueueLabel;
+        private System.Windows.Forms.NumericUpDown MinLengthUD;
+        private System.Windows.Forms.Label MinLengthLabel;
     }
 }
 

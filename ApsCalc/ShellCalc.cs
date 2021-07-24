@@ -51,7 +51,8 @@ namespace ApsCalc
         /// <param name="variableModuleIndices">Module indices of modules to be used in varying numbers in testing</param>
         /// <param name="maxGPInput">Max desired number of gunpowder casings</param>
         /// <param name="maxRGInput">Max desired number of railgun casings</param>
-        /// <param name="maxShellLengthInput">Max desired shell length in mm</param>
+        /// <param name="minShellLengthInput">Min desired shell length in mm, exclusive</param>
+        /// <param name="maxShellLengthInput">Max desired shell length in mm, inclusive</param>
         /// <param name="maxDrawInput">Max desired rail draw</param>
         /// <param name="maxRecoilInput">Max desired recoil, including rail and GP</param>
         /// <param name="minVelocityInput">Min desired velocity</param>
@@ -72,6 +73,7 @@ namespace ApsCalc
             int[] variableModuleIndices,
             float maxGPInput,
             float maxRGInput,
+            float minShellLengthInput,
             float maxShellLengthInput,
             float maxDrawInput,
             float maxRecoilInput,
@@ -94,6 +96,7 @@ namespace ApsCalc
             VariableModuleIndices = variableModuleIndices;
             MaxGPInput = maxGPInput;
             MaxRGInput = maxRGInput;
+            MinShellLength = minShellLengthInput;
             MaxShellLength = maxShellLengthInput;
             MaxDrawInput = maxDrawInput;
             MaxRecoilInput = maxRecoilInput;
@@ -117,6 +120,7 @@ namespace ApsCalc
         public int[] VariableModuleIndices { get; }
         public float MaxGPInput { get; }
         public float MaxRGInput { get; }
+        public float MinShellLength { get; }
         public float MaxShellLength { get; }
         public float MaxDrawInput { get; }
         public float MaxRecoilInput { get; }
@@ -131,13 +135,15 @@ namespace ApsCalc
 
 
         // Store top-DPS shells by loader length
-        public Shell Top1000 { get; set; } = new Shell();
-        public Shell TopBelt { get; set; } = new Shell();
-        public Shell Top2000 { get; set; } = new Shell();
-        public Shell Top3000 { get; set; } = new Shell();
-        public Shell Top4000 { get; set; } = new Shell();
-        public Shell Top6000 { get; set; } = new Shell();
-        public Shell Top8000 { get; set; } = new Shell();
+        public Shell TopBelt { get; set; } = new();
+        public Shell Top1000 { get; set; } = new();
+        public Shell Top2000 { get; set; } = new();
+        public Shell Top3000 { get; set; } = new();
+        public Shell Top4000 { get; set; } = new();
+        public Shell Top5000 { get; set; } = new();
+        public Shell Top6000 { get; set; } = new();
+        public Shell Top7000 { get; set; } = new();
+        public Shell Top8000 { get; set; } = new();
 
         public Dictionary<string, Shell> TopDpsShells { get; set; } = new Dictionary<string, Shell>();
         public List<Shell> TopShellsLocal { get; set; } = new List<Shell>();
@@ -337,7 +343,7 @@ namespace ApsCalc
 
                 shellUnderTesting.CalculateLengths();
 
-                if (shellUnderTesting.TotalLength <= MaxShellLength)
+                if (shellUnderTesting.TotalLength > MinShellLength && shellUnderTesting.TotalLength <= MaxShellLength)
                 {
                     shellUnderTesting.CalculateVelocityModifier();
                     shellUnderTesting.CalculateRecoil();
@@ -532,11 +538,25 @@ namespace ApsCalc
                                     Top4000 = shellUnderTesting;
                                 }
                             }
+                            else if (shellUnderTesting.TotalLength <= 5000f)
+                            {
+                                if (shellUnderTesting.DpsPerVolumeDict[DamageType] > Top5000.DpsPerVolumeDict[DamageType])
+                                {
+                                    Top5000 = shellUnderTesting;
+                                }
+                            }
                             else if (shellUnderTesting.TotalLength <= 6000f)
                             {
                                 if (shellUnderTesting.DpsPerVolumeDict[DamageType] > Top6000.DpsPerVolumeDict[DamageType])
                                 {
                                     Top6000 = shellUnderTesting;
+                                }
+                            }
+                            else if (shellUnderTesting.TotalLength <= 7000f)
+                            {
+                                if (shellUnderTesting.DpsPerVolumeDict[DamageType] > Top7000.DpsPerVolumeDict[DamageType])
+                                {
+                                    Top7000 = shellUnderTesting;
                                 }
                             }
                             else if (shellUnderTesting.TotalLength <= 8000f)
@@ -577,11 +597,25 @@ namespace ApsCalc
                                     Top4000 = shellUnderTesting;
                                 }
                             }
+                            else if (shellUnderTesting.TotalLength <= 5000f)
+                            {
+                                if (shellUnderTesting.DpsPerCostDict[DamageType] > Top5000.DpsPerCostDict[DamageType])
+                                {
+                                    Top5000 = shellUnderTesting;
+                                }
+                            }
                             else if (shellUnderTesting.TotalLength <= 6000f)
                             {
                                 if (shellUnderTesting.DpsPerCostDict[DamageType] > Top6000.DpsPerCostDict[DamageType])
                                 {
                                     Top6000 = shellUnderTesting;
+                                }
+                            }
+                            else if (shellUnderTesting.TotalLength <= 7000f)
+                            {
+                                if (shellUnderTesting.DpsPerCostDict[DamageType] > Top7000.DpsPerCostDict[DamageType])
+                                {
+                                    Top7000 = shellUnderTesting;
                                 }
                             }
                             else if (shellUnderTesting.TotalLength <= 8000f)
@@ -815,9 +849,19 @@ namespace ApsCalc
                 TopShellsLocal.Add(Top4000);
             }
 
+            if (Top5000.DpsDict[DamageType] > 0)
+            {
+                TopShellsLocal.Add(Top5000);
+            }
+
             if (Top6000.DpsDict[DamageType] > 0)
             {
                 TopShellsLocal.Add(Top6000);
+            }
+
+            if (Top7000.DpsDict[DamageType] > 0)
+            {
+                TopShellsLocal.Add(Top7000);
             }
 
             if (Top8000.DpsDict[DamageType] > 0)
@@ -858,9 +902,19 @@ namespace ApsCalc
                 TopDpsShells.Add("4 m", Top4000);
             }
 
+            if (Top5000.DpsDict[DamageType] > 0)
+            {
+                TopDpsShells.Add("5 m", Top5000);
+            }
+
             if (Top6000.DpsDict[DamageType] > 0)
             {
                 TopDpsShells.Add("6 m", Top6000);
+            }
+
+            if (Top7000.DpsDict[DamageType] > 0)
+            {
+                TopDpsShells.Add("7 m", Top7000);
             }
 
             if (Top8000.DpsDict[DamageType] > 0)
@@ -915,11 +969,25 @@ namespace ApsCalc
                             Top4000 = rawShell;
                         }
                     }
+                    else if (rawShell.TotalLength <= 5000f)
+                    {
+                        if (rawShell.DpsPerVolumeDict[DamageType] > Top5000.DpsPerVolumeDict[DamageType])
+                        {
+                            Top5000 = rawShell;
+                        }
+                    }
                     else if (rawShell.TotalLength <= 6000f)
                     {
                         if (rawShell.DpsPerVolumeDict[DamageType] > Top6000.DpsPerVolumeDict[DamageType])
                         {
                             Top6000 = rawShell;
+                        }
+                    }
+                    else if (rawShell.TotalLength <= 7000f)
+                    {
+                        if (rawShell.DpsPerVolumeDict[DamageType] > Top7000.DpsPerVolumeDict[DamageType])
+                        {
+                            Top7000 = rawShell;
                         }
                     }
                     else if (rawShell.TotalLength <= 8000f)
@@ -967,11 +1035,25 @@ namespace ApsCalc
                             Top4000 = rawShell;
                         }
                     }
+                    else if (rawShell.TotalLength <= 5000f)
+                    {
+                        if (rawShell.DpsPerCostDict[DamageType] > Top5000.DpsPerCostDict[DamageType])
+                        {
+                            Top5000 = rawShell;
+                        }
+                    }
                     else if (rawShell.TotalLength <= 6000f)
                     {
                         if (rawShell.DpsPerCostDict[DamageType] > Top6000.DpsPerCostDict[DamageType])
                         {
                             Top6000 = rawShell;
+                        }
+                    }
+                    else if (rawShell.TotalLength <= 7000f)
+                    {
+                        if (rawShell.DpsPerCostDict[DamageType] > Top7000.DpsPerCostDict[DamageType])
+                        {
+                            Top7000 = rawShell;
                         }
                     }
                     else if (rawShell.TotalLength <= 8000f)
@@ -1140,6 +1222,7 @@ namespace ApsCalc
             Console.WriteLine("Max RG casings: " + MaxRGInput);
             Console.WriteLine("Max draw: " + MaxDrawInput);
             Console.WriteLine("Max recoil: " + MaxRecoilInput);
+            Console.WriteLine("Min length: " + MinShellLength);
             Console.WriteLine("Max length: " + MaxShellLength);
             Console.WriteLine("Min velocity: " + MinVelocityInput);
             Console.WriteLine("Min effective range: " + MinEffectiveRangeInput);
@@ -1346,6 +1429,7 @@ namespace ApsCalc
             writer.WriteLine("Max RG casings: " + MaxRGInput);
             writer.WriteLine("Max draw: " + MaxDrawInput);
             writer.WriteLine("Max recoil: " + MaxRecoilInput);
+            writer.WriteLine("Min length: " + MinShellLength);
             writer.WriteLine("Max length: " + MaxShellLength);
             writer.WriteLine("Min velocity: " + MinVelocityInput);
             writer.WriteLine("Min effective range: " + MinEffectiveRangeInput);

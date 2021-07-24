@@ -20,6 +20,7 @@ namespace ApsCalc
         public int[] VariableModuleIndices;
         public float MaxGPCasingCount;
         public float MaxRGCasingCount;
+        public float MinLength;
         public float MaxLength;
         public float MaxDraw;
         public float MaxRecoil;
@@ -612,33 +613,70 @@ namespace ApsCalc
             float maxRecoil = maxRecoilInput;
 
 
+            // Get minimum shell length
+            float shellLengthLowerBound = 0;
+            float shellLengthUpperBound = 8000;
+            int minShellLengthInput;
+            Console.WriteLine("\nEnter minimum shell length in mm from " + shellLengthLowerBound + " thru " + shellLengthUpperBound + ".");
+            while (true)
+            {
+                input = Console.ReadLine();
+                if (int.TryParse(input, out minShellLengthInput))
+                {
+                    if (minShellLengthInput < shellLengthLowerBound || minShellLengthInput > shellLengthUpperBound)
+                    {
+                        Console.WriteLine("\nMIN SHELL LENGTH RANGE ERROR: Enter an integer from "
+                            + shellLengthLowerBound
+                            + " thru "
+                            + shellLengthUpperBound
+                            + ".");
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nWill test shells up from " + minShellLengthInput + " mm.\n");
+                        break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\nMIN SHELL LENGTH PARSE ERROR: Enter an integer from "
+                        + shellLengthLowerBound
+                        + " thru "
+                        + shellLengthUpperBound
+                        + ".");
+                }
+            }
+            float minLength = minShellLengthInput;
+
             // Calculate minimum shell length
-            float minShellLength = minGaugeInput;
+            float maxShellLengthLowerBound = minGaugeInput;
             modIndex = 0;
             foreach (float modCount in fixedModulecounts)
             {
-                minShellLength += MathF.Min(minGaugeInput, Module.AllModules[modIndex].MaxLength) * modCount;
+                maxShellLengthLowerBound += MathF.Min(minGaugeInput, Module.AllModules[modIndex].MaxLength) * modCount;
                 modIndex++;
             }
-
-
             if (baseModule != null)
             {
-                minShellLength += MathF.Min(minGaugeInput, baseModule.MaxLength);
+                maxShellLengthLowerBound += MathF.Min(minGaugeInput, baseModule.MaxLength);
             }
-
+            maxShellLengthLowerBound = Math.Max(maxShellLengthLowerBound, shellLengthLowerBound);
 
             // Get maximum shell length
             int maxShellLengthInput;
-            Console.WriteLine("\nEnter maximum shell length in mm from " + minShellLength + " thru 8 000.");
+            Console.WriteLine("\nEnter maximum shell length in mm from " + maxShellLengthLowerBound + " thru " + shellLengthUpperBound + ".");
             while (true)
             {
                 input = Console.ReadLine();
                 if (int.TryParse(input, out maxShellLengthInput))
                 {
-                    if (maxShellLengthInput < minShellLength || maxShellLengthInput > 8000)
+                    if (maxShellLengthInput < maxShellLengthLowerBound || maxShellLengthInput > 8000)
                     {
-                        Console.WriteLine("\nMAX SHELL LENGTH RANGE ERROR: Enter an integer from " + minShellLength + " thru 8 000.");
+                        Console.WriteLine("\nMAX SHELL LENGTH RANGE ERROR: Enter an integer from "
+                            + maxShellLengthLowerBound
+                            + " thru "
+                            + shellLengthUpperBound
+                            + ".");
                     }
                     else
                     {
@@ -648,7 +686,11 @@ namespace ApsCalc
                 }
                 else
                 {
-                    Console.WriteLine("\nMAX SHELL LENGTH PARSE ERROR: Enter an integer from " + minShellLength + " thru 8 000.");
+                    Console.WriteLine("\nMAX SHELL LENGTH PARSE ERROR: Enter an integer from "
+                        + maxShellLengthLowerBound
+                        + " thru "
+                        + shellLengthUpperBound
+                        + ".");
                 }
             }
             float maxLength = maxShellLengthInput;
@@ -976,6 +1018,7 @@ namespace ApsCalc
             tP.MaxRGCasingCount = maxRGCasingCount;
             tP.MaxDraw = maxDraw;
             tP.MaxRecoil = maxRecoil;
+            tP.MinLength = minLength;
             tP.MaxLength = maxLength;
             tP.MinVelocity = minVelocity;
             tP.MinEffectiverange = minEffectiveRange;
@@ -1050,6 +1093,7 @@ namespace ApsCalc
                                 tP.VariableModuleIndices,
                                 tP.MaxGPCasingCount,
                                 tP.MaxRGCasingCount,
+                                tP.MinLength,
                                 tP.MaxLength,
                                 tP.MaxDraw,
                                 tP.MaxRecoil,
@@ -1083,6 +1127,7 @@ namespace ApsCalc
                                 tP.VariableModuleIndices,
                                 tP.MaxGPCasingCount,
                                 tP.MaxRGCasingCount,
+                                tP.MinLength,
                                 tP.MaxLength,
                                 tP.MaxDraw,
                                 tP.MaxRecoil,
@@ -1117,6 +1162,7 @@ namespace ApsCalc
                             tP.VariableModuleIndices,
                             tP.MaxGPCasingCount,
                             tP.MaxRGCasingCount,
+                            tP.MinLength,
                             tP.MaxLength,
                             tP.MaxDraw,
                             tP.MaxRecoil,
@@ -1149,6 +1195,7 @@ namespace ApsCalc
                             tP.VariableModuleIndices,
                             tP.MaxGPCasingCount,
                             tP.MaxRGCasingCount,
+                            tP.MinLength,
                             tP.MaxLength,
                             tP.MaxDraw,
                             tP.MaxRecoil,

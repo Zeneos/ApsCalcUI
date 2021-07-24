@@ -227,6 +227,12 @@ namespace ApsCalcUI
             UpdateModuleCounts();
         }
 
+        private void MinLengthUD_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateModuleCounts();
+            MaxLengthUD.Minimum = MinLengthUD.Value;
+        }
+
         private void MaxLengthUD_ValueChanged(object sender, EventArgs e)
         {
             UpdateModuleCounts();
@@ -412,6 +418,7 @@ namespace ApsCalcUI
 
                 testParameters.MaxGPCasingCount = (float)MaxGPUD.Value;
                 testParameters.MaxRGCasingCount = (float)MaxRGUD.Value;
+                testParameters.MinLength = (float)MinLengthUD.Value;
                 testParameters.MaxLength = (float)MaxLengthUD.Value;
                 testParameters.MaxDraw = (float)MaxDrawUD.Value;
                 testParameters.MaxRecoil = (float)MaxRecoilUD.Value;
@@ -537,6 +544,7 @@ namespace ApsCalcUI
                                     testParameters.VariableModuleIndices,
                                     testParameters.MaxGPCasingCount,
                                     testParameters.MaxRGCasingCount,
+                                    testParameters.MinLength,
                                     testParameters.MaxLength,
                                     testParameters.MaxDraw,
                                     testParameters.MaxRecoil,
@@ -570,6 +578,7 @@ namespace ApsCalcUI
                                     testParameters.VariableModuleIndices,
                                     testParameters.MaxGPCasingCount,
                                     testParameters.MaxRGCasingCount,
+                                    testParameters.MinLength,
                                     testParameters.MaxLength,
                                     testParameters.MaxDraw,
                                     testParameters.MaxRecoil,
@@ -604,6 +613,7 @@ namespace ApsCalcUI
                                 testParameters.VariableModuleIndices,
                                 testParameters.MaxGPCasingCount,
                                 testParameters.MaxRGCasingCount,
+                                testParameters.MinLength,
                                 testParameters.MaxLength,
                                 testParameters.MaxDraw,
                                 testParameters.MaxRecoil,
@@ -636,6 +646,7 @@ namespace ApsCalcUI
                                 testParameters.VariableModuleIndices,
                                 testParameters.MaxGPCasingCount,
                                 testParameters.MaxRGCasingCount,
+                                testParameters.MinLength,
                                 testParameters.MaxLength,
                                 testParameters.MaxDraw,
                                 testParameters.MaxRecoil,
