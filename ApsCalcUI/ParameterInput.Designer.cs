@@ -587,9 +587,9 @@ namespace ApsCalcUI
             this.LabelsCB.Size = new System.Drawing.Size(111, 19);
             this.LabelsCB.TabIndex = 30;
             this.LabelsCB.Text = "Label Every Row";
-            this.ToolTip.SetToolTip(this.LabelsCB, "Check to include labels on every row of the output file.\r\nLabels make it easier t" +
-        "o read the results at a glance, but\r\nare inconvenient if the data will be copied" +
-        " to a spreadsheet.");
+            this.ToolTip.SetToolTip(this.LabelsCB, "Check to include labels on every row of the output file.\r\nLabels make the results" +
+        " easier to read at a glance, but\r\nare inconvenient if the data will be copied to" +
+        " a spreadsheet.");
             this.LabelsCB.UseVisualStyleBackColor = true;
             // 
             // MinLengthUD

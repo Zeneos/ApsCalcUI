@@ -1196,6 +1196,10 @@ namespace ApsCalc
             {
                 Console.WriteLine("Base: " + BaseModule.Name);
             }
+            else
+            {
+                Console.WriteLine("No special base module");
+            }
 
             Console.WriteLine("Fixed module(s): ");
 
@@ -1402,6 +1406,10 @@ namespace ApsCalc
             if (BaseModule != null)
             {
                 writer.WriteLine("Base: " + BaseModule.Name);
+            }
+            else
+            {
+                writer.WriteLine("No special base module");
             }
 
             writer.WriteLine("Fixed module(s): ");
