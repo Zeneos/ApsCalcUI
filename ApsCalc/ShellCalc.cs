@@ -1372,12 +1372,10 @@ namespace ApsCalc
 
         {
             // Create filename from current time
-            string fileName = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-ff");
+            string fileName = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-ff") + ".txt";
 
             using var writer = new StreamWriter(fileName, append: true);
             FileStream fs = (FileStream)writer.BaseStream;
-            Console.WriteLine("Writing results to filename: " + fs.Name);
-
 
             writer.WriteLine("\nTest Parameters");
             writer.WriteLine(BarrelCount + " Barrels");
