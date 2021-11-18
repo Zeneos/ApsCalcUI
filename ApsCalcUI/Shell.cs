@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using PenCalc;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ApsCalc
+namespace ApsCalcUI
 {
     public class Shell
     {
@@ -632,7 +635,7 @@ namespace ApsCalc
 
             if (HeadModule == Module.HollowPoint)
             {
-                DamageDict[DamageType.Kinetic] = 
+                DamageDict[DamageType.Kinetic] =
                     GaugeCoefficient
                     * EffectiveProjectileModuleCount
                     * Velocity
@@ -641,7 +644,7 @@ namespace ApsCalc
             }
             else
             {
-                DamageDict[DamageType.Kinetic] = 
+                DamageDict[DamageType.Kinetic] =
                     MathF.Pow(500 / MathF.Max(Gauge, 100f), 0.15f)
                     * GaugeCoefficient
                     * EffectiveProjectileModuleCount
@@ -981,7 +984,7 @@ namespace ApsCalc
         /// Calculates HEAT damage per second for beltfed loaders
         /// </summary>
         public void CalculateHeatDpsBelt()
-        {   
+        {
             if (HeadModule == Module.ShapedChargeHead)
             {
                 DpsDict[DamageType.HE] = DamageDict[DamageType.HE] / ReloadTimeBelt * UptimeBelt;

@@ -3,9 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PenCalc;
 
 namespace ApsCalcUI
 {
+    public struct TestParameters
+    {
+        public int BarrelCount;
+        public int MinGauge;
+        public int MaxGauge;
+        public List<int> HeadIndices;
+        public Module BaseModule;
+        public float[] FixedModulecounts;
+        public float MinModulecount;
+        public int[] VariableModuleIndices;
+        public float MaxGPCasingCount;
+        public float MaxRGCasingCount;
+        public float MinLength;
+        public float MaxLength;
+        public float MaxDraw;
+        public float MaxRecoil;
+        public float MinVelocity;
+        public float MinEffectiverange;
+        public List<float> TargetACList;
+        public DamageType DamageType;
+        public Scheme ArmorScheme;
+        public int TestType;
+        public bool Labels;
+        public bool WriteToFile;
+    }
+
     static class Program
     {
         /// <summary>

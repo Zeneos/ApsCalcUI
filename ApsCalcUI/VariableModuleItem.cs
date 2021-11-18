@@ -17,14 +17,14 @@ namespace ApsCalcUI
         /// </summary>
         public static IEnumerable<VariableModuleItem> GenerateBodyList()
         {
-            for (int index = 0; index < ApsCalc.Module.AllModules.Length; index++)
+            for (int index = 0; index < Module.AllModules.Length; index++)
             {
-                if (ApsCalc.Module.AllModules[index].ModulePosition == ApsCalc.Module.Position.Middle)
+                if (Module.AllModules[index].ModulePosition == Module.Position.Middle)
                 {
                     VariableModuleItem varMod = new()
                     {
                         Index = index,
-                        Name = ApsCalc.Module.AllModules[index].Name
+                        Name = Module.AllModules[index].Name
                     };
 
                     yield return varMod;

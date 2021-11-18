@@ -1,6 +1,4 @@
-﻿using ApsCalc;
-
-namespace ApsCalcUI
+﻿namespace ApsCalcUI
 {
     class DamageTypeItem
     {

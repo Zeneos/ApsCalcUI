@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
-using System.IO;
 using System.Linq;
 using PenCalc;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ApsCalc
+namespace ApsCalcUI
 {
     public struct ModuleCount
     {
@@ -1139,7 +1141,7 @@ namespace ApsCalc
             // Check non-damage body mods for inclusion
             for (int index = 6; index < Module.AllModules.Length; index++)
             {
-                if (Module.AllModules[index].ModulePosition == Module.Position.Middle && 
+                if (Module.AllModules[index].ModulePosition == Module.Position.Middle &&
                     (FixedModuleCounts[index] > 0 || VariableModuleIndices.Contains(index)))
                 {
                     modsToShow.Add(index);

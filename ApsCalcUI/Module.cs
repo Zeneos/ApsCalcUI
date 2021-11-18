@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace ApsCalc
+namespace ApsCalcUI
 {
     public class Module
     {
@@ -71,7 +73,7 @@ namespace ApsCalc
         public static Module Supercav { get; } = new Module("Supercavitation base", 1.0f, 1.0f, 1.0f, 0.75f, 1.0f, 100, Position.Base);
         public static Module Tracer { get; } = new Module("Visible tracer", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 100, Position.Base);
         public static Module GravRam { get; } = new Module("Graviton ram", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 500, Position.Base);
-        
+
         // List modules for reference
         public static Module[] AllModules { get; } =
         {
