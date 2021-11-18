@@ -513,7 +513,8 @@ namespace ApsCalcUI
                 {
                     testParameters.Labels = false;
                 }
-                testParameters.WriteToFile = true;
+
+                testParameters.TestInterval = (int)TestIntervalUD.Value;
 
                 parameterList.Add(testParameters);
             }
@@ -573,7 +574,7 @@ namespace ApsCalcUI
                                     testParameters.ArmorScheme,
                                     testParameters.TestType,
                                     testParameters.Labels,
-                                    testParameters.WriteToFile
+                                    testParameters.TestInterval
                                     );
 
 
@@ -607,7 +608,7 @@ namespace ApsCalcUI
                                     testParameters.ArmorScheme,
                                     testParameters.TestType,
                                     testParameters.Labels,
-                                    testParameters.WriteToFile
+                                    testParameters.TestInterval
                                 );
 
                             calcFinal.FindTopShellsInList(shellBag);
@@ -642,7 +643,7 @@ namespace ApsCalcUI
                                 testParameters.ArmorScheme,
                                 testParameters.TestType,
                                 testParameters.Labels,
-                                testParameters.WriteToFile
+                                testParameters.TestInterval
                                 );
 
                             calcLocal.ShellTest();
@@ -675,7 +676,7 @@ namespace ApsCalcUI
                                 testParameters.ArmorScheme,
                                 testParameters.TestType,
                                 testParameters.Labels,
-                                testParameters.WriteToFile
+                                testParameters.TestInterval
                             );
 
                         calcFinal.FindTopShellsInList(shellBag);
@@ -696,6 +697,11 @@ namespace ApsCalcUI
                 RunButton.Enabled = true;
                 RunButton.Text = "Run Queued Tests";
             }
+        }
+
+        private void TestIntervalUD_ValueChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

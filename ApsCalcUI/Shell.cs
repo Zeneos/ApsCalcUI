@@ -141,6 +141,10 @@ namespace ApsCalcUI
         public float ChargerVolumeBelt { get; set; }
         public float CoolerVolume { get; set; }
         public float CoolerVolumeBelt { get; set; }
+        public float AmmoCrateVolume { get; set; }
+        public float AmmoCrateVolumeBelt { get; set; }
+        public float MatStorageVolume { get; set; }
+        public float MatStorageVolumeBelt { get; set; }
         public float VolumePerIntake { get; set; }
         public float VolumePerIntakeBelt { get; set; }
 
@@ -154,6 +158,13 @@ namespace ApsCalcUI
         public float ChargerCostBelt { get; set; }
         public float CoolerCost { get; set; }
         public float CoolerCostBelt { get; set; }
+        public float CostPerShell { get; set; } // Material cost for one shell
+        public float ShellCost { get; set; } // Material cost for all shells
+        public float ShellCostBelt { get; set; }
+        public float AmmoCrateCost { get; set; }
+        public float AmmoCrateCostBelt { get; set; }
+        public float MatStorageCost { get; set; }
+        public float MatStorageCostBelt { get; set; }
         public float CostPerIntake { get; set; }
         public float CostPerIntakeBelt { get; set; }
 
@@ -570,19 +581,65 @@ namespace ApsCalcUI
             }
         }
 
+
+        /// <summary>
+        /// Calculates all volumes and costs dependent on testing interval
+        /// </summary>
+        /// <param name="testInterval">Test interval in minutes</param>
+        public void CalculateVariableVolumesAndCosts(int testInterval)
+        {
+            int testIntervalSeconds = testInterval * 60;
+            // Calculate cost of shell itself
+            CostPerShell = (ProjectileLength + (GPCasingCount + RGCasingCount) / 4)
+                * 5f
+                * GaugeCoefficient
+                / Gauge;
+
+            ShellCost = CostPerShell * testIntervalSeconds / ReloadTime;
+
+            if (TotalLength <= 1000f)
+            {
+                ShellCostBelt = CostPerShell * testIntervalSeconds / ReloadTimeBelt * UptimeBelt;
+            }
+
+            // Calculate volume and cost of ammo crates
+            // 1/50 m^3 and 1/5 material cost per material per minute
+            float shellCostPerMinute = CostPerShell / ReloadTime * 60f;
+            AmmoCrateVolume = shellCostPerMinute / 50f;
+            AmmoCrateCost = shellCostPerMinute / 5f;
+
+            if (TotalLength <= 1000f)
+            {
+                float shellCostPerMinuteBelt = CostPerShell / ReloadTimeBelt * UptimeBelt * 60f;
+                AmmoCrateVolumeBelt = shellCostPerMinuteBelt / 50f;
+                AmmoCrateCostBelt = shellCostPerMinuteBelt / 5f;
+            }
+
+            // Calculate volume and cost of material storage
+            // Generic crates: 1/500 m^3 and 1/250 material cost per material
+            MatStorageVolume = ShellCost / 500f;
+            MatStorageCost = ShellCost / 250f;
+
+            if (TotalLength <= 1000f)
+            {
+                MatStorageVolumeBelt = ShellCostBelt / 500f;
+                MatStorageCostBelt = ShellCostBelt / 250f;
+            }
+        }
+
         /// <summary>
         /// Calculates volume used by shell, including intake, loader, cooling, recoil absorbers, and rail chargers
         /// </summary>
         public void CalculateVolumeAndCostPerIntake()
         {
 
-            VolumePerIntake = LoaderVolume + RecoilVolume + CoolerVolume + ChargerVolume;
-            CostPerIntake = LoaderCost + RecoilCost + CoolerCost + ChargerCost;
+            VolumePerIntake = LoaderVolume + RecoilVolume + CoolerVolume + ChargerVolume + AmmoCrateVolume + MatStorageVolume;
+            CostPerIntake = LoaderCost + RecoilCost + CoolerCost + ChargerCost + ShellCost + AmmoCrateCost + MatStorageCost;
 
             if (TotalLength <= 1000f)
             {
-                VolumePerIntakeBelt = LoaderVolumeBelt + RecoilVolumeBelt + CoolerVolumeBelt + ChargerVolumeBelt;
-                CostPerIntakeBelt = LoaderCostBelt + RecoilCostBelt + CoolerCostBelt + ChargerCostBelt;
+                VolumePerIntakeBelt = LoaderVolumeBelt + RecoilVolumeBelt + CoolerVolumeBelt + ChargerVolumeBelt + AmmoCrateVolumeBelt + MatStorageVolumeBelt;
+                CostPerIntakeBelt = LoaderCostBelt + RecoilCostBelt + CoolerCostBelt + ChargerCostBelt + ShellCostBelt + AmmoCrateCostBelt + MatStorageCostBelt;
             }
         }
 
@@ -1153,11 +1210,12 @@ namespace ApsCalcUI
         }
 
 
-        public void CalculateDpsByType(DamageType dt, float targetAC, Scheme targetArmorScheme)
+        public void CalculateDpsByType(DamageType dt, float targetAC, Scheme targetArmorScheme, int testInterval)
         {
             CalculateRecoil();
             CalculateChargerVolumeAndCost();
             CalculateRecoilVolumeAndCost();
+            CalculateVariableVolumesAndCosts(testInterval);
             CalculateVolumeAndCostPerIntake();
 
             if (dt == DamageType.Kinetic)
@@ -1259,265 +1317,6 @@ namespace ApsCalcUI
             ModuleCountTotal += MathF.Ceiling(GPCasingCount) + RGCasingCount;
         }
 
-        public void WriteShellInfoToConsole(
-            bool labels,
-            bool showGP,
-            bool showRG,
-            bool showDraw,
-            Dictionary<DamageType, bool> dtToShow,
-            List<int> modsToShow)
-        {
-            if (labels)
-            {
-                Console.WriteLine("Gauge (mm): " + Gauge);
-                Console.WriteLine("Total length (mm): " + TotalLength);
-                Console.WriteLine("Length without casings: " + ProjectileLength);
-                Console.WriteLine("Total modules: " + ModuleCountTotal);
-                if (showGP)
-                {
-                    Console.WriteLine("GP Casing: " + GPCasingCount);
-                }
-                if (showRG)
-                {
-                    Console.WriteLine("RG Casing: " + RGCasingCount);
-                }
-
-                foreach (int index in modsToShow)
-                {
-                    Console.WriteLine(Module.AllModules[index].Name + ": " + BodyModuleCounts[index]);
-                }
-                Console.WriteLine("Head: " + HeadModule.Name);
-
-
-                if (showDraw)
-                {
-                    Console.WriteLine("Rail draw: " + RailDraw);
-                }
-                // Recoil = draw if no GP
-                if (showGP)
-                {
-                    Console.WriteLine("Recoil: " + TotalRecoil);
-                }
-
-                Console.WriteLine("Velocity (m/s): " + Velocity);
-                Console.WriteLine("Effective range (m): " + EffectiveRange);
-
-                if (dtToShow[DamageType.Kinetic])
-                {
-                    Console.WriteLine("Raw KD: " + KineticDamage);
-                    Console.WriteLine("AP: " + ArmorPierce);
-                }
-                foreach (DamageType dt in dtToShow.Keys)
-                {
-                    if (dtToShow[dt])
-                    {
-                        Console.WriteLine((DamageType)(int)dt + " damage: " + DamageDict[dt]);
-                    }
-                }
-
-
-                if (IsBelt)
-                {
-                    Console.WriteLine("Reload time: " + ReloadTimeBelt);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            Console.WriteLine((DamageType)(int)dt + " DPS: " + DpsDict[dt]);
-                        }
-                    }
-
-                    Console.WriteLine("Loader volume: " + LoaderVolumeBelt);
-                    Console.WriteLine("Cooler volume: " + CoolerVolumeBelt);
-                    Console.WriteLine("Charger volume: " + ChargerVolumeBelt);
-                    Console.WriteLine("Recoil volume: " + RecoilVolumeBelt);
-                    Console.WriteLine("Total volume: " + VolumePerIntakeBelt);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            Console.WriteLine((DamageType)(int)dt + " DPS per volume: " + DpsPerVolumeDict[dt]);
-                        }
-                    }
-
-                    Console.WriteLine("Loader cost: " + LoaderCostBelt);
-                    Console.WriteLine("Cooler cost: " + CoolerCostBelt);
-                    Console.WriteLine("Charger cost: " + ChargerCostBelt);
-                    Console.WriteLine("Recoil cost: " + RecoilCostBelt);
-                    Console.WriteLine("Total cost: " + CostPerIntakeBelt);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            Console.WriteLine((DamageType)(int)dt + " DPS per cost: " + DpsPerCostDict[dt]);
-                        }
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Reload time: " + ReloadTime);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            Console.WriteLine((DamageType)(int)dt + " DPS: " + DpsDict[dt]);
-                        }
-                    }
-
-                    Console.WriteLine("Loader volume: " + LoaderVolume);
-                    Console.WriteLine("Cooler volume: " + CoolerVolume);
-                    Console.WriteLine("Charger volume: " + ChargerVolume);
-                    Console.WriteLine("Recoil volume: " + RecoilVolume);
-                    Console.WriteLine("Total volume: " + VolumePerIntake);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            Console.WriteLine((DamageType)(int)dt + " DPS per volume: " + DpsPerVolumeDict[dt]);
-                        }
-                    }
-
-                    Console.WriteLine("Loader cost: " + LoaderCost);
-                    Console.WriteLine("Cooler cost: " + CoolerCost);
-                    Console.WriteLine("Charger cost: " + ChargerCost);
-                    Console.WriteLine("Recoil cost: " + RecoilCost);
-                    Console.WriteLine("Total cost: " + CostPerIntake);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            Console.WriteLine((DamageType)(int)dt + " DPS per cost: " + DpsPerCostDict[dt]);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                Console.WriteLine(Gauge);
-                Console.WriteLine(TotalLength);
-                Console.WriteLine(ProjectileLength);
-                Console.WriteLine(ModuleCountTotal);
-
-                if (showGP)
-                {
-                    Console.WriteLine(GPCasingCount);
-                }
-                if (showRG)
-                {
-                    Console.WriteLine(RGCasingCount);
-                }
-
-                foreach (int index in modsToShow)
-                {
-                    Console.WriteLine(BodyModuleCounts[index]);
-                }
-                Console.WriteLine(HeadModule.Name);
-
-
-                if (showDraw)
-                {
-                    Console.WriteLine(RailDraw);
-                }
-                // Recoil = draw if no GP
-                if (showGP)
-                {
-                    Console.WriteLine(TotalRecoil);
-                }
-
-                Console.WriteLine(Velocity);
-                Console.WriteLine(EffectiveRange);
-
-
-                if (dtToShow[DamageType.Kinetic])
-                {
-                    Console.WriteLine(KineticDamage);
-                    Console.WriteLine(ArmorPierce);
-                }
-                foreach (DamageType dt in dtToShow.Keys)
-                {
-                    if (dtToShow[dt])
-                    {
-                        Console.WriteLine(DamageDict[dt]);
-                    }
-                }
-
-
-                if (IsBelt)
-                {
-                    Console.WriteLine(ReloadTimeBelt);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            Console.WriteLine(DpsDict[dt]);
-                        }
-                    }
-
-                    Console.WriteLine(LoaderVolumeBelt);
-                    Console.WriteLine(CoolerVolumeBelt);
-                    Console.WriteLine(ChargerVolumeBelt);
-                    Console.WriteLine(RecoilVolumeBelt);
-                    Console.WriteLine(VolumePerIntakeBelt);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            Console.WriteLine(DpsPerVolumeDict[dt]);
-                        }
-                    }
-
-                    Console.WriteLine(LoaderCostBelt);
-                    Console.WriteLine(CoolerCostBelt);
-                    Console.WriteLine(ChargerCostBelt);
-                    Console.WriteLine(RecoilCostBelt);
-                    Console.WriteLine(CostPerIntakeBelt);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            Console.WriteLine(DpsPerCostDict[dt]);
-                        }
-                    }
-                }
-                else
-                {
-                    Console.WriteLine(ReloadTime);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            Console.WriteLine(DpsDict[dt]);
-                        }
-                    }
-
-                    Console.WriteLine(LoaderVolume);
-                    Console.WriteLine(CoolerVolume);
-                    Console.WriteLine(ChargerVolume);
-                    Console.WriteLine(RecoilVolume);
-                    Console.WriteLine(VolumePerIntake);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            Console.WriteLine(DpsPerVolumeDict[dt]);
-                        }
-                    }
-
-                    Console.WriteLine(LoaderCost);
-                    Console.WriteLine(CoolerCost);
-                    Console.WriteLine(ChargerCost);
-                    Console.WriteLine(RecoilCost);
-                    Console.WriteLine(CostPerIntake);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            Console.WriteLine(DpsPerCostDict[dt]);
-                        }
-                    }
-                }
-            }
-        }
 
         public void WriteShellInfoToFile(
             StreamWriter writer,
@@ -1593,6 +1392,8 @@ namespace ApsCalcUI
                     writer.WriteLine("Cooler volume: " + CoolerVolumeBelt);
                     writer.WriteLine("Charger volume: " + ChargerVolumeBelt);
                     writer.WriteLine("Recoil volume: " + RecoilVolumeBelt);
+                    writer.WriteLine("Ammo volume: " + AmmoCrateVolumeBelt);
+                    writer.WriteLine("Storage volume: " + MatStorageVolumeBelt);
                     writer.WriteLine("Total volume: " + VolumePerIntakeBelt);
                     foreach (DamageType dt in dtToShow.Keys)
                     {
@@ -1602,10 +1403,14 @@ namespace ApsCalcUI
                         }
                     }
 
+                    writer.WriteLine("Cost per shell: " + CostPerShell);
                     writer.WriteLine("Loader cost: " + LoaderCostBelt);
                     writer.WriteLine("Cooler cost: " + CoolerCostBelt);
                     writer.WriteLine("Charger cost: " + ChargerCostBelt);
                     writer.WriteLine("Recoil cost: " + RecoilCostBelt);
+                    writer.WriteLine("Shell cost: " + ShellCostBelt);
+                    writer.WriteLine("Ammo cost: " + AmmoCrateCostBelt);
+                    writer.WriteLine("Storage cost: " + MatStorageCostBelt);
                     writer.WriteLine("Total cost: " + CostPerIntakeBelt);
                     foreach (DamageType dt in dtToShow.Keys)
                     {
@@ -1630,6 +1435,8 @@ namespace ApsCalcUI
                     writer.WriteLine("Cooler volume: " + CoolerVolume);
                     writer.WriteLine("Charger volume: " + ChargerVolume);
                     writer.WriteLine("Recoil volume: " + RecoilVolume);
+                    writer.WriteLine("Ammo volume: " + AmmoCrateVolume);
+                    writer.WriteLine("Storage volume: " + MatStorageVolume);
                     writer.WriteLine("Total volume: " + VolumePerIntake);
                     foreach (DamageType dt in dtToShow.Keys)
                     {
@@ -1639,10 +1446,14 @@ namespace ApsCalcUI
                         }
                     }
 
+                    writer.WriteLine("Cost per shell: " + CostPerShell);
                     writer.WriteLine("Loader cost: " + LoaderCost);
                     writer.WriteLine("Cooler cost: " + CoolerCost);
                     writer.WriteLine("Charger cost: " + ChargerCost);
                     writer.WriteLine("Recoil cost: " + RecoilCost);
+                    writer.WriteLine("Shell cost: " + ShellCost);
+                    writer.WriteLine("Ammo cost: " + AmmoCrateCost);
+                    writer.WriteLine("Storage cost: " + MatStorageCost);
                     writer.WriteLine("Total cost: " + CostPerIntake);
                     foreach (DamageType dt in dtToShow.Keys)
                     {
@@ -1718,6 +1529,8 @@ namespace ApsCalcUI
                     writer.WriteLine(CoolerVolumeBelt);
                     writer.WriteLine(ChargerVolumeBelt);
                     writer.WriteLine(RecoilVolumeBelt);
+                    writer.WriteLine(AmmoCrateVolumeBelt);
+                    writer.WriteLine(MatStorageVolumeBelt);
                     writer.WriteLine(VolumePerIntakeBelt);
                     foreach (DamageType dt in dtToShow.Keys)
                     {
@@ -1727,10 +1540,14 @@ namespace ApsCalcUI
                         }
                     }
 
+                    writer.WriteLine(CostPerShell);
                     writer.WriteLine(LoaderCostBelt);
                     writer.WriteLine(CoolerCostBelt);
                     writer.WriteLine(ChargerCostBelt);
                     writer.WriteLine(RecoilCostBelt);
+                    writer.WriteLine(ShellCostBelt);
+                    writer.WriteLine(AmmoCrateCostBelt);
+                    writer.WriteLine(MatStorageCostBelt);
                     writer.WriteLine(CostPerIntakeBelt);
                     foreach (DamageType dt in dtToShow.Keys)
                     {
@@ -1755,6 +1572,8 @@ namespace ApsCalcUI
                     writer.WriteLine(CoolerVolume);
                     writer.WriteLine(ChargerVolume);
                     writer.WriteLine(RecoilVolume);
+                    writer.WriteLine(AmmoCrateVolume);
+                    writer.WriteLine(MatStorageVolume);
                     writer.WriteLine(VolumePerIntake);
                     foreach (DamageType dt in dtToShow.Keys)
                     {
@@ -1764,10 +1583,14 @@ namespace ApsCalcUI
                         }
                     }
 
+                    writer.WriteLine(CostPerShell);
                     writer.WriteLine(LoaderCost);
                     writer.WriteLine(CoolerCost);
                     writer.WriteLine(ChargerCost);
                     writer.WriteLine(RecoilCost);
+                    writer.WriteLine(ShellCost);
+                    writer.WriteLine(AmmoCrateCost);
+                    writer.WriteLine(MatStorageCost);
                     writer.WriteLine(CostPerIntake);
                     foreach (DamageType dt in dtToShow.Keys)
                     {

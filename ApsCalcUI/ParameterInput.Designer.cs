@@ -64,6 +64,7 @@ namespace ApsCalcUI
             this.VariableModulesLabel = new System.Windows.Forms.Label();
             this.LabelsCB = new System.Windows.Forms.CheckBox();
             this.MinLengthUD = new System.Windows.Forms.NumericUpDown();
+            this.TestIntervalUD = new System.Windows.Forms.NumericUpDown();
             this.BarrelCountLabel = new System.Windows.Forms.Label();
             this.MinGaugeLabel = new System.Windows.Forms.Label();
             this.MaxGaugeLabel = new System.Windows.Forms.Label();
@@ -107,6 +108,7 @@ namespace ApsCalcUI
             this.RunErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.TestsInQueueLabel = new System.Windows.Forms.Label();
             this.MinLengthLabel = new System.Windows.Forms.Label();
+            this.TestIntervalLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).BeginInit();
@@ -126,6 +128,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.MinVelocityUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MinRangeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MinLengthUD)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TestIntervalUD)).BeginInit();
             this.BasePanel.SuspendLayout();
             this.FixedModulesPanel.SuspendLayout();
             this.VariableModulesPanel.SuspendLayout();
@@ -608,6 +611,28 @@ namespace ApsCalcUI
             this.ToolTip.SetToolTip(this.MinLengthUD, "Min shell length, exclusive.\r\nMax 7,999");
             this.MinLengthUD.ValueChanged += new System.EventHandler(this.MinLengthUD_ValueChanged);
             // 
+            // TestIntervalUD
+            // 
+            this.TestIntervalUD.Location = new System.Drawing.Point(723, 34);
+            this.TestIntervalUD.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.TestIntervalUD.Name = "TestIntervalUD";
+            this.TestIntervalUD.Size = new System.Drawing.Size(65, 23);
+            this.TestIntervalUD.TabIndex = 38;
+            this.TestIntervalUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.ToolTip.SetToolTip(this.TestIntervalUD, "Test interval in minutes.\r\nHigher values put more weight on running cost versus f" +
+        "ixed costs.\r\nAn interval of 0 minutes will ignore the cost of the shells and acc" +
+        "ount only for the cost of the gun.");
+            this.TestIntervalUD.Value = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.TestIntervalUD.ValueChanged += new System.EventHandler(this.TestIntervalUD_ValueChanged);
+            // 
             // BarrelCountLabel
             // 
             this.BarrelCountLabel.AutoSize = true;
@@ -1014,11 +1039,22 @@ namespace ApsCalcUI
             this.MinLengthLabel.TabIndex = 36;
             this.MinLengthLabel.Text = "Min Length (mm)";
             // 
+            // TestIntervalLabel
+            // 
+            this.TestIntervalLabel.AutoSize = true;
+            this.TestIntervalLabel.Location = new System.Drawing.Point(621, 38);
+            this.TestIntervalLabel.Name = "TestIntervalLabel";
+            this.TestIntervalLabel.Size = new System.Drawing.Size(101, 15);
+            this.TestIntervalLabel.TabIndex = 39;
+            this.TestIntervalLabel.Text = "Test Interval (min)";
+            // 
             // ParameterInput
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 583);
+            this.Controls.Add(this.TestIntervalLabel);
+            this.Controls.Add(this.TestIntervalUD);
             this.Controls.Add(this.MinLengthUD);
             this.Controls.Add(this.MinLengthLabel);
             this.Controls.Add(this.TestsInQueueLabel);
@@ -1079,6 +1115,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.MinVelocityUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MinRangeUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MinLengthUD)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TestIntervalUD)).EndInit();
             this.BasePanel.ResumeLayout(false);
             this.BasePanel.PerformLayout();
             this.FixedModulesPanel.ResumeLayout(false);
@@ -1173,6 +1210,8 @@ namespace ApsCalcUI
         private System.Windows.Forms.Label TestsInQueueLabel;
         private System.Windows.Forms.NumericUpDown MinLengthUD;
         private System.Windows.Forms.Label MinLengthLabel;
+        private System.Windows.Forms.NumericUpDown TestIntervalUD;
+        private System.Windows.Forms.Label TestIntervalLabel;
     }
 }
 

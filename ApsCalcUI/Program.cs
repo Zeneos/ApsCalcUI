@@ -30,7 +30,7 @@ namespace ApsCalcUI
         public Scheme ArmorScheme;
         public int TestType;
         public bool Labels;
-        public bool WriteToFile;
+        public int TestInterval;
     }
 
     static class Program
