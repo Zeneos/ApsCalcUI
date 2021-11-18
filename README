@@ -1,5 +1,5 @@
 ApsCalcUI: a calculator for optimizing shells for the Advanced Projectile
-System in From the Depths. Written by Ao Kishuba.
+System in From the Depths. Written by Ao Kishuba: aokishuba@gmail.com
 Special thanks to HerpeDerpeDerp and MrNukealizer, without whom this project
 would not have been possible.
 
@@ -16,6 +16,7 @@ barrels. Additional barrels help cooling, but impose an accuracy penalty and
 limit max gauge. At low calibers, barrel count is a cosmetic choice.
 
 Minimum Gauge: smallest gauge to be tested, in mm. Must be greater than 18 mm.
+
 Maximum Gauge: largest gauge to be tested, in mm. Must be greater than or
 equal than Minimum Gauge and less than or equal to 500 mm (or the max allowed
 by the barrel count, whichever is less).
@@ -61,6 +62,7 @@ number of components other than GP casings), and the optimizer will take it
 into account automatically, regardless of the user-input max draw.
 
 Min Shell Length: minimum length of the shell, exclusive.
+
 Max Shell Length: maximum length of the shell, inclusive. Must be greater
 than the smallest possible shell - ie, one with the minimum gauge, made up
 only of fixed modules (the form automatically enforces this restriction).
@@ -73,10 +75,12 @@ shells may have an effective range of less than 1 km, and may not be suitable
 for use on certain craft.
 
 Damage Type: damage type to optimize.
-  Kinetic. Prompts entry of target AC value/s. Note that more than one AC
-  value can be entered; each will be run as a separate test
+  Kinetic. Prompts entry of target AC value(s). Note that more than one AC
+  value can be entered; each will be run as a separate test.
   
-  EMP, FlaK, Frag, and HE speak for themselves.
+  EMP, FlaK, Frag, and HE speak for themselves, but note that it is not
+  possible to convert between the damage types due to the complex damage
+  application models used for each type.
 
   HEAT. Calculates HEAT damage for a shell. Note that the resulting
   configurations will be optimal for every pen metric and special factor,
@@ -86,16 +90,16 @@ Damage Type: damage type to optimize.
   
   Pendepth. Prompts entry of target armor configuration. Optimizes for a 
   weighted average of FlaK, Frag, and HE damage, according to how many 
-  modules of each type are present. If no FlaK modules are included in the 
-  test parameters, FlaK damage has a weight of 0, and so is not factored into
-  the calculations. This means it is possible to use any combination of the
-  three damage types. Only shells capable of penetrating the given armor
-  scheme will be counted.
+  modules of each type are present. If the user sets the fixed FlaK body 
+  count to 0, the optimizer will ignore FlaK damage. This means it is 
+  possible to use any combination of the three damage types. Only shells 
+  capable of penetrating the given armor scheme will be counted.
   
   Shield Disruptor. Automatically replaces user-given Head List with the
   Disruptor Conduit Head, which is required for shield disruption. Measures
   EMP damage and shield reduction percentage (displayed in the printout as a
   decimal, where 1 = 100% shield strength reduction)
+
 
 Test Type: whether to optimize for DPS per Volume or DPS per Cost. "Volume"
 and "Cost" are both marginal - they include the volume (or cost) only of
@@ -111,16 +115,16 @@ without row labels will print the row headers before the actual results;
 these are intended to be copied into a spreadsheet, with each loader length
 as its own column. For example:
 
-	        WITH LABELS				     WITHOUT LABELS
-	  3 m					                      3 m
-	  Gauge (mm): 200		                200
-	  Total length (mm): 3000			      3000
-	  Length without casings: 3000		  3000
-	  Total modules: 16			            16
-	  GP Casing: 0				              0
-	  RG Casing: 0				              0
-	  Solid body: 10				            10
-	  Frag body: 2				              2
-	  HE body: 1				                1
-	  Fuse: 1					                  1
-	  Head: Hollow point head			      Hollow point head
+	WITH LABELS				WITHOUT LABELS
+	3 m					3 m
+	Gauge (mm): 200				200
+	Total length (mm): 3000			3000
+	Length without casings: 3000		3000
+	Total modules: 16			16
+	GP Casing: 0				0
+	RG Casing: 0				0
+	Solid body: 10				10
+	Frag body: 2				2
+	HE body: 1				1
+	Fuse: 1					1
+	Head: Hollow point head			Hollow point head
