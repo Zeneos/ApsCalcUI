@@ -3,10 +3,10 @@ System in From the Depths. Written by Ao Kishuba: aokishuba@gmail.com
 Special thanks to HerpeDerpeDerp and MrNukealizer, without whom this project
 would not have been possible.
 
-HOW TO RUN
+---- HOW TO RUN ----
 Run the executable "ApsCalcUI".
 
-TEST PARAMETERS
+---- TEST PARAMETERS ----
 NOTE: Results for each test will be written to a text file in the ApsCalcUI
 folder. Filenames are automatically generated from current time. An example
 filename is "2021-07-04_09-12-11-12".
@@ -101,14 +101,8 @@ Damage Type: damage type to optimize.
   decimal, where 1 = 100% shield strength reduction)
 
 
-Test Type: whether to optimize for DPS per Volume or DPS per Cost. "Volume"
-and "Cost" are both marginal - they include the volume (or cost) only of
-components which scale linearly with number of inputs. That is to say,
-components like the APS firing piece, barrels, gauge increases, ejectors, &c,
-are not counted, because their proprotion of the cost depends on the size of
-the gun and the Tetris skill of the builder. The components which are counted
-are the loader, input, recoil absorbers, coolers, and rail chargers. Beltfed
-loaders assume a fixed configuration of 1 clip and 2 inputs per loader.
+Test Type: whether to optimize for DPS per Volume or DPS per Cost. See 
+Volumes and Costs below for more details.
 
 Row Labels: whether to include labels on every row of the printout. Tests
 without row labels will print the row headers before the actual results;
@@ -128,3 +122,126 @@ as its own column. For example:
 	HE body: 1				1
 	Fuse: 1					1
 	Head: Hollow point head			Hollow point head
+
+Test Interval: the duration in minutes for which the gun will fire. This does
+not affect the cost of the gun itself (loader, recoil, charger, cooler, 
+recoil absorber, &c), but does affect ammo and fuel consumption and storage.
+
+Storage Type: the type of containers which will be used to store materials.
+The Cargo container is the most efficient, but is bulky; generic storage is
+more flexible but slightly less efficient; coal has higher health and armor
+but is the least efficient at storage.
+
+PPM: Power Per Material of the engine which will supply power for railguns.
+Shown ingame on the engine UI. Disabled unless Max Rail Draw > 0.
+
+PPV: Power Per Volume of the engine which will supply power for railguns.
+Shown ingame on the engine UI. Disabled unless Max Rail Draw > 0.
+
+PPC: Power Per Cost of the engine which will supply power for railguns.
+NOT SHOWN INGAME -- must be calculated manually by dividing power output by
+block cost. Disabled unless Max Rail Draw > 0.
+
+Fuel Checkbox: Check if the engine supplying power for railguns is of a type
+which requires Fuel access (as shown on the default tab of the V menu). This
+includes Fuel engines and Custom jet engines. Disabled unless Max Rail Draw
+> 0.
+
+
+---- OPTIMIZER OUTPUT ----
+The optimizer output always begins with the test parameters entered by the 
+user at runtime. Below that are the top shells for each loader length for
+which any shells were generated (depending on length and gauge restrictions).
+Each shell stat cluster starts with the shell length.
+
+Gauge: gauge in mm.
+
+Total length: length of the entire shell.
+
+Length without casings: length of the part of the shell which will
+(hopefully) hit the target.
+
+Total modules: total APS modules used by the controller.
+
+GP casing: number of gunpowder casings, if any. Decimal casing counts can be 
+set by adjusting the "Propellant" slider in the APS ammo controller.
+
+RG casing: number of railgun casings, if any.
+
+Solid body/Sabot body/HE body/&c: number of each type of body module. Note 
+that all fuzes share stats, so "fuze" can stand in for any type of fuze
+(including Emergency ejection defuse).
+
+Head: the module at the head of the shell (at the bottom of the controller).
+
+Rail draw: rail draw, if any.
+
+Velocity (m/s): shell velocity in m/s.
+
+Effective range (m): effective range in m.
+
+Damage:
+	Kinetic shells will show raw damage, AP, and effective damage after
+		applying AC reduction.
+	All chemical shells will show damage of their respective types.
+	Disruptor shells will show EMP damage and shield reduction (decimal%).
+	Pendepth shells will show "pendepth damage", which is a weighted
+		average of the constituent chemical warhead types.
+
+Reload time: shell reload speed per intake, in seconds.
+
+DPS: Damage per Second. See "Damage" above.
+
+Loader volume: cubic metres taken up by the loader and input. For beltfed
+loaders, the volume is 4, because beltfed performance is calculated using
+a loader, clip, and two inputs.
+
+Volumes and Costs
+The various volumes and costs shown are the hypothetical amounts of each
+type of block needed to support a single input. The values -- cubic metres
+for volume, and materials for cost -- will almost always be decimals because
+they are hypothetical and are meant to scale with the gun: rounding errors
+aside, the shell with the highest DPS per volume with one input will have the
+highest DPS per volume with 1,000 inputs; small guns, however, will not
+have the same actual DPS per volume or cost stats, because it is not possible
+to place 0.3338 cubic metres of gauge cooler.
+
+Loader volume: volume of loader and attached input. For beltfeds, will always
+be 4 -- loader, clip, and two inputs. This configuration gives good 
+performance.
+
+Cooler volume: volume of gauge coolers. Will always be 0 for shells with no
+GP casings.
+
+Charger volume: volume of rail chargers. Will always be 0 for shells with no
+rail draw.
+
+Engine volume: volume of engine needed to keep up with rail charge. Will 
+always be 0 for shells with no rail draw.
+
+Fuel access volume: volume of fuel tanks/beams needed to keep up with rail 
+charge. Will always be 0 for shells with no rail draw, or if the "Fuel" 
+checkbox is not checked.
+
+Fuel storage volume: volume of material storage containers needed to hold
+the materials the engine will burn as fuel. Fuel access tanks/beams hold 
+enough materials to run themselves for 10 minutes, so this number will be 0
+if the testing interval is <= 10 minutes, or if the shell has no rail draw.
+
+Recoil volume: volume of recoil absorbers. Will never be 0 if the shell has
+any muzzle velocity.
+
+Ammo access volume: volume of ammo crates needed to keep up with ammo 
+consumption.
+
+Ammo storage volume: volume of material storage containers needed to hold 
+the materials the gun will use as ammo. Ammo access crates hold enough 
+materials to run themselves for 10 minutes, so this number will be 0 if the 
+testing interval is <= 10 minutes.
+
+The costs are the same as the volumes, with two exceptions:
+
+Fuel burned: the amount of materials consumed by the engine to power the 
+rails. Will always be 0 for shells without rail draw.
+
+Ammo used: the amount of materials consumed by the gun as ammunition.
