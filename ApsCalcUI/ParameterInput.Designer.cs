@@ -70,6 +70,7 @@ namespace ApsCalcUI
             this.CoalStorageButton = new System.Windows.Forms.RadioButton();
             this.StoragePanelLabel = new System.Windows.Forms.Label();
             this.EnginePanel = new System.Windows.Forms.Panel();
+            this.EngineFuelCB = new System.Windows.Forms.CheckBox();
             this.EnginePpcLabel = new System.Windows.Forms.Label();
             this.EnginePpvLabel = new System.Windows.Forms.Label();
             this.EnginePpcUD = new System.Windows.Forms.NumericUpDown();
@@ -121,7 +122,7 @@ namespace ApsCalcUI
             this.MinLengthLabel = new System.Windows.Forms.Label();
             this.TestIntervalLabel = new System.Windows.Forms.Label();
             this.StoragePanel = new System.Windows.Forms.Panel();
-            this.EngineFuelCB = new System.Windows.Forms.CheckBox();
+            this.fontDialog1 = new System.Windows.Forms.FontDialog();
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).BeginInit();
@@ -714,7 +715,19 @@ namespace ApsCalcUI
             this.EnginePanel.Name = "EnginePanel";
             this.EnginePanel.Size = new System.Drawing.Size(159, 79);
             this.EnginePanel.TabIndex = 41;
-            this.ToolTip.SetToolTip(this.EnginePanel, "Engine stats. Used for railguns.");
+            this.ToolTip.SetToolTip(this.EnginePanel, "Engine stats. Used for railguns.\r\nAdd rail draw to edit.");
+            // 
+            // EngineFuelCB
+            // 
+            this.EngineFuelCB.AutoSize = true;
+            this.EngineFuelCB.Location = new System.Drawing.Point(32, 9);
+            this.EngineFuelCB.Name = "EngineFuelCB";
+            this.EngineFuelCB.Size = new System.Drawing.Size(87, 19);
+            this.EngineFuelCB.TabIndex = 6;
+            this.EngineFuelCB.Text = "Fuel engine";
+            this.ToolTip.SetToolTip(this.EngineFuelCB, "Whether the engine requires special Fuel storage.\r\nThis includes Fuel Engines and" +
+        " Custom Jet Engines.\r\nAdd rail draw to edit.");
+            this.EngineFuelCB.UseVisualStyleBackColor = true;
             // 
             // EnginePpcLabel
             // 
@@ -757,8 +770,8 @@ namespace ApsCalcUI
             this.EnginePpcUD.Size = new System.Drawing.Size(45, 23);
             this.EnginePpcUD.TabIndex = 3;
             this.EnginePpcUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.ToolTip.SetToolTip(this.EnginePpcUD, "Engine Power Per Cost.\r\nMust be calculated manually.\r\n(Divide power output by Mat" +
-        "erial Cost of the entire engine)");
+            this.ToolTip.SetToolTip(this.EnginePpcUD, "Engine Power Per Cost, for charging rails.\r\nMust be calculated manually.\r\n(Divide" +
+        " power output by Material Cost of the entire engine)\r\nAdd rail draw to edit.");
             this.EnginePpcUD.Value = new decimal(new int[] {
             61,
             0,
@@ -788,7 +801,7 @@ namespace ApsCalcUI
             this.EnginePpvUD.Size = new System.Drawing.Size(45, 23);
             this.EnginePpvUD.TabIndex = 2;
             this.EnginePpvUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.ToolTip.SetToolTip(this.EnginePpvUD, "Engine Power Per Volume");
+            this.ToolTip.SetToolTip(this.EnginePpvUD, "Engine Power Per Volume, for charging rails.\r\nAdd rail draw to edit.");
             this.EnginePpvUD.Value = new decimal(new int[] {
             882,
             0,
@@ -821,7 +834,7 @@ namespace ApsCalcUI
             this.EnginePpmUD.Size = new System.Drawing.Size(45, 23);
             this.EnginePpmUD.TabIndex = 0;
             this.EnginePpmUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.ToolTip.SetToolTip(this.EnginePpmUD, "Engine Power Per Material");
+            this.ToolTip.SetToolTip(this.EnginePpmUD, "Engine Power Per Material, for charging rails.\r\nAdd rail draw to edit.");
             this.EnginePpmUD.Value = new decimal(new int[] {
             6757,
             0,
@@ -1254,18 +1267,6 @@ namespace ApsCalcUI
             this.StoragePanel.Size = new System.Drawing.Size(159, 76);
             this.StoragePanel.TabIndex = 40;
             // 
-            // EngineFuelCB
-            // 
-            this.EngineFuelCB.AutoSize = true;
-            this.EngineFuelCB.Location = new System.Drawing.Point(32, 9);
-            this.EngineFuelCB.Name = "EngineFuelCB";
-            this.EngineFuelCB.Size = new System.Drawing.Size(87, 19);
-            this.EngineFuelCB.TabIndex = 6;
-            this.EngineFuelCB.Text = "Fuel engine";
-            this.ToolTip.SetToolTip(this.EngineFuelCB, "Whether the engine requires special Fuel storage.\r\nThis includes Fuel Engines and" +
-        " Custom Jet Engines.");
-            this.EngineFuelCB.UseVisualStyleBackColor = true;
-            // 
             // ParameterInput
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1452,6 +1453,7 @@ namespace ApsCalcUI
         private System.Windows.Forms.Label EnginePpmLabel;
         private System.Windows.Forms.NumericUpDown EnginePpmUD;
         private System.Windows.Forms.CheckBox EngineFuelCB;
+        private System.Windows.Forms.FontDialog fontDialog1;
     }
 }
 
