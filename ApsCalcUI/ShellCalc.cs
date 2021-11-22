@@ -64,7 +64,13 @@ namespace ApsCalcUI
         /// <param name="targetArmorScheme">Target armor scheme, from Pencalc namespace</param>
         /// <param name="testType">0 for DPS per volume, 1 for DPS per cost</param>
         /// <param name="labels">True if row headers should be printed on every line</param>
-        /// <param name="writeToFile">True if results should be written to text file instead of console</param>
+        /// <param name="testInterval">Test interval in min</param>
+        /// <param name="storagePerVolume">Material storage per container volume</param>
+        /// <param name="storagePerCost">Material storage per container cost</param>
+        /// <param name="ppm">Engine power per material</param>
+        /// <param name="ppv">Engine power per volume</param>
+        /// <param name="ppc">Engine power per block cost</param>
+        /// <param name="fuel">Whether engine uses special Fuel storage</param>
         public ShellCalc(
             int barrelCount,
             float gauge,
@@ -86,7 +92,13 @@ namespace ApsCalcUI
             Scheme targetArmorScheme,
             int testType,
             bool labels,
-            bool writeToFile
+            int testInterval,
+            float storagePerVolume,
+            float storagePerCost,
+            float ppm,
+            float ppv,
+            float ppc,
+            bool fuel
             )
         {
             BarrelCount = barrelCount;
@@ -109,7 +121,14 @@ namespace ApsCalcUI
             TargetArmorScheme = targetArmorScheme;
             TestType = testType;
             Labels = labels;
-            WriteToFile = writeToFile;
+            TestInterval = testInterval;
+            TestIntervalSeconds = testInterval * 60;
+            StoragePerVolume = storagePerVolume;
+            StoragePerCost = storagePerCost;
+            Ppm = ppm;
+            Ppv = ppv;
+            Ppc = ppc;
+            Fuel = fuel;
         }
 
 
@@ -133,7 +152,14 @@ namespace ApsCalcUI
         public Scheme TargetArmorScheme { get; }
         public int TestType { get; }
         public bool Labels { get; }
-        public bool WriteToFile { get; }
+        public int TestInterval { get; }
+        public int TestIntervalSeconds { get; }
+        public float StoragePerVolume { get; }
+        public float StoragePerCost { get; }
+        public float Ppm { get; }
+        public float Ppv { get; }
+        public float Ppc { get; }
+        public bool Fuel { get; }
 
 
         // Store top-DPS shells by loader length
@@ -363,6 +389,7 @@ namespace ApsCalcUI
                         shellUnderTesting.CalculateCooldownTime();
                         shellUnderTesting.CalculateCoolerVolumeAndCost();
                         shellUnderTesting.CalculateLoaderVolumeAndCost();
+                        shellUnderTesting.CalculateVariableVolumesAndCosts(TestIntervalSeconds, StoragePerVolume, StoragePerCost);
 
 
                         float optimalDraw = 0;
@@ -377,7 +404,17 @@ namespace ApsCalcUI
 
 
                             shellUnderTesting.RailDraw = minDraw;
-                            shellUnderTesting.CalculateDpsByType(DamageType, TargetAC, TargetArmorScheme);
+                            shellUnderTesting.CalculateDpsByType(
+                                DamageType,
+                                TargetAC,
+                                TargetArmorScheme,
+                                TestIntervalSeconds,
+                                StoragePerVolume,
+                                StoragePerCost,
+                                Ppm,
+                                Ppv,
+                                Ppc,
+                                Fuel);
                             if (TestType == 0)
                             {
                                 bottomScore = shellUnderTesting.DpsPerVolumeDict[DamageType];
@@ -388,7 +425,17 @@ namespace ApsCalcUI
                             }
 
                             shellUnderTesting.RailDraw = maxDraw;
-                            shellUnderTesting.CalculateDpsByType(DamageType, TargetAC, TargetArmorScheme);
+                            shellUnderTesting.CalculateDpsByType(
+                                DamageType,
+                                TargetAC,
+                                TargetArmorScheme,
+                                TestIntervalSeconds,
+                                StoragePerVolume,
+                                StoragePerCost,
+                                Ppm,
+                                Ppv,
+                                Ppc,
+                                Fuel);
                             if (TestType == 0)
                             {
                                 topScore = shellUnderTesting.DpsPerVolumeDict[DamageType];
@@ -402,7 +449,17 @@ namespace ApsCalcUI
                             {
                                 // Check if max draw is optimal
                                 shellUnderTesting.RailDraw = maxDraw - 1f;
-                                shellUnderTesting.CalculateDpsByType(DamageType, TargetAC, TargetArmorScheme);
+                                shellUnderTesting.CalculateDpsByType(
+                                    DamageType,
+                                    TargetAC,
+                                    TargetArmorScheme,
+                                    TestIntervalSeconds,
+                                    StoragePerVolume,
+                                    StoragePerCost,
+                                    Ppm,
+                                    Ppv,
+                                    Ppc,
+                                    Fuel);
                                 if (TestType == 0)
                                 {
                                     bottomScore = shellUnderTesting.DpsPerVolumeDict[DamageType];
@@ -421,7 +478,17 @@ namespace ApsCalcUI
                             {
                                 // Check if min draw is optimal
                                 shellUnderTesting.RailDraw = minDraw + 1f;
-                                shellUnderTesting.CalculateDpsByType(DamageType, TargetAC, TargetArmorScheme);
+                                shellUnderTesting.CalculateDpsByType(
+                                    DamageType,
+                                    TargetAC,
+                                    TargetArmorScheme,
+                                    TestIntervalSeconds,
+                                    StoragePerVolume,
+                                    StoragePerCost,
+                                    Ppm,
+                                    Ppv,
+                                    Ppc,
+                                    Fuel);
                                 if (TestType == 0)
                                 {
                                     topScore = shellUnderTesting.DpsPerVolumeDict[DamageType];
@@ -449,7 +516,17 @@ namespace ApsCalcUI
                                     midRangeUpper = midRangeLower + 1f;
 
                                     shellUnderTesting.RailDraw = midRangeLower;
-                                    shellUnderTesting.CalculateDpsByType(DamageType, TargetAC, TargetArmorScheme);
+                                    shellUnderTesting.CalculateDpsByType(
+                                        DamageType,
+                                        TargetAC,
+                                        TargetArmorScheme,
+                                        TestIntervalSeconds,
+                                        StoragePerVolume,
+                                        StoragePerCost,
+                                        Ppm,
+                                        Ppv,
+                                        Ppc,
+                                        Fuel);
                                     if (TestType == 0)
                                     {
                                         midRangeLowerScore = shellUnderTesting.DpsPerVolumeDict[DamageType];
@@ -460,7 +537,17 @@ namespace ApsCalcUI
                                     }
 
                                     shellUnderTesting.RailDraw = midRangeUpper;
-                                    shellUnderTesting.CalculateDpsByType(DamageType, TargetAC, TargetArmorScheme);
+                                    shellUnderTesting.CalculateDpsByType(
+                                        DamageType,
+                                        TargetAC,
+                                        TargetArmorScheme,
+                                        TestIntervalSeconds,
+                                        StoragePerVolume,
+                                        StoragePerCost,
+                                        Ppm,
+                                        Ppv,
+                                        Ppc,
+                                        Fuel);
                                     if (TestType == 0)
                                     {
                                         midRangeUpperScore = shellUnderTesting.DpsPerVolumeDict[DamageType];
@@ -499,13 +586,63 @@ namespace ApsCalcUI
 
                         // Check performance against top shells
                         shellUnderTesting.RailDraw = optimalDraw;
-                        shellUnderTesting.CalculateDpsByType(DamageType, TargetAC, TargetArmorScheme);
+                        shellUnderTesting.CalculateDpsByType(
+                            DamageType,
+                            TargetAC,
+                            TargetArmorScheme,
+                            TestIntervalSeconds,
+                            StoragePerVolume,
+                            StoragePerCost,
+                            Ppm,
+                            Ppv,
+                            Ppc,
+                            Fuel);
                         if (DamageType == DamageType.Pendepth)
                         {
-                            shellUnderTesting.CalculateDpsByType(DamageType.Kinetic, TargetAC, TargetArmorScheme);
-                            shellUnderTesting.CalculateDpsByType(DamageType.FlaK, TargetAC, TargetArmorScheme);
-                            shellUnderTesting.CalculateDpsByType(DamageType.Frag, TargetAC, TargetArmorScheme);
-                            shellUnderTesting.CalculateDpsByType(DamageType.HE, TargetAC, TargetArmorScheme);
+                            shellUnderTesting.CalculateDpsByType(
+                                DamageType.Kinetic,
+                                TargetAC,
+                                TargetArmorScheme,
+                                TestIntervalSeconds,
+                                StoragePerVolume,
+                                StoragePerCost,
+                                Ppm,
+                                Ppv,
+                                Ppc,
+                                Fuel);
+                            shellUnderTesting.CalculateDpsByType(
+                                DamageType.FlaK,
+                                TargetAC,
+                                TargetArmorScheme,
+                                TestIntervalSeconds,
+                                StoragePerVolume,
+                                StoragePerCost,
+                                Ppm,
+                                Ppv,
+                                Ppc,
+                                Fuel);
+                            shellUnderTesting.CalculateDpsByType(
+                                DamageType.Frag,
+                                TargetAC,
+                                TargetArmorScheme,
+                                TestIntervalSeconds,
+                                StoragePerVolume,
+                                StoragePerCost,
+                                Ppm,
+                                Ppv,
+                                Ppc,
+                                Fuel);
+                            shellUnderTesting.CalculateDpsByType(
+                                DamageType.HE,
+                                TargetAC,
+                                TargetArmorScheme,
+                                TestIntervalSeconds,
+                                StoragePerVolume,
+                                StoragePerCost,
+                                Ppm,
+                                Ppv,
+                                Ppc,
+                                Fuel);
                         }
                         shellUnderTesting.CalculateVelocity();
                         shellUnderTesting.CalculateEffectiveRange();
@@ -653,6 +790,7 @@ namespace ApsCalcUI
                             shellUnderTestingBelt.CalculateMaxDraw();
                             shellUnderTestingBelt.CalculateReloadTime();
                             shellUnderTestingBelt.CalculateReloadTimeBelt();
+                            shellUnderTestingBelt.CalculateVariableVolumesAndCosts(TestIntervalSeconds, StoragePerVolume, StoragePerCost);
                             shellUnderTestingBelt.CalculateCooldownTime();
                             shellUnderTestingBelt.CalculateDamageModifierByType(DamageType);
                             shellUnderTestingBelt.CalculateDamageByType(DamageType);
@@ -669,7 +807,17 @@ namespace ApsCalcUI
                                 float midRangeUpperScore = 0;
 
                                 shellUnderTestingBelt.RailDraw = minDraw;
-                                shellUnderTestingBelt.CalculateDpsByTypeBelt(DamageType, TargetAC, TargetArmorScheme);
+                                shellUnderTestingBelt.CalculateDpsByTypeBelt(
+                                    DamageType,
+                                    TargetAC,
+                                    TargetArmorScheme,
+                                    TestIntervalSeconds,
+                                    StoragePerVolume,
+                                    StoragePerCost,
+                                    Ppm,
+                                    Ppv,
+                                    Ppc,
+                                    Fuel);
                                 if (TestType == 0)
                                 {
                                     bottomScore = shellUnderTestingBelt.DpsPerVolumeDict[DamageType];
@@ -680,7 +828,17 @@ namespace ApsCalcUI
                                 }
 
                                 shellUnderTestingBelt.RailDraw = maxDraw;
-                                shellUnderTestingBelt.CalculateDpsByTypeBelt(DamageType, TargetAC, TargetArmorScheme);
+                                shellUnderTestingBelt.CalculateDpsByTypeBelt(
+                                    DamageType,
+                                    TargetAC,
+                                    TargetArmorScheme,
+                                    TestIntervalSeconds,
+                                    StoragePerVolume,
+                                    StoragePerCost,
+                                    Ppm,
+                                    Ppv,
+                                    Ppc,
+                                    Fuel);
                                 if (TestType == 0)
                                 {
                                     topScore = shellUnderTestingBelt.DpsPerVolumeDict[DamageType];
@@ -694,7 +852,17 @@ namespace ApsCalcUI
                                 {
                                     // Check if max draw is optimal
                                     shellUnderTestingBelt.RailDraw = maxDraw - 1f;
-                                    shellUnderTestingBelt.CalculateDpsByTypeBelt(DamageType, TargetAC, TargetArmorScheme);
+                                    shellUnderTestingBelt.CalculateDpsByTypeBelt(
+                                        DamageType,
+                                        TargetAC,
+                                        TargetArmorScheme,
+                                        TestIntervalSeconds,
+                                        StoragePerVolume,
+                                        StoragePerCost,
+                                        Ppm,
+                                        Ppv,
+                                        Ppc,
+                                        Fuel);
                                     if (TestType == 0)
                                     {
                                         bottomScore = shellUnderTestingBelt.DpsPerVolumeDict[DamageType];
@@ -713,7 +881,17 @@ namespace ApsCalcUI
                                 {
                                     // Check if min draw is optimal
                                     shellUnderTestingBelt.RailDraw = minDraw + 1f;
-                                    shellUnderTestingBelt.CalculateDpsByTypeBelt(DamageType, TargetAC, TargetArmorScheme);
+                                    shellUnderTestingBelt.CalculateDpsByTypeBelt(
+                                        DamageType,
+                                        TargetAC,
+                                        TargetArmorScheme,
+                                        TestIntervalSeconds,
+                                        StoragePerVolume,
+                                        StoragePerCost,
+                                        Ppm,
+                                        Ppv,
+                                        Ppc,
+                                        Fuel);
                                     if (TestType == 0)
                                     {
                                         topScore = shellUnderTestingBelt.DpsPerVolumeDict[DamageType];
@@ -740,7 +918,17 @@ namespace ApsCalcUI
                                         midRangeUpper = midRangeLower + 1f;
 
                                         shellUnderTestingBelt.RailDraw = midRangeLower;
-                                        shellUnderTestingBelt.CalculateDpsByTypeBelt(DamageType, TargetAC, TargetArmorScheme);
+                                        shellUnderTestingBelt.CalculateDpsByTypeBelt(
+                                            DamageType,
+                                            TargetAC,
+                                            TargetArmorScheme,
+                                            TestIntervalSeconds,
+                                            StoragePerVolume,
+                                            StoragePerCost,
+                                            Ppm,
+                                            Ppv,
+                                            Ppc,
+                                            Fuel);
                                         if (TestType == 0)
                                         {
                                             midRangeLowerScore = shellUnderTestingBelt.DpsPerVolumeDict[DamageType];
@@ -751,7 +939,17 @@ namespace ApsCalcUI
                                         }
 
                                         shellUnderTestingBelt.RailDraw = midRangeUpper;
-                                        shellUnderTestingBelt.CalculateDpsByTypeBelt(DamageType, TargetAC, TargetArmorScheme);
+                                        shellUnderTestingBelt.CalculateDpsByTypeBelt(
+                                            DamageType,
+                                            TargetAC,
+                                            TargetArmorScheme,
+                                            TestIntervalSeconds,
+                                            StoragePerVolume,
+                                            StoragePerCost,
+                                            Ppm,
+                                            Ppv,
+                                            Ppc,
+                                            Fuel);
                                         if (TestType == 0)
                                         {
                                             midRangeUpperScore = shellUnderTestingBelt.DpsPerVolumeDict[DamageType];
@@ -789,13 +987,63 @@ namespace ApsCalcUI
 
                             // Check performance against top shells
                             shellUnderTestingBelt.RailDraw = optimalDraw;
-                            shellUnderTestingBelt.CalculateDpsByTypeBelt(DamageType, TargetAC, TargetArmorScheme);
+                            shellUnderTestingBelt.CalculateDpsByTypeBelt(
+                                DamageType,
+                                TargetAC,
+                                TargetArmorScheme,
+                                TestIntervalSeconds,
+                                StoragePerVolume,
+                                StoragePerCost,
+                                Ppm,
+                                Ppv,
+                                Ppc,
+                                Fuel);
                             if (DamageType == DamageType.Pendepth)
                             {
-                                shellUnderTestingBelt.CalculateDpsByTypeBelt(DamageType.Kinetic, TargetAC, TargetArmorScheme);
-                                shellUnderTestingBelt.CalculateDpsByTypeBelt(DamageType.FlaK, TargetAC, TargetArmorScheme);
-                                shellUnderTestingBelt.CalculateDpsByTypeBelt(DamageType.Frag, TargetAC, TargetArmorScheme);
-                                shellUnderTestingBelt.CalculateDpsByTypeBelt(DamageType.HE, TargetAC, TargetArmorScheme);
+                                shellUnderTestingBelt.CalculateDpsByTypeBelt(
+                                    DamageType.Kinetic,
+                                    TargetAC,
+                                    TargetArmorScheme,
+                                    TestIntervalSeconds,
+                                    StoragePerVolume,
+                                    StoragePerCost,
+                                    Ppm,
+                                    Ppv,
+                                    Ppc,
+                                    Fuel);
+                                shellUnderTestingBelt.CalculateDpsByTypeBelt(
+                                    DamageType.FlaK,
+                                    TargetAC,
+                                    TargetArmorScheme,
+                                    TestIntervalSeconds,
+                                    StoragePerVolume,
+                                    StoragePerCost,
+                                    Ppm,
+                                    Ppv,
+                                    Ppc,
+                                    Fuel);
+                                shellUnderTestingBelt.CalculateDpsByTypeBelt(
+                                    DamageType.Frag,
+                                    TargetAC,
+                                    TargetArmorScheme,
+                                    TestIntervalSeconds,
+                                    StoragePerVolume,
+                                    StoragePerCost,
+                                    Ppm,
+                                    Ppv,
+                                    Ppc,
+                                    Fuel);
+                                shellUnderTestingBelt.CalculateDpsByTypeBelt(
+                                    DamageType.HE,
+                                    TargetAC,
+                                    TargetArmorScheme,
+                                    TestIntervalSeconds,
+                                    StoragePerVolume,
+                                    StoragePerCost,
+                                    Ppm,
+                                    Ppv,
+                                    Ppc,
+                                    Fuel);
                             }
                             shellUnderTestingBelt.CalculateVelocity();
                             shellUnderTestingBelt.CalculateEffectiveRange();
@@ -1148,215 +1396,7 @@ namespace ApsCalcUI
                 }
             }
 
-            if (WriteToFile)
-            {
-                WriteTopShellsToFile(minGauge, maxGauge, showGP, showRG, showDraw, dtToShow, modsToShow);
-            }
-            else
-            {
-                WriteTopShellsToConsole(minGauge, maxGauge, showGP, showRG, showDraw, dtToShow, modsToShow);
-            }
-        }
-
-        /// <summary>
-        /// Write to console statistics of top shells
-        /// </summary>
-        void WriteTopShellsToConsole(
-            float minGauge,
-            float maxGauge,
-            bool showGP,
-            bool showRG,
-            bool showDraw,
-            Dictionary<DamageType, bool> dtToShow,
-            List<int> modsToShow)
-        {
-            Console.WriteLine("\nTest Parameters");
-            Console.WriteLine(BarrelCount + " Barrels");
-            if (minGauge == maxGauge)
-            {
-                Console.WriteLine("Gauge: " + minGauge);
-            }
-            else
-            {
-                Console.WriteLine("Gauge: " + minGauge + " mm thru " + maxGauge + " mm");
-            }
-
-            if (HeadList.Count == 1)
-            {
-                Console.WriteLine("Head: " + Module.AllModules[HeadList[0]].Name);
-            }
-            else
-            {
-                Console.WriteLine("Heads: ");
-                foreach (int headIndex in HeadList)
-                {
-                    Console.WriteLine(Module.AllModules[headIndex].Name);
-                }
-            }
-
-            if (BaseModule != null)
-            {
-                Console.WriteLine("Base: " + BaseModule.Name);
-            }
-            else
-            {
-                Console.WriteLine("No special base module");
-            }
-
-            Console.WriteLine("Fixed module(s): ");
-
-            int modIndex = 0;
-            foreach (float modCount in FixedModuleCounts)
-            {
-                if (modCount > 0)
-                {
-                    Console.WriteLine(Module.AllModules[modIndex].Name + ": " + modCount);
-                }
-                modIndex++;
-            }
-
-            // Remove duplicate variable mod indices
-            List<int> uniqueVarModIndices = VariableModuleIndices.Distinct().ToList();
-            Console.WriteLine("Variable module(s):");
-            foreach (int index in uniqueVarModIndices)
-            {
-                Console.WriteLine(Module.AllModules[index].Name);
-            }
-
-
-            Console.WriteLine("Max GP casings: " + MaxGPInput);
-            Console.WriteLine("Max RG casings: " + MaxRGInput);
-            Console.WriteLine("Max draw: " + MaxDrawInput);
-            Console.WriteLine("Max recoil: " + MaxRecoilInput);
-            Console.WriteLine("Min length: " + MinShellLength);
-            Console.WriteLine("Max length: " + MaxShellLength);
-            Console.WriteLine("Min velocity: " + MinVelocityInput);
-            Console.WriteLine("Min effective range: " + MinEffectiveRangeInput);
-
-            if (DamageType == DamageType.Kinetic)
-            {
-                Console.WriteLine("Damage type: kinetic");
-                Console.WriteLine("Target AC: " + TargetAC);
-            }
-            else if (DamageType == DamageType.Pendepth)
-            {
-                Console.WriteLine("Damage type: pendepth");
-                Console.WriteLine("Target armor scheme:");
-                foreach (Layer armorLayer in TargetArmorScheme.LayerList)
-                {
-                    Console.WriteLine(armorLayer.Name);
-                }
-            }
-            else
-            {
-                Console.WriteLine("Damage type: " + (DamageType)(int)DamageType);
-            }
-
-            if (TestType == 0)
-            {
-                Console.WriteLine("Testing for DPS / volume");
-            }
-            else if (TestType == 1)
-            {
-                Console.WriteLine("Testing for DPS / cost");
-            }
-            Console.WriteLine("\n");
-
-
-            if (!Labels)
-            {
-                Console.WriteLine("Row Headers");
-                Console.WriteLine("Gauge (mm)");
-                Console.WriteLine("Total length (mm)");
-                Console.WriteLine("Length without casings");
-                Console.WriteLine("Total modules");
-                if (showGP)
-                {
-                    Console.WriteLine("GP Casing");
-                }
-                if (showRG)
-                {
-                    Console.WriteLine("RG Casing");
-                }
-
-                foreach (int index in modsToShow)
-                {
-                    Console.WriteLine(Module.AllModules[index].Name);
-                }
-                Console.WriteLine("Head");
-
-
-                if (showDraw)
-                {
-                    Console.WriteLine("Rail draw");
-                }
-                // Recoil = draw if no GP
-                if (showGP)
-                {
-                    Console.WriteLine("Recoil");
-                }
-
-                Console.WriteLine("Velocity (m/s)");
-                Console.WriteLine("Effective range (m)");
-
-                if (dtToShow[DamageType.Kinetic])
-                {
-                    Console.WriteLine("Raw KD");
-                    Console.WriteLine("AP");
-                }
-                foreach (DamageType dt in dtToShow.Keys)
-                {
-                    if (dtToShow[dt])
-                    {
-                        Console.WriteLine((DamageType)(int)dt + " damage");
-                    }
-                }
-
-
-                Console.WriteLine("Reload time");
-                foreach (DamageType dt in dtToShow.Keys)
-                {
-                    if (dtToShow[dt])
-                    {
-                        Console.WriteLine((DamageType)(int)dt + " DPS");
-                    }
-                }
-
-                Console.WriteLine("Loader volume");
-                Console.WriteLine("Cooler volume");
-                Console.WriteLine("Charger volume");
-                Console.WriteLine("Recoil volume");
-                Console.WriteLine("Total volume");
-                foreach (DamageType dt in dtToShow.Keys)
-                {
-                    if (dtToShow[dt])
-                    {
-                        Console.WriteLine((DamageType)(int)dt + " DPS per volume");
-                    }
-                }
-
-                Console.WriteLine("Loader cost");
-                Console.WriteLine("Cooler cost");
-                Console.WriteLine("Charger cost");
-                Console.WriteLine("Recoil cost");
-                Console.WriteLine("Total cost");
-                foreach (DamageType dt in dtToShow.Keys)
-                {
-                    if (dtToShow[dt])
-                    {
-                        Console.WriteLine((DamageType)(int)dt + " DPS per cost");
-                    }
-                }
-            }
-
-
-            foreach (KeyValuePair<string, Shell> topShell in TopDpsShells)
-            {
-                Console.WriteLine("\n");
-                Console.WriteLine(topShell.Key);
-                topShell.Value.GetModuleCounts();
-                topShell.Value.WriteShellInfoToConsole(Labels, showGP, showRG, showDraw, dtToShow, modsToShow);
-            }
+            WriteTopShellsToFile(minGauge, maxGauge, showGP, showRG, showDraw, dtToShow, modsToShow);
         }
 
 
@@ -1469,6 +1509,8 @@ namespace ApsCalcUI
             {
                 writer.WriteLine("Testing for DPS / cost");
             }
+
+            writer.WriteLine("Test interval (min): " + TestInterval);
             writer.WriteLine("\n");
 
 
@@ -1481,11 +1523,11 @@ namespace ApsCalcUI
                 writer.WriteLine("Total modules");
                 if (showGP)
                 {
-                    writer.WriteLine("GP Casing");
+                    writer.WriteLine("GP casing");
                 }
                 if (showRG)
                 {
-                    writer.WriteLine("RG Casing");
+                    writer.WriteLine("RG casing");
                 }
 
                 foreach (int index in modsToShow)
@@ -1534,7 +1576,12 @@ namespace ApsCalcUI
                 writer.WriteLine("Loader volume");
                 writer.WriteLine("Cooler volume");
                 writer.WriteLine("Charger volume");
+                writer.WriteLine("Engine volume");
+                writer.WriteLine("Fuel access volume");
+                writer.WriteLine("Fuel storage volume");
                 writer.WriteLine("Recoil volume");
+                writer.WriteLine("Ammo access volume");
+                writer.WriteLine("Ammo storage volume");
                 writer.WriteLine("Total volume");
                 foreach (DamageType dt in dtToShow.Keys)
                 {
@@ -1544,10 +1591,18 @@ namespace ApsCalcUI
                     }
                 }
 
+                writer.WriteLine("Cost per shell");
                 writer.WriteLine("Loader cost");
                 writer.WriteLine("Cooler cost");
                 writer.WriteLine("Charger cost");
+                writer.WriteLine("Fuel burned");
+                writer.WriteLine("Engine cost");
+                writer.WriteLine("Fuel access cost");
+                writer.WriteLine("Fuel storage cost");
                 writer.WriteLine("Recoil cost");
+                writer.WriteLine("Ammo used");
+                writer.WriteLine("Ammo access cost");
+                writer.WriteLine("Ammo storage cost");
                 writer.WriteLine("Total cost");
                 foreach (DamageType dt in dtToShow.Keys)
                 {

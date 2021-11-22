@@ -513,7 +513,30 @@ namespace ApsCalcUI
                 {
                     testParameters.Labels = false;
                 }
-                testParameters.WriteToFile = true;
+
+                testParameters.TestInterval = (int)TestIntervalUD.Value;
+
+                if (GenericStorageButton.Checked)
+                {
+                    testParameters.StoragePerVolume = 500f;
+                    testParameters.StoragePerCost = 250f;
+                }
+                else if (CargoContainerStorageButton.Checked)
+                {
+                    testParameters.StoragePerVolume = 1000f;
+                    testParameters.StoragePerCost = 469.5652f;
+                }
+                else if (CoalStorageButton.Checked)
+                {
+                    testParameters.StoragePerVolume = 583.3333f;
+                    testParameters.StoragePerCost = 218.75f;
+                }
+
+                testParameters.Ppm = (float)EnginePpmUD.Value;
+                testParameters.Ppv = (float)EnginePpvUD.Value;
+                testParameters.Ppc = (float)EnginePpcUD.Value;
+
+                testParameters.Fuel = EngineFuelCB.Checked;
 
                 parameterList.Add(testParameters);
             }
@@ -573,7 +596,13 @@ namespace ApsCalcUI
                                     testParameters.ArmorScheme,
                                     testParameters.TestType,
                                     testParameters.Labels,
-                                    testParameters.WriteToFile
+                                    testParameters.TestInterval,
+                                    testParameters.StoragePerVolume,
+                                    testParameters.StoragePerCost,
+                                    testParameters.Ppm,
+                                    testParameters.Ppv,
+                                    testParameters.Ppc,
+                                    testParameters.Fuel
                                     );
 
 
@@ -607,7 +636,13 @@ namespace ApsCalcUI
                                     testParameters.ArmorScheme,
                                     testParameters.TestType,
                                     testParameters.Labels,
-                                    testParameters.WriteToFile
+                                    testParameters.TestInterval,
+                                    testParameters.StoragePerVolume,
+                                    testParameters.StoragePerCost,
+                                    testParameters.Ppm,
+                                    testParameters.Ppv,
+                                    testParameters.Ppc,
+                                    testParameters.Fuel
                                 );
 
                             calcFinal.FindTopShellsInList(shellBag);
@@ -642,7 +677,13 @@ namespace ApsCalcUI
                                 testParameters.ArmorScheme,
                                 testParameters.TestType,
                                 testParameters.Labels,
-                                testParameters.WriteToFile
+                                testParameters.TestInterval,
+                                testParameters.StoragePerVolume,
+                                testParameters.StoragePerCost,
+                                testParameters.Ppm,
+                                testParameters.Ppv,
+                                testParameters.Ppc,
+                                testParameters.Fuel
                                 );
 
                             calcLocal.ShellTest();
@@ -675,7 +716,13 @@ namespace ApsCalcUI
                                 testParameters.ArmorScheme,
                                 testParameters.TestType,
                                 testParameters.Labels,
-                                testParameters.WriteToFile
+                                testParameters.TestInterval,
+                                testParameters.StoragePerVolume,
+                                testParameters.StoragePerCost,
+                                testParameters.Ppm,
+                                testParameters.Ppv,
+                                testParameters.Ppc,
+                                testParameters.Fuel
                             );
 
                         calcFinal.FindTopShellsInList(shellBag);
@@ -695,6 +742,18 @@ namespace ApsCalcUI
                 AddParametersButton.Enabled = true;
                 RunButton.Enabled = true;
                 RunButton.Text = "Run Queued Tests";
+            }
+        }
+
+        private void MaxDrawUD_ValueChanged(object sender, EventArgs e)
+        {
+            if (MaxDrawUD.Value > 0)
+            {
+                EnginePanel.Enabled = true;
+            }
+            else
+            {
+                EnginePanel.Enabled = false;
             }
         }
     }

@@ -64,6 +64,19 @@ namespace ApsCalcUI
             this.VariableModulesLabel = new System.Windows.Forms.Label();
             this.LabelsCB = new System.Windows.Forms.CheckBox();
             this.MinLengthUD = new System.Windows.Forms.NumericUpDown();
+            this.TestIntervalUD = new System.Windows.Forms.NumericUpDown();
+            this.GenericStorageButton = new System.Windows.Forms.RadioButton();
+            this.CargoContainerStorageButton = new System.Windows.Forms.RadioButton();
+            this.CoalStorageButton = new System.Windows.Forms.RadioButton();
+            this.StoragePanelLabel = new System.Windows.Forms.Label();
+            this.EnginePanel = new System.Windows.Forms.Panel();
+            this.EngineFuelCB = new System.Windows.Forms.CheckBox();
+            this.EnginePpcLabel = new System.Windows.Forms.Label();
+            this.EnginePpvLabel = new System.Windows.Forms.Label();
+            this.EnginePpcUD = new System.Windows.Forms.NumericUpDown();
+            this.EnginePpvUD = new System.Windows.Forms.NumericUpDown();
+            this.EnginePpmLabel = new System.Windows.Forms.Label();
+            this.EnginePpmUD = new System.Windows.Forms.NumericUpDown();
             this.BarrelCountLabel = new System.Windows.Forms.Label();
             this.MinGaugeLabel = new System.Windows.Forms.Label();
             this.MaxGaugeLabel = new System.Windows.Forms.Label();
@@ -107,6 +120,9 @@ namespace ApsCalcUI
             this.RunErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.TestsInQueueLabel = new System.Windows.Forms.Label();
             this.MinLengthLabel = new System.Windows.Forms.Label();
+            this.TestIntervalLabel = new System.Windows.Forms.Label();
+            this.StoragePanel = new System.Windows.Forms.Panel();
+            this.fontDialog1 = new System.Windows.Forms.FontDialog();
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).BeginInit();
@@ -126,6 +142,11 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.MinVelocityUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MinRangeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MinLengthUD)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TestIntervalUD)).BeginInit();
+            this.EnginePanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.EnginePpcUD)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EnginePpvUD)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EnginePpmUD)).BeginInit();
             this.BasePanel.SuspendLayout();
             this.FixedModulesPanel.SuspendLayout();
             this.VariableModulesPanel.SuspendLayout();
@@ -134,6 +155,7 @@ namespace ApsCalcUI
             this.TargetSchemePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.QueueErrorProvider)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.RunErrorProvider)).BeginInit();
+            this.StoragePanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // BarrelCountDD
@@ -473,6 +495,7 @@ namespace ApsCalcUI
             this.MaxDrawUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.MaxDrawUD.ThousandsSeparator = true;
             this.ToolTip.SetToolTip(this.MaxDrawUD, "Max 200,000");
+            this.MaxDrawUD.ValueChanged += new System.EventHandler(this.MaxDrawUD_ValueChanged);
             // 
             // MaxRecoilUD
             // 
@@ -607,6 +630,216 @@ namespace ApsCalcUI
             this.MinLengthUD.ThousandsSeparator = true;
             this.ToolTip.SetToolTip(this.MinLengthUD, "Min shell length, exclusive.\r\nMax 7,999");
             this.MinLengthUD.ValueChanged += new System.EventHandler(this.MinLengthUD_ValueChanged);
+            // 
+            // TestIntervalUD
+            // 
+            this.TestIntervalUD.Location = new System.Drawing.Point(723, 34);
+            this.TestIntervalUD.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.TestIntervalUD.Name = "TestIntervalUD";
+            this.TestIntervalUD.Size = new System.Drawing.Size(65, 23);
+            this.TestIntervalUD.TabIndex = 38;
+            this.TestIntervalUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.ToolTip.SetToolTip(this.TestIntervalUD, "Test interval in minutes.\r\nHigher values put more weight on running cost versus f" +
+        "ixed costs.\r\nAn interval of 0 minutes will ignore the cost of the shells and acc" +
+        "ount only for the cost of the gun.");
+            this.TestIntervalUD.Value = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            // 
+            // GenericStorageButton
+            // 
+            this.GenericStorageButton.AutoSize = true;
+            this.GenericStorageButton.Checked = true;
+            this.GenericStorageButton.Location = new System.Drawing.Point(14, 19);
+            this.GenericStorageButton.Name = "GenericStorageButton";
+            this.GenericStorageButton.Size = new System.Drawing.Size(65, 19);
+            this.GenericStorageButton.TabIndex = 1;
+            this.GenericStorageButton.TabStop = true;
+            this.GenericStorageButton.Text = "Generic";
+            this.ToolTip.SetToolTip(this.GenericStorageButton, "Everything in the Material Storage Tab besides Coal and Cargo Container.");
+            this.GenericStorageButton.UseVisualStyleBackColor = true;
+            // 
+            // CargoContainerStorageButton
+            // 
+            this.CargoContainerStorageButton.AutoSize = true;
+            this.CargoContainerStorageButton.Location = new System.Drawing.Point(14, 37);
+            this.CargoContainerStorageButton.Name = "CargoContainerStorageButton";
+            this.CargoContainerStorageButton.Size = new System.Drawing.Size(112, 19);
+            this.CargoContainerStorageButton.TabIndex = 2;
+            this.CargoContainerStorageButton.TabStop = true;
+            this.CargoContainerStorageButton.Text = "Cargo Container";
+            this.ToolTip.SetToolTip(this.CargoContainerStorageButton, "Cargo container");
+            this.CargoContainerStorageButton.UseVisualStyleBackColor = true;
+            // 
+            // CoalStorageButton
+            // 
+            this.CoalStorageButton.AutoSize = true;
+            this.CoalStorageButton.Location = new System.Drawing.Point(14, 54);
+            this.CoalStorageButton.Name = "CoalStorageButton";
+            this.CoalStorageButton.Size = new System.Drawing.Size(49, 19);
+            this.CoalStorageButton.TabIndex = 3;
+            this.CoalStorageButton.TabStop = true;
+            this.CoalStorageButton.Text = "Coal";
+            this.ToolTip.SetToolTip(this.CoalStorageButton, "Coal pile or Coal pile large");
+            this.CoalStorageButton.UseVisualStyleBackColor = true;
+            // 
+            // StoragePanelLabel
+            // 
+            this.StoragePanelLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.StoragePanelLabel.AutoSize = true;
+            this.StoragePanelLabel.Location = new System.Drawing.Point(43, 3);
+            this.StoragePanelLabel.Name = "StoragePanelLabel";
+            this.StoragePanelLabel.Size = new System.Drawing.Size(74, 15);
+            this.StoragePanelLabel.TabIndex = 0;
+            this.StoragePanelLabel.Text = "Storage Type";
+            this.StoragePanelLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.ToolTip.SetToolTip(this.StoragePanelLabel, "Type of containers used to hold materials.");
+            // 
+            // EnginePanel
+            // 
+            this.EnginePanel.Controls.Add(this.EngineFuelCB);
+            this.EnginePanel.Controls.Add(this.EnginePpcLabel);
+            this.EnginePanel.Controls.Add(this.EnginePpvLabel);
+            this.EnginePanel.Controls.Add(this.EnginePpcUD);
+            this.EnginePanel.Controls.Add(this.EnginePpvUD);
+            this.EnginePanel.Controls.Add(this.EnginePpmLabel);
+            this.EnginePanel.Controls.Add(this.EnginePpmUD);
+            this.EnginePanel.Enabled = false;
+            this.EnginePanel.Location = new System.Drawing.Point(629, 145);
+            this.EnginePanel.Name = "EnginePanel";
+            this.EnginePanel.Size = new System.Drawing.Size(159, 79);
+            this.EnginePanel.TabIndex = 41;
+            this.ToolTip.SetToolTip(this.EnginePanel, "Engine stats. Used for railguns.\r\nAdd rail draw to edit.");
+            // 
+            // EngineFuelCB
+            // 
+            this.EngineFuelCB.AutoSize = true;
+            this.EngineFuelCB.Location = new System.Drawing.Point(32, 9);
+            this.EngineFuelCB.Name = "EngineFuelCB";
+            this.EngineFuelCB.Size = new System.Drawing.Size(87, 19);
+            this.EngineFuelCB.TabIndex = 6;
+            this.EngineFuelCB.Text = "Fuel engine";
+            this.ToolTip.SetToolTip(this.EngineFuelCB, "Whether the engine requires special Fuel storage.\r\nThis includes Fuel Engines and" +
+        " Custom Jet Engines.\r\nAdd rail draw to edit.");
+            this.EngineFuelCB.UseVisualStyleBackColor = true;
+            // 
+            // EnginePpcLabel
+            // 
+            this.EnginePpcLabel.AutoSize = true;
+            this.EnginePpcLabel.Location = new System.Drawing.Point(113, 35);
+            this.EnginePpcLabel.Name = "EnginePpcLabel";
+            this.EnginePpcLabel.Size = new System.Drawing.Size(29, 15);
+            this.EnginePpcLabel.TabIndex = 5;
+            this.EnginePpcLabel.Text = "PPC";
+            // 
+            // EnginePpvLabel
+            // 
+            this.EnginePpvLabel.AutoSize = true;
+            this.EnginePpvLabel.Location = new System.Drawing.Point(65, 35);
+            this.EnginePpvLabel.Name = "EnginePpvLabel";
+            this.EnginePpvLabel.Size = new System.Drawing.Size(28, 15);
+            this.EnginePpvLabel.TabIndex = 4;
+            this.EnginePpvLabel.Text = "PPV";
+            // 
+            // EnginePpcUD
+            // 
+            this.EnginePpcUD.DecimalPlaces = 2;
+            this.EnginePpcUD.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.EnginePpcUD.Location = new System.Drawing.Point(108, 53);
+            this.EnginePpcUD.Maximum = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            this.EnginePpcUD.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.EnginePpcUD.Name = "EnginePpcUD";
+            this.EnginePpcUD.Size = new System.Drawing.Size(45, 23);
+            this.EnginePpcUD.TabIndex = 3;
+            this.EnginePpcUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.ToolTip.SetToolTip(this.EnginePpcUD, "Engine Power Per Cost, for charging rails.\r\nMust be calculated manually.\r\n(Divide" +
+        " power output by Material Cost of the entire engine)\r\nAdd rail draw to edit.");
+            this.EnginePpcUD.Value = new decimal(new int[] {
+            61,
+            0,
+            0,
+            65536});
+            // 
+            // EnginePpvUD
+            // 
+            this.EnginePpvUD.DecimalPlaces = 1;
+            this.EnginePpvUD.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.EnginePpvUD.Location = new System.Drawing.Point(57, 53);
+            this.EnginePpvUD.Maximum = new decimal(new int[] {
+            200,
+            0,
+            0,
+            0});
+            this.EnginePpvUD.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.EnginePpvUD.Name = "EnginePpvUD";
+            this.EnginePpvUD.Size = new System.Drawing.Size(45, 23);
+            this.EnginePpvUD.TabIndex = 2;
+            this.EnginePpvUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.ToolTip.SetToolTip(this.EnginePpvUD, "Engine Power Per Volume, for charging rails.\r\nAdd rail draw to edit.");
+            this.EnginePpvUD.Value = new decimal(new int[] {
+            882,
+            0,
+            0,
+            65536});
+            // 
+            // EnginePpmLabel
+            // 
+            this.EnginePpmLabel.AutoSize = true;
+            this.EnginePpmLabel.Location = new System.Drawing.Point(11, 35);
+            this.EnginePpmLabel.Name = "EnginePpmLabel";
+            this.EnginePpmLabel.Size = new System.Drawing.Size(32, 15);
+            this.EnginePpmLabel.TabIndex = 1;
+            this.EnginePpmLabel.Text = "PPM";
+            // 
+            // EnginePpmUD
+            // 
+            this.EnginePpmUD.Location = new System.Drawing.Point(5, 53);
+            this.EnginePpmUD.Maximum = new decimal(new int[] {
+            1500,
+            0,
+            0,
+            0});
+            this.EnginePpmUD.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.EnginePpmUD.Name = "EnginePpmUD";
+            this.EnginePpmUD.Size = new System.Drawing.Size(45, 23);
+            this.EnginePpmUD.TabIndex = 0;
+            this.EnginePpmUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.ToolTip.SetToolTip(this.EnginePpmUD, "Engine Power Per Material, for charging rails.\r\nAdd rail draw to edit.");
+            this.EnginePpmUD.Value = new decimal(new int[] {
+            6757,
+            0,
+            0,
+            65536});
             // 
             // BarrelCountLabel
             // 
@@ -1014,11 +1247,35 @@ namespace ApsCalcUI
             this.MinLengthLabel.TabIndex = 36;
             this.MinLengthLabel.Text = "Min Length (mm)";
             // 
+            // TestIntervalLabel
+            // 
+            this.TestIntervalLabel.AutoSize = true;
+            this.TestIntervalLabel.Location = new System.Drawing.Point(621, 38);
+            this.TestIntervalLabel.Name = "TestIntervalLabel";
+            this.TestIntervalLabel.Size = new System.Drawing.Size(101, 15);
+            this.TestIntervalLabel.TabIndex = 39;
+            this.TestIntervalLabel.Text = "Test Interval (min)";
+            // 
+            // StoragePanel
+            // 
+            this.StoragePanel.Controls.Add(this.CoalStorageButton);
+            this.StoragePanel.Controls.Add(this.CargoContainerStorageButton);
+            this.StoragePanel.Controls.Add(this.GenericStorageButton);
+            this.StoragePanel.Controls.Add(this.StoragePanelLabel);
+            this.StoragePanel.Location = new System.Drawing.Point(629, 63);
+            this.StoragePanel.Name = "StoragePanel";
+            this.StoragePanel.Size = new System.Drawing.Size(159, 76);
+            this.StoragePanel.TabIndex = 40;
+            // 
             // ParameterInput
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 583);
+            this.Controls.Add(this.EnginePanel);
+            this.Controls.Add(this.StoragePanel);
+            this.Controls.Add(this.TestIntervalLabel);
+            this.Controls.Add(this.TestIntervalUD);
             this.Controls.Add(this.MinLengthUD);
             this.Controls.Add(this.MinLengthLabel);
             this.Controls.Add(this.TestsInQueueLabel);
@@ -1079,6 +1336,12 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.MinVelocityUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MinRangeUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MinLengthUD)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TestIntervalUD)).EndInit();
+            this.EnginePanel.ResumeLayout(false);
+            this.EnginePanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.EnginePpcUD)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EnginePpvUD)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EnginePpmUD)).EndInit();
             this.BasePanel.ResumeLayout(false);
             this.BasePanel.PerformLayout();
             this.FixedModulesPanel.ResumeLayout(false);
@@ -1090,6 +1353,8 @@ namespace ApsCalcUI
             this.TargetSchemePanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.QueueErrorProvider)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.RunErrorProvider)).EndInit();
+            this.StoragePanel.ResumeLayout(false);
+            this.StoragePanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1173,6 +1438,22 @@ namespace ApsCalcUI
         private System.Windows.Forms.Label TestsInQueueLabel;
         private System.Windows.Forms.NumericUpDown MinLengthUD;
         private System.Windows.Forms.Label MinLengthLabel;
+        private System.Windows.Forms.NumericUpDown TestIntervalUD;
+        private System.Windows.Forms.Label TestIntervalLabel;
+        private System.Windows.Forms.Panel StoragePanel;
+        private System.Windows.Forms.Label StoragePanelLabel;
+        private System.Windows.Forms.RadioButton CoalStorageButton;
+        private System.Windows.Forms.RadioButton CargoContainerStorageButton;
+        private System.Windows.Forms.RadioButton GenericStorageButton;
+        private System.Windows.Forms.Panel EnginePanel;
+        private System.Windows.Forms.Label EnginePpcLabel;
+        private System.Windows.Forms.Label EnginePpvLabel;
+        private System.Windows.Forms.NumericUpDown EnginePpcUD;
+        private System.Windows.Forms.NumericUpDown EnginePpvUD;
+        private System.Windows.Forms.Label EnginePpmLabel;
+        private System.Windows.Forms.NumericUpDown EnginePpmUD;
+        private System.Windows.Forms.CheckBox EngineFuelCB;
+        private System.Windows.Forms.FontDialog fontDialog1;
     }
 }
 

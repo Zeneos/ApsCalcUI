@@ -30,7 +30,13 @@ namespace ApsCalcUI
         public Scheme ArmorScheme;
         public int TestType;
         public bool Labels;
-        public bool WriteToFile;
+        public int TestInterval;
+        public float StoragePerVolume;
+        public float StoragePerCost;
+        public float Ppm;
+        public float Ppv;
+        public float Ppc;
+        public bool Fuel;
     }
 
     static class Program
