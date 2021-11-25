@@ -130,7 +130,6 @@ namespace ApsCalcUI
             Fuel = fuel;
         }
 
-
         public int BarrelCount { get; }
         public float Gauge { get; }
         public List<int> HeadList { get; }
@@ -1220,55 +1219,66 @@ namespace ApsCalcUI
             // Determine module and damage types to show
             Dictionary<DamageType, bool> dtToShow = new()
             {
-                { DamageType.Kinetic, false },
+                { DamageType.Kinetic, true },
                 { DamageType.Emp, false },
                 { DamageType.FlaK, false },
                 { DamageType.Frag, false },
                 { DamageType.HE, false },
+                { DamageType.HEAT, false },
                 { DamageType.Disruptor, false }
             };
 
             List<int> modsToShow = new();
 
-            dtToShow[DamageType] = true; // Always show selected damage type
-            if (FixedModuleCounts[0] > 0 || VariableModuleIndices.Contains(0))
+            for (int index = 0; index < FixedModuleCounts.Length; index++)
             {
-                dtToShow[DamageType.Kinetic] = true;
-                modsToShow.Add(0);
-            }
-            if (FixedModuleCounts[1] > 0 || VariableModuleIndices.Contains(1))
-            {
-                dtToShow[DamageType.Kinetic] = true;
-                modsToShow.Add(1);
-            }
-            if (FixedModuleCounts[2] > 0 || VariableModuleIndices.Contains(2))
-            {
-                dtToShow[DamageType.Emp] = true;
-                modsToShow.Add(2);
-            }
-            if (FixedModuleCounts[3] > 0 || VariableModuleIndices.Contains(3))
-            {
-                dtToShow[DamageType.FlaK] = true;
-                modsToShow.Add(3);
-            }
-            if (FixedModuleCounts[4] > 0 || VariableModuleIndices.Contains(4))
-            {
-                dtToShow[DamageType.Frag] = true;
-                modsToShow.Add(4);
-            }
-            if (FixedModuleCounts[5] > 0 || VariableModuleIndices.Contains(5))
-            {
-                dtToShow[DamageType.HE] = true;
-                modsToShow.Add(5);
-            }
-
-            // Check non-damage body mods for inclusion
-            for (int index = 6; index < Module.AllModules.Length; index++)
-            {
-                if (Module.AllModules[index].ModulePosition == Module.Position.Middle &&
-                    (FixedModuleCounts[index] > 0 || VariableModuleIndices.Contains(index)))
+                if (FixedModuleCounts[index] > 0 || VariableModuleIndices.Contains(index))
                 {
                     modsToShow.Add(index);
+                    if (Module.AllModules[index] == Module.EmpBody)
+                    {
+                        dtToShow[DamageType.Emp] = true;
+                    }
+                    else if (Module.AllModules[index] == Module.FlaKBody)
+                    {
+                        dtToShow[DamageType.FlaK] = true;
+                    }
+                    else if (Module.AllModules[index] == Module.FragBody)
+                    {
+                        dtToShow[DamageType.Frag] = true;
+                    }
+                    else if (Module.AllModules[index] == Module.HEBody)
+                    {
+                        dtToShow[DamageType.HE] = true;
+                    }
+                }
+            }
+
+            foreach (int index in HeadList)
+            {
+                if (Module.AllModules[index] == Module.EmpHead)
+                {
+                    dtToShow[DamageType.Emp] = true;
+                }
+                else if (Module.AllModules[index] == Module.FlaKHead)
+                {
+                    dtToShow[DamageType.FlaK] = true;
+                }
+                else if (Module.AllModules[index] == Module.FragHead)
+                {
+                    dtToShow[DamageType.Frag] = true;
+                }
+                else if (Module.AllModules[index] == Module.HEHead)
+                {
+                    dtToShow[DamageType.HE] = true;
+                }
+                else if (Module.AllModules[index] == Module.ShapedChargeHead)
+                {
+                    dtToShow[DamageType.HEAT] = true;
+                }
+                else if (Module.AllModules[index] == Module.Disruptor)
+                {
+                    dtToShow[DamageType.Disruptor] = true;
                 }
             }
 
@@ -1483,6 +1493,42 @@ namespace ApsCalcUI
 
             foreach (KeyValuePair<string, Shell> topShell in TopDpsShells)
             {
+                // Calculate all damage and DPS -- including those not used for optimizing
+                foreach (DamageType dt in dtToShow.Keys)
+                {
+                    if (dtToShow[dt] && topShell.Value.IsBelt)
+                    {
+                        topShell.Value.CalculateDamageByType(dt);
+                        topShell.Value.CalculateDpsByTypeBelt(
+                            dt,
+                            TargetAC,
+                            TestIntervalSeconds,
+                            StoragePerVolume,
+                            StoragePerCost,
+                            Ppm,
+                            Ppv,
+                            Ppc,
+                            Fuel,
+                            TargetArmorScheme
+                            );
+                    }
+                    else if (dtToShow[dt])
+                    {
+                        topShell.Value.CalculateDamageByType(dt);
+                        topShell.Value.CalculateDpsByType(
+                            dt,
+                            TargetAC,
+                            TestIntervalSeconds,
+                            StoragePerVolume,
+                            StoragePerCost,
+                            Ppm,
+                            Ppv,
+                            Ppc,
+                            Fuel,
+                            TargetArmorScheme
+                            );
+                    }
+                }
                 writer.WriteLine("\n");
                 writer.WriteLine(topShell.Key);
                 topShell.Value.GetModuleCounts();
