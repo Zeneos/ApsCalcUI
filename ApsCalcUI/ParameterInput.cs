@@ -885,5 +885,17 @@ namespace ApsCalcUI
         {
             UpdateModuleCounts();
         }
+
+        private void ModdedMaxGaugeCB_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ModdedMaxGaugeCB.Checked)
+            {
+                MaxGaugeUD.Maximum = 1000;
+            }
+            else
+            {
+                MaxGaugeUD.Maximum = 500;
+            }
+        }
     }
 }

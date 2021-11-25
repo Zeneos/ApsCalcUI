@@ -126,6 +126,7 @@ namespace ApsCalcUI
             this.TestIntervalLabel = new System.Windows.Forms.Label();
             this.StoragePanel = new System.Windows.Forms.Panel();
             this.fontDialog1 = new System.Windows.Forms.FontDialog();
+            this.ModdedMaxGaugeCB = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).BeginInit();
@@ -174,7 +175,7 @@ namespace ApsCalcUI
             // 
             // HeadModulesLabel
             // 
-            this.HeadModulesLabel.Location = new System.Drawing.Point(12, 78);
+            this.HeadModulesLabel.Location = new System.Drawing.Point(12, 117);
             this.HeadModulesLabel.Name = "HeadModulesLabel";
             this.HeadModulesLabel.Size = new System.Drawing.Size(205, 15);
             this.HeadModulesLabel.TabIndex = 7;
@@ -928,9 +929,9 @@ namespace ApsCalcUI
             // HeadModulesCL
             // 
             this.HeadModulesCL.FormattingEnabled = true;
-            this.HeadModulesCL.Location = new System.Drawing.Point(13, 97);
+            this.HeadModulesCL.Location = new System.Drawing.Point(13, 133);
             this.HeadModulesCL.Name = "HeadModulesCL";
-            this.HeadModulesCL.Size = new System.Drawing.Size(205, 364);
+            this.HeadModulesCL.Size = new System.Drawing.Size(205, 328);
             this.HeadModulesCL.TabIndex = 3;
             // 
             // BasePanel
@@ -1308,11 +1309,24 @@ namespace ApsCalcUI
             this.StoragePanel.Size = new System.Drawing.Size(159, 76);
             this.StoragePanel.TabIndex = 40;
             // 
+            // ModdedMaxGaugeCB
+            // 
+            this.ModdedMaxGaugeCB.AutoSize = true;
+            this.ModdedMaxGaugeCB.Location = new System.Drawing.Point(133, 68);
+            this.ModdedMaxGaugeCB.Name = "ModdedMaxGaugeCB";
+            this.ModdedMaxGaugeCB.Size = new System.Drawing.Size(124, 19);
+            this.ModdedMaxGaugeCB.TabIndex = 43;
+            this.ModdedMaxGaugeCB.Text = "1000mm APS Mod";
+            this.ToolTip.SetToolTip(this.ModdedMaxGaugeCB, "Check if using the 1000mm APS mod.");
+            this.ModdedMaxGaugeCB.UseVisualStyleBackColor = true;
+            this.ModdedMaxGaugeCB.CheckedChanged += new System.EventHandler(this.ModdedMaxGaugeCB_CheckedChanged);
+            // 
             // ParameterInput
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 583);
+            this.Controls.Add(this.ModdedMaxGaugeCB);
             this.Controls.Add(this.PendepthCB);
             this.Controls.Add(this.EnginePanel);
             this.Controls.Add(this.StoragePanel);
@@ -1497,6 +1511,7 @@ namespace ApsCalcUI
         private System.Windows.Forms.CheckBox FixedTimedFuzeCB;
         private System.Windows.Forms.CheckBox FixedPendepthFuzeCB;
         private System.Windows.Forms.CheckBox FixedGravCompCB;
+        private System.Windows.Forms.CheckBox ModdedMaxGaugeCB;
     }
 }
 
