@@ -21,6 +21,9 @@ Maximum Gauge: largest gauge to be tested, in mm. Must be greater than or
 equal than Minimum Gauge and less than or equal to 500 mm (or the max allowed
 by the barrel count, whichever is less).
 
+1000mm APS Mod: if checked, allows the max gauge to be set as high as 1000mm.
+This gauge is not possible ingame without mods.
+
 Head Indices: modules to be put at the front of the shells to be tested. The
 frontmost module on a shell is weighted in certain calculations, and can have
 a large effect on shell performance. Some heads, like the Disruptor Conduit,
@@ -34,9 +37,7 @@ base modules add functionality or modify performance, and in general I
 recommend using some kind of base; test with Base Bleeder versus no base if
 no additional functionality is required.
 
-Fixed Modules: modules to be included with every shell. Primarily meant for
-fuzes. If testing for pendepth (APHE, APF, &c), adding a single fixed chem
-warhead will save a small amount of time, since at least one will be needed.
+Fixed Modules: modules to be included with every shell.
 n.b. The input validation for fixed modules is not perfect. Please double-
 check to ensure the total fixed module count adds up to 18 or less (17 if
 using a base).
@@ -74,13 +75,19 @@ in its "lifetime", after which it will become useless. Particularly small
 shells may have an effective range of less than 1 km, and may not be suitable
 for use on certain craft.
 
+Pendepth: checking the "Pendepth" checkbox enables the Target Armor Scheme
+controls. With the box checked, the optimizer will only count shells which
+are capable of destroying the target armor configuration using either kinetic
+or thump damage.
+
 Damage Type: damage type to optimize.
   Kinetic. Prompts entry of target AC value(s). Note that more than one AC
   value can be entered; each will be run as a separate test.
   
   EMP, FlaK, Frag, and HE speak for themselves, but note that it is not
   possible to convert between the damage types due to the complex damage
-  application models used for each type.
+  application models used for each type. Frag damage is shown as total 
+  damage (multiply damage per frag by frag count) at 180° frag angle.
 
   HEAT. Calculates HEAT damage for a shell. Note that the resulting
   configurations will be optimal for every pen metric and special factor,
@@ -88,18 +95,10 @@ Damage Type: damage type to optimize.
   what is shown ingame for HEAT shells with a special factor of 1 and a
   penetration metric of 0.5.
   
-  Pendepth. Prompts entry of target armor configuration. Optimizes for a 
-  weighted average of FlaK, Frag, and HE damage, according to how many 
-  modules of each type are present. If the user sets the fixed FlaK body 
-  count to 0, the optimizer will ignore FlaK damage. This means it is 
-  possible to use any combination of the three damage types. Only shells 
-  capable of penetrating the given armor scheme will be counted.
-  
   Shield Disruptor. Automatically replaces user-given Head List with the
   Disruptor Conduit Head, which is required for shield disruption. Measures
   EMP damage and shield reduction percentage (displayed in the printout as a
   decimal, where 1 = 100% shield strength reduction)
-
 
 
 Test Type: whether to optimize for DPS per Volume or DPS per Cost. "Volume"
@@ -140,19 +139,19 @@ more flexible but slightly less efficient; coal has higher health and armor
 but is the least efficient at storage.
 
 PPM: Power Per Material of the engine which will supply power for railguns.
-
-Shown ingame on the engine UI.
+Shown ingame on the engine UI. Disabled unless Max Rail Draw > 0.
 
 PPV: Power Per Volume of the engine which will supply power for railguns.
-Shown ingame on the engine UI.
+Shown ingame on the engine UI. Disabled unless Max Rail Draw > 0.
 
 PPC: Power Per Cost of the engine which will supply power for railguns.
 NOT SHOWN INGAME -- must be calculated manually by dividing power output by
-block cost.
+block cost. Disabled unless Max Rail Draw > 0.
 
 Fuel Checkbox: Check if the engine supplyning power for railguns is of a type
 which requires Fuel access (as shown on the default tab of the V menu). This
-includes Fuel engines and Custom jet engines.
+includes Fuel engines and Custom jet engines. Disabled unless Max Rail Draw
+> 0.
 
 
 ---- OPTIMIZER OUTPUT ----
@@ -192,8 +191,6 @@ Damage:
 		applying AC reduction.
 	All chemical shells will show damage of their respective types.
 	Disruptor shells will show EMP damage and shield reduction (decimal%).
-	Pendepth shells will show "pendepth damage", which is a weighted
-		average of the constituent chemical warhead types.
 
 Reload time: shell reload speed per intake, in seconds.
 
