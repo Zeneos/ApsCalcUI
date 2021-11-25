@@ -27,7 +27,6 @@ namespace PenCalc
             while (true)
             {
                 string input;
-                int layerIndex;
                 for (int i = 0; i < Layer.AllLayers.Length; i++)
                 {
                     Console.WriteLine(i + " : " + Layer.AllLayers[i].Name);
@@ -38,7 +37,7 @@ namespace PenCalc
                 {
                     break;
                 }
-                if (int.TryParse(input, out layerIndex))
+                if (int.TryParse(input, out int layerIndex))
                 {
                     if (layerIndex < 0 || layerIndex > Layer.AllLayers.Length)
                     {
@@ -63,7 +62,7 @@ namespace PenCalc
 
 
         /// <summary>
-        /// Calculates the AC of each layer, taking into account structural bonuses
+        /// Calculates AC of each layer, taking into account structural bonuses
         /// </summary>
         public void CalculateLayerAC()
         {
@@ -88,24 +87,20 @@ namespace PenCalc
 
 
         /// <summary>
-        /// Retrieves the KD required to pen the armor at the given AP
+        /// Retrieves KD required to pen armor at given AP
         /// </summary>
-        /// <param name="ap">AP of the incoming shell</param>
+        /// <param name="ap">AP of incoming shell</param>
         /// <returns>Required KD to pen</returns>
         public float GetRequiredKD(float ap)
         {
             float requiredKD = 0;
 
-            if (ap == 0)
-            {
-                requiredKD = float.MaxValue;
-            }
-            else
+            if (LayerList.Count > 0)
             {
                 foreach (Layer layer in LayerList)
                 {
                     float kdMultiplier = Math.Min(1, ap / layer.AC);
-                    if (kdMultiplier >= 1)
+                    if (kdMultiplier == 1)
                     {
                         requiredKD += layer.HP;
                     }
@@ -115,7 +110,36 @@ namespace PenCalc
                     }
                 }
             }
+
             return requiredKD;
+        }
+
+
+        /// <summary>
+        /// Calculates thump damage required to destroy all armor at given AP
+        /// </summary>
+        /// <param name="ap">AP of incoming shell</param>
+        /// <returns>Required thump damage to destroy entire scheme</returns>
+        public float GetRequiredThump(float ap)
+        {
+            float requiredTD = 0;
+
+            if (LayerList.Count > 0)
+            {
+                foreach (Layer layer in LayerList)
+                {
+                    float tdMultiplier = Math.Min(1, ap / layer.RawAC);
+                    if (tdMultiplier == 1)
+                    {
+                        requiredTD += layer.HP;
+                    }
+                    else
+                    {
+                        requiredTD += layer.HP / tdMultiplier;
+                    }
+                }
+            }
+            return requiredTD;
         }
     }
 }

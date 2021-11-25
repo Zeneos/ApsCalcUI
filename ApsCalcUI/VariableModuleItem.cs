@@ -13,13 +13,13 @@ namespace ApsCalcUI
 
 
         /// <summary>
-        /// Creates a list of all body modules
+        /// Creates a list of all variable modules
         /// </summary>
         public static IEnumerable<VariableModuleItem> GenerateBodyList()
         {
             for (int index = 0; index < Module.AllModules.Length; index++)
             {
-                if (Module.AllModules[index].ModulePosition == Module.Position.Middle)
+                if (Module.AllModules[index].CanBeVariable)
                 {
                     VariableModuleItem varMod = new()
                     {

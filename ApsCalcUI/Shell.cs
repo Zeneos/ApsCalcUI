@@ -23,14 +23,16 @@ namespace ApsCalcUI
             {
                 _gauge = value;
                 GaugeCoefficient = MathF.Pow(Gauge * Gauge * Gauge / 125000000f, 0.6f);
+                HECoefficient = MathF.Pow(Gauge / 500f, 1.8f);
             }
         }
         public float GaugeCoefficient { get; set; } // Expensive to calculate and used in several formulae
+        public float HECoefficient { get; set; } // Used for He and HE-derived damage
 
         public bool IsBelt;
 
         // Keep counts of body modules.
-        public float[] BodyModuleCounts { get; set; } = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        public float[] BodyModuleCounts { get; set; } = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         public float ModuleCountTotal { get; set; }
 
 
@@ -91,7 +93,6 @@ namespace ApsCalcUI
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
             { DamageType.HEAT, 0 },
-            { DamageType.Pendepth, 0 },
             { DamageType.Disruptor, 0 }
         };
 
@@ -103,7 +104,6 @@ namespace ApsCalcUI
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
             { DamageType.HEAT, 0 },
-            { DamageType.Pendepth, 0 },
             { DamageType.Disruptor, 0 }
         };
 
@@ -115,7 +115,6 @@ namespace ApsCalcUI
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
             { DamageType.HEAT, 0 },
-            { DamageType.Pendepth, 0 },
             { DamageType.Disruptor, 0 }
         };
 
@@ -127,7 +126,6 @@ namespace ApsCalcUI
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
             { DamageType.HEAT, 0 },
-            { DamageType.Pendepth, 0 },
             { DamageType.Disruptor, 0 }
         };
 
@@ -871,13 +869,24 @@ namespace ApsCalcUI
         /// </summary>
         void CalculateEmpDamage()
         {
-            float empBodies = BodyModuleCounts[2];
+            // Get index of EMP body
+            int empIndex = int.MaxValue;
+            for (int i = 0; i < Module.AllModules.Length; i++)
+            {
+                if (Module.AllModules[i] == Module.EmpBody)
+                {
+                    empIndex = i;
+                    break;
+                }
+            }
+
+            float empBodies = BodyModuleCounts[empIndex];
 
             if (HeadModule == Module.EmpHead || HeadModule == Module.EmpBody || HeadModule == Module.Disruptor)
             {
                 empBodies++;
             }
-            DamageDict[DamageType.Emp] = GaugeCoefficient * empBodies * OverallChemModifier * 1500;
+            DamageDict[DamageType.Emp] = GaugeCoefficient * empBodies * OverallChemModifier * 1650;
         }
 
         /// <summary>
@@ -885,13 +894,27 @@ namespace ApsCalcUI
         /// </summary>
         void CalculateFlaKDamage()
         {
-            float flaKBodies = BodyModuleCounts[3];
+            // Get index of FlaK body
+            int flakIndex = int.MaxValue;
+            for (int i = 0; i < Module.AllModules.Length; i++)
+            {
+                if (Module.AllModules[i] == Module.FlaKBody)
+                {
+                    flakIndex = i;
+                    break;
+                }
+            }
+
+            float flaKBodies = BodyModuleCounts[flakIndex];
 
             if (HeadModule == Module.FlaKHead || HeadModule == Module.FlaKBody)
             {
                 flaKBodies++;
             }
-            DamageDict[DamageType.FlaK] = MathF.Pow(GaugeCoefficient * flaKBodies * 204 / 300, 0.9f) * OverallChemModifier * 3000;
+            DamageDict[DamageType.FlaK] =
+                OverallChemModifier
+                * 3000f
+                * MathF.Pow(MathF.Pow(Gauge / 500f, 1.8f) * flaKBodies * 0.704f, 0.9f);
         }
 
         /// <summary>
@@ -899,13 +922,24 @@ namespace ApsCalcUI
         /// </summary>
         void CalculateFragDamage()
         {
-            float fragBodies = BodyModuleCounts[4];
+            // Get index of frag body
+            int fragIndex = int.MaxValue;
+            for (int i = 0; i < Module.AllModules.Length; i++)
+            {
+                if (Module.AllModules[i] == Module.FragBody)
+                {
+                    fragIndex = i;
+                    break;
+                }
+            }
+
+            float fragBodies = BodyModuleCounts[fragIndex];
 
             if (HeadModule == Module.FragHead || HeadModule == Module.FragBody)
             {
                 fragBodies++;
             }
-            DamageDict[DamageType.Frag] = GaugeCoefficient * fragBodies * OverallChemModifier * 60000;
+            DamageDict[DamageType.Frag] = GaugeCoefficient * fragBodies * OverallChemModifier * 63600;
         }
 
         /// <summary>
@@ -913,7 +947,18 @@ namespace ApsCalcUI
         /// </summary>
         void CalculateHEDamage()
         {
-            float heBodies = BodyModuleCounts[5];
+            // Get index of HE body
+            int heIndex = int.MaxValue;
+            for (int i = 0; i < Module.AllModules.Length; i++)
+            {
+                if (Module.AllModules[i] == Module.HEBody)
+                {
+                    heIndex = i;
+                    break;
+                }
+            }
+
+            float heBodies = BodyModuleCounts[heIndex];
 
             if (HeadModule == Module.ShapedChargeHead)
             {
@@ -923,7 +968,10 @@ namespace ApsCalcUI
             {
                 heBodies++;
             }
-            DamageDict[DamageType.HE] = MathF.Pow(GaugeCoefficient * heBodies * 24 / 30, 0.9f) * OverallChemModifier * 3000;
+            DamageDict[DamageType.HE] = 
+                OverallChemModifier
+                * 3000f
+                * MathF.Pow(HECoefficient * heBodies * 0.88f, 0.9f);
         }
 
         /// <summary>
@@ -934,10 +982,30 @@ namespace ApsCalcUI
         {
             if (HeadModule == Module.ShapedChargeHead)
             {
-                float heBodies = BodyModuleCounts[5];
-                // Special heads count as HE body with special factor of 0.8
-                DamageDict[DamageType.HE] = MathF.Pow(GaugeCoefficient * 0.2f * 24 / 30, 0.9f) * OverallChemModifier * 3000;
-                DamageDict[DamageType.HEAT] = GaugeCoefficient * (heBodies + 0.8f) * 60000f * 0.35f / MathF.Sqrt(0.5f) * (2 + MathF.Sqrt(30)) / 16f;
+                // Get index of HE body
+                int heIndex = int.MaxValue;
+                for (int i = 0; i < Module.AllModules.Length; i++)
+                {
+                    if (Module.AllModules[i] == Module.HEBody)
+                    {
+                        heIndex = i;
+                        break;
+                    }
+                }
+
+                float heBodies = BodyModuleCounts[heIndex];
+                // Calculate HE damage assuming special factor of 1 for HE bodies
+                // Special heads count as HE body with special factor of 0.8, leaving 0.2 body equivalents for actual HE damage
+                DamageDict[DamageType.HE] =
+                OverallChemModifier
+                * 3000f
+                * MathF.Pow(MathF.Pow(Gauge / 500f, 1.8f) * 0.176f, 0.9f);
+
+                DamageDict[DamageType.HEAT] =
+                    HECoefficient
+                    * (heBodies + 0.8f)
+                    * OverallChemModifier
+                    * 17447.75f; // 26400 / 16 / sqrt(0.5) * (2 + sqrt(30))
             }
             else
             {
@@ -961,43 +1029,6 @@ namespace ApsCalcUI
             {
                 DamageDict[DamageType.Disruptor] = 0;
             }
-        }
-
-        /// <summary>
-        /// Calculates weighted average of FlaK, Frag, and HE damage based on number of each warhead type
-        /// </summary>
-        void CalculatePendepthDamage()
-        {
-            // Calculate each damage type with and without damage-specific multipliers for equal comparison
-            float flaKBodies = BodyModuleCounts[4];
-            float flakDamageEquivalent = 0;
-            if (flaKBodies > 0)
-            {
-                flakDamageEquivalent = MathF.Pow(GaugeCoefficient * flaKBodies * 204 / 300, 0.9f) * OverallChemModifier;
-                DamageDict[DamageType.FlaK] = flakDamageEquivalent * 3000;
-            }
-
-            float fragBodies = BodyModuleCounts[4];
-            float fragDamageEquivalent = 0;
-            if (fragBodies > 0)
-            {
-                fragDamageEquivalent = GaugeCoefficient * fragBodies * OverallChemModifier;
-                DamageDict[DamageType.Frag] = fragDamageEquivalent * 60000;
-            }
-
-            float heBodies = BodyModuleCounts[5];
-            float heDamageEquivalent = 0;
-            if (heBodies > 0)
-            {
-                heDamageEquivalent = MathF.Pow(GaugeCoefficient * heBodies * 24 / 30, 0.9f) * OverallChemModifier;
-                DamageDict[DamageType.HE] = heDamageEquivalent * 3000;
-            }
-
-            // Weighted average of damage equivalents * 1 000 000 for easier reading
-            DamageDict[DamageType.Pendepth] =
-                (flakDamageEquivalent * flaKBodies + fragDamageEquivalent * fragBodies + heDamageEquivalent * heBodies)
-                / (flaKBodies + fragBodies + heBodies)
-                * 1000000;
         }
 
 
@@ -1244,69 +1275,13 @@ namespace ApsCalcUI
 
 
         /// <summary>
-        /// Calculate chemical damage of a shell if it is capable of penetrating given armor scheme
-        /// </summary>
-        public void CalculatePendepthDps(Scheme targetArmorScheme)
-        {
-            CalculateKineticDamage();
-            CalculateAP();
-
-            if (KineticDamage >= targetArmorScheme.GetRequiredKD(ArmorPierce))
-            {
-                DpsDict[DamageType.Pendepth] = DamageDict[DamageType.Pendepth] / ReloadTime;
-
-                DpsPerVolumeDict[DamageType.Pendepth] = DpsDict[DamageType.Pendepth] / VolumePerIntake;
-                DpsPerCostDict[DamageType.Pendepth] = DpsDict[DamageType.Pendepth] / CostPerIntake;
-            }
-            else
-            {
-                DpsDict[DamageType.Pendepth] = 0;
-
-                DpsPerVolumeDict[DamageType.Pendepth] = 0;
-                DpsPerCostDict[DamageType.Pendepth] = 0;
-            }
-        }
-
-
-        public void CalculatePendepthDpsBelt(Scheme targetArmorScheme)
-        {
-            if (TotalLength <= 1000 && KineticDamage >= targetArmorScheme.GetRequiredKD(ArmorPierce))
-            {
-                CalculateKineticDamage();
-                CalculateAP();
-
-                DpsDict[DamageType.Pendepth] = DamageDict[DamageType.Pendepth] / ReloadTimeBelt * UptimeBelt;
-
-                DpsPerVolumeDict[DamageType.Pendepth] = DpsDict[DamageType.Pendepth] / VolumePerIntakeBelt;
-                DpsPerCostDict[DamageType.Pendepth] = DpsDict[DamageType.Pendepth] / CostPerIntakeBelt;
-            }
-            else
-            {
-                DpsDict[DamageType.Pendepth] = 0;
-
-                DpsPerVolumeDict[DamageType.Pendepth] = 0;
-                DpsPerCostDict[DamageType.Pendepth] = 0;
-            }
-        }
-
-
-        /// <summary>
         /// Calculate damage modifier according to current DamageType
         /// </summary>
         public void CalculateDamageModifierByType(DamageType dt)
         {
-            if (dt == DamageType.Kinetic)
-            {
-                CalculateKDModifier();
-                CalculateAPModifier();
-            }
-            else if (dt == DamageType.Pendepth)
-            {
-                CalculateKDModifier();
-                CalculateAPModifier();
-                CalculateChemModifier();
-            }
-            else
+            CalculateKDModifier();
+            CalculateAPModifier();
+            if (dt != DamageType.Kinetic)
             {
                 CalculateChemModifier();
             }
@@ -1347,26 +1322,20 @@ namespace ApsCalcUI
             {
                 CalculateShieldReduction();
             }
-            else if (dt == DamageType.Pendepth)
-            {
-                CalculateKineticDamage();
-                CalculateAP();
-                CalculatePendepthDamage();
-            }
         }
 
 
         public void CalculateDpsByType(
             DamageType dt,
             float targetAC,
-            Scheme targetArmorScheme,
             int testIntervalSeconds,
             float storagePerVolume,
             float storagePerCost,
             float ppm,
             float ppv,
             float ppc,
-            bool fuel)
+            bool fuel,
+            Scheme targetScheme)
         {
             CalculateRecoil();
             CalculateRailVolumeAndCost(testIntervalSeconds, storagePerVolume, storagePerCost, ppm, ppv, ppc, fuel);
@@ -1374,93 +1343,131 @@ namespace ApsCalcUI
             CalculateVariableVolumesAndCosts(testIntervalSeconds, storagePerVolume, storagePerCost);
             CalculateVolumeAndCostPerIntake();
 
-            if (dt == DamageType.Kinetic)
+            // Kinetic stats needed for pendepth testing
+            CalculateVelocity();
+            CalculateKineticDamage();
+            CalculateAP();
+
+            if (DamageDict[DamageType.Kinetic] >= targetScheme.GetRequiredKD(ArmorPierce)
+                || (HeadModule == Module.HollowPoint && DamageDict[DamageType.Kinetic] >= targetScheme.GetRequiredThump(ArmorPierce)))
             {
-                CalculateAP();
-                CalculateKineticDps(targetAC);
+                if (dt == DamageType.Kinetic)
+                {
+                    CalculateKineticDps(targetAC);
+                }
+                else if (dt == DamageType.Emp)
+                {
+                    CalculateEmpDps();
+                }
+                else if (dt == DamageType.FlaK)
+                {
+                    CalculateFlaKDps();
+                }
+                else if (dt == DamageType.Frag)
+                {
+                    CalculateFragDps();
+                }
+                else if (dt == DamageType.HE)
+                {
+                    CalculateHEDps();
+                }
+                else if (dt == DamageType.HEAT)
+                {
+                    CalculateHeatDps();
+                }
+                else if (dt == DamageType.Disruptor)
+                {
+                    CalculateShieldRps();
+                }
             }
-            else if (dt == DamageType.Emp)
+            else
             {
-                CalculateEmpDps();
+                foreach (DamageType dpstype in DpsDict.Keys)
+                {
+                    DpsDict[dpstype] = 0;
+                }
+                foreach (DamageType dpstype in DpsPerCostDict.Keys)
+                {
+                    DpsPerCostDict[dpstype] = 0;
+                }
+                foreach (DamageType dpstype in DpsPerVolumeDict.Keys)
+                {
+                    DpsPerVolumeDict[dpstype] = 0;
+                }
             }
-            else if (dt == DamageType.FlaK)
-            {
-                CalculateFlaKDps();
-            }
-            else if (dt == DamageType.Frag)
-            {
-                CalculateFragDps();
-            }
-            else if (dt == DamageType.HE)
-            {
-                CalculateHEDps();
-            }
-            else if (dt == DamageType.HEAT)
-            {
-                CalculateHeatDps();
-            }
-            else if (dt == DamageType.Disruptor)
-            {
-                CalculateShieldRps();
-            }
-            else if (dt == DamageType.Pendepth)
-            {
-                CalculatePendepthDps(targetArmorScheme);
-            }
+
         }
 
         public void CalculateDpsByTypeBelt(
             DamageType dt,
             float targetAC,
-            Scheme targetArmorScheme,
             int testIntervalSeconds,
             float storagePerVolume,
             float storagePerCost,
             float ppm,
             float ppv,
             float ppc,
-            bool fuel)
+            bool fuel,
+            Scheme targetScheme)
         {
             CalculateRecoil();
             CalculateRailVolumeAndCost(testIntervalSeconds, storagePerVolume, storagePerCost, ppm, ppv, ppc, fuel);
             CalculateRecoilVolumeAndCost();
             CalculateVolumeAndCostPerIntake();
 
-            if (dt == DamageType.Kinetic)
+            // Kinetic stats needed for pendepth testing
+            CalculateVelocity();
+            CalculateKineticDamage();
+            CalculateAP();
+
+            if (DamageDict[DamageType.Kinetic] >= targetScheme.GetRequiredKD(ArmorPierce)
+                || (HeadModule == Module.HollowPoint && DamageDict[DamageType.Kinetic] >= targetScheme.GetRequiredThump(ArmorPierce)))
             {
-                CalculateAP();
-                CalculateKineticDpsBelt(targetAC);
+                if (dt == DamageType.Kinetic)
+                {
+                    CalculateKineticDpsBelt(targetAC);
+                }
+                else if (dt == DamageType.Emp)
+                {
+                    CalculateEmpDpsBelt();
+                }
+                else if (dt == DamageType.FlaK)
+                {
+                    CalculateFlaKDpsBelt();
+                }
+                else if (dt == DamageType.Frag)
+                {
+                    CalculateFragDpsBelt();
+                }
+                else if (dt == DamageType.HE)
+                {
+                    CalculateHEDpsBelt();
+                }
+                else if (dt == DamageType.HEAT)
+                {
+                    CalculateHeatDpsBelt();
+                }
+                else if (dt == DamageType.Disruptor)
+                {
+                    CalculateShieldRpsBelt();
+                }
             }
-            else if (dt == DamageType.Emp)
+            else
             {
-                CalculateEmpDpsBelt();
-            }
-            else if (dt == DamageType.FlaK)
-            {
-                CalculateFlaKDpsBelt();
-            }
-            else if (dt == DamageType.Frag)
-            {
-                CalculateFragDpsBelt();
-            }
-            else if (dt == DamageType.HE)
-            {
-                CalculateHEDpsBelt();
-            }
-            else if (dt == DamageType.HEAT)
-            {
-                CalculateHeatDpsBelt();
-            }
-            else if (dt == DamageType.Disruptor)
-            {
-                CalculateShieldRpsBelt();
-            }
-            else if (dt == DamageType.Pendepth)
-            {
-                CalculatePendepthDpsBelt(targetArmorScheme);
+                foreach (DamageType dpstype in DpsDict.Keys)
+                {
+                    DpsDict[dpstype] = 0;
+                }
+                foreach (DamageType dpstype in DpsPerCostDict.Keys)
+                {
+                    DpsPerCostDict[dpstype] = 0;
+                }
+                foreach (DamageType dpstype in DpsPerVolumeDict.Keys)
+                {
+                    DpsPerVolumeDict[dpstype] = 0;
+                }
             }
         }
-
 
 
         /// <summary>

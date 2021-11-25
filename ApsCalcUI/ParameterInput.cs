@@ -68,7 +68,6 @@ namespace ApsCalcUI
                 new DamageTypeItem { ID = DamageType.Frag, Text = "Frag" },
                 new DamageTypeItem { ID = DamageType.HE, Text = "HE" },
                 new DamageTypeItem { ID = DamageType.HEAT, Text = "HEAT" },
-                new DamageTypeItem { ID = DamageType.Pendepth, Text = "Pendepth" },
                 new DamageTypeItem { ID = DamageType.Disruptor, Text = "Disruptor" }
             };
             DamageTypeDD.DataSource = damageTypes;
@@ -115,6 +114,31 @@ namespace ApsCalcUI
                 maxFixedCount -= 1;
             }
 
+            if (FixedGravCompCB.Checked)
+            {
+                maxFixedCount -= 1;
+            }
+            if (FixedPendepthFuzeCB.Checked)
+            {
+                maxFixedCount -= 1;
+            }
+            if (FixedAltitudeFuzeCB.Checked)
+            {
+                maxFixedCount -= 1;
+            }
+            if (FixedInertialFuzeCB.Checked)
+            {
+                maxFixedCount -= 1;
+            }
+            if (FixedTimedFuzeCB.Checked)
+            {
+                maxFixedCount -= 1;
+            }
+            if (FixedDefuzeCB.Checked)
+            {
+                maxFixedCount -= 1;
+            }
+
             decimal maxCasingCount;            
 
             SolidBodyFixedUD.Maximum = maxFixedCount;
@@ -123,11 +147,9 @@ namespace ApsCalcUI
             FlaKBodyFixedUD.Maximum = EmpBodyFixedUD.Maximum - EmpBodyFixedUD.Value;
             FragBodyFixedUD.Maximum = FlaKBodyFixedUD.Maximum - FlaKBodyFixedUD.Value;
             HEBodyFixedUD.Maximum = FragBodyFixedUD.Maximum - FragBodyFixedUD.Value;
-            FuseFixedUD.Maximum = HEBodyFixedUD.Maximum - HEBodyFixedUD.Value;
-            FinFixedUD.Maximum = FuseFixedUD.Maximum - FuseFixedUD.Value;
-            GravCompFixedUD.Maximum = FinFixedUD.Maximum - FinFixedUD.Value;
+            FinFixedUD.Maximum = HEBodyFixedUD.Maximum - HEBodyFixedUD.Value;
 
-            maxCasingCount = GravCompFixedUD.Maximum - GravCompFixedUD.Value;
+            maxCasingCount = HEBodyFixedUD.Maximum - HEBodyFixedUD.Value;
             MaxGPUD.Maximum = maxCasingCount;
             MaxRGUD.Maximum = maxCasingCount;
 
@@ -143,9 +165,37 @@ namespace ApsCalcUI
             minLength += (float)FlaKBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.FlaKBody.MaxLength);
             minLength += (float)FragBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.FragBody.MaxLength);
             minLength += (float)HEBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.HEBody.MaxLength);
-            minLength += (float)FuseFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.FuseBody.MaxLength);
             minLength += (float)FinFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.FinBody.MaxLength);
-            minLength += (float)GravCompFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.GravCompensator.MaxLength);
+
+            if (FixedGravCompCB.Checked)
+            {
+                minLength += Math.Min((float)MinGaugeUD.Value, Module.GravCompensator.MaxLength);
+            }
+
+            if (FixedPendepthFuzeCB.Checked)
+            {
+                minLength += Math.Min((float)MinGaugeUD.Value, Module.PenDepthFuse.MaxLength);
+            }
+
+            if (FixedTimedFuzeCB.Checked)
+            {
+                minLength += Math.Min((float)MinGaugeUD.Value, Module.TimedFuse.MaxLength);
+            }
+
+            if (FixedInertialFuzeCB.Checked)
+            {
+                minLength += Math.Min((float)MinGaugeUD.Value, Module.InertialFuse.MaxLength);
+            }
+
+            if (FixedAltitudeFuzeCB.Checked)
+            {
+                minLength += Math.Min((float)MinGaugeUD.Value, Module.AltitudeFuse.MaxLength);
+            }
+
+            if (FixedDefuzeCB.Checked)
+            {
+                minLength += Math.Min((float)MinGaugeUD.Value, Module.Defuse.MaxLength);
+            }
 
             MinLengthUD.Minimum = (decimal)minLength;
             MaxLengthUD.Minimum = Math.Max(MinLengthUD.Minimum + 1, MinLengthUD.Value + 1);
@@ -220,11 +270,6 @@ namespace ApsCalcUI
             UpdateModuleCounts();
         }
 
-        private void GravCompFixedUD_ValueChanged(object sender, EventArgs e)
-        {
-            UpdateModuleCounts();
-        }
-
         private void NoBaseRB_CheckedChanged(object sender, EventArgs e)
         {
             UpdateModuleCounts();
@@ -271,15 +316,6 @@ namespace ApsCalcUI
             else
             {
                 TargetACPanel.Enabled = false;
-            }
-
-            if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID == DamageType.Pendepth)
-            {
-                TargetSchemePanel.Enabled = true;
-            }
-            else
-            {
-                TargetSchemePanel.Enabled = false;
             }
         }
 
@@ -336,21 +372,10 @@ namespace ApsCalcUI
                 error = true;
                 QueueErrorProvider.SetError(AddParametersButton, "Select at least one target AC");
             }
-            else if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID == DamageType.Pendepth
-                && FlaKBodyFixedUD.Value == 0
-                && FragBodyFixedUD.Value == 0
-                && HEBodyFixedUD.Value == 0
-                && !varModList.Contains(Module.FlaKBody)
-                && !varModList.Contains(Module.FragBody)
-                && !varModList.Contains(Module.HEBody))
+            else if (PendepthCB.Checked && ArmorLayerLB.Items == null)
             {
                 error = true;
-                QueueErrorProvider.SetError(AddParametersButton, "Add FlaK, Frag, and/or HE body as a fixed or variable module for pendepth");
-            }
-            else if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID == DamageType.Pendepth && ArmorLayerLB.Items == null)
-            {
-                error = true;
-                QueueErrorProvider.SetError(AddParametersButton, "Add at least one layer to the target armor scheme");
+                QueueErrorProvider.SetError(AddParametersButton, "Add at least one layer to the target armor scheme or deselect 'Pendepth'");
             }
 
             if (!error)
@@ -395,17 +420,82 @@ namespace ApsCalcUI
                     testParameters.BaseModule = null;
                 }
 
+                // Get fuze counts
+                float pendepthFuzeCount;
+                if (FixedPendepthFuzeCB.Checked)
+                {
+                    pendepthFuzeCount = 1f;
+                }
+                else
+                {
+                    pendepthFuzeCount = 0f;
+                }
+
+                float timedFuzeCount;
+                if (FixedTimedFuzeCB.Checked)
+                {
+                    timedFuzeCount = 1f;
+                }
+                else
+                {
+                    timedFuzeCount = 0f;
+                }
+
+                float inertialFuzeCount;
+                if (FixedInertialFuzeCB.Checked)
+                {
+                    inertialFuzeCount = 1f;
+                }
+                else
+                {
+                    inertialFuzeCount = 0f;
+                }
+
+                float altitudeFuzeCount;
+                if (FixedAltitudeFuzeCB.Checked)
+                {
+                    altitudeFuzeCount = 1f;
+                }
+                else
+                {
+                    altitudeFuzeCount = 0f;
+                }
+
+                float defuzeCount;
+                if (FixedDefuzeCB.Checked)
+                {
+                    defuzeCount = 1f;
+                }
+                else
+                {
+                    defuzeCount = 0f;
+                }
+
+                float gravCompCount;
+                if (FixedGravCompCB.Checked)
+                {
+                    gravCompCount = 1f;
+                }
+                else
+                {
+                    gravCompCount = 0f;
+                }
+
                 float[] fixedModuleCounts = new float[]
                 {
-                            (float)SolidBodyFixedUD.Value,
-                            (float)SabotBodyFixedUD.Value,
-                            (float)EmpBodyFixedUD.Value,
-                            (float)FlaKBodyFixedUD.Value,
-                            (float)FragBodyFixedUD.Value,
-                            (float)HEBodyFixedUD.Value,
-                            (float)FuseFixedUD.Value,
-                            (float)FinFixedUD.Value,
-                            (float)GravCompFixedUD.Value
+                    (float)SolidBodyFixedUD.Value,
+                    (float)SabotBodyFixedUD.Value,
+                    (float)EmpBodyFixedUD.Value,
+                    (float)FlaKBodyFixedUD.Value,
+                    (float)FragBodyFixedUD.Value,
+                    (float)HEBodyFixedUD.Value,
+                    (float)FinFixedUD.Value,
+                    pendepthFuzeCount,
+                    timedFuzeCount,
+                    inertialFuzeCount,
+                    altitudeFuzeCount,
+                    defuzeCount,
+                    gravCompCount
                 };
                 testParameters.FixedModulecounts = fixedModuleCounts;
 
@@ -486,14 +576,18 @@ namespace ApsCalcUI
                 }
 
                 PenCalc.Scheme targetArmorScheme = new();
-                if (testParameters.DamageType == DamageType.Pendepth)
+                if (PendepthCB.Checked)
                 {
                     foreach (ArmorLayerItem layerItem in ArmorLayerLB.Items)
                     {
                         targetArmorScheme.LayerList.Add(layerItem.Layer);
                     }
-                    targetArmorScheme.CalculateLayerAC();
                 }
+                else
+                {
+                    targetArmorScheme.LayerList.Add(Layer.Air);
+                }
+                targetArmorScheme.CalculateLayerAC();
                 testParameters.ArmorScheme = targetArmorScheme;
 
                 if (PerVolumeRB.Checked)
@@ -755,6 +849,41 @@ namespace ApsCalcUI
             {
                 EnginePanel.Enabled = false;
             }
+        }
+
+        private void PendepthCB_CheckedChanged(object sender, EventArgs e)
+        {
+            TargetSchemePanel.Enabled = PendepthCB.Checked;
+        }
+
+        private void FixedGravCompCB_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateModuleCounts();
+        }
+
+        private void FixedPendepthFuzeCB_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateModuleCounts();
+        }
+
+        private void FixedTimedFuzeCB_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateModuleCounts();
+        }
+
+        private void FixedInertialFuzeCB_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateModuleCounts();
+        }
+
+        private void FixedAltitudeFuzeCB_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateModuleCounts();
+        }
+
+        private void FixedDefuzeCB_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateModuleCounts();
         }
     }
 }

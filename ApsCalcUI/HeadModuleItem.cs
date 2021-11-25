@@ -20,7 +20,7 @@ namespace ApsCalcUI
             for (int index = 0; index < Module.AllModules.Length; index++)
             {
                 if (Module.AllModules[index].ModulePosition == Module.Position.Head
-                    || Module.AllModules[index].ModulePosition == Module.Position.Middle)
+                    || (Module.AllModules[index].ModulePosition == Module.Position.Middle && Module.AllModules[index].CanBeVariable))
                 {
                     HeadModuleItem head = new()
                     {

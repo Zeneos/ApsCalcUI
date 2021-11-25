@@ -49,9 +49,7 @@ namespace ApsCalcUI
             this.FlaKBodyFixedUD = new System.Windows.Forms.NumericUpDown();
             this.FragBodyFixedUD = new System.Windows.Forms.NumericUpDown();
             this.HEBodyFixedUD = new System.Windows.Forms.NumericUpDown();
-            this.FuseFixedUD = new System.Windows.Forms.NumericUpDown();
             this.FinFixedUD = new System.Windows.Forms.NumericUpDown();
-            this.GravCompFixedUD = new System.Windows.Forms.NumericUpDown();
             this.MaxGPUD = new System.Windows.Forms.NumericUpDown();
             this.MaxRGUD = new System.Windows.Forms.NumericUpDown();
             this.MaxDrawUD = new System.Windows.Forms.NumericUpDown();
@@ -77,6 +75,13 @@ namespace ApsCalcUI
             this.EnginePpvUD = new System.Windows.Forms.NumericUpDown();
             this.EnginePpmLabel = new System.Windows.Forms.Label();
             this.EnginePpmUD = new System.Windows.Forms.NumericUpDown();
+            this.PendepthCB = new System.Windows.Forms.CheckBox();
+            this.FixedGravCompCB = new System.Windows.Forms.CheckBox();
+            this.FixedPendepthFuzeCB = new System.Windows.Forms.CheckBox();
+            this.FixedTimedFuzeCB = new System.Windows.Forms.CheckBox();
+            this.FixedInertialFuzeCB = new System.Windows.Forms.CheckBox();
+            this.FixedAltitudeFuzeCB = new System.Windows.Forms.CheckBox();
+            this.FixedDefuzeCB = new System.Windows.Forms.CheckBox();
             this.BarrelCountLabel = new System.Windows.Forms.Label();
             this.MinGaugeLabel = new System.Windows.Forms.Label();
             this.MaxGaugeLabel = new System.Windows.Forms.Label();
@@ -87,9 +92,7 @@ namespace ApsCalcUI
             this.TracerRB = new System.Windows.Forms.RadioButton();
             this.BaseBleederRB = new System.Windows.Forms.RadioButton();
             this.FixedModulesPanel = new System.Windows.Forms.Panel();
-            this.GravCompFixedLabel = new System.Windows.Forms.Label();
             this.FinLabel = new System.Windows.Forms.Label();
-            this.FuseFixedLabel = new System.Windows.Forms.Label();
             this.HEBodyFixedLabel = new System.Windows.Forms.Label();
             this.FragBodyFixedLabel = new System.Windows.Forms.Label();
             this.FlaKBodyFixedLabel = new System.Windows.Forms.Label();
@@ -131,9 +134,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.FlaKBodyFixedUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FragBodyFixedUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HEBodyFixedUD)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FuseFixedUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FinFixedUD)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.GravCompFixedUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGPUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxRGUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxDrawUD)).BeginInit();
@@ -242,7 +243,7 @@ namespace ApsCalcUI
             // 
             this.ArmorLayerDD.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ArmorLayerDD.FormattingEnabled = true;
-            this.ArmorLayerDD.Location = new System.Drawing.Point(6, 33);
+            this.ArmorLayerDD.Location = new System.Drawing.Point(6, 20);
             this.ArmorLayerDD.Name = "ArmorLayerDD";
             this.ArmorLayerDD.Size = new System.Drawing.Size(121, 23);
             this.ArmorLayerDD.TabIndex = 26;
@@ -250,7 +251,7 @@ namespace ApsCalcUI
             // 
             // AddLayerButton
             // 
-            this.AddLayerButton.Location = new System.Drawing.Point(6, 60);
+            this.AddLayerButton.Location = new System.Drawing.Point(6, 47);
             this.AddLayerButton.Name = "AddLayerButton";
             this.AddLayerButton.Size = new System.Drawing.Size(50, 23);
             this.AddLayerButton.TabIndex = 27;
@@ -261,7 +262,7 @@ namespace ApsCalcUI
             // 
             // RemoveLayerButton
             // 
-            this.RemoveLayerButton.Location = new System.Drawing.Point(77, 60);
+            this.RemoveLayerButton.Location = new System.Drawing.Point(77, 47);
             this.RemoveLayerButton.Name = "RemoveLayerButton";
             this.RemoveLayerButton.Size = new System.Drawing.Size(50, 23);
             this.RemoveLayerButton.TabIndex = 28;
@@ -405,24 +406,9 @@ namespace ApsCalcUI
             this.HEBodyFixedUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ToolTip.SetToolTip(this.HEBodyFixedUD, "Minimum HE bodies to include in every shell");
             // 
-            // FuseFixedUD
-            // 
-            this.FuseFixedUD.Location = new System.Drawing.Point(110, 179);
-            this.FuseFixedUD.Maximum = new decimal(new int[] {
-            19,
-            0,
-            0,
-            0});
-            this.FuseFixedUD.Name = "FuseFixedUD";
-            this.FuseFixedUD.Size = new System.Drawing.Size(40, 23);
-            this.FuseFixedUD.TabIndex = 11;
-            this.FuseFixedUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.ToolTip.SetToolTip(this.FuseFixedUD, "Minimum Fuse bodies to include in every shell");
-            this.FuseFixedUD.ValueChanged += new System.EventHandler(this.FuseFixedUD_ValueChanged);
-            // 
             // FinFixedUD
             // 
-            this.FinFixedUD.Location = new System.Drawing.Point(110, 204);
+            this.FinFixedUD.Location = new System.Drawing.Point(110, 179);
             this.FinFixedUD.Maximum = new decimal(new int[] {
             19,
             0,
@@ -434,21 +420,6 @@ namespace ApsCalcUI
             this.FinFixedUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ToolTip.SetToolTip(this.FinFixedUD, "Minimum Fin bodies to include in every shell");
             this.FinFixedUD.ValueChanged += new System.EventHandler(this.FinFixedUD_ValueChanged);
-            // 
-            // GravCompFixedUD
-            // 
-            this.GravCompFixedUD.Location = new System.Drawing.Point(110, 229);
-            this.GravCompFixedUD.Maximum = new decimal(new int[] {
-            19,
-            0,
-            0,
-            0});
-            this.GravCompFixedUD.Name = "GravCompFixedUD";
-            this.GravCompFixedUD.Size = new System.Drawing.Size(40, 23);
-            this.GravCompFixedUD.TabIndex = 13;
-            this.GravCompFixedUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.ToolTip.SetToolTip(this.GravCompFixedUD, "Minimum Gravity Compensators to include in every shell");
-            this.GravCompFixedUD.ValueChanged += new System.EventHandler(this.GravCompFixedUD_ValueChanged);
             // 
             // MaxGPUD
             // 
@@ -570,7 +541,7 @@ namespace ApsCalcUI
             // 
             // AddParametersButton
             // 
-            this.AddParametersButton.Location = new System.Drawing.Point(458, 515);
+            this.AddParametersButton.Location = new System.Drawing.Point(458, 513);
             this.AddParametersButton.Name = "AddParametersButton";
             this.AddParametersButton.Size = new System.Drawing.Size(157, 51);
             this.AddParametersButton.TabIndex = 29;
@@ -583,7 +554,7 @@ namespace ApsCalcUI
             // 
             this.RunButton.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.RunButton.Enabled = false;
-            this.RunButton.Location = new System.Drawing.Point(661, 515);
+            this.RunButton.Location = new System.Drawing.Point(661, 513);
             this.RunButton.Name = "RunButton";
             this.RunButton.Size = new System.Drawing.Size(121, 51);
             this.RunButton.TabIndex = 31;
@@ -594,7 +565,7 @@ namespace ApsCalcUI
             // 
             // VariableModulesLabel
             // 
-            this.VariableModulesLabel.Location = new System.Drawing.Point(0, 2);
+            this.VariableModulesLabel.Location = new System.Drawing.Point(0, 4);
             this.VariableModulesLabel.Name = "VariableModulesLabel";
             this.VariableModulesLabel.Size = new System.Drawing.Size(154, 27);
             this.VariableModulesLabel.TabIndex = 0;
@@ -605,7 +576,7 @@ namespace ApsCalcUI
             // LabelsCB
             // 
             this.LabelsCB.AutoSize = true;
-            this.LabelsCB.Location = new System.Drawing.Point(462, 497);
+            this.LabelsCB.Location = new System.Drawing.Point(462, 495);
             this.LabelsCB.Name = "LabelsCB";
             this.LabelsCB.Size = new System.Drawing.Size(111, 19);
             this.LabelsCB.TabIndex = 30;
@@ -841,6 +812,91 @@ namespace ApsCalcUI
             0,
             65536});
             // 
+            // PendepthCB
+            // 
+            this.PendepthCB.AutoSize = true;
+            this.PendepthCB.Location = new System.Drawing.Point(686, 283);
+            this.PendepthCB.Name = "PendepthCB";
+            this.PendepthCB.Size = new System.Drawing.Size(77, 19);
+            this.PendepthCB.TabIndex = 42;
+            this.PendepthCB.Text = "Pendepth";
+            this.ToolTip.SetToolTip(this.PendepthCB, "Check to enable pendepth testing.\r\nThe optimizer will ignore shells which do not " +
+        "have\r\nenough AP and KD to destroy the Target Armor Scheme\r\n(4m beams).");
+            this.PendepthCB.UseVisualStyleBackColor = true;
+            this.PendepthCB.CheckedChanged += new System.EventHandler(this.PendepthCB_CheckedChanged);
+            // 
+            // FixedGravCompCB
+            // 
+            this.FixedGravCompCB.AutoSize = true;
+            this.FixedGravCompCB.Location = new System.Drawing.Point(4, 209);
+            this.FixedGravCompCB.Name = "FixedGravCompCB";
+            this.FixedGravCompCB.Size = new System.Drawing.Size(125, 19);
+            this.FixedGravCompCB.TabIndex = 21;
+            this.FixedGravCompCB.Text = "Grav Compensator";
+            this.ToolTip.SetToolTip(this.FixedGravCompCB, "Check to include a Gravity compensator.");
+            this.FixedGravCompCB.UseVisualStyleBackColor = true;
+            this.FixedGravCompCB.CheckedChanged += new System.EventHandler(this.FixedGravCompCB_CheckedChanged);
+            // 
+            // FixedPendepthFuzeCB
+            // 
+            this.FixedPendepthFuzeCB.AutoSize = true;
+            this.FixedPendepthFuzeCB.Location = new System.Drawing.Point(4, 234);
+            this.FixedPendepthFuzeCB.Name = "FixedPendepthFuzeCB";
+            this.FixedPendepthFuzeCB.Size = new System.Drawing.Size(104, 19);
+            this.FixedPendepthFuzeCB.TabIndex = 22;
+            this.FixedPendepthFuzeCB.Text = "Pendepth Fuze";
+            this.ToolTip.SetToolTip(this.FixedPendepthFuzeCB, "Check to include a Penetration depth fuse.");
+            this.FixedPendepthFuzeCB.UseVisualStyleBackColor = true;
+            this.FixedPendepthFuzeCB.CheckedChanged += new System.EventHandler(this.FixedPendepthFuzeCB_CheckedChanged);
+            // 
+            // FixedTimedFuzeCB
+            // 
+            this.FixedTimedFuzeCB.AutoSize = true;
+            this.FixedTimedFuzeCB.Location = new System.Drawing.Point(4, 259);
+            this.FixedTimedFuzeCB.Name = "FixedTimedFuzeCB";
+            this.FixedTimedFuzeCB.Size = new System.Drawing.Size(86, 19);
+            this.FixedTimedFuzeCB.TabIndex = 23;
+            this.FixedTimedFuzeCB.Text = "Timed Fuze";
+            this.ToolTip.SetToolTip(this.FixedTimedFuzeCB, "Check to include a Timed fuze.");
+            this.FixedTimedFuzeCB.UseVisualStyleBackColor = true;
+            this.FixedTimedFuzeCB.CheckedChanged += new System.EventHandler(this.FixedTimedFuzeCB_CheckedChanged);
+            // 
+            // FixedInertialFuzeCB
+            // 
+            this.FixedInertialFuzeCB.AutoSize = true;
+            this.FixedInertialFuzeCB.Location = new System.Drawing.Point(4, 284);
+            this.FixedInertialFuzeCB.Name = "FixedInertialFuzeCB";
+            this.FixedInertialFuzeCB.Size = new System.Drawing.Size(89, 19);
+            this.FixedInertialFuzeCB.TabIndex = 24;
+            this.FixedInertialFuzeCB.Text = "Inertial Fuze";
+            this.ToolTip.SetToolTip(this.FixedInertialFuzeCB, "Check to include an Intertial fuze.");
+            this.FixedInertialFuzeCB.UseVisualStyleBackColor = true;
+            this.FixedInertialFuzeCB.CheckedChanged += new System.EventHandler(this.FixedInertialFuzeCB_CheckedChanged);
+            // 
+            // FixedAltitudeFuzeCB
+            // 
+            this.FixedAltitudeFuzeCB.AutoSize = true;
+            this.FixedAltitudeFuzeCB.Location = new System.Drawing.Point(4, 309);
+            this.FixedAltitudeFuzeCB.Name = "FixedAltitudeFuzeCB";
+            this.FixedAltitudeFuzeCB.Size = new System.Drawing.Size(95, 19);
+            this.FixedAltitudeFuzeCB.TabIndex = 25;
+            this.FixedAltitudeFuzeCB.Text = "Altitude Fuze";
+            this.ToolTip.SetToolTip(this.FixedAltitudeFuzeCB, "Check to include an Altitude fuze.");
+            this.FixedAltitudeFuzeCB.UseVisualStyleBackColor = true;
+            this.FixedAltitudeFuzeCB.CheckedChanged += new System.EventHandler(this.FixedAltitudeFuzeCB_CheckedChanged);
+            // 
+            // FixedDefuzeCB
+            // 
+            this.FixedDefuzeCB.AutoSize = true;
+            this.FixedDefuzeCB.Location = new System.Drawing.Point(4, 334);
+            this.FixedDefuzeCB.Name = "FixedDefuzeCB";
+            this.FixedDefuzeCB.Size = new System.Drawing.Size(124, 19);
+            this.FixedDefuzeCB.TabIndex = 26;
+            this.FixedDefuzeCB.Text = "Emergency Defuze";
+            this.ToolTip.SetToolTip(this.FixedDefuzeCB, "Check to include an Emergency ejection defuze.");
+            this.FixedDefuzeCB.UseVisualStyleBackColor = true;
+            this.FixedDefuzeCB.CheckedChanged += new System.EventHandler(this.FixedDefuzeCB_CheckedChanged);
+            // 
             // BarrelCountLabel
             // 
             this.BarrelCountLabel.AutoSize = true;
@@ -902,10 +958,12 @@ namespace ApsCalcUI
             // NoBaseRB
             // 
             this.NoBaseRB.AutoSize = true;
+            this.NoBaseRB.Checked = true;
             this.NoBaseRB.Location = new System.Drawing.Point(51, 28);
             this.NoBaseRB.Name = "NoBaseRB";
             this.NoBaseRB.Size = new System.Drawing.Size(108, 19);
             this.NoBaseRB.TabIndex = 4;
+            this.NoBaseRB.TabStop = true;
             this.NoBaseRB.Text = "No Special Base";
             this.NoBaseRB.UseVisualStyleBackColor = true;
             this.NoBaseRB.CheckedChanged += new System.EventHandler(this.NoBaseRB_CheckedChanged);
@@ -923,29 +981,29 @@ namespace ApsCalcUI
             // BaseBleederRB
             // 
             this.BaseBleederRB.AutoSize = true;
-            this.BaseBleederRB.Checked = true;
             this.BaseBleederRB.Location = new System.Drawing.Point(14, 51);
             this.BaseBleederRB.Name = "BaseBleederRB";
             this.BaseBleederRB.Size = new System.Drawing.Size(91, 19);
             this.BaseBleederRB.TabIndex = 4;
-            this.BaseBleederRB.TabStop = true;
             this.BaseBleederRB.Text = "Base Bleeder";
             this.BaseBleederRB.UseVisualStyleBackColor = true;
             // 
             // FixedModulesPanel
             // 
-            this.FixedModulesPanel.Controls.Add(this.GravCompFixedUD);
+            this.FixedModulesPanel.Controls.Add(this.FixedDefuzeCB);
+            this.FixedModulesPanel.Controls.Add(this.FixedAltitudeFuzeCB);
+            this.FixedModulesPanel.Controls.Add(this.FixedInertialFuzeCB);
+            this.FixedModulesPanel.Controls.Add(this.FixedTimedFuzeCB);
+            this.FixedModulesPanel.Controls.Add(this.FixedPendepthFuzeCB);
+            this.FixedModulesPanel.Controls.Add(this.FixedGravCompCB);
             this.FixedModulesPanel.Controls.Add(this.FinFixedUD);
-            this.FixedModulesPanel.Controls.Add(this.FuseFixedUD);
             this.FixedModulesPanel.Controls.Add(this.HEBodyFixedUD);
             this.FixedModulesPanel.Controls.Add(this.FragBodyFixedUD);
             this.FixedModulesPanel.Controls.Add(this.FlaKBodyFixedUD);
             this.FixedModulesPanel.Controls.Add(this.EmpBodyFixedUD);
             this.FixedModulesPanel.Controls.Add(this.SabotBodyFixedUD);
             this.FixedModulesPanel.Controls.Add(this.SolidBodyFixedUD);
-            this.FixedModulesPanel.Controls.Add(this.GravCompFixedLabel);
             this.FixedModulesPanel.Controls.Add(this.FinLabel);
-            this.FixedModulesPanel.Controls.Add(this.FuseFixedLabel);
             this.FixedModulesPanel.Controls.Add(this.HEBodyFixedLabel);
             this.FixedModulesPanel.Controls.Add(this.FragBodyFixedLabel);
             this.FixedModulesPanel.Controls.Add(this.FlaKBodyFixedLabel);
@@ -955,35 +1013,17 @@ namespace ApsCalcUI
             this.FixedModulesPanel.Controls.Add(this.FixedModulesLabel);
             this.FixedModulesPanel.Location = new System.Drawing.Point(255, 12);
             this.FixedModulesPanel.Name = "FixedModulesPanel";
-            this.FixedModulesPanel.Size = new System.Drawing.Size(154, 257);
+            this.FixedModulesPanel.Size = new System.Drawing.Size(154, 361);
             this.FixedModulesPanel.TabIndex = 11;
-            // 
-            // GravCompFixedLabel
-            // 
-            this.GravCompFixedLabel.AutoSize = true;
-            this.GravCompFixedLabel.Location = new System.Drawing.Point(4, 231);
-            this.GravCompFixedLabel.Name = "GravCompFixedLabel";
-            this.GravCompFixedLabel.Size = new System.Drawing.Size(106, 15);
-            this.GravCompFixedLabel.TabIndex = 22;
-            this.GravCompFixedLabel.Text = "Grav Compensator";
             // 
             // FinLabel
             // 
             this.FinLabel.AutoSize = true;
-            this.FinLabel.Location = new System.Drawing.Point(4, 206);
+            this.FinLabel.Location = new System.Drawing.Point(4, 181);
             this.FinLabel.Name = "FinLabel";
             this.FinLabel.Size = new System.Drawing.Size(73, 15);
             this.FinLabel.TabIndex = 20;
             this.FinLabel.Text = "Stabilizer Fin";
-            // 
-            // FuseFixedLabel
-            // 
-            this.FuseFixedLabel.AutoSize = true;
-            this.FuseFixedLabel.Location = new System.Drawing.Point(4, 181);
-            this.FuseFixedLabel.Name = "FuseFixedLabel";
-            this.FuseFixedLabel.Size = new System.Drawing.Size(31, 15);
-            this.FuseFixedLabel.TabIndex = 18;
-            this.FuseFixedLabel.Text = "Fuse";
             // 
             // HEBodyFixedLabel
             // 
@@ -1052,17 +1092,17 @@ namespace ApsCalcUI
             // 
             this.VariableModulesPanel.Controls.Add(this.VariableModulesCL);
             this.VariableModulesPanel.Controls.Add(this.VariableModulesLabel);
-            this.VariableModulesPanel.Location = new System.Drawing.Point(255, 284);
+            this.VariableModulesPanel.Location = new System.Drawing.Point(255, 376);
             this.VariableModulesPanel.Name = "VariableModulesPanel";
-            this.VariableModulesPanel.Size = new System.Drawing.Size(154, 199);
+            this.VariableModulesPanel.Size = new System.Drawing.Size(154, 172);
             this.VariableModulesPanel.TabIndex = 12;
             // 
             // VariableModulesCL
             // 
             this.VariableModulesCL.FormattingEnabled = true;
-            this.VariableModulesCL.Location = new System.Drawing.Point(4, 31);
+            this.VariableModulesCL.Location = new System.Drawing.Point(3, 34);
             this.VariableModulesCL.Name = "VariableModulesCL";
-            this.VariableModulesCL.Size = new System.Drawing.Size(147, 166);
+            this.VariableModulesCL.Size = new System.Drawing.Size(147, 130);
             this.VariableModulesCL.TabIndex = 14;
             // 
             // MaxGPLabel
@@ -1197,9 +1237,10 @@ namespace ApsCalcUI
             this.TargetSchemePanel.Controls.Add(this.ArmorLayerDD);
             this.TargetSchemePanel.Controls.Add(this.ArmorLayerLB);
             this.TargetSchemePanel.Controls.Add(this.TargetSchemeLabel);
-            this.TargetSchemePanel.Location = new System.Drawing.Point(655, 284);
+            this.TargetSchemePanel.Enabled = false;
+            this.TargetSchemePanel.Location = new System.Drawing.Point(655, 298);
             this.TargetSchemePanel.Name = "TargetSchemePanel";
-            this.TargetSchemePanel.Size = new System.Drawing.Size(133, 199);
+            this.TargetSchemePanel.Size = new System.Drawing.Size(133, 192);
             this.TargetSchemePanel.TabIndex = 34;
             // 
             // ArmorLayerLB
@@ -1207,18 +1248,18 @@ namespace ApsCalcUI
             this.ArmorLayerLB.Enabled = false;
             this.ArmorLayerLB.FormattingEnabled = true;
             this.ArmorLayerLB.ItemHeight = 15;
-            this.ArmorLayerLB.Location = new System.Drawing.Point(3, 88);
+            this.ArmorLayerLB.Location = new System.Drawing.Point(3, 75);
             this.ArmorLayerLB.Name = "ArmorLayerLB";
             this.ArmorLayerLB.Size = new System.Drawing.Size(127, 109);
             this.ArmorLayerLB.TabIndex = 1;
             // 
             // TargetSchemeLabel
             // 
-            this.TargetSchemeLabel.Location = new System.Drawing.Point(0, 0);
+            this.TargetSchemeLabel.Location = new System.Drawing.Point(0, -8);
             this.TargetSchemeLabel.Name = "TargetSchemeLabel";
             this.TargetSchemeLabel.Size = new System.Drawing.Size(133, 31);
             this.TargetSchemeLabel.TabIndex = 0;
-            this.TargetSchemeLabel.Text = "Target Armor Scheme\r\n(for Pendepth)";
+            this.TargetSchemeLabel.Text = "Target Armor Scheme";
             this.TargetSchemeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // QueueErrorProvider
@@ -1232,7 +1273,7 @@ namespace ApsCalcUI
             // TestsInQueueLabel
             // 
             this.TestsInQueueLabel.AutoSize = true;
-            this.TestsInQueueLabel.Location = new System.Drawing.Point(661, 497);
+            this.TestsInQueueLabel.Location = new System.Drawing.Point(661, 495);
             this.TestsInQueueLabel.Name = "TestsInQueueLabel";
             this.TestsInQueueLabel.Size = new System.Drawing.Size(95, 15);
             this.TestsInQueueLabel.TabIndex = 35;
@@ -1272,6 +1313,7 @@ namespace ApsCalcUI
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 583);
+            this.Controls.Add(this.PendepthCB);
             this.Controls.Add(this.EnginePanel);
             this.Controls.Add(this.StoragePanel);
             this.Controls.Add(this.TestIntervalLabel);
@@ -1325,9 +1367,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.FlaKBodyFixedUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.FragBodyFixedUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HEBodyFixedUD)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FuseFixedUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.FinFixedUD)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.GravCompFixedUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGPUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxRGUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxDrawUD)).EndInit();
@@ -1377,9 +1417,7 @@ namespace ApsCalcUI
         private System.Windows.Forms.Panel FixedModulesPanel;
         private System.Windows.Forms.Label SolidBodyFixedLabel;
         private System.Windows.Forms.Label FixedModulesLabel;
-        private System.Windows.Forms.Label GravCompFixedLabel;
         private System.Windows.Forms.Label FinLabel;
-        private System.Windows.Forms.Label FuseFixedLabel;
         private System.Windows.Forms.Label HEBodyFixedLabel;
         private System.Windows.Forms.Label FragBodyFixedLabel;
         private System.Windows.Forms.Label FlaKBodyFixedLabel;
@@ -1414,9 +1452,7 @@ namespace ApsCalcUI
         private System.Windows.Forms.Button AddLayerButton;
         private System.Windows.Forms.NumericUpDown MinGaugeUD;
         private System.Windows.Forms.NumericUpDown MaxGaugeUD;
-        private System.Windows.Forms.NumericUpDown GravCompFixedUD;
         private System.Windows.Forms.NumericUpDown FinFixedUD;
-        private System.Windows.Forms.NumericUpDown FuseFixedUD;
         private System.Windows.Forms.NumericUpDown HEBodyFixedUD;
         private System.Windows.Forms.NumericUpDown FragBodyFixedUD;
         private System.Windows.Forms.NumericUpDown FlaKBodyFixedUD;
@@ -1454,6 +1490,13 @@ namespace ApsCalcUI
         private System.Windows.Forms.NumericUpDown EnginePpmUD;
         private System.Windows.Forms.CheckBox EngineFuelCB;
         private System.Windows.Forms.FontDialog fontDialog1;
+        private System.Windows.Forms.CheckBox PendepthCB;
+        private System.Windows.Forms.CheckBox FixedDefuzeCB;
+        private System.Windows.Forms.CheckBox FixedAltitudeFuzeCB;
+        private System.Windows.Forms.CheckBox FixedInertialFuzeCB;
+        private System.Windows.Forms.CheckBox FixedTimedFuzeCB;
+        private System.Windows.Forms.CheckBox FixedPendepthFuzeCB;
+        private System.Windows.Forms.CheckBox FixedGravCompCB;
     }
 }
 
