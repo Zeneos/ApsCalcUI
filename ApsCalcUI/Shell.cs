@@ -22,12 +22,10 @@ namespace ApsCalcUI
             set
             {
                 _gauge = value;
-                GaugeCoefficient = MathF.Pow(Gauge * Gauge * Gauge / 125000000f, 0.6f);
-                HECoefficient = MathF.Pow(Gauge / 500f, 1.8f);
+                GaugeCoefficient = MathF.Pow(Gauge / 500f, 1.8f);
             }
         }
         public float GaugeCoefficient { get; set; } // Expensive to calculate and used in several formulae
-        public float HECoefficient { get; set; } // Used for He and HE-derived damage
 
         public bool IsBelt;
 
@@ -971,7 +969,7 @@ namespace ApsCalcUI
             DamageDict[DamageType.HE] = 
                 OverallChemModifier
                 * 3000f
-                * MathF.Pow(HECoefficient * heBodies * 0.88f, 0.9f);
+                * MathF.Pow(GaugeCoefficient * heBodies * 0.88f, 0.9f);
         }
 
         /// <summary>
@@ -1002,7 +1000,7 @@ namespace ApsCalcUI
                 * MathF.Pow(MathF.Pow(Gauge / 500f, 1.8f) * 0.176f, 0.9f);
 
                 DamageDict[DamageType.HEAT] =
-                    HECoefficient
+                    GaugeCoefficient
                     * (heBodies + 0.8f)
                     * OverallChemModifier
                     * 17447.75f; // 26400 / 16 / sqrt(0.5) * (2 + sqrt(30))

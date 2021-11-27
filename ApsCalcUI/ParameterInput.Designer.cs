@@ -82,6 +82,7 @@ namespace ApsCalcUI
             this.FixedInertialFuzeCB = new System.Windows.Forms.CheckBox();
             this.FixedAltitudeFuzeCB = new System.Windows.Forms.CheckBox();
             this.FixedDefuzeCB = new System.Windows.Forms.CheckBox();
+            this.ModdedMaxGaugeCB = new System.Windows.Forms.CheckBox();
             this.BarrelCountLabel = new System.Windows.Forms.Label();
             this.MinGaugeLabel = new System.Windows.Forms.Label();
             this.MaxGaugeLabel = new System.Windows.Forms.Label();
@@ -126,7 +127,6 @@ namespace ApsCalcUI
             this.TestIntervalLabel = new System.Windows.Forms.Label();
             this.StoragePanel = new System.Windows.Forms.Panel();
             this.fontDialog1 = new System.Windows.Forms.FontDialog();
-            this.ModdedMaxGaugeCB = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).BeginInit();
@@ -898,6 +898,18 @@ namespace ApsCalcUI
             this.FixedDefuzeCB.UseVisualStyleBackColor = true;
             this.FixedDefuzeCB.CheckedChanged += new System.EventHandler(this.FixedDefuzeCB_CheckedChanged);
             // 
+            // ModdedMaxGaugeCB
+            // 
+            this.ModdedMaxGaugeCB.AutoSize = true;
+            this.ModdedMaxGaugeCB.Location = new System.Drawing.Point(133, 68);
+            this.ModdedMaxGaugeCB.Name = "ModdedMaxGaugeCB";
+            this.ModdedMaxGaugeCB.Size = new System.Drawing.Size(124, 19);
+            this.ModdedMaxGaugeCB.TabIndex = 43;
+            this.ModdedMaxGaugeCB.Text = "1000mm APS Mod";
+            this.ToolTip.SetToolTip(this.ModdedMaxGaugeCB, "Check if using the 1000mm APS mod.");
+            this.ModdedMaxGaugeCB.UseVisualStyleBackColor = true;
+            this.ModdedMaxGaugeCB.CheckedChanged += new System.EventHandler(this.ModdedMaxGaugeCB_CheckedChanged);
+            // 
             // BarrelCountLabel
             // 
             this.BarrelCountLabel.AutoSize = true;
@@ -1308,18 +1320,6 @@ namespace ApsCalcUI
             this.StoragePanel.Name = "StoragePanel";
             this.StoragePanel.Size = new System.Drawing.Size(159, 76);
             this.StoragePanel.TabIndex = 40;
-            // 
-            // ModdedMaxGaugeCB
-            // 
-            this.ModdedMaxGaugeCB.AutoSize = true;
-            this.ModdedMaxGaugeCB.Location = new System.Drawing.Point(133, 68);
-            this.ModdedMaxGaugeCB.Name = "ModdedMaxGaugeCB";
-            this.ModdedMaxGaugeCB.Size = new System.Drawing.Size(124, 19);
-            this.ModdedMaxGaugeCB.TabIndex = 43;
-            this.ModdedMaxGaugeCB.Text = "1000mm APS Mod";
-            this.ToolTip.SetToolTip(this.ModdedMaxGaugeCB, "Check if using the 1000mm APS mod.");
-            this.ModdedMaxGaugeCB.UseVisualStyleBackColor = true;
-            this.ModdedMaxGaugeCB.CheckedChanged += new System.EventHandler(this.ModdedMaxGaugeCB_CheckedChanged);
             // 
             // ParameterInput
             // 

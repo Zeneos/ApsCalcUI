@@ -1368,6 +1368,24 @@ namespace ApsCalcUI
             writer.WriteLine("Min velocity: " + MinVelocityInput);
             writer.WriteLine("Min effective range: " + MinEffectiveRangeInput);
 
+            // Determine whether to show target armor scheme
+            bool pendepth = false;
+            foreach (Layer layer in TargetArmorScheme.LayerList)
+            {
+                if (layer != Layer.Air)
+                {
+                    pendepth = true;
+                }
+            }
+            if (pendepth)
+            {
+                writer.WriteLine("Target armor scheme:");
+                foreach (Layer layer in TargetArmorScheme.LayerList)
+                {
+                    writer.WriteLine(layer.Name);
+                }
+            }
+
             if (DamageType == DamageType.Kinetic)
             {
                 writer.WriteLine("Damage type: kinetic");

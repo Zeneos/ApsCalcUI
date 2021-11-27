@@ -28,6 +28,7 @@ namespace ApsCalcUI
         public List<float> TargetACList;
         public DamageType DamageType;
         public Scheme ArmorScheme;
+        public bool Penpdepth;
         public int TestType;
         public bool Labels;
         public int TestInterval;
