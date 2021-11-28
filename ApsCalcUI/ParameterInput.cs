@@ -377,6 +377,11 @@ namespace ApsCalcUI
                 error = true;
                 QueueErrorProvider.SetError(AddParametersButton, "Add at least one layer to the target armor scheme or deselect 'Pendepth'");
             }
+            else if (MinVelocityUD.Value > 0 && MaxDrawUD.Value == 0 && MaxGPUD.Value == 0)
+            {
+                error = true;
+                QueueErrorProvider.SetError(AddParametersButton, "Increase max gunpowder or rail draw allowance, or else set min velocity to 0");
+            }
 
             if (!error)
             {

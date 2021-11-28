@@ -1508,49 +1508,65 @@ namespace ApsCalcUI
                 }
             }
 
-
-            foreach (KeyValuePair<string, Shell> topShell in TopDpsShells)
+            // Determine whether any shells met test criteria
+            bool shellsToPrint = false;
+            foreach (string shellName in TopDpsShells.Keys)
             {
-                // Calculate all damage and DPS -- including those not used for optimizing
-                foreach (DamageType dt in dtToShow.Keys)
+                if (TopDpsShells[shellName] != null)
                 {
-                    if (dtToShow[dt] && topShell.Value.IsBelt)
-                    {
-                        topShell.Value.CalculateDamageByType(dt);
-                        topShell.Value.CalculateDpsByTypeBelt(
-                            dt,
-                            TargetAC,
-                            TestIntervalSeconds,
-                            StoragePerVolume,
-                            StoragePerCost,
-                            Ppm,
-                            Ppv,
-                            Ppc,
-                            Fuel,
-                            TargetArmorScheme
-                            );
-                    }
-                    else if (dtToShow[dt])
-                    {
-                        topShell.Value.CalculateDamageByType(dt);
-                        topShell.Value.CalculateDpsByType(
-                            dt,
-                            TargetAC,
-                            TestIntervalSeconds,
-                            StoragePerVolume,
-                            StoragePerCost,
-                            Ppm,
-                            Ppv,
-                            Ppc,
-                            Fuel,
-                            TargetArmorScheme
-                            );
-                    }
+                    shellsToPrint = true;
                 }
-                writer.WriteLine("\n");
-                writer.WriteLine(topShell.Key);
-                topShell.Value.GetModuleCounts();
-                topShell.Value.WriteShellInfoToFile(writer, Labels, showGP, showRG, showDraw, dtToShow, modsToShow);
+            }
+
+            if (!shellsToPrint)
+            {
+                writer.WriteLine("No shells meet test criteria. Check test parameters.");
+            }
+            else
+            {
+                foreach (KeyValuePair<string, Shell> topShell in TopDpsShells)
+                {
+                    // Calculate all damage and DPS -- including those not used for optimizing
+                    foreach (DamageType dt in dtToShow.Keys)
+                    {
+                        if (dtToShow[dt] && topShell.Value.IsBelt)
+                        {
+                            topShell.Value.CalculateDamageByType(dt);
+                            topShell.Value.CalculateDpsByTypeBelt(
+                                dt,
+                                TargetAC,
+                                TestIntervalSeconds,
+                                StoragePerVolume,
+                                StoragePerCost,
+                                Ppm,
+                                Ppv,
+                                Ppc,
+                                Fuel,
+                                TargetArmorScheme
+                                );
+                        }
+                        else if (dtToShow[dt])
+                        {
+                            topShell.Value.CalculateDamageByType(dt);
+                            topShell.Value.CalculateDpsByType(
+                                dt,
+                                TargetAC,
+                                TestIntervalSeconds,
+                                StoragePerVolume,
+                                StoragePerCost,
+                                Ppm,
+                                Ppv,
+                                Ppc,
+                                Fuel,
+                                TargetArmorScheme
+                                );
+                        }
+                    }
+                    writer.WriteLine("\n");
+                    writer.WriteLine(topShell.Key);
+                    topShell.Value.GetModuleCounts();
+                    topShell.Value.WriteShellInfoToFile(writer, Labels, showGP, showRG, showDraw, dtToShow, modsToShow);
+                }
             }
         }
     }
