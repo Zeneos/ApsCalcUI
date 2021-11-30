@@ -174,8 +174,7 @@ namespace ApsCalcUI
         public Shell Top6000 { get; set; } = new();
         public Shell Top7000 { get; set; } = new();
         public Shell Top8000 { get; set; } = new();
-        public Shell Top10000 { get; set; } = new();
-        public Shell Top20000 { get; set; } = new(); // Possible only with DIF and mods
+        public Shell TopDif { get; set; } = new();
 
         public Dictionary<string, Shell> TopDpsShells { get; set; } = new Dictionary<string, Shell>();
         public List<Shell> TopShellsLocal { get; set; } = new List<Shell>();
@@ -575,7 +574,14 @@ namespace ApsCalcUI
 
                         if (TestType == 0)
                         {
-                            if (shellUnderTesting.TotalLength <= 1000f)
+                            if (Dif)
+                            {
+                                if (shellUnderTesting.DpsPerVolumeDict[DamageType] > TopDif.DpsPerVolumeDict[DamageType])
+                                {
+                                    TopDif = shellUnderTesting;
+                                }
+                            }
+                            else if (shellUnderTesting.TotalLength <= 1000f)
                             {
                                 if (shellUnderTesting.DpsPerVolumeDict[DamageType] > Top1000.DpsPerVolumeDict[DamageType])
                                 {
@@ -631,24 +637,17 @@ namespace ApsCalcUI
                                     Top8000 = shellUnderTesting;
                                 }
                             }
-                            else if (shellUnderTesting.TotalLength <= 10000f && shellUnderTesting.IsDif)
-                            {
-                                if (shellUnderTesting.DpsPerVolumeDict[DamageType] > Top10000.DpsPerVolumeDict[DamageType])
-                                {
-                                    Top10000 = shellUnderTesting;
-                                }
-                            }
-                            else if (shellUnderTesting.TotalLength <= 20000f && shellUnderTesting.IsDif)
-                            {
-                                if (shellUnderTesting.DpsPerVolumeDict[DamageType] > Top20000.DpsPerVolumeDict[DamageType])
-                                {
-                                    Top20000 = shellUnderTesting;
-                                }
-                            }
                         }
                         else if (TestType == 1)
                         {
-                            if (shellUnderTesting.TotalLength <= 1000f)
+                            if (Dif)
+                            {
+                                if (shellUnderTesting.DpsPerCostDict[DamageType] > TopDif.DpsPerCostDict[DamageType])
+                                {
+                                    TopDif = shellUnderTesting;
+                                }
+                            }
+                            else if (shellUnderTesting.TotalLength <= 1000f)
                             {
                                 if (shellUnderTesting.DpsPerCostDict[DamageType] > Top1000.DpsPerCostDict[DamageType])
                                 {
@@ -702,20 +701,6 @@ namespace ApsCalcUI
                                 if (shellUnderTesting.DpsPerCostDict[DamageType] > Top8000.DpsPerCostDict[DamageType])
                                 {
                                     Top8000 = shellUnderTesting;
-                                }
-                            }
-                            else if (shellUnderTesting.TotalLength <= 10000f && shellUnderTesting.IsDif)
-                            {
-                                if (shellUnderTesting.DpsPerCostDict[DamageType] > Top10000.DpsPerCostDict[DamageType])
-                                {
-                                    Top10000 = shellUnderTesting;
-                                }
-                            }
-                            else if (shellUnderTesting.TotalLength <= 20000f && shellUnderTesting.IsDif)
-                            {
-                                if (shellUnderTesting.DpsPerCostDict[DamageType] > Top20000.DpsPerCostDict[DamageType])
-                                {
-                                    Top20000 = shellUnderTesting;
                                 }
                             }
                         }
@@ -1030,14 +1015,9 @@ namespace ApsCalcUI
                 TopShellsLocal.Add(Top8000);
             }
 
-            if (Top10000.DpsDict[DamageType] > 0)
+            if (TopDif.DpsDict[DamageType] > 0)
             {
-                TopShellsLocal.Add(Top10000);
-            }
-
-            if (Top20000.DpsDict[DamageType] > 0)
-            {
-                TopShellsLocal.Add(Top20000);
+                TopShellsLocal.Add(TopDif);
             }
         }
 
@@ -1093,14 +1073,9 @@ namespace ApsCalcUI
                 TopDpsShells.Add("8m", Top8000);
             }
 
-            if (Top10000.DpsDict[DamageType] > 0)
+            if (TopDif.DpsDict[DamageType] > 0)
             {
-                TopDpsShells.Add("10m (DIF only)", Top10000);
-            }
-
-            if (Top20000.DpsDict[DamageType] > 0)
-            {
-                TopDpsShells.Add("20m (DIF only)", Top20000);
+                TopDpsShells.Add("DIF", TopDif);
             }
         }
 
@@ -1115,7 +1090,14 @@ namespace ApsCalcUI
             {
                 if (TestType == 0)
                 {
-                    if (rawShell.IsBelt)
+                    if (Dif)
+                    {
+                        if (rawShell.DpsPerVolumeDict[DamageType] > TopDif.DpsPerVolumeDict[DamageType])
+                        {
+                            TopDif = rawShell;
+                        }
+                    }
+                    else if (rawShell.IsBelt)
                     {
                         if (rawShell.DpsPerVolumeDict[DamageType] > TopBelt.DpsPerVolumeDict[DamageType])
                         {
@@ -1178,24 +1160,17 @@ namespace ApsCalcUI
                             Top8000 = rawShell;
                         }
                     }
-                    else if (rawShell.TotalLength <= 10000 && rawShell.IsDif)
-                    {
-                        if (rawShell.DpsPerVolumeDict[DamageType] > Top10000.DpsPerVolumeDict[DamageType])
-                        {
-                            Top10000 = rawShell;
-                        }
-                    }
-                    else if (rawShell.TotalLength <= 20000 && rawShell.IsDif)
-                    {
-                        if (rawShell.DpsPerVolumeDict[DamageType] > Top20000.DpsPerVolumeDict[DamageType])
-                        {
-                            Top20000 = rawShell;
-                        }
-                    }
                 }
                 else if (TestType == 1)
                 {
-                    if (rawShell.IsBelt)
+                    if (Dif)
+                    {
+                        if (rawShell.DpsPerCostDict[DamageType] > TopDif.DpsPerCostDict[DamageType])
+                        {
+                            TopDif = rawShell;
+                        }
+                    }
+                    else if (rawShell.IsBelt)
                     {
                         if (rawShell.DpsPerCostDict[DamageType] > TopBelt.DpsPerCostDict[DamageType])
                         {
@@ -1256,20 +1231,6 @@ namespace ApsCalcUI
                         if (rawShell.DpsPerCostDict[DamageType] > Top8000.DpsPerCostDict[DamageType])
                         {
                             Top8000 = rawShell;
-                        }
-                    }
-                    else if (rawShell.TotalLength <= 10000 && rawShell.IsDif)
-                    {
-                        if (rawShell.DpsPerCostDict[DamageType] > Top10000.DpsPerCostDict[DamageType])
-                        {
-                            Top10000 = rawShell;
-                        }
-                    }
-                    else if (rawShell.TotalLength <= 20000 && rawShell.IsDif)
-                    {
-                        if (rawShell.DpsPerCostDict[DamageType] > Top20000.DpsPerCostDict[DamageType])
-                        {
-                            Top20000 = rawShell;
                         }
                     }
                 }

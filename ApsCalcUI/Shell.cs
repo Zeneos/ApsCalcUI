@@ -443,53 +443,51 @@ namespace ApsCalcUI
             LoaderCost = 0;
 
             // DIF can't use loaders, only inputs
-            if (IsDif)
+            if (!IsDif)
             {
-                LoaderVolume = 1f;
-                LoaderCost = 50f;
+                if (TotalLength <= 1000f)
+                {
+                    LoaderVolume = 1f;
+                    LoaderCost = 240f;
+                }
+                else if (TotalLength <= 2000f)
+                {
+                    LoaderVolume = 2f;
+                    LoaderCost = 300f;
+                }
+                else if (TotalLength <= 3000f)
+                {
+                    LoaderVolume = 3f;
+                    LoaderCost = 330f;
+                }
+                else if (TotalLength <= 4000f)
+                {
+                    LoaderVolume = 4f;
+                    LoaderCost = 360f;
+                }
+                else if (TotalLength <= 5000f)
+                {
+                    LoaderVolume = 5f;
+                    LoaderCost = 390f;
+                }
+                else if (TotalLength <= 6000f)
+                {
+                    LoaderVolume = 6f;
+                    LoaderCost = 420f;
+                }
+                else if (TotalLength <= 7000f)
+                {
+                    LoaderVolume = 7f;
+                    LoaderCost = 450f;
+                }
+                else if (TotalLength <= 8000f)
+                {
+                    LoaderVolume = 8f;
+                    LoaderCost = 480f;
+                }
             }
 
-            if (TotalLength <= 1000f)
-            {
-                LoaderVolume = 1f;
-                LoaderCost = 240f;
-            }
-            else if (TotalLength <= 2000f)
-            {
-                LoaderVolume = 2f;
-                LoaderCost = 300f;
-            }
-            else if (TotalLength <= 3000f)
-            {
-                LoaderVolume = 3f;
-                LoaderCost = 330f;
-            }
-            else if (TotalLength <= 4000f)
-            {
-                LoaderVolume = 4f;
-                LoaderCost = 360f;
-            }
-            else if (TotalLength <= 5000f)
-            {
-                LoaderVolume = 5f;
-                LoaderCost = 390f;
-            }
-            else if (TotalLength <= 6000f)
-            {
-                LoaderVolume = 6f;
-                LoaderCost = 420f;
-            }
-            else if (TotalLength <= 7000f)
-            {
-                LoaderVolume = 7f;
-                LoaderCost = 450f;
-            }
-            else if (TotalLength <= 8000f)
-            {
-                LoaderVolume = 8f;
-                LoaderCost = 480f;
-            }
-            LoaderVolume += 1f; // Always have an intake
+            LoaderVolume += 1f; // Always have an intake, even for DIF
             LoaderCost += 50f;
         }
 
