@@ -127,6 +127,7 @@ namespace ApsCalcUI
             this.TestIntervalLabel = new System.Windows.Forms.Label();
             this.StoragePanel = new System.Windows.Forms.Panel();
             this.fontDialog1 = new System.Windows.Forms.FontDialog();
+            this.DifCB = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).BeginInit();
@@ -1321,11 +1322,24 @@ namespace ApsCalcUI
             this.StoragePanel.Size = new System.Drawing.Size(159, 76);
             this.StoragePanel.TabIndex = 40;
             // 
+            // DifCB
+            // 
+            this.DifCB.AutoSize = true;
+            this.DifCB.Location = new System.Drawing.Point(13, 68);
+            this.DifCB.Name = "DifCB";
+            this.DifCB.Size = new System.Drawing.Size(43, 19);
+            this.DifCB.TabIndex = 44;
+            this.DifCB.Text = "DIF";
+            this.ToolTip.SetToolTip(this.DifCB, "Check if the ammo feeders will be attached directly to the firing piece.");
+            this.DifCB.UseVisualStyleBackColor = true;
+            this.DifCB.CheckedChanged += new System.EventHandler(this.DifCB_CheckedChanged);
+            // 
             // ParameterInput
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 583);
+            this.Controls.Add(this.DifCB);
             this.Controls.Add(this.ModdedMaxGaugeCB);
             this.Controls.Add(this.PendepthCB);
             this.Controls.Add(this.EnginePanel);
@@ -1512,6 +1526,7 @@ namespace ApsCalcUI
         private System.Windows.Forms.CheckBox FixedPendepthFuzeCB;
         private System.Windows.Forms.CheckBox FixedGravCompCB;
         private System.Windows.Forms.CheckBox ModdedMaxGaugeCB;
+        private System.Windows.Forms.CheckBox DifCB;
     }
 }
 

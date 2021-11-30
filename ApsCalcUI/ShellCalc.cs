@@ -70,6 +70,7 @@ namespace ApsCalcUI
         /// <param name="ppv">Engine power per volume</param>
         /// <param name="ppc">Engine power per block cost</param>
         /// <param name="fuel">Whether engine uses special Fuel storage</param>
+        /// <param name="dif">Whether gun is using Direct Input Feed</param>
         public ShellCalc(
             int barrelCount,
             float gauge,
@@ -97,7 +98,8 @@ namespace ApsCalcUI
             float ppm,
             float ppv,
             float ppc,
-            bool fuel
+            bool fuel,
+            bool dif
             )
         {
             BarrelCount = barrelCount;
@@ -128,6 +130,7 @@ namespace ApsCalcUI
             Ppv = ppv;
             Ppc = ppc;
             Fuel = fuel;
+            Dif = dif;
         }
 
         public int BarrelCount { get; }
@@ -158,6 +161,7 @@ namespace ApsCalcUI
         public float Ppv { get; }
         public float Ppc { get; }
         public bool Fuel { get; }
+        public bool Dif { get; }
 
 
         // Store top-DPS shells by loader length
@@ -170,6 +174,8 @@ namespace ApsCalcUI
         public Shell Top6000 { get; set; } = new();
         public Shell Top7000 { get; set; } = new();
         public Shell Top8000 { get; set; } = new();
+        public Shell Top10000 { get; set; } = new();
+        public Shell Top20000 { get; set; } = new(); // Possible only with DIF and mods
 
         public Dictionary<string, Shell> TopDpsShells { get; set; } = new Dictionary<string, Shell>();
         public List<Shell> TopShellsLocal { get; set; } = new List<Shell>();
@@ -334,6 +340,7 @@ namespace ApsCalcUI
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[6]] += counts.Var6Count;
                 shellUnderTesting.GPCasingCount = counts.GPCount;
                 shellUnderTesting.RGCasingCount = counts.RGCount;
+                shellUnderTesting.IsDif = Dif;
 
                 shellUnderTesting.CalculateLengths();
 
@@ -624,6 +631,20 @@ namespace ApsCalcUI
                                     Top8000 = shellUnderTesting;
                                 }
                             }
+                            else if (shellUnderTesting.TotalLength <= 10000f && shellUnderTesting.IsDif)
+                            {
+                                if (shellUnderTesting.DpsPerVolumeDict[DamageType] > Top10000.DpsPerVolumeDict[DamageType])
+                                {
+                                    Top10000 = shellUnderTesting;
+                                }
+                            }
+                            else if (shellUnderTesting.TotalLength <= 20000f && shellUnderTesting.IsDif)
+                            {
+                                if (shellUnderTesting.DpsPerVolumeDict[DamageType] > Top20000.DpsPerVolumeDict[DamageType])
+                                {
+                                    Top20000 = shellUnderTesting;
+                                }
+                            }
                         }
                         else if (TestType == 1)
                         {
@@ -683,11 +704,25 @@ namespace ApsCalcUI
                                     Top8000 = shellUnderTesting;
                                 }
                             }
+                            else if (shellUnderTesting.TotalLength <= 10000f && shellUnderTesting.IsDif)
+                            {
+                                if (shellUnderTesting.DpsPerCostDict[DamageType] > Top10000.DpsPerCostDict[DamageType])
+                                {
+                                    Top10000 = shellUnderTesting;
+                                }
+                            }
+                            else if (shellUnderTesting.TotalLength <= 20000f && shellUnderTesting.IsDif)
+                            {
+                                if (shellUnderTesting.DpsPerCostDict[DamageType] > Top20000.DpsPerCostDict[DamageType])
+                                {
+                                    Top20000 = shellUnderTesting;
+                                }
+                            }
                         }
 
 
                         // Beltfed testing
-                        if (shellUnderTesting.TotalLength <= 1000f)
+                        if (shellUnderTesting.TotalLength <= 1000f && !Dif)
                         {
                             Shell shellUnderTestingBelt = new();
                             shellUnderTestingBelt.BarrelCount = BarrelCount;
@@ -994,6 +1029,16 @@ namespace ApsCalcUI
             {
                 TopShellsLocal.Add(Top8000);
             }
+
+            if (Top10000.DpsDict[DamageType] > 0)
+            {
+                TopShellsLocal.Add(Top10000);
+            }
+
+            if (Top20000.DpsDict[DamageType] > 0)
+            {
+                TopShellsLocal.Add(Top20000);
+            }
         }
 
 
@@ -1005,47 +1050,57 @@ namespace ApsCalcUI
         {
             if (TopBelt.DpsDict[DamageType] > 0)
             {
-                TopDpsShells.Add("1 m (belt)", TopBelt);
+                TopDpsShells.Add("1m (belt)", TopBelt);
             }
 
             if (Top1000.DpsDict[DamageType] > 0)
             {
-                TopDpsShells.Add("1 m", Top1000);
+                TopDpsShells.Add("1m", Top1000);
             }
 
             if (Top2000.DpsDict[DamageType] > 0)
             {
-                TopDpsShells.Add("2 m", Top2000);
+                TopDpsShells.Add("2m", Top2000);
             }
 
             if (Top3000.DpsDict[DamageType] > 0)
             {
-                TopDpsShells.Add("3 m", Top3000);
+                TopDpsShells.Add("3m", Top3000);
             }
 
             if (Top4000.DpsDict[DamageType] > 0)
             {
-                TopDpsShells.Add("4 m", Top4000);
+                TopDpsShells.Add("4m", Top4000);
             }
 
             if (Top5000.DpsDict[DamageType] > 0)
             {
-                TopDpsShells.Add("5 m", Top5000);
+                TopDpsShells.Add("5m", Top5000);
             }
 
             if (Top6000.DpsDict[DamageType] > 0)
             {
-                TopDpsShells.Add("6 m", Top6000);
+                TopDpsShells.Add("6m", Top6000);
             }
 
             if (Top7000.DpsDict[DamageType] > 0)
             {
-                TopDpsShells.Add("7 m", Top7000);
+                TopDpsShells.Add("7m", Top7000);
             }
 
             if (Top8000.DpsDict[DamageType] > 0)
             {
-                TopDpsShells.Add("8 m", Top8000);
+                TopDpsShells.Add("8m", Top8000);
+            }
+
+            if (Top10000.DpsDict[DamageType] > 0)
+            {
+                TopDpsShells.Add("10m (DIF only)", Top10000);
+            }
+
+            if (Top20000.DpsDict[DamageType] > 0)
+            {
+                TopDpsShells.Add("20m (DIF only)", Top20000);
             }
         }
 
@@ -1123,6 +1178,20 @@ namespace ApsCalcUI
                             Top8000 = rawShell;
                         }
                     }
+                    else if (rawShell.TotalLength <= 10000 && rawShell.IsDif)
+                    {
+                        if (rawShell.DpsPerVolumeDict[DamageType] > Top10000.DpsPerVolumeDict[DamageType])
+                        {
+                            Top10000 = rawShell;
+                        }
+                    }
+                    else if (rawShell.TotalLength <= 20000 && rawShell.IsDif)
+                    {
+                        if (rawShell.DpsPerVolumeDict[DamageType] > Top20000.DpsPerVolumeDict[DamageType])
+                        {
+                            Top20000 = rawShell;
+                        }
+                    }
                 }
                 else if (TestType == 1)
                 {
@@ -1187,6 +1256,20 @@ namespace ApsCalcUI
                         if (rawShell.DpsPerCostDict[DamageType] > Top8000.DpsPerCostDict[DamageType])
                         {
                             Top8000 = rawShell;
+                        }
+                    }
+                    else if (rawShell.TotalLength <= 10000 && rawShell.IsDif)
+                    {
+                        if (rawShell.DpsPerCostDict[DamageType] > Top10000.DpsPerCostDict[DamageType])
+                        {
+                            Top10000 = rawShell;
+                        }
+                    }
+                    else if (rawShell.TotalLength <= 20000 && rawShell.IsDif)
+                    {
+                        if (rawShell.DpsPerCostDict[DamageType] > Top20000.DpsPerCostDict[DamageType])
+                        {
+                            Top20000 = rawShell;
                         }
                     }
                 }
@@ -1406,6 +1489,10 @@ namespace ApsCalcUI
             }
 
             writer.WriteLine("Test interval (min): " + TestInterval);
+            if (Dif)
+            {
+                writer.WriteLine("Gun is using Direct Input Feed");
+            }
             writer.WriteLine("\n");
 
 

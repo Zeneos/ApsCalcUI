@@ -68,6 +68,7 @@ namespace ApsCalcUI
         public float Velocity { get; set; }
 
         // Reload
+        public bool IsDif { get; set; } // Direct-Input Feed doubles reload time
         public float ReloadTime { get; set; }
         public float ReloadTimeBelt { get; set; } // Beltfed Loader
         public float UptimeBelt { get; set; }
@@ -441,6 +442,13 @@ namespace ApsCalcUI
             LoaderVolume = 0;
             LoaderCost = 0;
 
+            // DIF can't use loaders, only inputs
+            if (IsDif)
+            {
+                LoaderVolume = 1f;
+                LoaderCost = 50f;
+            }
+
             if (TotalLength <= 1000f)
             {
                 LoaderVolume = 1f;
@@ -794,6 +802,12 @@ namespace ApsCalcUI
             ReloadTime = MathF.Pow(Gauge * Gauge * Gauge / 125000000f, 0.45f)
                 * (2f + EffectiveProjectileModuleCount + 0.25f * (RGCasingCount + GPCasingCount))
                 * 17.5f;
+
+            // DIF doubles reload time
+            if (IsDif)
+            {
+                ReloadTime *= 2f;
+            }
         }
 
         /// <summary>

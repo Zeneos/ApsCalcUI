@@ -38,6 +38,7 @@ namespace ApsCalcUI
         public float Ppv;
         public float Ppc;
         public bool Fuel;
+        public bool Dif;
     }
 
     static class Program

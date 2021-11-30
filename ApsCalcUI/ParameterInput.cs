@@ -637,6 +637,8 @@ namespace ApsCalcUI
 
                 testParameters.Fuel = EngineFuelCB.Checked;
 
+                testParameters.Dif = DifCB.Checked;
+
                 parameterList.Add(testParameters);
             }
         }
@@ -701,7 +703,8 @@ namespace ApsCalcUI
                                     testParameters.Ppm,
                                     testParameters.Ppv,
                                     testParameters.Ppc,
-                                    testParameters.Fuel
+                                    testParameters.Fuel,
+                                    testParameters.Dif
                                     );
 
 
@@ -741,7 +744,8 @@ namespace ApsCalcUI
                                     testParameters.Ppm,
                                     testParameters.Ppv,
                                     testParameters.Ppc,
-                                    testParameters.Fuel
+                                    testParameters.Fuel,
+                                    testParameters.Dif
                                 );
 
                             calcFinal.FindTopShellsInList(shellBag);
@@ -782,7 +786,8 @@ namespace ApsCalcUI
                                 testParameters.Ppm,
                                 testParameters.Ppv,
                                 testParameters.Ppc,
-                                testParameters.Fuel
+                                testParameters.Fuel,
+                                testParameters.Dif
                                 );
 
                             calcLocal.ShellTest();
@@ -821,7 +826,8 @@ namespace ApsCalcUI
                                 testParameters.Ppm,
                                 testParameters.Ppv,
                                 testParameters.Ppc,
-                                testParameters.Fuel
+                                testParameters.Fuel,
+                                testParameters.Dif
                             );
 
                         calcFinal.FindTopShellsInList(shellBag);
@@ -891,16 +897,47 @@ namespace ApsCalcUI
             UpdateModuleCounts();
         }
 
+
+        // Sets max length according to modded max gauge and DIF checkboxes
+        private void CheckMaxLength()
+        {
+            if (DifCB.Checked && ModdedMaxGaugeCB.Checked)
+            {
+                MaxLengthUD.Maximum = 20000;
+                MaxLengthUD.Value = 20000;
+            }
+            else if (DifCB.Checked)
+            {
+                MaxLengthUD.Maximum = 10000;
+                MaxLengthUD.Value = 10000;
+            }
+            else
+            {
+                MaxLengthUD.Maximum = 8000;
+                MaxLengthUD.Value = 8000;
+            }
+        }
         private void ModdedMaxGaugeCB_CheckedChanged(object sender, EventArgs e)
         {
             if (ModdedMaxGaugeCB.Checked)
             {
                 MaxGaugeUD.Maximum = 1000;
+                if (MaxGaugeUD.Value == 500)
+                {
+                    MaxGaugeUD.Value = 1000;
+                }
             }
             else
             {
                 MaxGaugeUD.Maximum = 500;
             }
+
+            CheckMaxLength();
+        }
+
+        private void DifCB_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckMaxLength();
         }
     }
 }
