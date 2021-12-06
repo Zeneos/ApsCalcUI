@@ -797,7 +797,7 @@ namespace ApsCalcUI
         /// </summary>
         public void CalculateReloadTime()
         {
-            ReloadTime = MathF.Pow(Gauge * Gauge * Gauge / 125000000f, 0.45f)
+            ReloadTime = MathF.Pow(Gauge / 500f, 1.35f)
                 * (2f + EffectiveProjectileModuleCount + 0.25f * (RGCasingCount + GPCasingCount))
                 * 17.5f;
 
@@ -922,9 +922,8 @@ namespace ApsCalcUI
                 flaKBodies++;
             }
             DamageDict[DamageType.FlaK] =
-                OverallChemModifier
-                * 3000f
-                * MathF.Pow(MathF.Pow(Gauge / 500f, 1.8f) * flaKBodies * 0.704f, 0.9f);
+                3000f
+                * MathF.Pow(GaugeCoefficient * flaKBodies * 0.704f * OverallChemModifier, 0.9f);
         }
 
         /// <summary>
@@ -979,9 +978,8 @@ namespace ApsCalcUI
                 heBodies++;
             }
             DamageDict[DamageType.HE] = 
-                OverallChemModifier
-                * 3000f
-                * MathF.Pow(GaugeCoefficient * heBodies * 0.88f, 0.9f);
+                3000f
+                * MathF.Pow(GaugeCoefficient * heBodies * 0.88f * OverallChemModifier, 0.9f);
         }
 
         /// <summary>
@@ -1007,9 +1005,8 @@ namespace ApsCalcUI
                 // Calculate HE damage assuming special factor of 1 for HE bodies
                 // Special heads count as HE body with special factor of 0.8, leaving 0.2 body equivalents for actual HE damage
                 DamageDict[DamageType.HE] =
-                OverallChemModifier
-                * 3000f
-                * MathF.Pow(MathF.Pow(Gauge / 500f, 1.8f) * 0.176f, 0.9f);
+                3000f
+                * MathF.Pow(GaugeCoefficient * 0.176f * OverallChemModifier, 0.9f);
 
                 DamageDict[DamageType.HEAT] =
                     GaugeCoefficient
