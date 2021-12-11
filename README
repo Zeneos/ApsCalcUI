@@ -70,15 +70,22 @@ only of fixed modules (the form automatically enforces this restriction).
 
 Minimum Velocity: minimum shell velocity. Note that a high minimum velocity
 may be impossible to meet within the casing and rail draw restrictions.
+
 Minimum Effective Range: effective range is the distance a shell will travel
 in its "lifetime", after which it will become useless. Particularly small
 shells may have an effective range of less than 1 km, and may not be suitable
 for use on certain craft.
 
-Pendepth: checking the "Pendepth" checkbox enables the Target Armor Scheme
-controls. With the box checked, the optimizer will only count shells which
-are capable of destroying the target armor configuration using either kinetic
-or thump damage.
+Limit barrel length Checkbox: enables barrel length limits. Every shell has a
+Barrel Length for 0.3° Inaccuracy and a Barrel Length For Max Propellant Burn.
+Enabling length limits will cause the optimizer to discard any shell whose
+required minimum barrel length (for inaccuracy or propellant burn) exceeds 
+the limit. The number entered can represent a fixed length (select "m" from
+the dropdown) or a multiple of the gauge (select "calibers").
+
+Pendepth Checkbox: enables the Target Armor Scheme controls. With the box
+checked, the optimizer will only count shells which are capable of destroying
+the target armor configuration using either kinetic or thump damage.
 
 Damage Type: damage type to optimize.
   Kinetic. Prompts entry of target AC value(s). Note that more than one AC
@@ -110,10 +117,10 @@ the gun and the Tetris skill of the builder. The components which are counted
 are the loader, input, recoil absorbers, coolers, and rail chargers. Beltfed
 loaders assume a fixed configuration of 1 clip and 2 inputs per loader.
 
-Row Labels: whether to include labels on every row of the printout. Tests
-without row labels will print the row headers before the actual results;
-these are intended to be copied into a spreadsheet, with each loader length
-as its own column. For example:
+Label Every Row Checkbox: whether to include labels on every row of the 
+printout. Tests without row labels will print the row headers before the
+actual results; these are intended to be copied into a spreadsheet, with each
+loader length as its own column. For example:
 
 	WITH LABELS				WITHOUT LABELS
 	3 m					3 m
@@ -152,6 +159,16 @@ Fuel Checkbox: Check if the engine supplyning power for railguns is of a type
 which requires Fuel access (as shown on the default tab of the V menu). This
 includes Fuel engines and Custom jet engines. Disabled unless Max Rail Draw
 > 0.
+
+1000mm APS Mod: Check if using the 1000mm APS mod. Increases max gauge to
+1000mm.
+
+DIF Checkbox: Check if the inputs will be mounted directly to the firing
+piece, as opposed to using clips. This is known as Direct Input Feed, or DIF,
+and allows for longer shells (10 000mm in vanilla; 20 000mm with 1000mm APS
+mod), but limits the gun to 4 inputs max, and doubles reload time.
+
+
 
 
 ---- OPTIMIZER OUTPUT ----
