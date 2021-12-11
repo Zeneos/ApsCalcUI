@@ -83,9 +83,8 @@ namespace ApsCalcUI
 
 
         // Damage
-        public float KineticDamage { get; set; }
+        public float RawKD { get; set; }
         public float ArmorPierce { get; set; }
-        public float EffectiveKineticDamage { get; set; }
 
         public Dictionary<DamageType, float> DamageDict = new()
         {
@@ -909,7 +908,7 @@ namespace ApsCalcUI
 
             if (HeadModule == Module.HollowPoint)
             {
-                DamageDict[DamageType.Kinetic] =
+                RawKD =
                     GaugeCoefficient
                     * EffectiveProjectileModuleCount
                     * Velocity
@@ -918,7 +917,7 @@ namespace ApsCalcUI
             }
             else
             {
-                DamageDict[DamageType.Kinetic] =
+                RawKD =
                     MathF.Pow(500 / MathF.Max(Gauge, 100f), 0.15f)
                     * GaugeCoefficient
                     * EffectiveProjectileModuleCount
@@ -926,7 +925,6 @@ namespace ApsCalcUI
                     * OverallKineticDamageModifier
                     * 3.5f;
             }
-            KineticDamage = DamageDict[DamageType.Kinetic];
         }
 
         /// <summary>
@@ -1110,10 +1108,8 @@ namespace ApsCalcUI
             CalculateKineticDamage();
             CalculateAP();
 
-            EffectiveKineticDamage = KineticDamage * MathF.Min(1, ArmorPierce / targetAC);
-            DamageDict[DamageType.Kinetic] = EffectiveKineticDamage;
-            DpsDict[DamageType.Kinetic] = EffectiveKineticDamage / ReloadTime;
-
+            DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC);
+            DpsDict[DamageType.Kinetic] = DamageDict[DamageType.Kinetic] / ReloadTime;
             DpsPerVolumeDict[DamageType.Kinetic] = DpsDict[DamageType.Kinetic] / VolumePerIntake;
             DpsPerCostDict[DamageType.Kinetic] = DpsDict[DamageType.Kinetic] / CostPerIntake;
         }
@@ -1126,12 +1122,10 @@ namespace ApsCalcUI
                 CalculateKineticDamage();
                 CalculateAP();
 
-                EffectiveKineticDamage = KineticDamage * MathF.Min(1, ArmorPierce / targetAC);
-                DamageDict[DamageType.Kinetic] = EffectiveKineticDamage;
-                DpsDict[DamageType.Kinetic] = EffectiveKineticDamage / ReloadTimeBelt * UptimeBelt;
-
-                DpsPerVolumeDict[DamageType.Kinetic] = DpsDict[DamageType.Kinetic] / VolumePerIntakeBelt;
-                DpsPerCostDict[DamageType.Kinetic] = DpsDict[DamageType.Kinetic] / CostPerIntakeBelt;
+                DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC);
+                DpsDict[DamageType.Kinetic] = DamageDict[DamageType.Kinetic] / ReloadTimeBelt * UptimeBelt;
+                DpsPerVolumeDict[DamageType.Kinetic] = DpsDict[DamageType.Kinetic] / VolumePerIntake;
+                DpsPerCostDict[DamageType.Kinetic] = DpsDict[DamageType.Kinetic] / CostPerIntake;
             }
             else
             {
@@ -1418,8 +1412,8 @@ namespace ApsCalcUI
             CalculateKineticDamage();
             CalculateAP();
 
-            if (DamageDict[DamageType.Kinetic] >= targetScheme.GetRequiredKD(ArmorPierce)
-                || (HeadModule == Module.HollowPoint && DamageDict[DamageType.Kinetic] >= targetScheme.GetRequiredThump(ArmorPierce)))
+            if (RawKD >= targetScheme.GetRequiredKD(ArmorPierce)
+                || (HeadModule == Module.HollowPoint && RawKD >= targetScheme.GetRequiredThump(ArmorPierce)))
             {
                 if (dt == DamageType.Kinetic)
                 {
@@ -1490,8 +1484,8 @@ namespace ApsCalcUI
             CalculateKineticDamage();
             CalculateAP();
 
-            if (DamageDict[DamageType.Kinetic] >= targetScheme.GetRequiredKD(ArmorPierce)
-                || (HeadModule == Module.HollowPoint && DamageDict[DamageType.Kinetic] >= targetScheme.GetRequiredThump(ArmorPierce)))
+            if (RawKD >= targetScheme.GetRequiredKD(ArmorPierce)
+                || (HeadModule == Module.HollowPoint && RawKD >= targetScheme.GetRequiredThump(ArmorPierce)))
             {
                 if (dt == DamageType.Kinetic)
                 {
@@ -1610,7 +1604,7 @@ namespace ApsCalcUI
 
                 if (dtToShow[DamageType.Kinetic])
                 {
-                    writer.WriteLine("Raw KD: " + KineticDamage);
+                    writer.WriteLine("Raw KD: " + RawKD);
                     writer.WriteLine("AP: " + ArmorPierce);
                 }
                 foreach (DamageType dt in dtToShow.Keys)
@@ -1763,7 +1757,7 @@ namespace ApsCalcUI
 
                 if (dtToShow[DamageType.Kinetic])
                 {
-                    writer.WriteLine(KineticDamage);
+                    writer.WriteLine(RawKD);
                     writer.WriteLine(ArmorPierce);
                 }
                 foreach (DamageType dt in dtToShow.Keys)
