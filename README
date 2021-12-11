@@ -203,6 +203,14 @@ Velocity (m/s): shell velocity in m/s.
 
 Effective range (m): effective range in m.
 
+Barrel length for 0.3° inacccuracy (m): minimum barrel length to achieve 0.3°
+inaccuracy. Note that, unlike the ingame UI, the optimizer includes bonuses
+from Base Bleeder and Visual Tracer in the calculation, so this number may
+not match what is shown ingame. The optimizer assumes x0.72 from tracers,
+which may not be the case depending on actual ROF.
+
+Barrel length for ful propellant burn (m): same value as shown ingame.
+
 Damage:
 	Kinetic shells will show raw damage, AP, and effective damage after
 		applying AC reduction.

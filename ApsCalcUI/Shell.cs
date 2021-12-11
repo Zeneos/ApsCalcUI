@@ -52,6 +52,8 @@ namespace ApsCalcUI
         public float EffectiveBodyLength { get; set; } // Used for penalizing short shells
         public float EffectiveBodyModuleCount { get; set; } // Compensate for length-limited modules
         public float EffectiveProjectileModuleCount { get; set; } // Compensate for length-limited modules
+        public float BarrelLengthForInaccuracy { get; set; }
+        public float BarrelLengthForPropellant { get; set; }
 
         // Overall modifiers
         public float OverallVelocityModifier { get; set; }
@@ -359,9 +361,13 @@ namespace ApsCalcUI
             weightedInaccuracyMod /= EffectiveBodyLength;
 
             OverallInaccuracyModifier = weightedInaccuracyMod * HeadModule.InaccuracyMod;
-            if (BaseModule?.Name == "Base bleeder")
+            if (BaseModule?.Name == Module.BaseBleeder.Name)
             {
                 OverallInaccuracyModifier *= 1.35f;
+            }
+            else if (BaseModule?.Name == Module.Tracer.Name)
+            {
+                OverallInaccuracyModifier *= 0.72f;
             }
         }
 
@@ -374,6 +380,16 @@ namespace ApsCalcUI
             float maxProjectileLength = MathF.Pow(barrelLength / 4f / MathF.Pow(OverallInaccuracyModifier, 2.5f), 4f/3f);
 
             return maxProjectileLength * 1000f;
+        }
+
+        /// <summary>
+        /// Calculate min barrel length for inaccuracy and full propellant burn
+        /// </summary>
+        public void CalculateRequiredBarrelLengths()
+        {
+            BarrelLengthForInaccuracy = 4 * MathF.Pow(ProjectileLength / 1000f, 0.75f) * MathF.Pow(OverallInaccuracyModifier, 2.5f);
+
+            BarrelLengthForPropellant = 2.2f * GPCasingCount * MathF.Pow(Gauge / 1000f, 0.55f);
         }
 
 
@@ -1589,6 +1605,8 @@ namespace ApsCalcUI
 
                 writer.WriteLine("Velocity (m/s): " + Velocity);
                 writer.WriteLine("Effective range (m): " + EffectiveRange);
+                writer.WriteLine("Barrel length for 0.3° inaccuracy (m): " + BarrelLengthForInaccuracy);
+                writer.WriteLine("Barrel length for propellant burn (m): " + BarrelLengthForPropellant);
 
                 if (dtToShow[DamageType.Kinetic])
                 {
@@ -1740,6 +1758,8 @@ namespace ApsCalcUI
 
                 writer.WriteLine(Velocity);
                 writer.WriteLine(EffectiveRange);
+                writer.WriteLine(BarrelLengthForInaccuracy);
+                writer.WriteLine(BarrelLengthForPropellant);
 
                 if (dtToShow[DamageType.Kinetic])
                 {

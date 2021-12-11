@@ -1549,6 +1549,8 @@ namespace ApsCalcUI
 
                 writer.WriteLine("Velocity (m/s)");
                 writer.WriteLine("Effective range (m)");
+                writer.WriteLine("Barrel length for 0.3° inaccuracy (m)");
+                writer.WriteLine("Barrel length for propellant burn (m)");
 
                 if (dtToShow[DamageType.Kinetic])
                 {
@@ -1631,6 +1633,9 @@ namespace ApsCalcUI
             {
                 foreach (KeyValuePair<string, Shell> topShell in TopDpsShells)
                 {
+                    // Calculate barrel lengths
+                    topShell.Value.CalculateRequiredBarrelLengths();
+
                     // Calculate all damage and DPS -- including those not used for optimizing
                     foreach (DamageType dt in dtToShow.Keys)
                     {
