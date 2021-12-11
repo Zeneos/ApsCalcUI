@@ -45,6 +45,16 @@ namespace ApsCalcUI
             BarrelCountDD.DisplayMember = "Text";
             BarrelCountDD.SelectedIndex = 0;
 
+            // Barrel length limit type dropdown
+            BarrelLengthLimitTypeItem[] barrelLengthLimitTypeItems = new[]
+            {
+                new BarrelLengthLimitTypeItem { ID = BarrelLengthLimit.Calibers, Text = "calibers" },
+                new BarrelLengthLimitTypeItem { ID = BarrelLengthLimit.FixedLength, Text = "m" }
+            };
+            BarrelLengthLimitDD.DataSource = barrelLengthLimitTypeItems;
+            BarrelLengthLimitDD.DisplayMember = "Text";
+            BarrelLengthLimitDD.SelectedIndex = 0;
+
             // Head module checked list
             foreach (HeadModuleItem head in HeadModuleItem.GenerateHeadList())
             {
@@ -338,6 +348,102 @@ namespace ApsCalcUI
                 ArmorLayerLB.Items.Remove(ArmorLayerLB.Items[^1]);
                 ArmorLayerLB.EndUpdate();
             }
+        }
+
+        private void MaxDrawUD_ValueChanged(object sender, EventArgs e)
+        {
+            if (MaxDrawUD.Value > 0)
+            {
+                EnginePanel.Enabled = true;
+            }
+            else
+            {
+                EnginePanel.Enabled = false;
+            }
+        }
+
+        private void PendepthCB_CheckedChanged(object sender, EventArgs e)
+        {
+            TargetSchemePanel.Enabled = PendepthCB.Checked;
+        }
+
+        private void FixedGravCompCB_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateModuleCounts();
+        }
+
+        private void FixedPendepthFuzeCB_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateModuleCounts();
+        }
+
+        private void FixedTimedFuzeCB_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateModuleCounts();
+        }
+
+        private void FixedInertialFuzeCB_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateModuleCounts();
+        }
+
+        private void FixedAltitudeFuzeCB_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateModuleCounts();
+        }
+
+        private void FixedDefuzeCB_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateModuleCounts();
+        }
+
+
+        // Sets max length according to modded max gauge and DIF checkboxes
+        private void CheckMaxLength()
+        {
+            if (DifCB.Checked && ModdedMaxGaugeCB.Checked)
+            {
+                MaxLengthUD.Maximum = 20000;
+                MaxLengthUD.Value = 20000;
+            }
+            else if (DifCB.Checked)
+            {
+                MaxLengthUD.Maximum = 10000;
+                MaxLengthUD.Value = 10000;
+            }
+            else
+            {
+                MaxLengthUD.Maximum = 8000;
+                MaxLengthUD.Value = 8000;
+            }
+        }
+        private void ModdedMaxGaugeCB_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ModdedMaxGaugeCB.Checked)
+            {
+                MaxGaugeUD.Maximum = 1000;
+                if (MaxGaugeUD.Value == 500)
+                {
+                    MaxGaugeUD.Value = 1000;
+                }
+            }
+            else
+            {
+                MaxGaugeUD.Maximum = 500;
+            }
+
+            CheckMaxLength();
+        }
+
+        private void DifCB_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckMaxLength();
+        }
+
+        private void BarrelLengthLimitCB_CheckedChanged(object sender, EventArgs e)
+        {
+            BarrelLengthLimitDD.Enabled = BarrelLengthLimitCB.Checked;
+            BarrelLengthLimitUD.Enabled = BarrelLengthLimitCB.Checked;
         }
 
         /// <summary>
@@ -639,6 +745,10 @@ namespace ApsCalcUI
 
                 testParameters.Dif = DifCB.Checked;
 
+                testParameters.LimitBarrelLength = BarrelLengthLimitCB.Checked;
+                testParameters.MaxBarrelLength = (float)BarrelLengthLimitUD.Value;
+                testParameters.BarrelLengthLimitType = ((BarrelLengthLimitTypeItem)BarrelLengthLimitDD.SelectedItem).ID;
+
                 parameterList.Add(testParameters);
             }
         }
@@ -704,7 +814,10 @@ namespace ApsCalcUI
                                     testParameters.Ppv,
                                     testParameters.Ppc,
                                     testParameters.Fuel,
-                                    testParameters.Dif
+                                    testParameters.Dif,
+                                    testParameters.LimitBarrelLength,
+                                    testParameters.MaxBarrelLength,
+                                    testParameters.BarrelLengthLimitType
                                     );
 
 
@@ -745,7 +858,10 @@ namespace ApsCalcUI
                                     testParameters.Ppv,
                                     testParameters.Ppc,
                                     testParameters.Fuel,
-                                    testParameters.Dif
+                                    testParameters.Dif,
+                                    testParameters.LimitBarrelLength,
+                                    testParameters.MaxBarrelLength,
+                                    testParameters.BarrelLengthLimitType
                                 );
 
                             calcFinal.FindTopShellsInList(shellBag);
@@ -787,7 +903,10 @@ namespace ApsCalcUI
                                 testParameters.Ppv,
                                 testParameters.Ppc,
                                 testParameters.Fuel,
-                                testParameters.Dif
+                                testParameters.Dif,
+                                testParameters.LimitBarrelLength,
+                                testParameters.MaxBarrelLength,
+                                testParameters.BarrelLengthLimitType
                                 );
 
                             calcLocal.ShellTest();
@@ -827,7 +946,10 @@ namespace ApsCalcUI
                                 testParameters.Ppv,
                                 testParameters.Ppc,
                                 testParameters.Fuel,
-                                testParameters.Dif
+                                testParameters.Dif,
+                                testParameters.LimitBarrelLength,
+                                testParameters.MaxBarrelLength,
+                                testParameters.BarrelLengthLimitType
                             );
 
                         calcFinal.FindTopShellsInList(shellBag);
@@ -848,96 +970,6 @@ namespace ApsCalcUI
                 RunButton.Enabled = true;
                 RunButton.Text = "Run Queued Tests";
             }
-        }
-
-        private void MaxDrawUD_ValueChanged(object sender, EventArgs e)
-        {
-            if (MaxDrawUD.Value > 0)
-            {
-                EnginePanel.Enabled = true;
-            }
-            else
-            {
-                EnginePanel.Enabled = false;
-            }
-        }
-
-        private void PendepthCB_CheckedChanged(object sender, EventArgs e)
-        {
-            TargetSchemePanel.Enabled = PendepthCB.Checked;
-        }
-
-        private void FixedGravCompCB_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateModuleCounts();
-        }
-
-        private void FixedPendepthFuzeCB_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateModuleCounts();
-        }
-
-        private void FixedTimedFuzeCB_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateModuleCounts();
-        }
-
-        private void FixedInertialFuzeCB_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateModuleCounts();
-        }
-
-        private void FixedAltitudeFuzeCB_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateModuleCounts();
-        }
-
-        private void FixedDefuzeCB_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateModuleCounts();
-        }
-
-
-        // Sets max length according to modded max gauge and DIF checkboxes
-        private void CheckMaxLength()
-        {
-            if (DifCB.Checked && ModdedMaxGaugeCB.Checked)
-            {
-                MaxLengthUD.Maximum = 20000;
-                MaxLengthUD.Value = 20000;
-            }
-            else if (DifCB.Checked)
-            {
-                MaxLengthUD.Maximum = 10000;
-                MaxLengthUD.Value = 10000;
-            }
-            else
-            {
-                MaxLengthUD.Maximum = 8000;
-                MaxLengthUD.Value = 8000;
-            }
-        }
-        private void ModdedMaxGaugeCB_CheckedChanged(object sender, EventArgs e)
-        {
-            if (ModdedMaxGaugeCB.Checked)
-            {
-                MaxGaugeUD.Maximum = 1000;
-                if (MaxGaugeUD.Value == 500)
-                {
-                    MaxGaugeUD.Value = 1000;
-                }
-            }
-            else
-            {
-                MaxGaugeUD.Maximum = 500;
-            }
-
-            CheckMaxLength();
-        }
-
-        private void DifCB_CheckedChanged(object sender, EventArgs e)
-        {
-            CheckMaxLength();
         }
     }
 }

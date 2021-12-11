@@ -37,6 +37,13 @@ namespace ApsCalcUI
         Disruptor
     }
 
+    // Barrel length limit parameter
+    public enum BarrelLengthLimit : int
+    {
+        FixedLength,
+        Calibers
+    }
+
 
     public class ShellCalc
     {
@@ -71,6 +78,9 @@ namespace ApsCalcUI
         /// <param name="ppc">Engine power per block cost</param>
         /// <param name="fuel">Whether engine uses special Fuel storage</param>
         /// <param name="dif">Whether gun is using Direct Input Feed</param>
+        /// <param name="limitBarrelLength">Whether to limit max barrel length</param>
+        /// <param name="maxBarrelLength">Max barrel length in m or calibers</param>
+        /// <param name="barrelLengthLimitType">Whether to limit barrel length by m or calibers (multiples of gauge)</param>
         public ShellCalc(
             int barrelCount,
             float gauge,
@@ -99,7 +109,10 @@ namespace ApsCalcUI
             float ppv,
             float ppc,
             bool fuel,
-            bool dif
+            bool dif,
+            bool limitBarrelLength,
+            float maxBarrelLength,
+            BarrelLengthLimit barrelLengthLimitType
             )
         {
             BarrelCount = barrelCount;
@@ -131,6 +144,26 @@ namespace ApsCalcUI
             Ppc = ppc;
             Fuel = fuel;
             Dif = dif;
+            LimitBarrelLength = limitBarrelLength;
+            if (limitBarrelLength && barrelLengthLimitType == BarrelLengthLimit.Calibers)
+            {
+                MaxBarrelLengthInCalibers = maxBarrelLength;
+                MaxBarrelLengthInM = maxBarrelLength * gauge / 1000f;
+            }
+            else if (limitBarrelLength && barrelLengthLimitType == BarrelLengthLimit.FixedLength)
+            {
+                MaxBarrelLengthInM = maxBarrelLength;
+            }
+            BarrelLengthLimitType = barrelLengthLimitType;
+
+            if (LimitBarrelLength)
+            {
+                MaxGP = MathF.Min(maxGPInput, MaxBarrelLengthInM / 2.2f / MathF.Pow(Gauge / 1000f, 0.55f));
+            }
+            else
+            {
+                MaxGP = MaxGPInput;
+            }
         }
 
         public int BarrelCount { get; }
@@ -141,6 +174,7 @@ namespace ApsCalcUI
         public float FixedModuleTotal { get; }
         public int[] VariableModuleIndices { get; }
         public float MaxGPInput { get; }
+        public float MaxGP { get; }
         public float MaxRGInput { get; }
         public float MinShellLength { get; }
         public float MaxShellLength { get; }
@@ -162,6 +196,10 @@ namespace ApsCalcUI
         public float Ppc { get; }
         public bool Fuel { get; }
         public bool Dif { get; }
+        public bool LimitBarrelLength { get; }
+        public float MaxBarrelLengthInM { get; }
+        public float MaxBarrelLengthInCalibers { get; }
+        public BarrelLengthLimit BarrelLengthLimitType { get; }
 
 
         // Store top-DPS shells by loader length
@@ -280,7 +318,7 @@ namespace ApsCalcUI
                                                 - var4Count
                                                 - var5Count
                                                 - var6Count
-                                                , MaxGPInput);
+                                                , MaxGP);
 
                                             for (float gpCount = 0; gpCount <= gpMax; gpCount += 0.01f)
                                             {
@@ -342,8 +380,18 @@ namespace ApsCalcUI
                 shellUnderTesting.IsDif = Dif;
 
                 shellUnderTesting.CalculateLengths();
+                bool lengthWithinBounds = true;
+                if (LimitBarrelLength && shellUnderTesting.ProjectileLength > shellUnderTesting.CalculateMaxProjectileLengthForAccuracy(MaxBarrelLengthInM))
+                {
+                    lengthWithinBounds = false;
+                }
+                if (shellUnderTesting.TotalLength <= MinShellLength || shellUnderTesting.TotalLength > MaxShellLength)
+                {
+                    lengthWithinBounds = false;
+                }
 
-                if (shellUnderTesting.TotalLength > MinShellLength && shellUnderTesting.TotalLength <= MaxShellLength)
+
+                if (lengthWithinBounds)
                 {
                     shellUnderTesting.CalculateVelocityModifier();
                     shellUnderTesting.CalculateRecoil();
@@ -1453,6 +1501,15 @@ namespace ApsCalcUI
             if (Dif)
             {
                 writer.WriteLine("Gun is using Direct Input Feed");
+            }
+
+            if (LimitBarrelLength && BarrelLengthLimitType == BarrelLengthLimit.Calibers)
+            {
+                writer.WriteLine("Max barrel length: " + MaxBarrelLengthInCalibers + " calibers");
+            }
+            else if (LimitBarrelLength && BarrelLengthLimitType == BarrelLengthLimit.FixedLength)
+            {
+                writer.WriteLine("Max barrel length: " + MaxBarrelLengthInM + "m");
             }
             writer.WriteLine("\n");
 

@@ -57,6 +57,7 @@ namespace ApsCalcUI
         public float OverallVelocityModifier { get; set; }
         public float OverallKineticDamageModifier { get; set; }
         public float OverallArmorPierceModifier { get; set; }
+        public float OverallInaccuracyModifier { get; set; }
         public float OverallChemModifier { get; set; }
 
 
@@ -327,6 +328,52 @@ namespace ApsCalcUI
             weightedArmorPierceMod /= EffectiveBodyLength;
 
             OverallArmorPierceModifier = weightedArmorPierceMod * HeadModule.ArmorPierceMod;
+        }
+
+        /// <summary>
+        /// Calculates inaccuracy modifier
+        /// </summary>
+        void CalculateInaccuracyModifier()
+        {
+            // Calculate weighted inaccuracy modifier of body
+            float weightedInaccuracyMod = 0f;
+            if (BaseModule != null)
+            {
+                weightedInaccuracyMod += BaseModule.InaccuracyMod * MathF.Min(Gauge, BaseModule.MaxLength);
+            }
+
+            // Add body module weighted modifiers
+            int modIndex = 0;
+            foreach (float modCount in BodyModuleCounts)
+            {
+                float modLength = MathF.Min(Gauge, Module.AllModules[modIndex].MaxLength);
+                weightedInaccuracyMod += modLength * Module.AllModules[modIndex].InaccuracyMod * modCount;
+                modIndex++;
+            }
+
+            if (LengthDifferential > 0f) // Add 'ghost' module for penalizing short shells; has no effect if body length >= 2 * gauge
+            {
+                weightedInaccuracyMod += 0.7f * LengthDifferential;
+            }
+
+            weightedInaccuracyMod /= EffectiveBodyLength;
+
+            OverallInaccuracyModifier = weightedInaccuracyMod * HeadModule.InaccuracyMod;
+            if (BaseModule?.Name == "Base bleeder")
+            {
+                OverallInaccuracyModifier *= 1.35f;
+            }
+        }
+
+        /// <summary>
+        /// Calculate max body length for 0.3° inaccuracy
+        /// </summary>
+        public float CalculateMaxProjectileLengthForAccuracy(float barrelLength)
+        {
+            CalculateInaccuracyModifier();
+            float maxProjectileLength = MathF.Pow(barrelLength / 4f / MathF.Pow(OverallInaccuracyModifier, 2.5f), 4f/3f);
+
+            return maxProjectileLength * 1000f;
         }
 
 
