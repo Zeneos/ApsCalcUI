@@ -368,6 +368,11 @@ namespace ApsCalcUI
             {
                 OverallInaccuracyModifier *= 0.72f;
             }
+
+            if (BarrelCount > 1)
+            {
+                OverallInaccuracyModifier *= (BarrelCount - 1) * 0.05f + 1.2f;
+            }
         }
 
         /// <summary>
