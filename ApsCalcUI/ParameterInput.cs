@@ -322,10 +322,29 @@ namespace ApsCalcUI
             if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID == DamageType.Kinetic)
             {
                 TargetACPanel.Enabled = true;
+                TargetACPanel.Visible = true;
+                TargetACCL.Visible = true;
+                TargetACLabel.Visible = true;
+
+            }
+            else if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID == DamageType.Disruptor)
+            {
+                DisruptorPanel.Enabled = true;
+                DisruptorPanel.Visible = true;
+                DisruptorLabel.Visible = true;
+                DisruptorUD.Visible = true;
             }
             else
             {
                 TargetACPanel.Enabled = false;
+                TargetACPanel.Visible = false;
+                TargetACCL.Visible = false;
+                TargetACLabel.Visible = false;
+
+                DisruptorPanel.Enabled = false;
+                DisruptorPanel.Visible = false;
+                DisruptorLabel.Visible = false;
+                DisruptorUD.Visible = false;
             }
         }
 
@@ -686,6 +705,8 @@ namespace ApsCalcUI
                     testParameters.TargetACList = targetACList;
                 }
 
+                testParameters.MinDisruptor = (float)(DisruptorUD.Value / 100m);
+
                 PenCalc.Scheme targetArmorScheme = new();
                 if (PendepthCB.Checked)
                 {
@@ -804,6 +825,7 @@ namespace ApsCalcUI
                                     testParameters.MinEffectiverange,
                                     ac,
                                     testParameters.DamageType,
+                                    testParameters.MinDisruptor,
                                     testParameters.ArmorScheme,
                                     testParameters.TestType,
                                     testParameters.Labels,
@@ -848,6 +870,7 @@ namespace ApsCalcUI
                                     testParameters.MinEffectiverange,
                                     ac,
                                     testParameters.DamageType,
+                                    testParameters.MinDisruptor,
                                     testParameters.ArmorScheme,
                                     testParameters.TestType,
                                     testParameters.Labels,
@@ -893,6 +916,7 @@ namespace ApsCalcUI
                                 testParameters.MinEffectiverange,
                                 0, // Target AC does not matter for non-kinetic tests
                                 testParameters.DamageType,
+                                testParameters.MinDisruptor,
                                 testParameters.ArmorScheme,
                                 testParameters.TestType,
                                 testParameters.Labels,
@@ -936,6 +960,7 @@ namespace ApsCalcUI
                                 testParameters.MinEffectiverange,
                                 0, // Target AC does not matter for non-kinetic tests
                                 testParameters.DamageType,
+                                testParameters.MinDisruptor,
                                 testParameters.ArmorScheme,
                                 testParameters.TestType,
                                 testParameters.Labels,

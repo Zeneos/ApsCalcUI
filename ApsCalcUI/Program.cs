@@ -27,6 +27,7 @@ namespace ApsCalcUI
         public float MinEffectiverange;
         public List<float> TargetACList;
         public DamageType DamageType;
+        public float MinDisruptor;
         public Scheme ArmorScheme;
         public bool Penpdepth;
         public int TestType;

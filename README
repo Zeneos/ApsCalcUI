@@ -105,7 +105,9 @@ Damage Type: damage type to optimize.
   Shield Disruptor. Automatically replaces user-given Head List with the
   Disruptor Conduit Head, which is required for shield disruption. Measures
   EMP damage and shield reduction percentage (displayed in the printout as a
-  decimal, where 1 = 100% shield strength reduction)
+  decimal, where 1 = 100% shield strength reduction). Also enables Minimum
+  Disruptor Strength field, which sets the cutoff strength below which the 
+  optimizer will reject shells.
 
 
 Test Type: whether to optimize for DPS per Volume or DPS per Cost. "Volume"
