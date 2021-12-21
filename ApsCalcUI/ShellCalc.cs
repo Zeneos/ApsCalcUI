@@ -1501,8 +1501,13 @@ namespace ApsCalcUI
 
             if (DamageType == DamageType.Kinetic)
             {
-                writer.WriteLine("Damage type: kinetic");
+                writer.WriteLine("Damage type: Kinetic");
                 writer.WriteLine("Target AC: " + TargetAC);
+            }
+            else if (DamageType == DamageType.Disruptor)
+            {
+                writer.WriteLine("Damage type: Disruptor");
+                writer.WriteLine("Min disruptor strength: " + MinDisruptor);
             }
             else
             {
