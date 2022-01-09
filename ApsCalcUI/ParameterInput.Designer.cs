@@ -256,13 +256,13 @@ namespace ApsCalcUI
             this.ArmorLayerDD.FormattingEnabled = true;
             this.ArmorLayerDD.Location = new System.Drawing.Point(6, 20);
             this.ArmorLayerDD.Name = "ArmorLayerDD";
-            this.ArmorLayerDD.Size = new System.Drawing.Size(121, 23);
+            this.ArmorLayerDD.Size = new System.Drawing.Size(168, 23);
             this.ArmorLayerDD.TabIndex = 26;
             this.ToolTip.SetToolTip(this.ArmorLayerDD, "Select an armor type to add to target armor scheme.\r\nAdd outermost layer first");
             // 
             // AddLayerButton
             // 
-            this.AddLayerButton.Location = new System.Drawing.Point(6, 47);
+            this.AddLayerButton.Location = new System.Drawing.Point(3, 46);
             this.AddLayerButton.Name = "AddLayerButton";
             this.AddLayerButton.Size = new System.Drawing.Size(50, 23);
             this.AddLayerButton.TabIndex = 27;
@@ -273,7 +273,7 @@ namespace ApsCalcUI
             // 
             // RemoveLayerButton
             // 
-            this.RemoveLayerButton.Location = new System.Drawing.Point(77, 47);
+            this.RemoveLayerButton.Location = new System.Drawing.Point(124, 46);
             this.RemoveLayerButton.Name = "RemoveLayerButton";
             this.RemoveLayerButton.Size = new System.Drawing.Size(50, 23);
             this.RemoveLayerButton.TabIndex = 28;
@@ -552,7 +552,7 @@ namespace ApsCalcUI
             // 
             // AddParametersButton
             // 
-            this.AddParametersButton.Location = new System.Drawing.Point(458, 525);
+            this.AddParametersButton.Location = new System.Drawing.Point(448, 525);
             this.AddParametersButton.Name = "AddParametersButton";
             this.AddParametersButton.Size = new System.Drawing.Size(157, 51);
             this.AddParametersButton.TabIndex = 29;
@@ -589,7 +589,7 @@ namespace ApsCalcUI
             this.LabelsCB.AutoSize = true;
             this.LabelsCB.Checked = true;
             this.LabelsCB.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.LabelsCB.Location = new System.Drawing.Point(462, 507);
+            this.LabelsCB.Location = new System.Drawing.Point(452, 507);
             this.LabelsCB.Name = "LabelsCB";
             this.LabelsCB.Size = new System.Drawing.Size(111, 19);
             this.LabelsCB.TabIndex = 30;
@@ -828,7 +828,7 @@ namespace ApsCalcUI
             // PendepthCB
             // 
             this.PendepthCB.AutoSize = true;
-            this.PendepthCB.Location = new System.Drawing.Point(686, 295);
+            this.PendepthCB.Location = new System.Drawing.Point(686, 293);
             this.PendepthCB.Name = "PendepthCB";
             this.PendepthCB.Size = new System.Drawing.Size(77, 19);
             this.PendepthCB.TabIndex = 42;
@@ -981,7 +981,7 @@ namespace ApsCalcUI
             // 
             // DisruptorUD
             // 
-            this.DisruptorUD.Location = new System.Drawing.Point(76, 33);
+            this.DisruptorUD.Location = new System.Drawing.Point(58, 43);
             this.DisruptorUD.Name = "DisruptorUD";
             this.DisruptorUD.Size = new System.Drawing.Size(50, 23);
             this.DisruptorUD.TabIndex = 0;
@@ -1296,9 +1296,9 @@ namespace ApsCalcUI
             // 
             this.TargetACPanel.Controls.Add(this.TargetACCL);
             this.TargetACPanel.Controls.Add(this.TargetACLabel);
-            this.TargetACPanel.Location = new System.Drawing.Point(446, 296);
+            this.TargetACPanel.Location = new System.Drawing.Point(436, 296);
             this.TargetACPanel.Name = "TargetACPanel";
-            this.TargetACPanel.Size = new System.Drawing.Size(190, 199);
+            this.TargetACPanel.Size = new System.Drawing.Size(169, 199);
             this.TargetACPanel.TabIndex = 32;
             // 
             // TargetACCL
@@ -1306,14 +1306,14 @@ namespace ApsCalcUI
             this.TargetACCL.FormattingEnabled = true;
             this.TargetACCL.Location = new System.Drawing.Point(0, 31);
             this.TargetACCL.Name = "TargetACCL";
-            this.TargetACCL.Size = new System.Drawing.Size(190, 166);
+            this.TargetACCL.Size = new System.Drawing.Size(169, 166);
             this.TargetACCL.TabIndex = 25;
             // 
             // TargetACLabel
             // 
             this.TargetACLabel.Location = new System.Drawing.Point(0, 2);
             this.TargetACLabel.Name = "TargetACLabel";
-            this.TargetACLabel.Size = new System.Drawing.Size(190, 27);
+            this.TargetACLabel.Size = new System.Drawing.Size(169, 27);
             this.TargetACLabel.TabIndex = 0;
             this.TargetACLabel.Text = "Target AC (for Kinetic)";
             this.TargetACLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1335,9 +1335,9 @@ namespace ApsCalcUI
             this.TargetSchemePanel.Controls.Add(this.ArmorLayerLB);
             this.TargetSchemePanel.Controls.Add(this.TargetSchemeLabel);
             this.TargetSchemePanel.Enabled = false;
-            this.TargetSchemePanel.Location = new System.Drawing.Point(655, 310);
+            this.TargetSchemePanel.Location = new System.Drawing.Point(611, 310);
             this.TargetSchemePanel.Name = "TargetSchemePanel";
-            this.TargetSchemePanel.Size = new System.Drawing.Size(133, 192);
+            this.TargetSchemePanel.Size = new System.Drawing.Size(177, 192);
             this.TargetSchemePanel.TabIndex = 34;
             // 
             // ArmorLayerLB
@@ -1347,14 +1347,14 @@ namespace ApsCalcUI
             this.ArmorLayerLB.ItemHeight = 15;
             this.ArmorLayerLB.Location = new System.Drawing.Point(3, 75);
             this.ArmorLayerLB.Name = "ArmorLayerLB";
-            this.ArmorLayerLB.Size = new System.Drawing.Size(127, 109);
+            this.ArmorLayerLB.Size = new System.Drawing.Size(171, 109);
             this.ArmorLayerLB.TabIndex = 1;
             // 
             // TargetSchemeLabel
             // 
             this.TargetSchemeLabel.Location = new System.Drawing.Point(0, -8);
             this.TargetSchemeLabel.Name = "TargetSchemeLabel";
-            this.TargetSchemeLabel.Size = new System.Drawing.Size(133, 31);
+            this.TargetSchemeLabel.Size = new System.Drawing.Size(174, 31);
             this.TargetSchemeLabel.TabIndex = 0;
             this.TargetSchemeLabel.Text = "Target Armor Scheme";
             this.TargetSchemeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1407,11 +1407,11 @@ namespace ApsCalcUI
             // 
             // DisruptorPanel
             // 
-            this.DisruptorPanel.Controls.Add(this.DisruptorLabel);
             this.DisruptorPanel.Controls.Add(this.DisruptorUD);
-            this.DisruptorPanel.Location = new System.Drawing.Point(446, 296);
+            this.DisruptorPanel.Controls.Add(this.DisruptorLabel);
+            this.DisruptorPanel.Location = new System.Drawing.Point(436, 296);
             this.DisruptorPanel.Name = "DisruptorPanel";
-            this.DisruptorPanel.Size = new System.Drawing.Size(190, 69);
+            this.DisruptorPanel.Size = new System.Drawing.Size(169, 69);
             this.DisruptorPanel.TabIndex = 48;
             this.DisruptorPanel.Visible = false;
             // 
@@ -1419,9 +1419,9 @@ namespace ApsCalcUI
             // 
             this.DisruptorLabel.Location = new System.Drawing.Point(0, 2);
             this.DisruptorLabel.Name = "DisruptorLabel";
-            this.DisruptorLabel.Size = new System.Drawing.Size(190, 27);
+            this.DisruptorLabel.Size = new System.Drawing.Size(169, 38);
             this.DisruptorLabel.TabIndex = 1;
-            this.DisruptorLabel.Text = "Minimum Disruptor Stength (%)";
+            this.DisruptorLabel.Text = "Minimum Disruptor Stength\r\n(%)";
             this.DisruptorLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.DisruptorLabel.Visible = false;
             // 

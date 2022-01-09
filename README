@@ -87,6 +87,14 @@ Pendepth Checkbox: enables the Target Armor Scheme controls. With the box
 checked, the optimizer will only count shells which are capable of destroying
 the target armor configuration using either kinetic or thump damage.
 
+Target Armor Configuration Dropdown and Buttons: allows the user to input
+the configuration of the target armor. Note that all slopes are assumed to
+be built with the airgap facing outwards, away from the center of the craft.
+Additionally, each sloped block has a "shallow" and a "steep" option, for 
+shells hitting parallel or perpendicular to the slope. Shallow angles are 
+closer to parallel with the surface of the block, and thus will have a more
+severe kinetic damage reduction and a greater ricochet chance.
+
 Damage Type: damage type to optimize.
   Kinetic. Prompts entry of target AC value(s). Note that more than one AC
   value can be entered; each will be run as a separate test.

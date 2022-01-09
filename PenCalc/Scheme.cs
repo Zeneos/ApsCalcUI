@@ -69,7 +69,7 @@ namespace PenCalc
             // Add structural bonus, if applicable
             for (int layerIndex = 0; layerIndex < LayerList.Count - 1; layerIndex++)
             {
-                if (LayerList[layerIndex].IsStruct && LayerList[layerIndex + 1].IsStruct)
+                if (LayerList[layerIndex + 1].GivesACBonus)
                 {
                     LayerList[layerIndex].AC = LayerList[layerIndex].RawAC + LayerList[layerIndex + 1].ACBonus;
                 }
@@ -102,11 +102,11 @@ namespace PenCalc
                     float kdMultiplier = Math.Min(1, ap / layer.AC);
                     if (kdMultiplier == 1)
                     {
-                        requiredKD += layer.HP;
+                        requiredKD += layer.HP * layer.AngleHPMultiplier;
                     }
                     else
                     {
-                        requiredKD += layer.HP / kdMultiplier;
+                        requiredKD += layer.HP * layer.AngleHPMultiplier / kdMultiplier;
                     }
                 }
             }
