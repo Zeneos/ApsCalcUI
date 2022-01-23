@@ -111,6 +111,7 @@ namespace ApsCalcUI
             float ppc,
             bool fuel,
             bool dif,
+            float maxInaccuracy,
             bool limitBarrelLength,
             float maxBarrelLength,
             BarrelLengthLimit barrelLengthLimitType
@@ -146,6 +147,7 @@ namespace ApsCalcUI
             Ppc = ppc;
             Fuel = fuel;
             Dif = dif;
+            MaxInaccuracy = maxInaccuracy;
             LimitBarrelLength = limitBarrelLength;
             if (limitBarrelLength && barrelLengthLimitType == BarrelLengthLimit.Calibers)
             {
@@ -199,6 +201,7 @@ namespace ApsCalcUI
         public float Ppc { get; }
         public bool Fuel { get; }
         public bool Dif { get; }
+        public float MaxInaccuracy { get; }
         public bool LimitBarrelLength { get; }
         public float MaxBarrelLengthInM { get; }
         public float MaxBarrelLengthInCalibers { get; }
@@ -384,7 +387,8 @@ namespace ApsCalcUI
 
                 shellUnderTesting.CalculateLengths();
                 bool lengthWithinBounds = true;
-                if (LimitBarrelLength && shellUnderTesting.ProjectileLength > shellUnderTesting.CalculateMaxProjectileLengthForAccuracy(MaxBarrelLengthInM))
+                if (LimitBarrelLength
+                    && shellUnderTesting.ProjectileLength > shellUnderTesting.CalculateMaxProjectileLengthForInaccuracy(MaxBarrelLengthInM, MaxInaccuracy))
                 {
                     lengthWithinBounds = false;
                 }
@@ -1467,13 +1471,17 @@ namespace ApsCalcUI
             writer.WriteLine("Max length: " + MaxShellLength);
             writer.WriteLine("Min velocity: " + MinVelocityInput);
             writer.WriteLine("Min effective range: " + MinEffectiveRangeInput);
-            if (LimitBarrelLength && BarrelLengthLimitType == BarrelLengthLimit.Calibers)
+            if (LimitBarrelLength)
             {
-                writer.WriteLine("Max barrel length: " + MaxBarrelLengthInCalibers + " calibers");
-            }
-            else if (LimitBarrelLength && BarrelLengthLimitType == BarrelLengthLimit.FixedLength)
-            {
-                writer.WriteLine("Max barrel length: " + MaxBarrelLengthInM + "m");
+                writer.WriteLine("Max inaccuracy (°): " + MaxInaccuracy);
+                if (BarrelLengthLimitType == BarrelLengthLimit.Calibers)
+                {
+                    writer.WriteLine("Max barrel length: " + MaxBarrelLengthInCalibers + " calibers");
+                }
+                else if (BarrelLengthLimitType == BarrelLengthLimit.FixedLength)
+                {
+                    writer.WriteLine("Max barrel length: " + MaxBarrelLengthInM + "m");
+                }
             }
             writer.WriteLine("Test interval (min): " + TestInterval);
             if (Dif)
@@ -1560,7 +1568,7 @@ namespace ApsCalcUI
 
                 writer.WriteLine("Velocity (m/s)");
                 writer.WriteLine("Effective range (m)");
-                writer.WriteLine("Barrel length for 0.3° inaccuracy (m)");
+                writer.WriteLine("Barrel length for inaccuracy (m)");
                 writer.WriteLine("Barrel length for propellant burn (m)");
 
                 if (dtToShow[DamageType.Kinetic])
@@ -1645,7 +1653,7 @@ namespace ApsCalcUI
                 foreach (KeyValuePair<string, Shell> topShell in TopDpsShells)
                 {
                     // Calculate barrel lengths
-                    topShell.Value.CalculateRequiredBarrelLengths();
+                    topShell.Value.CalculateRequiredBarrelLengths(MaxInaccuracy);
 
                     // Calculate all damage and DPS -- including those not used for optimizing
                     foreach (DamageType dt in dtToShow.Keys)

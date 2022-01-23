@@ -57,7 +57,7 @@ namespace ApsCalcUI
         public static Module FlaKBody { get; } = new Module("FlaK body", 1.0f, 1.0f, 0.1f, 1.0f, 1.0f, 500, Position.Middle, true);
         public static Module FragBody { get; } = new Module("Frag body", 1.0f, 1.0f, 0.8f, 1.0f, 1.0f, 500, Position.Middle, true);
         public static Module HEBody { get; } = new Module("HE body", 1.0f, 1.0f, 0.8f, 1.0f, 1.0f, 500, Position.Middle, true);
-        public static Module FinBody { get; } = new Module("Stabilizer fin body", 0.95f, 1.0f, 1.0f, 1.0f, 1.0f, 300, Position.Middle, true);
+        public static Module FinBody { get; } = new Module("Stabilizer fin body", 0.95f, 1.0f, 1.0f, 1.0f, 0.2f, 300, Position.Middle, true);
         public static Module PenDepthFuse { get; } = new Module("Pendepth fuse", 1.1f, 1.0f, 1.0f, 1.0f, 1.0f, 100, Position.Middle, false);
         public static Module TimedFuse { get; } = new Module("Timed fuse", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 100, Position.Middle, false);
         public static Module InertialFuse { get; } = new Module("Inertial fuse", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 100, Position.Middle, false);

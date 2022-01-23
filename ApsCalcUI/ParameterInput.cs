@@ -463,6 +463,7 @@ namespace ApsCalcUI
         {
             BarrelLengthLimitDD.Enabled = BarrelLengthLimitCB.Checked;
             BarrelLengthLimitUD.Enabled = BarrelLengthLimitCB.Checked;
+            MaxInaccUD.Enabled = BarrelLengthLimitCB.Checked;
         }
 
         /// <summary>
@@ -766,6 +767,7 @@ namespace ApsCalcUI
 
                 testParameters.Dif = DifCB.Checked;
 
+                testParameters.MaxInaccuracy = (float)MaxInaccUD.Value;
                 testParameters.LimitBarrelLength = BarrelLengthLimitCB.Checked;
                 testParameters.MaxBarrelLength = (float)BarrelLengthLimitUD.Value;
                 testParameters.BarrelLengthLimitType = ((BarrelLengthLimitTypeItem)BarrelLengthLimitDD.SelectedItem).ID;
@@ -837,6 +839,7 @@ namespace ApsCalcUI
                                     testParameters.Ppc,
                                     testParameters.Fuel,
                                     testParameters.Dif,
+                                    testParameters.MaxInaccuracy,
                                     testParameters.LimitBarrelLength,
                                     testParameters.MaxBarrelLength,
                                     testParameters.BarrelLengthLimitType
@@ -882,6 +885,7 @@ namespace ApsCalcUI
                                     testParameters.Ppc,
                                     testParameters.Fuel,
                                     testParameters.Dif,
+                                    testParameters.MaxInaccuracy,
                                     testParameters.LimitBarrelLength,
                                     testParameters.MaxBarrelLength,
                                     testParameters.BarrelLengthLimitType
@@ -928,6 +932,7 @@ namespace ApsCalcUI
                                 testParameters.Ppc,
                                 testParameters.Fuel,
                                 testParameters.Dif,
+                                testParameters.MaxInaccuracy,
                                 testParameters.LimitBarrelLength,
                                 testParameters.MaxBarrelLength,
                                 testParameters.BarrelLengthLimitType
@@ -972,6 +977,7 @@ namespace ApsCalcUI
                                 testParameters.Ppc,
                                 testParameters.Fuel,
                                 testParameters.Dif,
+                                testParameters.MaxInaccuracy,
                                 testParameters.LimitBarrelLength,
                                 testParameters.MaxBarrelLength,
                                 testParameters.BarrelLengthLimitType

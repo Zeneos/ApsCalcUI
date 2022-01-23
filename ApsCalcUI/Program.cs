@@ -40,6 +40,7 @@ namespace ApsCalcUI
         public float Ppc;
         public bool Fuel;
         public bool Dif;
+        public float MaxInaccuracy;
         public bool LimitBarrelLength;
         public float MaxBarrelLength;
         public BarrelLengthLimit BarrelLengthLimitType;

@@ -76,7 +76,11 @@ in its "lifetime", after which it will become useless. Particularly small
 shells may have an effective range of less than 1 km, and may not be suitable
 for use on certain craft.
 
-Limit barrel length Checkbox: enables barrel length limits. Every shell has a
+Maximum Inaccuracy: the inaccuracy value the optimizer will use to calculate
+required barrel length. Only enabled if the Limit barrel length Checkbox is
+checked (see below); has no effect otherwise.
+
+Limit Barrel Length Checkbox: enables barrel length limits. Every shell has a
 Barrel Length for 0.3° Inaccuracy and a Barrel Length For Max Propellant Burn.
 Enabling length limits will cause the optimizer to discard any shell whose
 required minimum barrel length (for inaccuracy or propellant burn) exceeds 

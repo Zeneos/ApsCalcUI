@@ -134,6 +134,8 @@ namespace ApsCalcUI
             this.fontDialog1 = new System.Windows.Forms.FontDialog();
             this.DisruptorPanel = new System.Windows.Forms.Panel();
             this.DisruptorLabel = new System.Windows.Forms.Label();
+            this.MinInaccLabel = new System.Windows.Forms.Label();
+            this.MaxInaccUD = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).BeginInit();
@@ -168,6 +170,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.RunErrorProvider)).BeginInit();
             this.StoragePanel.SuspendLayout();
             this.DisruptorPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.MaxInaccUD)).BeginInit();
             this.SuspendLayout();
             // 
             // BarrelCountDD
@@ -219,7 +222,7 @@ namespace ApsCalcUI
             // 
             this.DamageTypeDD.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.DamageTypeDD.FormattingEnabled = true;
-            this.DamageTypeDD.Location = new System.Drawing.Point(504, 253);
+            this.DamageTypeDD.Location = new System.Drawing.Point(504, 278);
             this.DamageTypeDD.Name = "DamageTypeDD";
             this.DamageTypeDD.Size = new System.Drawing.Size(121, 23);
             this.DamageTypeDD.TabIndex = 23;
@@ -552,7 +555,7 @@ namespace ApsCalcUI
             // 
             // AddParametersButton
             // 
-            this.AddParametersButton.Location = new System.Drawing.Point(448, 525);
+            this.AddParametersButton.Location = new System.Drawing.Point(448, 550);
             this.AddParametersButton.Name = "AddParametersButton";
             this.AddParametersButton.Size = new System.Drawing.Size(157, 51);
             this.AddParametersButton.TabIndex = 29;
@@ -565,7 +568,7 @@ namespace ApsCalcUI
             // 
             this.RunButton.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.RunButton.Enabled = false;
-            this.RunButton.Location = new System.Drawing.Point(661, 525);
+            this.RunButton.Location = new System.Drawing.Point(661, 550);
             this.RunButton.Name = "RunButton";
             this.RunButton.Size = new System.Drawing.Size(121, 51);
             this.RunButton.TabIndex = 31;
@@ -589,7 +592,7 @@ namespace ApsCalcUI
             this.LabelsCB.AutoSize = true;
             this.LabelsCB.Checked = true;
             this.LabelsCB.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.LabelsCB.Location = new System.Drawing.Point(452, 507);
+            this.LabelsCB.Location = new System.Drawing.Point(452, 532);
             this.LabelsCB.Name = "LabelsCB";
             this.LabelsCB.Size = new System.Drawing.Size(111, 19);
             this.LabelsCB.TabIndex = 30;
@@ -828,7 +831,7 @@ namespace ApsCalcUI
             // PendepthCB
             // 
             this.PendepthCB.AutoSize = true;
-            this.PendepthCB.Location = new System.Drawing.Point(686, 293);
+            this.PendepthCB.Location = new System.Drawing.Point(686, 318);
             this.PendepthCB.Name = "PendepthCB";
             this.PendepthCB.Size = new System.Drawing.Size(77, 19);
             this.PendepthCB.TabIndex = 42;
@@ -937,7 +940,7 @@ namespace ApsCalcUI
             // BarrelLengthLimitCB
             // 
             this.BarrelLengthLimitCB.AutoSize = true;
-            this.BarrelLengthLimitCB.Location = new System.Drawing.Point(446, 218);
+            this.BarrelLengthLimitCB.Location = new System.Drawing.Point(446, 243);
             this.BarrelLengthLimitCB.Name = "BarrelLengthLimitCB";
             this.BarrelLengthLimitCB.Size = new System.Drawing.Size(137, 19);
             this.BarrelLengthLimitCB.TabIndex = 45;
@@ -951,7 +954,7 @@ namespace ApsCalcUI
             this.BarrelLengthLimitDD.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.BarrelLengthLimitDD.Enabled = false;
             this.BarrelLengthLimitDD.FormattingEnabled = true;
-            this.BarrelLengthLimitDD.Location = new System.Drawing.Point(648, 215);
+            this.BarrelLengthLimitDD.Location = new System.Drawing.Point(648, 240);
             this.BarrelLengthLimitDD.Name = "BarrelLengthLimitDD";
             this.BarrelLengthLimitDD.Size = new System.Drawing.Size(121, 23);
             this.BarrelLengthLimitDD.TabIndex = 46;
@@ -961,7 +964,7 @@ namespace ApsCalcUI
             // BarrelLengthLimitUD
             // 
             this.BarrelLengthLimitUD.Enabled = false;
-            this.BarrelLengthLimitUD.Location = new System.Drawing.Point(585, 215);
+            this.BarrelLengthLimitUD.Location = new System.Drawing.Point(585, 240);
             this.BarrelLengthLimitUD.Minimum = new decimal(new int[] {
             2,
             0,
@@ -1268,7 +1271,7 @@ namespace ApsCalcUI
             // DamageTypeLabel
             // 
             this.DamageTypeLabel.AutoSize = true;
-            this.DamageTypeLabel.Location = new System.Drawing.Point(446, 256);
+            this.DamageTypeLabel.Location = new System.Drawing.Point(446, 281);
             this.DamageTypeLabel.Name = "DamageTypeLabel";
             this.DamageTypeLabel.Size = new System.Drawing.Size(55, 15);
             this.DamageTypeLabel.TabIndex = 29;
@@ -1278,7 +1281,7 @@ namespace ApsCalcUI
             // 
             this.TestTypePanel.Controls.Add(this.PerCostRB);
             this.TestTypePanel.Controls.Add(this.PerVolumeRB);
-            this.TestTypePanel.Location = new System.Drawing.Point(682, 242);
+            this.TestTypePanel.Location = new System.Drawing.Point(682, 267);
             this.TestTypePanel.Name = "TestTypePanel";
             this.TestTypePanel.Size = new System.Drawing.Size(106, 48);
             this.TestTypePanel.TabIndex = 30;
@@ -1286,7 +1289,7 @@ namespace ApsCalcUI
             // PerLabel
             // 
             this.PerLabel.AutoSize = true;
-            this.PerLabel.Location = new System.Drawing.Point(629, 256);
+            this.PerLabel.Location = new System.Drawing.Point(629, 281);
             this.PerLabel.Name = "PerLabel";
             this.PerLabel.Size = new System.Drawing.Size(48, 15);
             this.PerLabel.TabIndex = 31;
@@ -1296,7 +1299,7 @@ namespace ApsCalcUI
             // 
             this.TargetACPanel.Controls.Add(this.TargetACCL);
             this.TargetACPanel.Controls.Add(this.TargetACLabel);
-            this.TargetACPanel.Location = new System.Drawing.Point(436, 296);
+            this.TargetACPanel.Location = new System.Drawing.Point(436, 321);
             this.TargetACPanel.Name = "TargetACPanel";
             this.TargetACPanel.Size = new System.Drawing.Size(169, 199);
             this.TargetACPanel.TabIndex = 32;
@@ -1335,7 +1338,7 @@ namespace ApsCalcUI
             this.TargetSchemePanel.Controls.Add(this.ArmorLayerLB);
             this.TargetSchemePanel.Controls.Add(this.TargetSchemeLabel);
             this.TargetSchemePanel.Enabled = false;
-            this.TargetSchemePanel.Location = new System.Drawing.Point(611, 310);
+            this.TargetSchemePanel.Location = new System.Drawing.Point(611, 335);
             this.TargetSchemePanel.Name = "TargetSchemePanel";
             this.TargetSchemePanel.Size = new System.Drawing.Size(177, 192);
             this.TargetSchemePanel.TabIndex = 34;
@@ -1370,7 +1373,7 @@ namespace ApsCalcUI
             // TestsInQueueLabel
             // 
             this.TestsInQueueLabel.AutoSize = true;
-            this.TestsInQueueLabel.Location = new System.Drawing.Point(661, 507);
+            this.TestsInQueueLabel.Location = new System.Drawing.Point(661, 532);
             this.TestsInQueueLabel.Name = "TestsInQueueLabel";
             this.TestsInQueueLabel.Size = new System.Drawing.Size(95, 15);
             this.TestsInQueueLabel.TabIndex = 35;
@@ -1409,7 +1412,7 @@ namespace ApsCalcUI
             // 
             this.DisruptorPanel.Controls.Add(this.DisruptorUD);
             this.DisruptorPanel.Controls.Add(this.DisruptorLabel);
-            this.DisruptorPanel.Location = new System.Drawing.Point(436, 296);
+            this.DisruptorPanel.Location = new System.Drawing.Point(436, 321);
             this.DisruptorPanel.Name = "DisruptorPanel";
             this.DisruptorPanel.Size = new System.Drawing.Size(169, 69);
             this.DisruptorPanel.TabIndex = 48;
@@ -1425,11 +1428,50 @@ namespace ApsCalcUI
             this.DisruptorLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.DisruptorLabel.Visible = false;
             // 
+            // MinInaccLabel
+            // 
+            this.MinInaccLabel.AutoSize = true;
+            this.MinInaccLabel.Location = new System.Drawing.Point(446, 218);
+            this.MinInaccLabel.Name = "MinInaccLabel";
+            this.MinInaccLabel.Size = new System.Drawing.Size(106, 15);
+            this.MinInaccLabel.TabIndex = 49;
+            this.MinInaccLabel.Text = "Max Inaccuracy (°)";
+            // 
+            // MaxInaccUD
+            // 
+            this.MaxInaccUD.DecimalPlaces = 2;
+            this.MaxInaccUD.Enabled = false;
+            this.MaxInaccUD.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.MaxInaccUD.Location = new System.Drawing.Point(550, 214);
+            this.MaxInaccUD.Maximum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
+            this.MaxInaccUD.Name = "MaxInaccUD";
+            this.MaxInaccUD.Size = new System.Drawing.Size(65, 23);
+            this.MaxInaccUD.TabIndex = 50;
+            this.MaxInaccUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.MaxInaccUD.ThousandsSeparator = true;
+            this.ToolTip.SetToolTip(this.MaxInaccUD, "Max allowed inaccuracy at desired barrel length.\r\nHas no effect if Barrel Length " +
+        "Limit Checkbox is unchecked.");
+            this.MaxInaccUD.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            65536});
+            // 
             // ParameterInput
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 583);
+            this.ClientSize = new System.Drawing.Size(800, 608);
+            this.Controls.Add(this.MaxInaccUD);
+            this.Controls.Add(this.MinInaccLabel);
             this.Controls.Add(this.DisruptorPanel);
             this.Controls.Add(this.BarrelLengthLimitUD);
             this.Controls.Add(this.BarrelLengthLimitDD);
@@ -1521,6 +1563,7 @@ namespace ApsCalcUI
             this.StoragePanel.ResumeLayout(false);
             this.StoragePanel.PerformLayout();
             this.DisruptorPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.MaxInaccUD)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1631,6 +1674,8 @@ namespace ApsCalcUI
         private System.Windows.Forms.Panel DisruptorPanel;
         private System.Windows.Forms.Label DisruptorLabel;
         private System.Windows.Forms.NumericUpDown DisruptorUD;
+        private System.Windows.Forms.NumericUpDown MaxInaccUD;
+        private System.Windows.Forms.Label MinInaccLabel;
     }
 }
 
