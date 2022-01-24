@@ -51,7 +51,7 @@ namespace ApsCalcUI
         public bool CanBeVariable { get; }
 
         // Initialize every unique module type
-        public static Module SolidBody { get; } = new Module("Solid body", 1.1f, 1.0f, 1.0f, 1.0f, 0.2f, 500, Position.Middle, true);
+        public static Module SolidBody { get; } = new Module("Solid body", 1.1f, 1.0f, 1.0f, 1.0f, 1.0f, 500, Position.Middle, true);
         public static Module SabotBody { get; } = new Module("Sabot body", 1.1f, 0.8f, 1.4f, 0.25f, 1.0f, 500, Position.Middle, true);
         public static Module EmpBody { get; } = new Module("EMP body", 1.0f, 1.0f, 0.8f, 1.0f, 1.0f, 500, Position.Middle, true);
         public static Module FlaKBody { get; } = new Module("FlaK body", 1.0f, 1.0f, 0.1f, 1.0f, 1.0f, 500, Position.Middle, true);

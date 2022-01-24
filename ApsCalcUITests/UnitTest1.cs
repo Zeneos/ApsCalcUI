@@ -35,7 +35,7 @@ namespace ApsCalcUITests
         }
 
         [Test]
-        public void InaccuracyTest()
+        public void InaccuracyTest1()
         {
             float[] testModuleCounts = { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 };
             Shell testShell = new();
@@ -64,6 +64,24 @@ namespace ApsCalcUITests
             testShell.CalculateLengths();
             testShell.CalculateMaxProjectileLengthForInaccuracy(27.5f, 0.3f);
             Assert.AreEqual(testShell.OverallInaccuracyModifier, 1.02600002f);
+        }
+
+        [Test]
+        public void InaccuracyTest2()
+        {
+            float[] testModuleCounts = { 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            Shell testShell = new();
+            testShell.BarrelCount = 1;
+            testShell.HeadModule = Module.APHead;
+            testShell.BaseModule = Module.BaseBleeder;
+            testModuleCounts.CopyTo(testShell.BodyModuleCounts, 0);
+            testShell.Gauge = 392;
+            testShell.IsDif = false;
+
+            testShell.CalculateLengths();
+            testShell.CalculateMaxProjectileLengthForInaccuracy(21.56f, 0.2f);
+            Assert.AreEqual(testShell.OverallInaccuracyModifier, 1.35f);
+            Assert.AreEqual(testShell.CalculateMaxProjectileLengthForInaccuracy(21.56f, 0.2f), 899.569763f);
         }
     }
 }
