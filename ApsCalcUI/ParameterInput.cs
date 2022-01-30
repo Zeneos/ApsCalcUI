@@ -73,7 +73,7 @@ namespace ApsCalcUI
             DamageTypeItem[] damageTypes = new[]
             {
                 new DamageTypeItem { ID = DamageType.Kinetic, Text = "Kinetic" },
-                new DamageTypeItem { ID = DamageType.Emp, Text = "EMP" },
+                new DamageTypeItem { ID = DamageType.EMP, Text = "EMP" },
                 new DamageTypeItem { ID = DamageType.FlaK, Text = "FlaK" },
                 new DamageTypeItem { ID = DamageType.Frag, Text = "Frag" },
                 new DamageTypeItem { ID = DamageType.HE, Text = "HE" },

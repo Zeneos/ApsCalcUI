@@ -29,7 +29,7 @@ namespace ApsCalcUI
     public enum DamageType : int
     {
         Kinetic,
-        Emp,
+        EMP,
         FlaK,
         Frag,
         HE,
@@ -1324,7 +1324,7 @@ namespace ApsCalcUI
             Dictionary<DamageType, bool> dtToShow = new()
             {
                 { DamageType.Kinetic, true },
-                { DamageType.Emp, false },
+                { DamageType.EMP, false },
                 { DamageType.FlaK, false },
                 { DamageType.Frag, false },
                 { DamageType.HE, false },
@@ -1341,7 +1341,7 @@ namespace ApsCalcUI
                     modsToShow.Add(index);
                     if (Module.AllModules[index] == Module.EmpBody)
                     {
-                        dtToShow[DamageType.Emp] = true;
+                        dtToShow[DamageType.EMP] = true;
                     }
                     else if (Module.AllModules[index] == Module.FlaKBody)
                     {
@@ -1362,7 +1362,7 @@ namespace ApsCalcUI
             {
                 if (Module.AllModules[index] == Module.EmpHead)
                 {
-                    dtToShow[DamageType.Emp] = true;
+                    dtToShow[DamageType.EMP] = true;
                 }
                 else if (Module.AllModules[index] == Module.FlaKHead)
                 {
@@ -1410,7 +1410,14 @@ namespace ApsCalcUI
             FileStream fs = (FileStream)writer.BaseStream;
 
             writer.WriteLine("\nTest Parameters");
-            writer.WriteLine(BarrelCount + " Barrels");
+            if (BarrelCount == 1)
+            {
+                writer.WriteLine("1 barrel");
+            }
+            else
+            {
+                writer.WriteLine(BarrelCount + " barrels");
+            }
             if (minGauge == maxGauge)
             {
                 writer.WriteLine("Gauge: " + minGauge);

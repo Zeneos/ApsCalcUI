@@ -89,7 +89,7 @@ namespace ApsCalcUI
         public Dictionary<DamageType, float> DamageDict = new()
         {
             { DamageType.Kinetic, 0 },
-            { DamageType.Emp, 0 },
+            { DamageType.EMP, 0 },
             { DamageType.FlaK, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
@@ -100,7 +100,7 @@ namespace ApsCalcUI
         public Dictionary<DamageType, float> DpsDict = new()
         {
             { DamageType.Kinetic, 0 },
-            { DamageType.Emp, 0 },
+            { DamageType.EMP, 0 },
             { DamageType.FlaK, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
@@ -111,7 +111,7 @@ namespace ApsCalcUI
         public Dictionary<DamageType, float> DpsPerVolumeDict = new()
         {
             { DamageType.Kinetic, 0 },
-            { DamageType.Emp, 0 },
+            { DamageType.EMP, 0 },
             { DamageType.FlaK, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
@@ -122,7 +122,7 @@ namespace ApsCalcUI
         public Dictionary<DamageType, float> DpsPerCostDict = new()
         {
             { DamageType.Kinetic, 0 },
-            { DamageType.Emp, 0 },
+            { DamageType.EMP, 0 },
             { DamageType.FlaK, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
@@ -962,7 +962,7 @@ namespace ApsCalcUI
             {
                 empBodies++;
             }
-            DamageDict[DamageType.Emp] = GaugeCoefficient * empBodies * OverallChemModifier * 1650;
+            DamageDict[DamageType.EMP] = GaugeCoefficient * empBodies * OverallChemModifier * 1650;
         }
 
         /// <summary>
@@ -1095,7 +1095,7 @@ namespace ApsCalcUI
             CalculateEmpDamage();
             if (HeadModule == Module.Disruptor)
             {
-                DamageDict[DamageType.Disruptor] = DamageDict[DamageType.Emp] * 0.75f / 1500;
+                DamageDict[DamageType.Disruptor] = DamageDict[DamageType.EMP] * 0.75f / 1500;
                 DamageDict[DamageType.Disruptor] = MathF.Min(DamageDict[DamageType.Disruptor], 1f);
             }
             else
@@ -1145,9 +1145,9 @@ namespace ApsCalcUI
         /// </summary>
         public void CalculateEmpDps()
         {
-            DpsDict[DamageType.Emp] = DamageDict[DamageType.Emp] / ReloadTime;
-            DpsPerVolumeDict[DamageType.Emp] = DpsDict[DamageType.Emp] / VolumePerIntake;
-            DpsPerCostDict[DamageType.Emp] = DpsDict[DamageType.Emp] / CostPerIntake;
+            DpsDict[DamageType.EMP] = DamageDict[DamageType.EMP] / ReloadTime;
+            DpsPerVolumeDict[DamageType.EMP] = DpsDict[DamageType.EMP] / VolumePerIntake;
+            DpsPerCostDict[DamageType.EMP] = DpsDict[DamageType.EMP] / CostPerIntake;
         }
 
         /// <summary>
@@ -1157,15 +1157,15 @@ namespace ApsCalcUI
         {
             if (TotalLength <= 1000)
             {
-                DpsDict[DamageType.Emp] = DamageDict[DamageType.Emp] / ReloadTimeBelt * UptimeBelt;
-                DpsPerVolumeDict[DamageType.Emp] = DpsDict[DamageType.Emp] / VolumePerIntakeBelt;
-                DpsPerCostDict[DamageType.Emp] = DpsDict[DamageType.Emp] / CostPerIntakeBelt;
+                DpsDict[DamageType.EMP] = DamageDict[DamageType.EMP] / ReloadTimeBelt * UptimeBelt;
+                DpsPerVolumeDict[DamageType.EMP] = DpsDict[DamageType.EMP] / VolumePerIntakeBelt;
+                DpsPerCostDict[DamageType.EMP] = DpsDict[DamageType.EMP] / CostPerIntakeBelt;
             }
             else
             {
-                DpsDict[DamageType.Emp] = 0;
-                DpsPerVolumeDict[DamageType.Emp] = 0;
-                DpsPerCostDict[DamageType.Emp] = 0;
+                DpsDict[DamageType.EMP] = 0;
+                DpsPerVolumeDict[DamageType.EMP] = 0;
+                DpsPerCostDict[DamageType.EMP] = 0;
             }
         }
 
@@ -1367,7 +1367,7 @@ namespace ApsCalcUI
                 CalculateKineticDamage();
                 CalculateAP();
             }
-            else if (dt == DamageType.Emp)
+            else if (dt == DamageType.EMP)
             {
                 CalculateEmpDamage();
             }
@@ -1424,7 +1424,7 @@ namespace ApsCalcUI
                 {
                     CalculateKineticDps(targetAC);
                 }
-                else if (dt == DamageType.Emp)
+                else if (dt == DamageType.EMP)
                 {
                     CalculateEmpDps();
                 }
@@ -1496,7 +1496,7 @@ namespace ApsCalcUI
                 {
                     CalculateKineticDpsBelt(targetAC);
                 }
-                else if (dt == DamageType.Emp)
+                else if (dt == DamageType.EMP)
                 {
                     CalculateEmpDpsBelt();
                 }

@@ -3,8 +3,12 @@ System in From the Depths. Written by Ao Kishuba: aokishuba@gmail.com
 Special thanks to HerpeDerpeDerp and MrNukealizer, without whom this project
 would not have been possible.
 
+For update notifications and useful links to my other documents, join my
+Discord repository server: https://discord.gg/B7RrpZAA
+
 ---- HOW TO RUN ----
-Run the executable "ApsCalcUI".
+If running from the downloaded .zip file, run the executable "ApsCalcUI".
+The link to download is available in my Discord repository, linked above.
 
 ---- TEST PARAMETERS ----
 NOTE: Results for each test will be written to a text file in the ApsCalcUI
