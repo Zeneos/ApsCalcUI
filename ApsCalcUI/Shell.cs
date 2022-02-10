@@ -664,10 +664,10 @@ namespace ApsCalcUI
                 {
                     // Volume and cost of special fuel access blocks
                     // 1 fuel per MINUTE = 1/50 m^3 and 0.2 material cost
-                    // 1 fuel per SECOND = 60/50 m^3 and 12 material cost
+                    // 1 fuel per SECOND = 60/50 (1.2) m^3 and 12 material cost
                     float fuelAccessNeeded = drawPerSecond / ppm;
-                    FuelAccessVolume = fuelAccessNeeded / 50f * 60f;
-                    FuelAccessCost = fuelAccessNeeded / 12f;
+                    FuelAccessVolume = fuelAccessNeeded * 1.2f;
+                    FuelAccessCost = fuelAccessNeeded * 12f;
 
                     // Fuel access blocks store enough materials to run for 10 minutes
                     fuelStorageNeeded = drawPerSecond * MathF.Max(testIntervalSeconds - 600f, 0) / ppm;
