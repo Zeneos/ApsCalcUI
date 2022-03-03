@@ -1473,6 +1473,13 @@ namespace ApsCalcUI
             writer.WriteLine("Max GP casings: " + MaxGPInput);
             writer.WriteLine("Max RG casings: " + MaxRGInput);
             writer.WriteLine("Max draw: " + MaxDrawInput);
+            if(MaxDrawInput > 0)
+            {
+                writer.WriteLine("Engine PPM: " + Ppm);
+                writer.WriteLine("Engine PPV: " + Ppv);
+                writer.WriteLine("Engine PPC: " + Ppc);
+                writer.WriteLine("Fuel engine: " + Fuel);
+            }
             writer.WriteLine("Max recoil: " + MaxRecoilInput);
             writer.WriteLine("Min length: " + MinShellLength);
             writer.WriteLine("Max length: " + MaxShellLength);
