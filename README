@@ -34,6 +34,10 @@ a large effect on shell performance. Some heads, like the Disruptor Conduit,
 add functionality. Any module other than the dedicated base modules can be put
 at the front of a shell, although the dedicated "Head" modules offer the best
 performance for any shell type.
+Note that while the optimizer does not include Squash Head (HESH), the 
+Shaped Charge Head (HEAT) works as a substitute for calculations. The damage 
+numbers will not match HESH damage numbers, but the configurations will be 
+otherwise identical.
 
 Base Module: module to be put at the back of the projectile (the part of the
 shell which hits the target - excludes gunpowder and railgun casings). The
@@ -209,9 +213,7 @@ set by adjusting the "Propellant" slider in the APS ammo controller.
 
 RG casing: number of railgun casings, if any.
 
-Solid body/Sabot body/HE body/&c: number of each type of body module. Note 
-that all fuzes share stats, so "fuze" can stand in for any type of fuze
-(including Emergency ejection defuse).
+Solid body/Sabot body/HE body/&c: number of each type of body module.
 
 Head: the module at the head of the shell (at the bottom of the controller).
 
