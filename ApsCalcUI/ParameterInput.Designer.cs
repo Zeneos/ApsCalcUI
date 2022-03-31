@@ -88,6 +88,7 @@ namespace ApsCalcUI
             this.BarrelLengthLimitDD = new System.Windows.Forms.ComboBox();
             this.BarrelLengthLimitUD = new System.Windows.Forms.NumericUpDown();
             this.DisruptorUD = new System.Windows.Forms.NumericUpDown();
+            this.MaxInaccUD = new System.Windows.Forms.NumericUpDown();
             this.BarrelCountLabel = new System.Windows.Forms.Label();
             this.MinGaugeLabel = new System.Windows.Forms.Label();
             this.MaxGaugeLabel = new System.Windows.Forms.Label();
@@ -135,7 +136,6 @@ namespace ApsCalcUI
             this.DisruptorPanel = new System.Windows.Forms.Panel();
             this.DisruptorLabel = new System.Windows.Forms.Label();
             this.MinInaccLabel = new System.Windows.Forms.Label();
-            this.MaxInaccUD = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).BeginInit();
@@ -160,6 +160,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.EnginePpmUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BarrelLengthLimitUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DisruptorUD)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MaxInaccUD)).BeginInit();
             this.BasePanel.SuspendLayout();
             this.FixedModulesPanel.SuspendLayout();
             this.VariableModulesPanel.SuspendLayout();
@@ -170,7 +171,6 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.RunErrorProvider)).BeginInit();
             this.StoragePanel.SuspendLayout();
             this.DisruptorPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.MaxInaccUD)).BeginInit();
             this.SuspendLayout();
             // 
             // BarrelCountDD
@@ -760,10 +760,10 @@ namespace ApsCalcUI
             this.ToolTip.SetToolTip(this.EnginePpcUD, "Engine Power Per Cost, for charging rails.\r\nMust be calculated manually.\r\n(Divide" +
         " power output by Material Cost of the entire engine)\r\nAdd rail draw to edit.");
             this.EnginePpcUD.Value = new decimal(new int[] {
-            61,
+            5,
             0,
             0,
-            65536});
+            0});
             // 
             // EnginePpvUD
             // 
@@ -790,10 +790,10 @@ namespace ApsCalcUI
             this.EnginePpvUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ToolTip.SetToolTip(this.EnginePpvUD, "Engine Power Per Volume, for charging rails.\r\nAdd rail draw to edit.");
             this.EnginePpvUD.Value = new decimal(new int[] {
-            882,
+            60,
             0,
             0,
-            65536});
+            0});
             // 
             // EnginePpmLabel
             // 
@@ -823,10 +823,10 @@ namespace ApsCalcUI
             this.EnginePpmUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ToolTip.SetToolTip(this.EnginePpmUD, "Engine Power Per Material, for charging rails.\r\nAdd rail draw to edit.");
             this.EnginePpmUD.Value = new decimal(new int[] {
-            6757,
+            600,
             0,
             0,
-            65536});
+            0});
             // 
             // PendepthCB
             // 
@@ -996,6 +996,34 @@ namespace ApsCalcUI
             0,
             0});
             this.DisruptorUD.Visible = false;
+            // 
+            // MaxInaccUD
+            // 
+            this.MaxInaccUD.DecimalPlaces = 2;
+            this.MaxInaccUD.Enabled = false;
+            this.MaxInaccUD.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.MaxInaccUD.Location = new System.Drawing.Point(550, 214);
+            this.MaxInaccUD.Maximum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
+            this.MaxInaccUD.Name = "MaxInaccUD";
+            this.MaxInaccUD.Size = new System.Drawing.Size(65, 23);
+            this.MaxInaccUD.TabIndex = 50;
+            this.MaxInaccUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.MaxInaccUD.ThousandsSeparator = true;
+            this.ToolTip.SetToolTip(this.MaxInaccUD, "Max allowed inaccuracy at desired barrel length.\r\nHas no effect if Barrel Length " +
+        "Limit Checkbox is unchecked.");
+            this.MaxInaccUD.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            65536});
             // 
             // BarrelCountLabel
             // 
@@ -1437,34 +1465,6 @@ namespace ApsCalcUI
             this.MinInaccLabel.TabIndex = 49;
             this.MinInaccLabel.Text = "Max Inaccuracy (°)";
             // 
-            // MaxInaccUD
-            // 
-            this.MaxInaccUD.DecimalPlaces = 2;
-            this.MaxInaccUD.Enabled = false;
-            this.MaxInaccUD.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-            this.MaxInaccUD.Location = new System.Drawing.Point(550, 214);
-            this.MaxInaccUD.Maximum = new decimal(new int[] {
-            5,
-            0,
-            0,
-            65536});
-            this.MaxInaccUD.Name = "MaxInaccUD";
-            this.MaxInaccUD.Size = new System.Drawing.Size(65, 23);
-            this.MaxInaccUD.TabIndex = 50;
-            this.MaxInaccUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.MaxInaccUD.ThousandsSeparator = true;
-            this.ToolTip.SetToolTip(this.MaxInaccUD, "Max allowed inaccuracy at desired barrel length.\r\nHas no effect if Barrel Length " +
-        "Limit Checkbox is unchecked.");
-            this.MaxInaccUD.Value = new decimal(new int[] {
-            3,
-            0,
-            0,
-            65536});
-            // 
             // ParameterInput
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1549,6 +1549,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.EnginePpmUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BarrelLengthLimitUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DisruptorUD)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MaxInaccUD)).EndInit();
             this.BasePanel.ResumeLayout(false);
             this.BasePanel.PerformLayout();
             this.FixedModulesPanel.ResumeLayout(false);
@@ -1563,7 +1564,6 @@ namespace ApsCalcUI
             this.StoragePanel.ResumeLayout(false);
             this.StoragePanel.PerformLayout();
             this.DisruptorPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.MaxInaccUD)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
