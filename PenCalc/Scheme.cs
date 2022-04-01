@@ -97,16 +97,23 @@ namespace PenCalc
 
             if (LayerList.Count > 0)
             {
+                float angleHPMultiplier = 1;
                 foreach (Layer layer in LayerList)
                 {
+                    // Angle bonus only resets at airgaps
+                    if (!layer.GivesACBonus)
+                    {
+                        angleHPMultiplier = layer.AngleHPMultiplier;
+                    }
+
                     float kdMultiplier = Math.Min(1, ap / layer.AC);
                     if (kdMultiplier == 1)
                     {
-                        requiredKD += layer.HP * layer.AngleHPMultiplier;
+                        requiredKD += layer.HP * angleHPMultiplier;
                     }
                     else
                     {
-                        requiredKD += layer.HP * layer.AngleHPMultiplier / kdMultiplier;
+                        requiredKD += layer.HP * angleHPMultiplier / kdMultiplier;
                     }
                 }
             }
