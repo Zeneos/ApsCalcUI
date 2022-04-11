@@ -542,7 +542,7 @@ namespace ApsCalcUI
             // 
             this.MinRangeUD.Location = new System.Drawing.Point(550, 189);
             this.MinRangeUD.Maximum = new decimal(new int[] {
-            2000,
+            10000,
             0,
             0,
             0});
@@ -551,7 +551,7 @@ namespace ApsCalcUI
             this.MinRangeUD.TabIndex = 22;
             this.MinRangeUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.MinRangeUD.ThousandsSeparator = true;
-            this.ToolTip.SetToolTip(this.MinRangeUD, "Max 2,000");
+            this.ToolTip.SetToolTip(this.MinRangeUD, "Max 10,000");
             // 
             // AddParametersButton
             // 

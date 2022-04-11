@@ -1420,11 +1420,11 @@ namespace ApsCalcUI
             }
             if (minGauge == maxGauge)
             {
-                writer.WriteLine("Gauge: " + minGauge);
+                writer.WriteLine("Gauge (mm): " + minGauge);
             }
             else
             {
-                writer.WriteLine("Gauge: " + minGauge + " mm thru " + maxGauge + " mm");
+                writer.WriteLine("Gauge (mm): " + minGauge + " thru " + maxGauge);
             }
 
             if (HeadList.Count == 1)
@@ -1481,20 +1481,20 @@ namespace ApsCalcUI
                 writer.WriteLine("Fuel engine: " + Fuel);
             }
             writer.WriteLine("Max recoil: " + MaxRecoilInput);
-            writer.WriteLine("Min length: " + MinShellLength);
-            writer.WriteLine("Max length: " + MaxShellLength);
-            writer.WriteLine("Min velocity: " + MinVelocityInput);
-            writer.WriteLine("Min effective range: " + MinEffectiveRangeInput);
+            writer.WriteLine("Min length (mm): " + MinShellLength);
+            writer.WriteLine("Max length (mm): " + MaxShellLength);
+            writer.WriteLine("Min velocity (m/s): " + MinVelocityInput);
+            writer.WriteLine("Min effective range (m): " + MinEffectiveRangeInput);
             if (LimitBarrelLength)
             {
                 writer.WriteLine("Max inaccuracy (°): " + MaxInaccuracy);
                 if (BarrelLengthLimitType == BarrelLengthLimit.Calibers)
                 {
-                    writer.WriteLine("Max barrel length: " + MaxBarrelLengthInCalibers + " calibers");
+                    writer.WriteLine("Max barrel length (calibers): " + MaxBarrelLengthInCalibers);
                 }
                 else if (BarrelLengthLimitType == BarrelLengthLimit.FixedLength)
                 {
-                    writer.WriteLine("Max barrel length: " + MaxBarrelLengthInM + "m");
+                    writer.WriteLine("Max barrel length (m): " + MaxBarrelLengthInM);
                 }
             }
             writer.WriteLine("Test interval (min): " + TestInterval);
@@ -1552,7 +1552,7 @@ namespace ApsCalcUI
                 writer.WriteLine("Row headers");
                 writer.WriteLine("Gauge (mm)");
                 writer.WriteLine("Total length (mm)");
-                writer.WriteLine("Length without casings");
+                writer.WriteLine("Length without casings (mm)");
                 writer.WriteLine("Total modules");
                 if (showGP)
                 {
@@ -1599,7 +1599,7 @@ namespace ApsCalcUI
                 }
 
 
-                writer.WriteLine("Reload time");
+                writer.WriteLine("Reload time (s)");
                 foreach (DamageType dt in dtToShow.Keys)
                 {
                     if (dtToShow[dt])

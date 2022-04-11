@@ -1574,7 +1574,7 @@ namespace ApsCalcUI
             {
                 writer.WriteLine("Gauge (mm): " + Gauge);
                 writer.WriteLine("Total length (mm): " + TotalLength);
-                writer.WriteLine("Length without casings: " + ProjectileLength);
+                writer.WriteLine("Length without casings (mm): " + ProjectileLength);
                 writer.WriteLine("Total modules: " + ModuleCountTotal);
 
                 if (showGP)
@@ -1624,7 +1624,7 @@ namespace ApsCalcUI
 
                 if (IsBelt)
                 {
-                    writer.WriteLine("Reload time: " + ReloadTimeBelt);
+                    writer.WriteLine("Reload time (s): " + ReloadTimeBelt);
                     foreach (DamageType dt in dtToShow.Keys)
                     {
                         if (dtToShow[dt])
@@ -1674,7 +1674,7 @@ namespace ApsCalcUI
                 }
                 else
                 {
-                    writer.WriteLine("Reload time: " + ReloadTime);
+                    writer.WriteLine("Reload time (s): " + ReloadTime);
                     foreach (DamageType dt in dtToShow.Keys)
                     {
                         if (dtToShow[dt])
