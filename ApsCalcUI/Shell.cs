@@ -1109,26 +1109,50 @@ namespace ApsCalcUI
         /// <summary>
         /// Calculates applied kinetic damage for a given target armor class
         /// </summary>
-        public void CalculateKineticDps(float targetAC)
+        public void CalculateKineticDps(float targetAC, float impactAngle)
         {
             CalculateKineticDamage();
             CalculateAP();
 
-            DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC);
+            if (HeadModule == Module.HollowPoint)
+            {
+                DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC);
+            }
+            else if (HeadModule == Module.SabotHead)
+            {
+                DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC) * MathF.Cos(impactAngle / 76.39437f);
+            }
+            else
+            {
+                DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC) * MathF.Cos(impactAngle / 57.29578f);
+            }
+
             DpsDict[DamageType.Kinetic] = DamageDict[DamageType.Kinetic] / ReloadTime;
             DpsPerVolumeDict[DamageType.Kinetic] = DpsDict[DamageType.Kinetic] / VolumePerIntake;
             DpsPerCostDict[DamageType.Kinetic] = DpsDict[DamageType.Kinetic] / CostPerIntake;
         }
 
 
-        public void CalculateKineticDpsBelt(float targetAC)
+        public void CalculateKineticDpsBelt(float targetAC, float impactAngle)
         {
             if (TotalLength <= 1000f)
             {
                 CalculateKineticDamage();
                 CalculateAP();
 
-                DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC);
+                if (HeadModule == Module.HollowPoint)
+                {
+                    DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC);
+                }
+                else if (HeadModule == Module.SabotHead)
+                {
+                    DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC) * MathF.Abs(MathF.Cos(impactAngle / 76.39437f));
+                }
+                else
+                {
+                    DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC) * MathF.Abs(MathF.Cos(impactAngle / 57.29578f));
+                }
+
                 DpsDict[DamageType.Kinetic] = DamageDict[DamageType.Kinetic] / ReloadTimeBelt * UptimeBelt;
                 DpsPerVolumeDict[DamageType.Kinetic] = DpsDict[DamageType.Kinetic] / VolumePerIntakeBelt;
                 DpsPerCostDict[DamageType.Kinetic] = DpsDict[DamageType.Kinetic] / CostPerIntakeBelt;
@@ -1361,7 +1385,7 @@ namespace ApsCalcUI
         /// <summary>
         /// Calculates damage according to current damageType
         /// </summary>
-        public void CalculateDamageByType(DamageType dt)
+        public void CalculateDamageByType(DamageType dt, float impactAngle)
         {
             if (dt == DamageType.Kinetic)
             {
@@ -1405,7 +1429,8 @@ namespace ApsCalcUI
             float ppv,
             float ppc,
             bool fuel,
-            Scheme targetScheme)
+            Scheme targetScheme,
+            float impactAngle)
         {
             CalculateRecoil();
             CalculateRailVolumeAndCost(testIntervalSeconds, storagePerVolume, storagePerCost, ppm, ppv, ppc, fuel);
@@ -1418,12 +1443,12 @@ namespace ApsCalcUI
             CalculateKineticDamage();
             CalculateAP();
 
-            if (RawKD >= targetScheme.GetRequiredKD(ArmorPierce)
+            if (RawKD >= targetScheme.GetRequiredKD(ArmorPierce, impactAngle, HeadModule == Module.SabotHead)
                 || (HeadModule == Module.HollowPoint && RawKD >= targetScheme.GetRequiredThump(ArmorPierce)))
             {
                 if (dt == DamageType.Kinetic)
                 {
-                    CalculateKineticDps(targetAC);
+                    CalculateKineticDps(targetAC, impactAngle);
                 }
                 else if (dt == DamageType.EMP)
                 {
@@ -1478,7 +1503,8 @@ namespace ApsCalcUI
             float ppv,
             float ppc,
             bool fuel,
-            Scheme targetScheme)
+            Scheme targetScheme,
+            float impactAngle)
         {
             CalculateRecoil();
             CalculateRailVolumeAndCost(testIntervalSeconds, storagePerVolume, storagePerCost, ppm, ppv, ppc, fuel);
@@ -1490,12 +1516,12 @@ namespace ApsCalcUI
             CalculateKineticDamage();
             CalculateAP();
 
-            if (RawKD >= targetScheme.GetRequiredKD(ArmorPierce)
+            if (RawKD >= targetScheme.GetRequiredKD(ArmorPierce, impactAngle, HeadModule == Module.SabotHead)
                 || (HeadModule == Module.HollowPoint && RawKD >= targetScheme.GetRequiredThump(ArmorPierce)))
             {
                 if (dt == DamageType.Kinetic)
                 {
-                    CalculateKineticDpsBelt(targetAC);
+                    CalculateKineticDpsBelt(targetAC, impactAngle);
                 }
                 else if (dt == DamageType.EMP)
                 {

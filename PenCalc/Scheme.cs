@@ -20,48 +20,6 @@ namespace PenCalc
 
 
         /// <summary>
-        /// Get user input for layer list
-        /// </summary>
-        public void GetLayerList()
-        {
-            while (true)
-            {
-                string input;
-                for (int i = 0; i < Layer.AllLayers.Length; i++)
-                {
-                    Console.WriteLine(i + " : " + Layer.AllLayers[i].Name);
-                }
-                Console.WriteLine("\nEnter a number to add a layer, or type 'done'.");
-                input = Console.ReadLine();
-                if (input == "done")
-                {
-                    break;
-                }
-                if (int.TryParse(input, out int layerIndex))
-                {
-                    if (layerIndex < 0 || layerIndex > Layer.AllLayers.Length)
-                    {
-                        Console.WriteLine("\nLAYER INDEX RANGE ERROR: Enter an integer from 0 thru "
-                            + Layer.AllLayers.Length
-                            + ", or type 'done'.");
-                    }
-                    else
-                    {
-                        LayerList.Add(Layer.AllLayers[layerIndex]);
-                        Console.WriteLine("\n" + Layer.AllLayers[layerIndex].Name + " added.\n");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("\nLAYER INDEX PARSE ERROR: Enter an integer from 0 thru "
-                        + Layer.AllLayers.Length
-                        + ", or type 'done'.");
-                }
-            }
-        }
-
-
-        /// <summary>
         /// Calculates AC of each layer, taking into account structural bonuses
         /// </summary>
         public void CalculateLayerAC()
@@ -90,30 +48,34 @@ namespace PenCalc
         /// Retrieves KD required to pen armor at given AP
         /// </summary>
         /// <param name="ap">AP of incoming shell</param>
+        /// <param name="impactAngle">Impact angle of incoming shell from perpendicular, in °</param>
+        /// <param name="shellIsSabotHead">Whether incoming shell has Sabot head (for effective angle bonus)</param>
         /// <returns>Required KD to pen</returns>
-        public float GetRequiredKD(float ap)
+        public float GetRequiredKD(float ap, float impactAngle, bool shellIsSabotHead)
         {
             float requiredKD = 0;
 
             if (LayerList.Count > 0)
             {
-                float angleHPMultiplier = 1;
+                float baseAngle = 0;
                 foreach (Layer layer in LayerList)
                 {
-                    // Angle bonus only resets at airgaps
+                    // Angle only resets at airgaps
                     if (!layer.GivesACBonus)
                     {
-                        angleHPMultiplier = layer.AngleHPMultiplier;
+                        baseAngle = layer.BaseAngle;
                     }
 
-                    float kdMultiplier = Math.Min(1, ap / layer.AC);
-                    if (kdMultiplier == 1)
+                    float hpMultiplier = Math.Max(1, layer.AC / ap);
+                    if (!shellIsSabotHead)
                     {
-                        requiredKD += layer.HP * angleHPMultiplier;
+                        // Cos uses radian, angles given in deg
+                        requiredKD += layer.HP / MathF.Abs(MathF.Cos((impactAngle + baseAngle) / 57.29578f)) * hpMultiplier;
                     }
                     else
                     {
-                        requiredKD += layer.HP * angleHPMultiplier / kdMultiplier;
+                        // Sabot head uses 3/4 effective impact angle; baked into deg → rad conversion
+                        requiredKD += layer.HP / MathF.Abs(MathF.Cos((impactAngle + baseAngle) / 76.39437f)) * hpMultiplier;
                     }
                 }
             }
@@ -135,15 +97,8 @@ namespace PenCalc
             {
                 foreach (Layer layer in LayerList)
                 {
-                    float tdMultiplier = Math.Min(1, ap / layer.RawAC);
-                    if (tdMultiplier == 1)
-                    {
-                        requiredTD += layer.HP;
-                    }
-                    else
-                    {
-                        requiredTD += layer.HP / tdMultiplier;
-                    }
+                    float hpMultiplier = Math.Max(1, layer.RawAC / ap);
+                    requiredTD += layer.HP * hpMultiplier;
                 }
             }
             return requiredTD;

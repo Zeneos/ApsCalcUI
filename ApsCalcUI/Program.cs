@@ -25,6 +25,7 @@ namespace ApsCalcUI
         public float MaxRecoil;
         public float MinVelocity;
         public float MinEffectiverange;
+        public float ImpactAngle;
         public List<float> TargetACList;
         public DamageType DamageType;
         public float MinDisruptor;

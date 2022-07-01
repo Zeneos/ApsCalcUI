@@ -523,6 +523,8 @@ namespace ApsCalcUI
                 testParameters.MinGauge = (int)MinGaugeUD.Value;
                 testParameters.MaxGauge = (int)MaxGaugeUD.Value;
 
+                testParameters.ImpactAngle = (float)ImpactAngleUD.Value;
+
                 List<int> headIndices = new();
                 foreach (HeadModuleItem head in HeadModulesCL.CheckedItems)
                 {
@@ -825,6 +827,7 @@ namespace ApsCalcUI
                                     testParameters.MaxRecoil,
                                     testParameters.MinVelocity,
                                     testParameters.MinEffectiverange,
+                                    testParameters.ImpactAngle,
                                     ac,
                                     testParameters.DamageType,
                                     testParameters.MinDisruptor,
@@ -871,6 +874,7 @@ namespace ApsCalcUI
                                     testParameters.MaxRecoil,
                                     testParameters.MinVelocity,
                                     testParameters.MinEffectiverange,
+                                    testParameters.ImpactAngle,
                                     ac,
                                     testParameters.DamageType,
                                     testParameters.MinDisruptor,
@@ -918,6 +922,7 @@ namespace ApsCalcUI
                                 testParameters.MaxRecoil,
                                 testParameters.MinVelocity,
                                 testParameters.MinEffectiverange,
+                                testParameters.ImpactAngle,
                                 0, // Target AC does not matter for non-kinetic tests
                                 testParameters.DamageType,
                                 testParameters.MinDisruptor,
@@ -963,6 +968,7 @@ namespace ApsCalcUI
                                 testParameters.MaxRecoil,
                                 testParameters.MinVelocity,
                                 testParameters.MinEffectiverange,
+                                testParameters.ImpactAngle,
                                 0, // Target AC does not matter for non-kinetic tests
                                 testParameters.DamageType,
                                 testParameters.MinDisruptor,

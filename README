@@ -28,6 +28,17 @@ by the barrel count, whichever is less).
 1000mm APS Mod: if checked, allows the max gauge to be set as high as 1000mm.
 This gauge is not possible ingame without mods.
 
+Impact Angle: Angle of impact from perpendicular, in °. Kinetic damage is 
+multiplied by the absolute value of the cosine of this angle: a 0° impact
+angle is a perfect hit against a flat surface (beams), and will deal full 
+damage against such a surface.
+Note that this stacks with angles from slopes: a 45° hit against a beam slope
+(45°) will add up to 90° impact angle (a miss), dealing no damage. A 90° hit
+against a beam slope (45°) will add up to a 135° impact, dealing about 70% 
+damage.
+Note also that, as of Alpha 3.5.0 (2022-04-26), Sabot head uses 3/4 the angle
+for Kinetic damage calculation purposes.
+
 Head Indices: modules to be put at the front of the shells to be tested. The
 frontmost module on a shell is weighted in certain calculations, and can have
 a large effect on shell performance. Some heads, like the Disruptor Conduit,

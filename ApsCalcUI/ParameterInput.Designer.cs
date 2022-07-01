@@ -89,6 +89,7 @@ namespace ApsCalcUI
             this.BarrelLengthLimitUD = new System.Windows.Forms.NumericUpDown();
             this.DisruptorUD = new System.Windows.Forms.NumericUpDown();
             this.MaxInaccUD = new System.Windows.Forms.NumericUpDown();
+            this.ImpactAngleUD = new System.Windows.Forms.NumericUpDown();
             this.BarrelCountLabel = new System.Windows.Forms.Label();
             this.MinGaugeLabel = new System.Windows.Forms.Label();
             this.MaxGaugeLabel = new System.Windows.Forms.Label();
@@ -136,6 +137,8 @@ namespace ApsCalcUI
             this.DisruptorPanel = new System.Windows.Forms.Panel();
             this.DisruptorLabel = new System.Windows.Forms.Label();
             this.MinInaccLabel = new System.Windows.Forms.Label();
+            this.ImpactAngleLabel = new System.Windows.Forms.Label();
+            this.ImpactAngleLabel2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).BeginInit();
@@ -161,6 +164,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.BarrelLengthLimitUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DisruptorUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxInaccUD)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ImpactAngleUD)).BeginInit();
             this.BasePanel.SuspendLayout();
             this.FixedModulesPanel.SuspendLayout();
             this.VariableModulesPanel.SuspendLayout();
@@ -188,7 +192,7 @@ namespace ApsCalcUI
             // 
             // HeadModulesLabel
             // 
-            this.HeadModulesLabel.Location = new System.Drawing.Point(12, 117);
+            this.HeadModulesLabel.Location = new System.Drawing.Point(12, 147);
             this.HeadModulesLabel.Name = "HeadModulesLabel";
             this.HeadModulesLabel.Size = new System.Drawing.Size(205, 15);
             this.HeadModulesLabel.TabIndex = 7;
@@ -1025,6 +1029,27 @@ namespace ApsCalcUI
             0,
             65536});
             // 
+            // ImpactAngleUD
+            // 
+            this.ImpactAngleUD.Location = new System.Drawing.Point(93, 95);
+            this.ImpactAngleUD.Maximum = new decimal(new int[] {
+            90,
+            0,
+            0,
+            0});
+            this.ImpactAngleUD.Name = "ImpactAngleUD";
+            this.ImpactAngleUD.Size = new System.Drawing.Size(40, 23);
+            this.ImpactAngleUD.TabIndex = 52;
+            this.ImpactAngleUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.ToolTip.SetToolTip(this.ImpactAngleUD, "0° is a perfect hit against a flat surface, dealing max damage.\r\n90° is a perfect" +
+        " miss against a flat surface, dealing zero damage.\r\nNote that Sabot head uses 3/" +
+        "4 the actual impact angle.");
+            this.ImpactAngleUD.Value = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
+            // 
             // BarrelCountLabel
             // 
             this.BarrelCountLabel.AutoSize = true;
@@ -1056,7 +1081,7 @@ namespace ApsCalcUI
             // HeadModulesCL
             // 
             this.HeadModulesCL.FormattingEnabled = true;
-            this.HeadModulesCL.Location = new System.Drawing.Point(13, 133);
+            this.HeadModulesCL.Location = new System.Drawing.Point(13, 163);
             this.HeadModulesCL.Name = "HeadModulesCL";
             this.HeadModulesCL.Size = new System.Drawing.Size(205, 328);
             this.HeadModulesCL.TabIndex = 3;
@@ -1069,7 +1094,7 @@ namespace ApsCalcUI
             this.BasePanel.Controls.Add(this.TracerRB);
             this.BasePanel.Controls.Add(this.SupercavRB);
             this.BasePanel.Controls.Add(this.BaseBleederRB);
-            this.BasePanel.Location = new System.Drawing.Point(12, 469);
+            this.BasePanel.Location = new System.Drawing.Point(12, 499);
             this.BasePanel.Name = "BasePanel";
             this.BasePanel.Size = new System.Drawing.Size(206, 97);
             this.BasePanel.TabIndex = 4;
@@ -1465,11 +1490,32 @@ namespace ApsCalcUI
             this.MinInaccLabel.TabIndex = 49;
             this.MinInaccLabel.Text = "Max Inaccuracy (°)";
             // 
+            // ImpactAngleLabel
+            // 
+            this.ImpactAngleLabel.AutoSize = true;
+            this.ImpactAngleLabel.Location = new System.Drawing.Point(10, 98);
+            this.ImpactAngleLabel.Name = "ImpactAngleLabel";
+            this.ImpactAngleLabel.Size = new System.Drawing.Size(81, 15);
+            this.ImpactAngleLabel.TabIndex = 51;
+            this.ImpactAngleLabel.Text = "Impact Angle:";
+            // 
+            // ImpactAngleLabel2
+            // 
+            this.ImpactAngleLabel2.AutoSize = true;
+            this.ImpactAngleLabel2.Location = new System.Drawing.Point(134, 98);
+            this.ImpactAngleLabel2.Name = "ImpactAngleLabel2";
+            this.ImpactAngleLabel2.Size = new System.Drawing.Size(117, 15);
+            this.ImpactAngleLabel2.TabIndex = 53;
+            this.ImpactAngleLabel2.Text = "° from perpendicular";
+            // 
             // ParameterInput
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 608);
+            this.Controls.Add(this.ImpactAngleLabel2);
+            this.Controls.Add(this.ImpactAngleUD);
+            this.Controls.Add(this.ImpactAngleLabel);
             this.Controls.Add(this.MaxInaccUD);
             this.Controls.Add(this.MinInaccLabel);
             this.Controls.Add(this.DisruptorPanel);
@@ -1550,6 +1596,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.BarrelLengthLimitUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DisruptorUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxInaccUD)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ImpactAngleUD)).EndInit();
             this.BasePanel.ResumeLayout(false);
             this.BasePanel.PerformLayout();
             this.FixedModulesPanel.ResumeLayout(false);
@@ -1676,6 +1723,9 @@ namespace ApsCalcUI
         private System.Windows.Forms.NumericUpDown DisruptorUD;
         private System.Windows.Forms.NumericUpDown MaxInaccUD;
         private System.Windows.Forms.Label MinInaccLabel;
+        private System.Windows.Forms.NumericUpDown ImpactAngleUD;
+        private System.Windows.Forms.Label ImpactAngleLabel;
+        private System.Windows.Forms.Label ImpactAngleLabel2;
     }
 }
 

@@ -97,6 +97,7 @@ namespace ApsCalcUI
             float maxRecoilInput,
             float minVelocityInput,
             float minEffectiveRangeInput,
+            float impactAngle,
             float targetAC,
             DamageType damageType,
             float minDisruptor,
@@ -132,6 +133,7 @@ namespace ApsCalcUI
             MaxRecoilInput = maxRecoilInput;
             MinVelocityInput = minVelocityInput;
             MinEffectiveRangeInput = minEffectiveRangeInput;
+            ImpactAngle = impactAngle;
             TargetAC = targetAC;
             DamageType = damageType;
             MinDisruptor = minDisruptor;
@@ -186,6 +188,7 @@ namespace ApsCalcUI
         public float MaxRecoilInput { get; }
         public float MinVelocityInput { get; }
         public float MinEffectiveRangeInput { get; }
+        public float ImpactAngle { get; }
         public float TargetAC { get; }
         public DamageType DamageType { get; }
         public float MinDisruptor { get; }
@@ -412,7 +415,7 @@ namespace ApsCalcUI
                     {
                         shellUnderTesting.CalculateReloadTime();
                         shellUnderTesting.CalculateDamageModifierByType(DamageType);
-                        shellUnderTesting.CalculateDamageByType(DamageType);
+                        shellUnderTesting.CalculateDamageByType(DamageType, ImpactAngle);
 
                         if ((DamageType == DamageType.Disruptor && shellUnderTesting.DamageDict[DamageType.Disruptor] >= MinDisruptor)
                             || DamageType != DamageType.Disruptor)
@@ -445,7 +448,8 @@ namespace ApsCalcUI
                                     Ppv,
                                     Ppc,
                                     Fuel,
-                                    TargetArmorScheme);
+                                    TargetArmorScheme,
+                                    ImpactAngle);
                                 if (TestType == 0)
                                 {
                                     bottomScore = shellUnderTesting.DpsPerVolumeDict[DamageType];
@@ -466,7 +470,8 @@ namespace ApsCalcUI
                                     Ppv,
                                     Ppc,
                                     Fuel,
-                                    TargetArmorScheme);
+                                    TargetArmorScheme,
+                                    ImpactAngle);
                                 if (TestType == 0)
                                 {
                                     topScore = shellUnderTesting.DpsPerVolumeDict[DamageType];
@@ -490,7 +495,8 @@ namespace ApsCalcUI
                                         Ppv,
                                         Ppc,
                                         Fuel,
-                                        TargetArmorScheme);
+                                        TargetArmorScheme,
+                                        ImpactAngle);
                                     if (TestType == 0)
                                     {
                                         bottomScore = shellUnderTesting.DpsPerVolumeDict[DamageType];
@@ -519,7 +525,8 @@ namespace ApsCalcUI
                                         Ppv,
                                         Ppc,
                                         Fuel,
-                                        TargetArmorScheme);
+                                        TargetArmorScheme,
+                                        ImpactAngle);
                                     if (TestType == 0)
                                     {
                                         topScore = shellUnderTesting.DpsPerVolumeDict[DamageType];
@@ -557,7 +564,8 @@ namespace ApsCalcUI
                                             Ppv,
                                             Ppc,
                                             Fuel,
-                                            TargetArmorScheme);
+                                            TargetArmorScheme,
+                                            ImpactAngle);
                                         if (TestType == 0)
                                         {
                                             midRangeLowerScore = shellUnderTesting.DpsPerVolumeDict[DamageType];
@@ -578,7 +586,8 @@ namespace ApsCalcUI
                                             Ppv,
                                             Ppc,
                                             Fuel,
-                                            TargetArmorScheme);
+                                            TargetArmorScheme,
+                                            ImpactAngle);
                                         if (TestType == 0)
                                         {
                                             midRangeUpperScore = shellUnderTesting.DpsPerVolumeDict[DamageType];
@@ -627,7 +636,8 @@ namespace ApsCalcUI
                                 Ppv,
                                 Ppc,
                                 Fuel,
-                                TargetArmorScheme);
+                                TargetArmorScheme,
+                                ImpactAngle);
                             shellUnderTesting.CalculateVelocity();
                             shellUnderTesting.CalculateEffectiveRange();
 
@@ -795,7 +805,7 @@ namespace ApsCalcUI
                                 shellUnderTestingBelt.CalculateVariableVolumesAndCosts(TestIntervalSeconds, StoragePerVolume, StoragePerCost);
                                 shellUnderTestingBelt.CalculateCooldownTime();
                                 shellUnderTestingBelt.CalculateDamageModifierByType(DamageType);
-                                shellUnderTestingBelt.CalculateDamageByType(DamageType);
+                                shellUnderTestingBelt.CalculateDamageByType(DamageType, ImpactAngle);
                                 shellUnderTestingBelt.CalculateLoaderVolumeAndCost();
                                 shellUnderTestingBelt.CalculateCoolerVolumeAndCost();
 
@@ -819,7 +829,8 @@ namespace ApsCalcUI
                                         Ppv,
                                         Ppc,
                                         Fuel,
-                                        TargetArmorScheme);
+                                        TargetArmorScheme,
+                                        ImpactAngle);
                                     if (TestType == 0)
                                     {
                                         bottomScore = shellUnderTestingBelt.DpsPerVolumeDict[DamageType];
@@ -840,7 +851,8 @@ namespace ApsCalcUI
                                         Ppv,
                                         Ppc,
                                         Fuel,
-                                        TargetArmorScheme);
+                                        TargetArmorScheme,
+                                        ImpactAngle);
                                     if (TestType == 0)
                                     {
                                         topScore = shellUnderTestingBelt.DpsPerVolumeDict[DamageType];
@@ -864,7 +876,8 @@ namespace ApsCalcUI
                                             Ppv,
                                             Ppc,
                                             Fuel,
-                                            TargetArmorScheme);
+                                            TargetArmorScheme,
+                                            ImpactAngle);
                                         if (TestType == 0)
                                         {
                                             bottomScore = shellUnderTestingBelt.DpsPerVolumeDict[DamageType];
@@ -893,7 +906,8 @@ namespace ApsCalcUI
                                             Ppv,
                                             Ppc,
                                             Fuel,
-                                            TargetArmorScheme);
+                                            TargetArmorScheme,
+                                            ImpactAngle);
                                         if (TestType == 0)
                                         {
                                             topScore = shellUnderTestingBelt.DpsPerVolumeDict[DamageType];
@@ -930,7 +944,8 @@ namespace ApsCalcUI
                                                 Ppv,
                                                 Ppc,
                                                 Fuel,
-                                                TargetArmorScheme);
+                                                TargetArmorScheme,
+                                                ImpactAngle);
                                             if (TestType == 0)
                                             {
                                                 midRangeLowerScore = shellUnderTestingBelt.DpsPerVolumeDict[DamageType];
@@ -951,7 +966,8 @@ namespace ApsCalcUI
                                                 Ppv,
                                                 Ppc,
                                                 Fuel,
-                                                TargetArmorScheme);
+                                                TargetArmorScheme,
+                                                ImpactAngle);
                                             if (TestType == 0)
                                             {
                                                 midRangeUpperScore = shellUnderTestingBelt.DpsPerVolumeDict[DamageType];
@@ -999,7 +1015,8 @@ namespace ApsCalcUI
                                     Ppv,
                                     Ppc,
                                     Fuel,
-                                    TargetArmorScheme);
+                                    TargetArmorScheme,
+                                    ImpactAngle);
                                 shellUnderTestingBelt.CalculateVelocity();
                                 shellUnderTestingBelt.CalculateEffectiveRange();
 
@@ -1427,6 +1444,8 @@ namespace ApsCalcUI
                 writer.WriteLine("Gauge (mm): " + minGauge + " thru " + maxGauge);
             }
 
+            writer.WriteLine("Impact angle (°): " + ImpactAngle);
+
             if (HeadList.Count == 1)
             {
                 writer.WriteLine("Head: " + Module.AllModules[HeadList[0]].Name);
@@ -1674,7 +1693,7 @@ namespace ApsCalcUI
                     {
                         if (dtToShow[dt] && topShell.Value.IsBelt)
                         {
-                            topShell.Value.CalculateDamageByType(dt);
+                            topShell.Value.CalculateDamageByType(dt, ImpactAngle);
                             topShell.Value.CalculateDpsByTypeBelt(
                                 dt,
                                 TargetAC,
@@ -1685,12 +1704,13 @@ namespace ApsCalcUI
                                 Ppv,
                                 Ppc,
                                 Fuel,
-                                TargetArmorScheme
+                                TargetArmorScheme,
+                                ImpactAngle
                                 );
                         }
                         else if (dtToShow[dt])
                         {
-                            topShell.Value.CalculateDamageByType(dt);
+                            topShell.Value.CalculateDamageByType(dt, ImpactAngle);
                             topShell.Value.CalculateDpsByType(
                                 dt,
                                 TargetAC,
@@ -1701,7 +1721,8 @@ namespace ApsCalcUI
                                 Ppv,
                                 Ppc,
                                 Fuel,
-                                TargetArmorScheme
+                                TargetArmorScheme,
+                                ImpactAngle
                                 );
                         }
                     }
