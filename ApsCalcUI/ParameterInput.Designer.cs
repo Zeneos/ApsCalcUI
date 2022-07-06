@@ -90,6 +90,7 @@ namespace ApsCalcUI
             this.DisruptorUD = new System.Windows.Forms.NumericUpDown();
             this.MaxInaccUD = new System.Windows.Forms.NumericUpDown();
             this.ImpactAngleUD = new System.Windows.Forms.NumericUpDown();
+            this.FragAngleUD = new System.Windows.Forms.NumericUpDown();
             this.BarrelCountLabel = new System.Windows.Forms.Label();
             this.MinGaugeLabel = new System.Windows.Forms.Label();
             this.MaxGaugeLabel = new System.Windows.Forms.Label();
@@ -139,6 +140,8 @@ namespace ApsCalcUI
             this.MinInaccLabel = new System.Windows.Forms.Label();
             this.ImpactAngleLabel = new System.Windows.Forms.Label();
             this.ImpactAngleLabel2 = new System.Windows.Forms.Label();
+            this.FragAnglePanel = new System.Windows.Forms.Panel();
+            this.FragAngleLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).BeginInit();
@@ -165,6 +168,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.DisruptorUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxInaccUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImpactAngleUD)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FragAngleUD)).BeginInit();
             this.BasePanel.SuspendLayout();
             this.FixedModulesPanel.SuspendLayout();
             this.VariableModulesPanel.SuspendLayout();
@@ -175,6 +179,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.RunErrorProvider)).BeginInit();
             this.StoragePanel.SuspendLayout();
             this.DisruptorPanel.SuspendLayout();
+            this.FragAnglePanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // BarrelCountDD
@@ -1050,6 +1055,31 @@ namespace ApsCalcUI
             0,
             0});
             // 
+            // FragAngleUD
+            // 
+            this.FragAngleUD.Location = new System.Drawing.Point(62, 37);
+            this.FragAngleUD.Maximum = new decimal(new int[] {
+            180,
+            0,
+            0,
+            0});
+            this.FragAngleUD.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.FragAngleUD.Name = "FragAngleUD";
+            this.FragAngleUD.Size = new System.Drawing.Size(45, 23);
+            this.FragAngleUD.TabIndex = 1;
+            this.FragAngleUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.ToolTip.SetToolTip(this.FragAngleUD, "Frag cone angle, in °.");
+            this.FragAngleUD.Value = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+            this.FragAngleUD.Visible = false;
+            // 
             // BarrelCountLabel
             // 
             this.BarrelCountLabel.AutoSize = true;
@@ -1508,11 +1538,33 @@ namespace ApsCalcUI
             this.ImpactAngleLabel2.TabIndex = 53;
             this.ImpactAngleLabel2.Text = "° from perpendicular";
             // 
+            // FragAnglePanel
+            // 
+            this.FragAnglePanel.Controls.Add(this.FragAngleUD);
+            this.FragAnglePanel.Controls.Add(this.FragAngleLabel);
+            this.FragAnglePanel.Enabled = false;
+            this.FragAnglePanel.Location = new System.Drawing.Point(436, 321);
+            this.FragAnglePanel.Name = "FragAnglePanel";
+            this.FragAnglePanel.Size = new System.Drawing.Size(169, 69);
+            this.FragAnglePanel.TabIndex = 54;
+            this.FragAnglePanel.Visible = false;
+            // 
+            // FragAngleLabel
+            // 
+            this.FragAngleLabel.AutoSize = true;
+            this.FragAngleLabel.Location = new System.Drawing.Point(30, 16);
+            this.FragAngleLabel.Name = "FragAngleLabel";
+            this.FragAngleLabel.Size = new System.Drawing.Size(111, 15);
+            this.FragAngleLabel.TabIndex = 0;
+            this.FragAngleLabel.Text = "Frag Cone Angle (°)";
+            this.FragAngleLabel.Visible = false;
+            // 
             // ParameterInput
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 608);
+            this.Controls.Add(this.FragAnglePanel);
             this.Controls.Add(this.ImpactAngleLabel2);
             this.Controls.Add(this.ImpactAngleUD);
             this.Controls.Add(this.ImpactAngleLabel);
@@ -1597,6 +1649,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.DisruptorUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxInaccUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImpactAngleUD)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FragAngleUD)).EndInit();
             this.BasePanel.ResumeLayout(false);
             this.BasePanel.PerformLayout();
             this.FixedModulesPanel.ResumeLayout(false);
@@ -1611,6 +1664,8 @@ namespace ApsCalcUI
             this.StoragePanel.ResumeLayout(false);
             this.StoragePanel.PerformLayout();
             this.DisruptorPanel.ResumeLayout(false);
+            this.FragAnglePanel.ResumeLayout(false);
+            this.FragAnglePanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1726,6 +1781,9 @@ namespace ApsCalcUI
         private System.Windows.Forms.NumericUpDown ImpactAngleUD;
         private System.Windows.Forms.Label ImpactAngleLabel;
         private System.Windows.Forms.Label ImpactAngleLabel2;
+        private System.Windows.Forms.Panel FragAnglePanel;
+        private System.Windows.Forms.NumericUpDown FragAngleUD;
+        private System.Windows.Forms.Label FragAngleLabel;
     }
 }
 

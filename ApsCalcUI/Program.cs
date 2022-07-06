@@ -26,8 +26,12 @@ namespace ApsCalcUI
         public float MinVelocity;
         public float MinEffectiverange;
         public float ImpactAngle;
+        public float SabotAngleMultiplier;
+        public float NonSabotAngleMultiplier;
         public List<float> TargetACList;
         public DamageType DamageType;
+        public float FragConeAngle;
+        public float FragAngleMultiplier;
         public float MinDisruptor;
         public Scheme ArmorScheme;
         public bool Penpdepth;

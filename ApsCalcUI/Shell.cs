@@ -85,6 +85,10 @@ namespace ApsCalcUI
         // Damage
         public float RawKD { get; set; }
         public float ArmorPierce { get; set; }
+        public float SabotAngleMultiplier { get; set; }
+        public float NonSabotAngleMultiplier { get; set; }
+        public float FragCount { get; set; }
+        public float DamagePerFrag { get; set; }
 
         public Dictionary<DamageType, float> DamageDict = new()
         {
@@ -967,7 +971,7 @@ namespace ApsCalcUI
         }
 
         /// <summary>
-        /// Calculates EMP damage. Used by shield reduction
+        /// Calculates FlaK damage
         /// </summary>
         void CalculateFlaKDamage()
         {
@@ -990,13 +994,14 @@ namespace ApsCalcUI
             }
             DamageDict[DamageType.FlaK] =
                 3000f
-                * MathF.Pow(GaugeCoefficient * flaKBodies * 0.704f * OverallChemModifier, 0.9f);
+                * MathF.Pow(GaugeCoefficient * flaKBodies * 0.792f * OverallChemModifier, 0.9f);
         }
 
         /// <summary>
-        /// Calculates damage from Frag, although EMP scales the same way
+        /// Calculates damage from Frag
         /// </summary>
-        void CalculateFragDamage()
+        /// <param name="fragAngleMultiplier">(2 + sqrt(cone angle °)) / 16</param>
+        void CalculateFragDamage(float fragAngleMultiplier)
         {
             // Get index of frag body
             int fragIndex = int.MaxValue;
@@ -1015,7 +1020,11 @@ namespace ApsCalcUI
             {
                 fragBodies++;
             }
-            DamageDict[DamageType.Frag] = GaugeCoefficient * fragBodies * OverallChemModifier * 63600;
+            DamageDict[DamageType.Frag] = GaugeCoefficient * fragBodies * OverallChemModifier * 66000;
+            // Frag count is based on raw damage before angle multiplier
+            FragCount = MathF.Floor(MathF.Pow(DamageDict[DamageType.Frag], 0.25f));
+            DamageDict[DamageType.Frag] *= fragAngleMultiplier;
+            DamagePerFrag = DamageDict[DamageType.Frag] / FragCount;
         }
 
         /// <summary>
@@ -1107,9 +1116,9 @@ namespace ApsCalcUI
 
 
         /// <summary>
-        /// Calculates applied kinetic damage for a given target armor class
+        /// Calculates applied kinetic damage for a given target armor class and impact angle
         /// </summary>
-        public void CalculateKineticDps(float targetAC, float impactAngle)
+        void CalculateKineticDps(float targetAC)
         {
             CalculateKineticDamage();
             CalculateAP();
@@ -1120,11 +1129,11 @@ namespace ApsCalcUI
             }
             else if (HeadModule == Module.SabotHead)
             {
-                DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC) * MathF.Cos(impactAngle / 76.39437f);
+                DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC) * SabotAngleMultiplier;
             }
             else
             {
-                DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC) * MathF.Cos(impactAngle / 57.29578f);
+                DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC) * NonSabotAngleMultiplier;
             }
 
             DpsDict[DamageType.Kinetic] = DamageDict[DamageType.Kinetic] / ReloadTime;
@@ -1133,7 +1142,7 @@ namespace ApsCalcUI
         }
 
 
-        public void CalculateKineticDpsBelt(float targetAC, float impactAngle)
+        void CalculateKineticDpsBelt(float targetAC)
         {
             if (TotalLength <= 1000f)
             {
@@ -1146,11 +1155,11 @@ namespace ApsCalcUI
                 }
                 else if (HeadModule == Module.SabotHead)
                 {
-                    DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC) * MathF.Abs(MathF.Cos(impactAngle / 76.39437f));
+                    DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC) * SabotAngleMultiplier;
                 }
                 else
                 {
-                    DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC) * MathF.Abs(MathF.Cos(impactAngle / 57.29578f));
+                    DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC) * NonSabotAngleMultiplier;
                 }
 
                 DpsDict[DamageType.Kinetic] = DamageDict[DamageType.Kinetic] / ReloadTimeBelt * UptimeBelt;
@@ -1168,7 +1177,7 @@ namespace ApsCalcUI
         /// <summary>
         /// Calculates EMP damage per second
         /// </summary>
-        public void CalculateEmpDps()
+        void CalculateEmpDps()
         {
             DpsDict[DamageType.EMP] = DamageDict[DamageType.EMP] / ReloadTime;
             DpsPerVolumeDict[DamageType.EMP] = DpsDict[DamageType.EMP] / VolumePerIntake;
@@ -1178,7 +1187,7 @@ namespace ApsCalcUI
         /// <summary>
         /// Calculates EMP damage per second for beltfed loaders
         /// </summary>
-        public void CalculateEmpDpsBelt()
+        void CalculateEmpDpsBelt()
         {
             if (TotalLength <= 1000)
             {
@@ -1197,7 +1206,7 @@ namespace ApsCalcUI
         /// <summary>
         /// Calculates FlaK damage per second
         /// </summary>
-        public void CalculateFlaKDps()
+        void CalculateFlaKDps()
         {
             DpsDict[DamageType.FlaK] = DamageDict[DamageType.FlaK] / ReloadTime;
             DpsPerVolumeDict[DamageType.FlaK] = DpsDict[DamageType.FlaK] / VolumePerIntake;
@@ -1207,7 +1216,7 @@ namespace ApsCalcUI
         /// <summary>
         /// Calculates FlaK damage per second for beltfed loaders
         /// </summary>
-        public void CalculateFlaKDpsBelt()
+        void CalculateFlaKDpsBelt()
         {
             if (TotalLength <= 1000)
             {
@@ -1226,7 +1235,7 @@ namespace ApsCalcUI
         /// <summary>
         /// Calculates Frag damage per second
         /// </summary>
-        public void CalculateFragDps()
+        void CalculateFragDps()
         {
             DpsDict[DamageType.Frag] = DamageDict[DamageType.Frag] / ReloadTime;
             DpsPerVolumeDict[DamageType.Frag] = DpsDict[DamageType.Frag] / VolumePerIntake;
@@ -1236,7 +1245,7 @@ namespace ApsCalcUI
         /// <summary>
         /// Calculates Frag damage per second for beltfed loaders
         /// </summary>
-        public void CalculateFragDpsBelt()
+        void CalculateFragDpsBelt()
         {
             if (TotalLength <= 1000)
             {
@@ -1255,7 +1264,7 @@ namespace ApsCalcUI
         /// <summary>
         /// Calculates HE damage per second
         /// </summary>
-        public void CalculateHEDps()
+        void CalculateHEDps()
         {
             DpsDict[DamageType.HE] = DamageDict[DamageType.HE] / ReloadTime;
             DpsPerVolumeDict[DamageType.HE] = DpsDict[DamageType.HE] / VolumePerIntake;
@@ -1265,7 +1274,7 @@ namespace ApsCalcUI
         /// <summary>
         /// Calculates HE damage per second for beltfed loaders
         /// </summary>
-        public void CalculateHEDpsBelt()
+        void CalculateHEDpsBelt()
         {
             if (TotalLength <= 1000)
             {
@@ -1284,7 +1293,7 @@ namespace ApsCalcUI
         /// <summary>
         /// Calculates HEAT damage per second (HESH scales similarly)
         /// </summary>
-        public void CalculateHeatDps()
+        void CalculateHeatDps()
         {
             if (HeadModule == Module.ShapedChargeHead)
             {
@@ -1311,9 +1320,9 @@ namespace ApsCalcUI
         /// <summary>
         /// Calculates HEAT damage per second for beltfed loaders
         /// </summary>
-        public void CalculateHeatDpsBelt()
+        void CalculateHeatDpsBelt()
         {
-            if (HeadModule == Module.ShapedChargeHead)
+            if (HeadModule == Module.ShapedChargeHead && TotalLength <= 1000)
             {
                 DpsDict[DamageType.HE] = DamageDict[DamageType.HE] / ReloadTimeBelt * UptimeBelt;
                 DpsPerVolumeDict[DamageType.HE] = DpsDict[DamageType.HE] / VolumePerIntakeBelt;
@@ -1338,7 +1347,7 @@ namespace ApsCalcUI
         /// <summary>
         /// Calculates shield disruption, in % reduction per second per volume
         /// </summary>
-        public void CalculateShieldRps()
+        void CalculateShieldRps()
         {
             CalculateEmpDps();
 
@@ -1348,7 +1357,7 @@ namespace ApsCalcUI
             DpsPerCostDict[DamageType.Disruptor] = DpsDict[DamageType.Disruptor] / CostPerIntake;
         }
 
-        public void CalculateShieldRpsBelt()
+        void CalculateShieldRpsBelt()
         {
             if (TotalLength <= 1000f)
             {
@@ -1385,7 +1394,9 @@ namespace ApsCalcUI
         /// <summary>
         /// Calculates damage according to current damageType
         /// </summary>
-        public void CalculateDamageByType(DamageType dt, float impactAngle)
+        /// <param name="dt">Damage type to test</param>
+        /// <param name="fragAngleMultiplier">(2 + sqrt(angle °)) / 16</param>
+        public void CalculateDamageByType(DamageType dt, float fragAngleMultiplier)
         {
             if (dt == DamageType.Kinetic)
             {
@@ -1402,7 +1413,7 @@ namespace ApsCalcUI
             }
             else if (dt == DamageType.Frag)
             {
-                CalculateFragDamage();
+                CalculateFragDamage(fragAngleMultiplier);
             }
             else if (dt == DamageType.HE)
             {
@@ -1430,7 +1441,7 @@ namespace ApsCalcUI
             float ppc,
             bool fuel,
             Scheme targetScheme,
-            float impactAngle)
+            float impactAngleFromPerpendicularDegrees)
         {
             CalculateRecoil();
             CalculateRailVolumeAndCost(testIntervalSeconds, storagePerVolume, storagePerCost, ppm, ppv, ppc, fuel);
@@ -1443,12 +1454,12 @@ namespace ApsCalcUI
             CalculateKineticDamage();
             CalculateAP();
 
-            if (RawKD >= targetScheme.GetRequiredKD(ArmorPierce, impactAngle, HeadModule == Module.SabotHead)
+            if (RawKD >= targetScheme.GetRequiredKD(ArmorPierce, impactAngleFromPerpendicularDegrees, HeadModule == Module.SabotHead)
                 || (HeadModule == Module.HollowPoint && RawKD >= targetScheme.GetRequiredThump(ArmorPierce)))
             {
                 if (dt == DamageType.Kinetic)
                 {
-                    CalculateKineticDps(targetAC, impactAngle);
+                    CalculateKineticDps(targetAC);
                 }
                 else if (dt == DamageType.EMP)
                 {
@@ -1504,7 +1515,7 @@ namespace ApsCalcUI
             float ppc,
             bool fuel,
             Scheme targetScheme,
-            float impactAngle)
+            float impactAngleFromPerpendicularDegrees)
         {
             CalculateRecoil();
             CalculateRailVolumeAndCost(testIntervalSeconds, storagePerVolume, storagePerCost, ppm, ppv, ppc, fuel);
@@ -1516,12 +1527,12 @@ namespace ApsCalcUI
             CalculateKineticDamage();
             CalculateAP();
 
-            if (RawKD >= targetScheme.GetRequiredKD(ArmorPierce, impactAngle, HeadModule == Module.SabotHead)
+            if (RawKD >= targetScheme.GetRequiredKD(ArmorPierce, impactAngleFromPerpendicularDegrees, HeadModule == Module.SabotHead)
                 || (HeadModule == Module.HollowPoint && RawKD >= targetScheme.GetRequiredThump(ArmorPierce)))
             {
                 if (dt == DamageType.Kinetic)
                 {
-                    CalculateKineticDpsBelt(targetAC, impactAngle);
+                    CalculateKineticDpsBelt(targetAC);
                 }
                 else if (dt == DamageType.EMP)
                 {
@@ -1634,15 +1645,28 @@ namespace ApsCalcUI
                 writer.WriteLine("Barrel length for inaccuracy (m): " + BarrelLengthForInaccuracy);
                 writer.WriteLine("Barrel length for propellant burn (m): " + BarrelLengthForPropellant);
 
-                if (dtToShow[DamageType.Kinetic])
-                {
-                    writer.WriteLine("Raw KD: " + RawKD);
-                    writer.WriteLine("AP: " + ArmorPierce);
-                }
                 foreach (DamageType dt in dtToShow.Keys)
                 {
                     if (dtToShow[dt])
                     {
+                        if (dt == DamageType.Kinetic)
+                        {
+                            writer.WriteLine("Raw KD: " + RawKD);
+                            writer.WriteLine("AP: " + ArmorPierce);
+                            if (HeadModule == Module.SabotHead)
+                            {
+                                writer.WriteLine("KD multiplier from angle: " + SabotAngleMultiplier);
+                            }
+                            else
+                            {
+                                writer.WriteLine("KD multiplier from angle: " + NonSabotAngleMultiplier);
+                            }
+                        }
+                        if (dt == DamageType.Frag)
+                        {
+                            writer.WriteLine("Frag count: " + FragCount);
+                            writer.WriteLine("Damage per frag: " + DamagePerFrag);
+                        }
                         writer.WriteLine((DamageType)(int)dt + " damage: " + DamageDict[dt]);
                     }
                 }
@@ -1787,15 +1811,29 @@ namespace ApsCalcUI
                 writer.WriteLine(BarrelLengthForInaccuracy);
                 writer.WriteLine(BarrelLengthForPropellant);
 
-                if (dtToShow[DamageType.Kinetic])
-                {
-                    writer.WriteLine(RawKD);
-                    writer.WriteLine(ArmorPierce);
-                }
+
                 foreach (DamageType dt in dtToShow.Keys)
                 {
                     if (dtToShow[dt])
                     {
+                        if (dt == DamageType.Kinetic)
+                        {
+                            writer.WriteLine(RawKD);
+                            writer.WriteLine(ArmorPierce);
+                            if (HeadModule == Module.SabotHead)
+                            {
+                                writer.WriteLine(SabotAngleMultiplier);
+                            }
+                            else
+                            {
+                                writer.WriteLine(NonSabotAngleMultiplier);
+                            }
+                        }
+                        if (dt == DamageType.Frag)
+                        {
+                            writer.WriteLine(FragCount);
+                            writer.WriteLine(DamagePerFrag);
+                        }
                         writer.WriteLine(DamageDict[dt]);
                     }
                 }

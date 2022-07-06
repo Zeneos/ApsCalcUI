@@ -70,12 +70,12 @@ namespace PenCalc
                     if (!shellIsSabotHead)
                     {
                         // Cos uses radian, angles given in deg
-                        requiredKD += layer.HP / MathF.Abs(MathF.Cos((impactAngle + baseAngle) / 57.29578f)) * hpMultiplier;
+                        requiredKD += layer.HP / MathF.Abs(MathF.Cos((impactAngle + baseAngle) * MathF.PI / 180f)) * hpMultiplier;
                     }
                     else
                     {
                         // Sabot head uses 3/4 effective impact angle; baked into deg → rad conversion
-                        requiredKD += layer.HP / MathF.Abs(MathF.Cos((impactAngle + baseAngle) / 76.39437f)) * hpMultiplier;
+                        requiredKD += layer.HP / MathF.Abs(MathF.Cos((impactAngle + baseAngle) * MathF.PI / 240f)) * hpMultiplier;
                     }
                 }
             }

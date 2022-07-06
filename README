@@ -25,6 +25,11 @@ Maximum Gauge: largest gauge to be tested, in mm. Must be greater than or
 equal than Minimum Gauge and less than or equal to 500 mm (or the max allowed
 by the barrel count, whichever is less).
 
+DIF Checkbox: Check if the inputs will be mounted directly to the firing
+piece, as opposed to using clips. This is known as Direct Input Feed, or DIF,
+and allows for longer shells (10 000mm in vanilla; 20 000mm with 1000mm APS
+mod), but limits the gun to 4 inputs max, and doubles reload time.
+
 1000mm APS Mod: if checked, allows the max gauge to be set as high as 1000mm.
 This gauge is not possible ingame without mods.
 
@@ -122,10 +127,12 @@ Damage Type: damage type to optimize.
   Kinetic. Prompts entry of target AC value(s). Note that more than one AC
   value can be entered; each will be run as a separate test.
   
-  EMP, FlaK, Frag, and HE speak for themselves, but note that it is not
+  EMP, FlaK, and HE speak for themselves, but note that it is not
   possible to convert between the damage types due to the complex damage
-  application models used for each type. Frag damage is shown as total 
-  damage (multiply damage per frag by frag count) at 180° frag angle.
+  application models used for each type.
+
+  Frag. Prompts entry of Frag Cone Angle in °, as shown in the ingame APS 
+  controller.
 
   HEAT. Calculates HEAT damage for a shell. Note that the resulting
   configurations will be optimal for every pen metric and special factor,
@@ -193,14 +200,6 @@ which requires Fuel access (as shown on the default tab of the V menu). This
 includes Fuel engines and Custom jet engines. Disabled unless Max Rail Draw
 > 0.
 
-1000mm APS Mod: Check if using the 1000mm APS mod. Increases max gauge to
-1000mm.
-
-DIF Checkbox: Check if the inputs will be mounted directly to the firing
-piece, as opposed to using clips. This is known as Direct Input Feed, or DIF,
-and allows for longer shells (10 000mm in vanilla; 20 000mm with 1000mm APS
-mod), but limits the gun to 4 inputs max, and doubles reload time.
-
 
 
 
@@ -210,11 +209,11 @@ user at runtime. Below that are the top shells for each loader length for
 which any shells were generated (depending on length and gauge restrictions).
 Each shell stat cluster starts with the shell length.
 
-Gauge: gauge in mm.
+Gauge (mm): shell diameter; caliber.
 
-Total length: length of the entire shell.
+Total length (mm): length of the entire shell. Used to determine loader size.
 
-Length without casings: length of the part of the shell which will
+Length without casings (mm): length of the part of the shell which will
 (hopefully) hit the target.
 
 Total modules: total APS modules used by the controller.
@@ -230,9 +229,9 @@ Head: the module at the head of the shell (at the bottom of the controller).
 
 Rail draw: rail draw, if any.
 
-Velocity (m/s): shell velocity in m/s.
+Velocity (m/s): muzzle velocity.
 
-Effective range (m): effective range in m.
+Effective range (m): range at which velocity decreases dramatically.
 
 Barrel length for 0.3° inacccuracy (m): minimum barrel length to achieve 0.3°
 inaccuracy. Note that, unlike the ingame UI, the optimizer includes bonuses
@@ -246,6 +245,7 @@ Damage:
 	Kinetic shells will show raw damage, AP, and effective damage after
 		applying AC reduction.
 	All chemical shells will show damage of their respective types.
+	Frag shells show frag count, damage per frag, and total damage.
 	Disruptor shells will show EMP damage and shield reduction (decimal%).
 
 Reload time: shell reload speed per intake, in seconds.

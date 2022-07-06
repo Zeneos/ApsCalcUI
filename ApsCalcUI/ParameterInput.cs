@@ -327,7 +327,15 @@ namespace ApsCalcUI
                 TargetACLabel.Visible = true;
 
             }
-            else if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID == DamageType.Disruptor)
+            else
+            {
+                TargetACPanel.Enabled = false;
+                TargetACPanel.Visible = false;
+                TargetACCL.Visible = false;
+                TargetACLabel.Visible = false;
+            }
+
+            if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID == DamageType.Disruptor)
             {
                 DisruptorPanel.Enabled = true;
                 DisruptorPanel.Visible = true;
@@ -336,15 +344,25 @@ namespace ApsCalcUI
             }
             else
             {
-                TargetACPanel.Enabled = false;
-                TargetACPanel.Visible = false;
-                TargetACCL.Visible = false;
-                TargetACLabel.Visible = false;
-
                 DisruptorPanel.Enabled = false;
                 DisruptorPanel.Visible = false;
                 DisruptorLabel.Visible = false;
                 DisruptorUD.Visible = false;
+            }
+
+            if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID == DamageType.Frag)
+            {
+                FragAnglePanel.Enabled = true;
+                FragAnglePanel.Visible = true;
+                FragAngleLabel.Visible = true;
+                FragAngleUD.Visible = true;
+            }
+            else
+            {
+                FragAnglePanel.Enabled = false;
+                FragAnglePanel.Visible = false;
+                FragAngleLabel.Visible = false;
+                FragAngleUD.Visible = false;
             }
         }
 
@@ -667,6 +685,9 @@ namespace ApsCalcUI
                 testParameters.MinEffectiverange = (float)MinRangeUD.Value;
                 testParameters.DamageType = ((DamageTypeItem)DamageTypeDD.SelectedItem).ID;
 
+                testParameters.FragConeAngle = (float)FragAngleUD.Value;
+                testParameters.FragAngleMultiplier = (2 + MathF.Sqrt(testParameters.FragConeAngle)) / 16f;
+
                 if (testParameters.DamageType == DamageType.HEAT)
                 {
                     // Overwrite head list with shaped charge head
@@ -710,7 +731,7 @@ namespace ApsCalcUI
 
                 testParameters.MinDisruptor = (float)(DisruptorUD.Value / 100m);
 
-                PenCalc.Scheme targetArmorScheme = new();
+                Scheme targetArmorScheme = new();
                 if (PendepthCB.Checked)
                 {
                     foreach (ArmorLayerItem layerItem in ArmorLayerLB.Items)
@@ -724,6 +745,11 @@ namespace ApsCalcUI
                 }
                 targetArmorScheme.CalculateLayerAC();
                 testParameters.ArmorScheme = targetArmorScheme;
+
+                testParameters.SabotAngleMultiplier =
+                    MathF.Abs(MathF.Cos((testParameters.ImpactAngle + targetArmorScheme.LayerList[0].BaseAngle) * MathF.PI / 240f));
+                testParameters.NonSabotAngleMultiplier = 
+                    MathF.Abs(MathF.Cos((testParameters.ImpactAngle + targetArmorScheme.LayerList[0].BaseAngle) * MathF.PI / 180f));
 
                 if (PerVolumeRB.Checked)
                 {
@@ -828,8 +854,12 @@ namespace ApsCalcUI
                                     testParameters.MinVelocity,
                                     testParameters.MinEffectiverange,
                                     testParameters.ImpactAngle,
+                                    testParameters.SabotAngleMultiplier,
+                                    testParameters.NonSabotAngleMultiplier,
                                     ac,
                                     testParameters.DamageType,
+                                    testParameters.FragConeAngle,
+                                    testParameters.FragAngleMultiplier,
                                     testParameters.MinDisruptor,
                                     testParameters.ArmorScheme,
                                     testParameters.TestType,
@@ -875,8 +905,12 @@ namespace ApsCalcUI
                                     testParameters.MinVelocity,
                                     testParameters.MinEffectiverange,
                                     testParameters.ImpactAngle,
+                                    testParameters.SabotAngleMultiplier,
+                                    testParameters.NonSabotAngleMultiplier,
                                     ac,
                                     testParameters.DamageType,
+                                    testParameters.FragConeAngle,
+                                    testParameters.FragAngleMultiplier,
                                     testParameters.MinDisruptor,
                                     testParameters.ArmorScheme,
                                     testParameters.TestType,
@@ -923,8 +957,12 @@ namespace ApsCalcUI
                                 testParameters.MinVelocity,
                                 testParameters.MinEffectiverange,
                                 testParameters.ImpactAngle,
+                                testParameters.SabotAngleMultiplier,
+                                testParameters.NonSabotAngleMultiplier,
                                 0, // Target AC does not matter for non-kinetic tests
                                 testParameters.DamageType,
+                                testParameters.FragConeAngle,
+                                testParameters.FragAngleMultiplier,
                                 testParameters.MinDisruptor,
                                 testParameters.ArmorScheme,
                                 testParameters.TestType,
@@ -969,8 +1007,12 @@ namespace ApsCalcUI
                                 testParameters.MinVelocity,
                                 testParameters.MinEffectiverange,
                                 testParameters.ImpactAngle,
+                                testParameters.SabotAngleMultiplier,
+                                testParameters.NonSabotAngleMultiplier,
                                 0, // Target AC does not matter for non-kinetic tests
                                 testParameters.DamageType,
+                                testParameters.FragConeAngle,
+                                testParameters.FragAngleMultiplier,
                                 testParameters.MinDisruptor,
                                 testParameters.ArmorScheme,
                                 testParameters.TestType,
