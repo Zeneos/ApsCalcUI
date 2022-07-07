@@ -43,6 +43,7 @@ against a beam slope (45°) will add up to a 135° impact, dealing about 70%
 damage.
 Note also that, as of Alpha 3.5.0 (2022-04-26), Sabot head uses 3/4 the angle
 for Kinetic damage calculation purposes.
+Hollow point head and CIWS (kinetic with AC 20) ignore impact angle.
 
 Head Indices: modules to be put at the front of the shells to be tested. The
 frontmost module on a shell is weighted in certain calculations, and can have
@@ -242,8 +243,8 @@ which may not be the case depending on actual ROF.
 Barrel length for ful propellant burn (m): same value as shown ingame.
 
 Damage:
-	Kinetic shells will show raw damage, AP, and effective damage after
-		applying AC reduction.
+	Kinetic shells will show raw damage, AP, reduction due to impact 
+		angle, and effective damage after applying AC reduction.
 	All chemical shells will show damage of their respective types.
 	Frag shells show frag count, damage per frag, and total damage.
 	Disruptor shells will show EMP damage and shield reduction (decimal%).

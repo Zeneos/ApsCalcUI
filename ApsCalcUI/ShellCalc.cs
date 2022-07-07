@@ -1775,7 +1775,7 @@ namespace ApsCalcUI
                     writer.WriteLine("\n");
                     writer.WriteLine(topShell.Key);
                     topShell.Value.GetModuleCounts();
-                    topShell.Value.WriteShellInfoToFile(writer, Labels, showGP, showRG, showDraw, dtToShow, modsToShow);
+                    topShell.Value.WriteShellInfoToFile(writer, Labels, showGP, showRG, showDraw, dtToShow, modsToShow, TargetAC);
                 }
             }
         }

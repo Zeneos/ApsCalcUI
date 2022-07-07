@@ -1123,7 +1123,8 @@ namespace ApsCalcUI
             CalculateKineticDamage();
             CalculateAP();
 
-            if (HeadModule == Module.HollowPoint)
+            // Hollow point and CIWS ignore impact angle
+            if (HeadModule == Module.HollowPoint || targetAC == 20f)
             {
                 DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC);
             }
@@ -1149,7 +1150,7 @@ namespace ApsCalcUI
                 CalculateKineticDamage();
                 CalculateAP();
 
-                if (HeadModule == Module.HollowPoint)
+                if (HeadModule == Module.HollowPoint || targetAC == 20f)
                 {
                     DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC);
                 }
@@ -1605,7 +1606,8 @@ namespace ApsCalcUI
             bool showRG,
             bool showDraw,
             Dictionary<DamageType, bool> dtToShow,
-            List<int> modsToShow)
+            List<int> modsToShow,
+            float targetAC)
         {
             if (labels)
             {
@@ -1653,7 +1655,12 @@ namespace ApsCalcUI
                         {
                             writer.WriteLine("Raw KD: " + RawKD);
                             writer.WriteLine("AP: " + ArmorPierce);
-                            if (HeadModule == Module.SabotHead)
+
+                            if (HeadModule == Module.HollowPoint || targetAC == 20f)
+                            {
+                                writer.WriteLine("KD multiplier from angle: 1");
+                            }
+                            else if (HeadModule == Module.SabotHead)
                             {
                                 writer.WriteLine("KD multiplier from angle: " + SabotAngleMultiplier);
                             }
@@ -1820,7 +1827,11 @@ namespace ApsCalcUI
                         {
                             writer.WriteLine(RawKD);
                             writer.WriteLine(ArmorPierce);
-                            if (HeadModule == Module.SabotHead)
+                            if (HeadModule == Module.HollowPoint || targetAC == 20f)
+                            {
+                                writer.WriteLine("1");
+                            }
+                            else if (HeadModule == Module.SabotHead)
                             {
                                 writer.WriteLine(SabotAngleMultiplier);
                             }
