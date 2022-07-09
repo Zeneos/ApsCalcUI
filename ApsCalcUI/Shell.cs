@@ -395,6 +395,7 @@ namespace ApsCalcUI
         /// </summary>
         public void CalculateRequiredBarrelLengths(float desiredInaccuracy = 0.3f)
         {
+            CalculateInaccuracyModifier();
             BarrelLengthForInaccuracy = 4 * MathF.Pow(ProjectileLength / 1000f, 0.75f) * MathF.Pow(0.3f / desiredInaccuracy * OverallInaccuracyModifier, 2.5f);
 
             BarrelLengthForPropellant = 2.2f * GPCasingCount * MathF.Pow(Gauge / 1000f, 0.55f);
