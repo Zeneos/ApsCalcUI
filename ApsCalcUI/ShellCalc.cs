@@ -1661,6 +1661,16 @@ namespace ApsCalcUI
                             writer.WriteLine("Frag count");
                             writer.WriteLine("Damage per frag");
                         }
+                        else if (dt == DamageType.FlaK)
+                        {
+                            writer.WriteLine("Raw FlaK damage");
+                            writer.WriteLine("FlaK explosion radius");
+                        }
+                        else if (dt == DamageType.HE)
+                        {
+                            writer.WriteLine("Raw HE damage");
+                            writer.WriteLine("HE explosion radius");
+                        }
                         writer.WriteLine((DamageType)(int)dt + " damage");
                     }
                 }

@@ -89,6 +89,10 @@ namespace ApsCalcUI
         public float NonSabotAngleMultiplier { get; set; }
         public float FragCount { get; set; }
         public float DamagePerFrag { get; set; }
+        public float RawHE { get; set; }
+        public float HEExplosionRadius { get; set; }
+        public float RawFlaK { get; set; }
+        public float FlaKExplosionRadius { get; set; }
 
         public Dictionary<DamageType, float> DamageDict = new()
         {
@@ -993,9 +997,11 @@ namespace ApsCalcUI
             {
                 flaKBodies++;
             }
-            DamageDict[DamageType.FlaK] =
-                3000f
-                * MathF.Pow(GaugeCoefficient * flaKBodies * 0.792f * OverallChemModifier, 0.9f);
+            RawFlaK = 3000f * MathF.Pow(GaugeCoefficient * flaKBodies * 0.792f * OverallChemModifier, 0.9f);
+            FlaKExplosionRadius = MathF.Min(MathF.Pow(RawFlaK, 0.3f) * 3f, 30f);
+            // Multiply by volume to approximate applied damage
+            float sphereVolume = MathF.Pow(FlaKExplosionRadius, 3) * MathF.PI * 4f / 3f;
+            DamageDict[DamageType.FlaK] = RawFlaK * sphereVolume;
         }
 
         /// <summary>
@@ -1054,9 +1060,11 @@ namespace ApsCalcUI
             {
                 heBodies++;
             }
-            DamageDict[DamageType.HE] = 
-                3000f
-                * MathF.Pow(GaugeCoefficient * heBodies * 0.88f * OverallChemModifier, 0.9f);
+            RawHE = 3000f * MathF.Pow(GaugeCoefficient * heBodies * 0.88f * OverallChemModifier, 0.9f);
+            HEExplosionRadius = MathF.Min(MathF.Pow(RawHE, 0.3f), 30f);
+            // Multiply by volume to approximate applied damage
+            float sphereVolume = MathF.Pow(HEExplosionRadius, 3) * MathF.PI * 4f / 3f;
+            DamageDict[DamageType.HE] = RawHE * sphereVolume;
         }
 
         /// <summary>
@@ -1081,9 +1089,11 @@ namespace ApsCalcUI
                 float heBodies = BodyModuleCounts[heIndex];
                 // Calculate HE damage assuming special factor of 1 for HE bodies
                 // Special heads count as HE body with special factor of 0.8, leaving 0.2 body equivalents for actual HE damage
-                DamageDict[DamageType.HE] =
-                3000f
-                * MathF.Pow(GaugeCoefficient * 0.176f * OverallChemModifier, 0.9f);
+                RawHE = 3000f * MathF.Pow(GaugeCoefficient * 0.2f * 0.88f * OverallChemModifier, 0.9f);
+                HEExplosionRadius = MathF.Min(MathF.Pow(RawHE, 0.3f), 30f);
+                // Multiply by volume to approximate applied damage
+                float sphereVolume = MathF.Pow(HEExplosionRadius, 3) * MathF.PI * 4f / 3f;
+                DamageDict[DamageType.HE] = RawHE * sphereVolume;
 
                 DamageDict[DamageType.HEAT] =
                     GaugeCoefficient
@@ -1670,10 +1680,20 @@ namespace ApsCalcUI
                                 writer.WriteLine("KD multiplier from angle: " + NonSabotAngleMultiplier);
                             }
                         }
-                        if (dt == DamageType.Frag)
+                        else if (dt == DamageType.Frag)
                         {
                             writer.WriteLine("Frag count: " + FragCount);
                             writer.WriteLine("Damage per frag: " + DamagePerFrag);
+                        }
+                        else if (dt == DamageType.FlaK)
+                        {
+                            writer.WriteLine("Raw FlaK damage: " + RawFlaK);
+                            writer.WriteLine("FlaK explosion radius: " + FlaKExplosionRadius);
+                        }
+                        else if (dt == DamageType.HE)
+                        {
+                            writer.WriteLine("Raw HE damage: " + RawHE);
+                            writer.WriteLine("HE explosion radius: " + HEExplosionRadius);
                         }
                         writer.WriteLine((DamageType)(int)dt + " damage: " + DamageDict[dt]);
                     }
@@ -1845,6 +1865,16 @@ namespace ApsCalcUI
                         {
                             writer.WriteLine(FragCount);
                             writer.WriteLine(DamagePerFrag);
+                        }
+                        else if (dt == DamageType.FlaK)
+                        {
+                            writer.WriteLine(RawFlaK);
+                            writer.WriteLine(FlaKExplosionRadius);
+                        }
+                        else if (dt == DamageType.HE)
+                        {
+                            writer.WriteLine(RawHE);
+                            writer.WriteLine(HEExplosionRadius);
                         }
                         writer.WriteLine(DamageDict[dt]);
                     }

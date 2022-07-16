@@ -245,8 +245,12 @@ Barrel length for ful propellant burn (m): same value as shown ingame.
 Damage:
 	Kinetic shells will show raw damage, AP, reduction due to impact 
 		angle, and effective damage after applying AC reduction.
-	All chemical shells will show damage of their respective types.
 	Frag shells show frag count, damage per frag, and total damage.
+	FlaK and HE shells show raw damage (which should match ingame value),
+		explosion radius, and an approximation of applied damage 
+		equal to raw damage multiplied by explosion volume. Note 
+		explosion radius is capped at 30m.
+	Other chemical shells will show damage of their respective types.
 	Disruptor shells will show EMP damage and shield reduction (decimal%).
 
 Reload time: shell reload speed per intake, in seconds.
