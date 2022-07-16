@@ -248,7 +248,8 @@ Damage:
 	Frag shells show frag count, damage per frag, and total damage.
 	FlaK and HE shells show raw damage (which should match ingame value),
 		explosion radius, and an approximation of applied damage 
-		equal to raw damage multiplied by explosion volume. Note 
+		equal to raw damage multiplied by explosion volume (divided 
+		by 1000 to make the resulting figures more manageable). Note 
 		explosion radius is capped at 30m.
 	Other chemical shells will show damage of their respective types.
 	Disruptor shells will show EMP damage and shield reduction (decimal%).

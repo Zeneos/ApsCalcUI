@@ -999,9 +999,9 @@ namespace ApsCalcUI
             }
             RawFlaK = 3000f * MathF.Pow(GaugeCoefficient * flaKBodies * 0.792f * OverallChemModifier, 0.9f);
             FlaKExplosionRadius = MathF.Min(MathF.Pow(RawFlaK, 0.3f) * 3f, 30f);
-            // Multiply by volume to approximate applied damage
+            // Multiply by volume to approximate applied damage; divide by 1000 to make result more manageable
             float sphereVolume = MathF.Pow(FlaKExplosionRadius, 3) * MathF.PI * 4f / 3f;
-            DamageDict[DamageType.FlaK] = RawFlaK * sphereVolume;
+            DamageDict[DamageType.FlaK] = RawFlaK * sphereVolume / 1000f;
         }
 
         /// <summary>
@@ -1062,9 +1062,9 @@ namespace ApsCalcUI
             }
             RawHE = 3000f * MathF.Pow(GaugeCoefficient * heBodies * 0.88f * OverallChemModifier, 0.9f);
             HEExplosionRadius = MathF.Min(MathF.Pow(RawHE, 0.3f), 30f);
-            // Multiply by volume to approximate applied damage
+            // Multiply by volume to approximate applied damage; divide by 1000 to make result more manageable
             float sphereVolume = MathF.Pow(HEExplosionRadius, 3) * MathF.PI * 4f / 3f;
-            DamageDict[DamageType.HE] = RawHE * sphereVolume;
+            DamageDict[DamageType.HE] = RawHE * sphereVolume / 1000f;
         }
 
         /// <summary>
@@ -1093,7 +1093,7 @@ namespace ApsCalcUI
                 HEExplosionRadius = MathF.Min(MathF.Pow(RawHE, 0.3f), 30f);
                 // Multiply by volume to approximate applied damage
                 float sphereVolume = MathF.Pow(HEExplosionRadius, 3) * MathF.PI * 4f / 3f;
-                DamageDict[DamageType.HE] = RawHE * sphereVolume;
+                DamageDict[DamageType.HE] = RawHE * sphereVolume / 1000f;
 
                 DamageDict[DamageType.HEAT] =
                     GaugeCoefficient
