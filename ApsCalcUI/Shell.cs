@@ -1688,12 +1688,12 @@ namespace ApsCalcUI
                         else if (dt == DamageType.FlaK)
                         {
                             writer.WriteLine("Raw FlaK damage: " + RawFlaK);
-                            writer.WriteLine("FlaK explosion radius: " + FlaKExplosionRadius);
+                            writer.WriteLine("FlaK explosion radius (m): " + FlaKExplosionRadius);
                         }
                         else if (dt == DamageType.HE)
                         {
                             writer.WriteLine("Raw HE damage: " + RawHE);
-                            writer.WriteLine("HE explosion radius: " + HEExplosionRadius);
+                            writer.WriteLine("HE explosion radius (m): " + HEExplosionRadius);
                         }
                         writer.WriteLine((DamageType)(int)dt + " damage: " + DamageDict[dt]);
                     }
