@@ -189,6 +189,10 @@ namespace ApsCalcUI
         public float CostPerIntake { get; set; }
         public float CostPerIntakeBelt { get; set; }
 
+        // Cost per Volume
+        public float CostPerVolume { get; set; }
+        public float CostPerVolumeBelt { get; set; }
+
 
         /// <summary>
         /// Calculates body, projectile, casing, and total lengths, as well as length differential, which is used to penalize short shells
@@ -840,6 +844,8 @@ namespace ApsCalcUI
                 + FuelAccessCost
                 + FuelStorageCost;
 
+            CostPerVolume = CostPerIntake / VolumePerIntake;
+
             if (TotalLength <= 1000f)
             {
                 VolumePerIntakeBelt =
@@ -865,6 +871,8 @@ namespace ApsCalcUI
                     + EngineCostBelt
                     + FuelAccessCostBelt
                     + FuelStorageCostBelt;
+
+                CostPerVolumeBelt = CostPerIntakeBelt / VolumePerIntakeBelt;
             }
         }
 
@@ -1742,6 +1750,7 @@ namespace ApsCalcUI
                     writer.WriteLine("Ammo access cost: " + AmmoAccessCostBelt);
                     writer.WriteLine("Ammo storage cost: " + AmmoStorageCostBelt);
                     writer.WriteLine("Total cost: " + CostPerIntakeBelt);
+                    writer.WriteLine("Cost per volume: " + CostPerVolumeBelt);
                     foreach (DamageType dt in dtToShow.Keys)
                     {
                         if (dtToShow[dt])
@@ -1792,6 +1801,7 @@ namespace ApsCalcUI
                     writer.WriteLine("Ammo access cost: " + AmmoAccessCost);
                     writer.WriteLine("Ammo storage cost: " + AmmoStorageCost);
                     writer.WriteLine("Total cost: " + CostPerIntake);
+                    writer.WriteLine("Cost per volume: " + CostPerVolume);
                     foreach (DamageType dt in dtToShow.Keys)
                     {
                         if (dtToShow[dt])
@@ -1923,6 +1933,7 @@ namespace ApsCalcUI
                     writer.WriteLine(AmmoAccessCostBelt);
                     writer.WriteLine(AmmoStorageCostBelt);
                     writer.WriteLine(CostPerIntakeBelt);
+                    writer.WriteLine(CostPerVolumeBelt);
                     foreach (DamageType dt in dtToShow.Keys)
                     {
                         if (dtToShow[dt])
@@ -1973,6 +1984,7 @@ namespace ApsCalcUI
                     writer.WriteLine(AmmoAccessCost);
                     writer.WriteLine(AmmoStorageCost);
                     writer.WriteLine(CostPerIntake);
+                    writer.WriteLine(CostPerVolume);
                     foreach (DamageType dt in dtToShow.Keys)
                     {
                         if (dtToShow[dt])

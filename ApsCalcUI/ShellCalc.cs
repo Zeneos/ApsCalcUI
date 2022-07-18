@@ -1716,6 +1716,7 @@ namespace ApsCalcUI
                 writer.WriteLine("Ammo access cost");
                 writer.WriteLine("Ammo storage cost");
                 writer.WriteLine("Total cost");
+                writer.WriteLine("Cost per volume");
                 foreach (DamageType dt in dtToShow.Keys)
                 {
                     if (dtToShow[dt])

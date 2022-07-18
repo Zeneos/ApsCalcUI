@@ -206,8 +206,8 @@ namespace ApsCalcUITests
             Assert.AreEqual(testShell.MaxDraw, 100241.711f);
             Assert.AreEqual(testShell.ReloadTime, 177.807022f);
             Assert.AreEqual(testShell.OverallChemModifier, 0.25f);
-            Assert.AreEqual(testShell.DamageDict[DamageType.HE], 743.169617f);
-            Assert.AreEqual(testShell.DamageDict[DamageType.FlaK], 675.936951f);
+            Assert.AreEqual(testShell.RawHE, 743.169617f);
+            Assert.AreEqual(testShell.RawFlaK, 675.936951f);
             Assert.AreEqual(testShell.DamageDict[DamageType.Frag], 9691.6084f);
             Assert.AreEqual(testShell.DamageDict[DamageType.EMP], 397.768982f);
         }

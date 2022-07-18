@@ -305,9 +305,11 @@ the materials the gun will use as ammo. Ammo access crates hold enough
 materials to run themselves for 10 minutes, so this number will be 0 if the 
 testing interval is <= 10 minutes.
 
-The costs are the same as the volumes, with two exceptions:
+The costs are the same as the volumes, with three exceptions:
 
 Fuel burned: the amount of materials consumed by the engine to power the 
 rails. Will always be 0 for shells without rail draw.
 
 Ammo used: the amount of materials consumed by the gun as ammunition.
+
+Cost per volume: total cost divided by total volume.
