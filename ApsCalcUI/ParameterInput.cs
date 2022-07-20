@@ -484,6 +484,14 @@ namespace ApsCalcUI
             MaxInaccUD.Enabled = BarrelLengthLimitCB.Checked;
         }
 
+        private void TracerRB_CheckedChanged(object sender, EventArgs e)
+        {
+            RofRpmPanel.Enabled = TracerRB.Checked;
+            RofRpmPanel.Visible = TracerRB.Checked;
+            RofRpmLabel.Visible = TracerRB.Checked;
+            RofRpmUD.Visible = TracerRB.Checked;
+        }
+
         /// <summary>
         /// Validates input and creates test parameters from current selections
         /// </summary>
@@ -787,15 +795,17 @@ namespace ApsCalcUI
                     testParameters.StoragePerCost = 218.75f;
                 }
 
-                testParameters.Ppm = (float)EnginePpmUD.Value;
-                testParameters.Ppv = (float)EnginePpvUD.Value;
-                testParameters.Ppc = (float)EnginePpcUD.Value;
+                testParameters.EnginePpm = (float)EnginePpmUD.Value;
+                testParameters.EnginePpv = (float)EnginePpvUD.Value;
+                testParameters.EnginePpc = (float)EnginePpcUD.Value;
 
-                testParameters.Fuel = EngineFuelCB.Checked;
+                testParameters.EngineUsesFuel = EngineFuelCB.Checked;
 
-                testParameters.Dif = DifCB.Checked;
+                testParameters.FiringPieceIsDif = DifCB.Checked;
+                testParameters.GunUsesRecoilAbsorbers = GunUsesRecoilAbsorbersCB.Checked;
 
                 testParameters.MaxInaccuracy = (float)MaxInaccUD.Value;
+                testParameters.RateOfFireRpm = (float)RofRpmUD.Value;
                 testParameters.LimitBarrelLength = BarrelLengthLimitCB.Checked;
                 testParameters.MaxBarrelLength = (float)BarrelLengthLimitUD.Value;
                 testParameters.BarrelLengthLimitType = ((BarrelLengthLimitTypeItem)BarrelLengthLimitDD.SelectedItem).ID;
@@ -836,10 +846,10 @@ namespace ApsCalcUI
                             ConcurrentBag<Shell> shellBag = new();
                             Parallel.For(testParameters.MinGauge, testParameters.MaxGauge + 1, gauge =>
                             {
-                                float gaugeFloat = gauge;
                                 ShellCalc calcLocal = new(
                                     testParameters.BarrelCount,
                                     gauge,
+                                    MathF.Pow(gauge / 500f, 1.8f),
                                     testParameters.HeadIndices,
                                     testParameters.BaseModule,
                                     testParameters.FixedModulecounts,
@@ -867,12 +877,14 @@ namespace ApsCalcUI
                                     testParameters.TestInterval,
                                     testParameters.StoragePerVolume,
                                     testParameters.StoragePerCost,
-                                    testParameters.Ppm,
-                                    testParameters.Ppv,
-                                    testParameters.Ppc,
-                                    testParameters.Fuel,
-                                    testParameters.Dif,
+                                    testParameters.EnginePpm,
+                                    testParameters.EnginePpv,
+                                    testParameters.EnginePpc,
+                                    testParameters.EngineUsesFuel,
+                                    testParameters.FiringPieceIsDif,
+                                    testParameters.GunUsesRecoilAbsorbers,
                                     testParameters.MaxInaccuracy,
+                                    testParameters.RateOfFireRpm,
                                     testParameters.LimitBarrelLength,
                                     testParameters.MaxBarrelLength,
                                     testParameters.BarrelLengthLimitType
@@ -891,6 +903,7 @@ namespace ApsCalcUI
                             ShellCalc calcFinal = new(
                                     testParameters.BarrelCount,
                                     0f, // Gauge does not matter for calcFinal because it is only running tests on pre-calculated shells
+                                    0f,
                                     testParameters.HeadIndices,
                                     testParameters.BaseModule,
                                     testParameters.FixedModulecounts,
@@ -918,12 +931,14 @@ namespace ApsCalcUI
                                     testParameters.TestInterval,
                                     testParameters.StoragePerVolume,
                                     testParameters.StoragePerCost,
-                                    testParameters.Ppm,
-                                    testParameters.Ppv,
-                                    testParameters.Ppc,
-                                    testParameters.Fuel,
-                                    testParameters.Dif,
+                                    testParameters.EnginePpm,
+                                    testParameters.EnginePpv,
+                                    testParameters.EnginePpc,
+                                    testParameters.EngineUsesFuel,
+                                    testParameters.FiringPieceIsDif,
+                                    testParameters.GunUsesRecoilAbsorbers,
                                     testParameters.MaxInaccuracy,
+                                    testParameters.RateOfFireRpm,
                                     testParameters.LimitBarrelLength,
                                     testParameters.MaxBarrelLength,
                                     testParameters.BarrelLengthLimitType
@@ -943,6 +958,7 @@ namespace ApsCalcUI
                             ShellCalc calcLocal = new(
                                 testParameters.BarrelCount,
                                 gauge,
+                                MathF.Pow(gauge / 500f, 1.8f),
                                 testParameters.HeadIndices,
                                 testParameters.BaseModule,
                                 testParameters.FixedModulecounts,
@@ -970,12 +986,14 @@ namespace ApsCalcUI
                                 testParameters.TestInterval,
                                 testParameters.StoragePerVolume,
                                 testParameters.StoragePerCost,
-                                testParameters.Ppm,
-                                testParameters.Ppv,
-                                testParameters.Ppc,
-                                testParameters.Fuel,
-                                testParameters.Dif,
+                                testParameters.EnginePpm,
+                                testParameters.EnginePpv,
+                                testParameters.EnginePpc,
+                                testParameters.EngineUsesFuel,
+                                testParameters.FiringPieceIsDif,
+                                testParameters.GunUsesRecoilAbsorbers,
                                 testParameters.MaxInaccuracy,
+                                testParameters.RateOfFireRpm,
                                 testParameters.LimitBarrelLength,
                                 testParameters.MaxBarrelLength,
                                 testParameters.BarrelLengthLimitType
@@ -993,6 +1011,7 @@ namespace ApsCalcUI
                         ShellCalc calcFinal = new(
                                 testParameters.BarrelCount,
                                 0f, // Gauge does not matter for calcFinal because it is only running tests on pre-calculated shells
+                                0f,
                                 testParameters.HeadIndices,
                                 testParameters.BaseModule,
                                 testParameters.FixedModulecounts,
@@ -1020,12 +1039,14 @@ namespace ApsCalcUI
                                 testParameters.TestInterval,
                                 testParameters.StoragePerVolume,
                                 testParameters.StoragePerCost,
-                                testParameters.Ppm,
-                                testParameters.Ppv,
-                                testParameters.Ppc,
-                                testParameters.Fuel,
-                                testParameters.Dif,
+                                testParameters.EnginePpm,
+                                testParameters.EnginePpv,
+                                testParameters.EnginePpc,
+                                testParameters.EngineUsesFuel,
+                                testParameters.FiringPieceIsDif,
+                                testParameters.GunUsesRecoilAbsorbers,
                                 testParameters.MaxInaccuracy,
+                                testParameters.RateOfFireRpm,
                                 testParameters.LimitBarrelLength,
                                 testParameters.MaxBarrelLength,
                                 testParameters.BarrelLengthLimitType

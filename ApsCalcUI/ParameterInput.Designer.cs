@@ -91,6 +91,7 @@ namespace ApsCalcUI
             this.MaxInaccUD = new System.Windows.Forms.NumericUpDown();
             this.ImpactAngleUD = new System.Windows.Forms.NumericUpDown();
             this.FragAngleUD = new System.Windows.Forms.NumericUpDown();
+            this.GunUsesRecoilAbsorbersCB = new System.Windows.Forms.CheckBox();
             this.BarrelCountLabel = new System.Windows.Forms.Label();
             this.MinGaugeLabel = new System.Windows.Forms.Label();
             this.MaxGaugeLabel = new System.Windows.Forms.Label();
@@ -142,6 +143,9 @@ namespace ApsCalcUI
             this.ImpactAngleLabel2 = new System.Windows.Forms.Label();
             this.FragAnglePanel = new System.Windows.Forms.Panel();
             this.FragAngleLabel = new System.Windows.Forms.Label();
+            this.RofRpmUD = new System.Windows.Forms.NumericUpDown();
+            this.RofRpmLabel = new System.Windows.Forms.Label();
+            this.RofRpmPanel = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).BeginInit();
@@ -180,6 +184,8 @@ namespace ApsCalcUI
             this.StoragePanel.SuspendLayout();
             this.DisruptorPanel.SuspendLayout();
             this.FragAnglePanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.RofRpmUD)).BeginInit();
+            this.RofRpmPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // BarrelCountDD
@@ -1036,7 +1042,7 @@ namespace ApsCalcUI
             // 
             // ImpactAngleUD
             // 
-            this.ImpactAngleUD.Location = new System.Drawing.Point(93, 95);
+            this.ImpactAngleUD.Location = new System.Drawing.Point(93, 116);
             this.ImpactAngleUD.Maximum = new decimal(new int[] {
             90,
             0,
@@ -1079,6 +1085,19 @@ namespace ApsCalcUI
             0,
             0});
             this.FragAngleUD.Visible = false;
+            // 
+            // GunUsesRecoilAbsorbersCB
+            // 
+            this.GunUsesRecoilAbsorbersCB.AutoSize = true;
+            this.GunUsesRecoilAbsorbersCB.Checked = true;
+            this.GunUsesRecoilAbsorbersCB.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.GunUsesRecoilAbsorbersCB.Location = new System.Drawing.Point(13, 93);
+            this.GunUsesRecoilAbsorbersCB.Name = "GunUsesRecoilAbsorbersCB";
+            this.GunUsesRecoilAbsorbersCB.Size = new System.Drawing.Size(112, 19);
+            this.GunUsesRecoilAbsorbersCB.TabIndex = 55;
+            this.GunUsesRecoilAbsorbersCB.Text = "Recoil absorbers";
+            this.ToolTip.SetToolTip(this.GunUsesRecoilAbsorbersCB, "Recoil absorbers decrease inaccuracy, but increase cost and volume");
+            this.GunUsesRecoilAbsorbersCB.UseVisualStyleBackColor = true;
             // 
             // BarrelCountLabel
             // 
@@ -1160,6 +1179,7 @@ namespace ApsCalcUI
             this.TracerRB.TabIndex = 4;
             this.TracerRB.Text = "Visible Tracer";
             this.TracerRB.UseVisualStyleBackColor = true;
+            this.TracerRB.CheckedChanged += new System.EventHandler(this.TracerRB_CheckedChanged);
             // 
             // BaseBleederRB
             // 
@@ -1523,7 +1543,7 @@ namespace ApsCalcUI
             // ImpactAngleLabel
             // 
             this.ImpactAngleLabel.AutoSize = true;
-            this.ImpactAngleLabel.Location = new System.Drawing.Point(10, 98);
+            this.ImpactAngleLabel.Location = new System.Drawing.Point(10, 119);
             this.ImpactAngleLabel.Name = "ImpactAngleLabel";
             this.ImpactAngleLabel.Size = new System.Drawing.Size(81, 15);
             this.ImpactAngleLabel.TabIndex = 51;
@@ -1532,7 +1552,7 @@ namespace ApsCalcUI
             // ImpactAngleLabel2
             // 
             this.ImpactAngleLabel2.AutoSize = true;
-            this.ImpactAngleLabel2.Location = new System.Drawing.Point(134, 98);
+            this.ImpactAngleLabel2.Location = new System.Drawing.Point(134, 119);
             this.ImpactAngleLabel2.Name = "ImpactAngleLabel2";
             this.ImpactAngleLabel2.Size = new System.Drawing.Size(117, 15);
             this.ImpactAngleLabel2.TabIndex = 53;
@@ -1559,11 +1579,62 @@ namespace ApsCalcUI
             this.FragAngleLabel.Text = "Frag Cone Angle (°)";
             this.FragAngleLabel.Visible = false;
             // 
+            // RofRpmUD
+            // 
+            this.RofRpmUD.DecimalPlaces = 1;
+            this.RofRpmUD.Location = new System.Drawing.Point(81, 9);
+            this.RofRpmUD.Maximum = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            this.RofRpmUD.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.RofRpmUD.Name = "RofRpmUD";
+            this.RofRpmUD.Size = new System.Drawing.Size(65, 23);
+            this.RofRpmUD.TabIndex = 56;
+            this.RofRpmUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.RofRpmUD.ThousandsSeparator = true;
+            this.ToolTip.SetToolTip(this.RofRpmUD, "Desired rate of fire in rounds per minute.\r\nUsed for inaccuracy calculations with" +
+        " tracers.");
+            this.RofRpmUD.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.RofRpmUD.Visible = false;
+            // 
+            // RofRpmLabel
+            // 
+            this.RofRpmLabel.AutoSize = true;
+            this.RofRpmLabel.Location = new System.Drawing.Point(10, 12);
+            this.RofRpmLabel.Name = "RofRpmLabel";
+            this.RofRpmLabel.Size = new System.Drawing.Size(65, 15);
+            this.RofRpmLabel.TabIndex = 57;
+            this.RofRpmLabel.Text = "ROF (RPM)";
+            this.RofRpmLabel.Visible = false;
+            // 
+            // RofRpmPanel
+            // 
+            this.RofRpmPanel.Controls.Add(this.RofRpmLabel);
+            this.RofRpmPanel.Controls.Add(this.RofRpmUD);
+            this.RofRpmPanel.Enabled = false;
+            this.RofRpmPanel.Location = new System.Drawing.Point(255, 557);
+            this.RofRpmPanel.Name = "RofRpmPanel";
+            this.RofRpmPanel.Size = new System.Drawing.Size(154, 40);
+            this.RofRpmPanel.TabIndex = 58;
+            this.RofRpmPanel.Visible = false;
+            // 
             // ParameterInput
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 608);
+            this.Controls.Add(this.RofRpmPanel);
+            this.Controls.Add(this.GunUsesRecoilAbsorbersCB);
             this.Controls.Add(this.FragAnglePanel);
             this.Controls.Add(this.ImpactAngleLabel2);
             this.Controls.Add(this.ImpactAngleUD);
@@ -1666,6 +1737,9 @@ namespace ApsCalcUI
             this.DisruptorPanel.ResumeLayout(false);
             this.FragAnglePanel.ResumeLayout(false);
             this.FragAnglePanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.RofRpmUD)).EndInit();
+            this.RofRpmPanel.ResumeLayout(false);
+            this.RofRpmPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1784,6 +1858,10 @@ namespace ApsCalcUI
         private System.Windows.Forms.Panel FragAnglePanel;
         private System.Windows.Forms.NumericUpDown FragAngleUD;
         private System.Windows.Forms.Label FragAngleLabel;
+        private System.Windows.Forms.CheckBox GunUsesRecoilAbsorbersCB;
+        private System.Windows.Forms.Panel RofRpmPanel;
+        private System.Windows.Forms.Label RofRpmLabel;
+        private System.Windows.Forms.NumericUpDown RofRpmUD;
     }
 }
 

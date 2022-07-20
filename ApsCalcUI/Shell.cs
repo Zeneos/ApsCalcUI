@@ -11,20 +11,7 @@ namespace ApsCalcUI
     public class Shell
     {
         public Shell() { BaseModule = default; }
-
-        /// <summary>
-        /// Sets gauge and simultaneously calculates Gauge Coefficient, which is used in several formulae as a way to scale with gauge.
-        /// </summary>
-        private float _gauge;
-        public float Gauge
-        {
-            get { return _gauge; }
-            set
-            {
-                _gauge = value;
-                GaugeCoefficient = MathF.Pow(Gauge / 500f, 1.8f);
-            }
-        }
+        public float Gauge { get; set; }
         public float GaugeCoefficient { get; set; } // Expensive to calculate and used in several formulae
 
         public bool IsBelt;
@@ -60,6 +47,7 @@ namespace ApsCalcUI
         public float OverallKineticDamageModifier { get; set; }
         public float OverallArmorPierceModifier { get; set; }
         public float OverallInaccuracyModifier { get; set; }
+        public float RateOfFireRpm { get; set; }
         public float OverallChemModifier { get; set; }
 
 
@@ -68,6 +56,7 @@ namespace ApsCalcUI
         public float MaxDraw { get; set; }
         public float RailDraw { get; set; }
         public float TotalRecoil { get; set; }
+        public bool GunUsesRecoilAbsorbers { get; set; }
         public float Velocity { get; set; }
 
         // Reload
@@ -378,12 +367,17 @@ namespace ApsCalcUI
             }
             else if (BaseModule?.Name == Module.Tracer.Name)
             {
-                OverallInaccuracyModifier *= 0.72f; // This is a filler value; actual bonus depends on ROF
+                OverallInaccuracyModifier /= 1f + (0.5f * MathF.Max(0f, 15f - (60f / RateOfFireRpm)) / 15f);
             }
 
             if (BarrelCount > 1)
             {
-                OverallInaccuracyModifier *= (BarrelCount - 1) * 0.05f + 1.2f;
+                OverallInaccuracyModifier *= (BarrelCount - 1f) * 0.05f + 1.2f;
+            }
+
+            if (!GunUsesRecoilAbsorbers)
+            {
+                OverallInaccuracyModifier *= 1f + 0.6f * TotalRecoil / 12500f / GaugeCoefficient;
             }
         }
 
@@ -576,18 +570,21 @@ namespace ApsCalcUI
         /// </summary>
         public void CalculateRecoilVolumeAndCost()
         {
-            RecoilVolume = TotalRecoil / (ReloadTime * 120f); // Absorbers absorb 120 per second per metre
-            RecoilCost = RecoilVolume * 80f; // Absorbers cost 80 per metre
+            if (GunUsesRecoilAbsorbers)
+            {
+                RecoilVolume = TotalRecoil / (ReloadTime * 120f); // Absorbers absorb 120 per second per metre
+                RecoilCost = RecoilVolume * 80f; // Absorbers cost 80 per metre
 
-            if (TotalLength <= 1000f)
-            {
-                RecoilVolumeBelt = TotalRecoil / (ReloadTimeBelt * 120f);
-                RecoilCostBelt = RecoilVolumeBelt * 80f;
-            }
-            else
-            {
-                RecoilVolumeBelt = 0f;
-                RecoilCostBelt = 0f;
+                if (TotalLength <= 1000f)
+                {
+                    RecoilVolumeBelt = TotalRecoil / (ReloadTimeBelt * 120f);
+                    RecoilCostBelt = RecoilVolumeBelt * 80f;
+                }
+                else
+                {
+                    RecoilVolumeBelt = 0f;
+                    RecoilCostBelt = 0f;
+                }
             }
         }
 

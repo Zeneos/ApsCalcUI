@@ -28,6 +28,7 @@ namespace ApsCalcUITests
             testShell.BaseModule = Module.BaseBleeder;
             testModuleCounts.CopyTo(testShell.BodyModuleCounts, 0);
             testShell.Gauge = 490;
+            testShell.GaugeCoefficient = MathF.Pow(testShell.Gauge / 500f, 1.8f);
             testShell.GPCasingCount = 1.5f;
             testShell.RGCasingCount = 1;
             testShell.IsDif = false;
@@ -177,6 +178,7 @@ namespace ApsCalcUITests
             testShell.BaseModule = Module.BaseBleeder;
             testModuleCounts.CopyTo(testShell.BodyModuleCounts, 0);
             testShell.Gauge = 490;
+            testShell.GaugeCoefficient = MathF.Pow(testShell.Gauge / 500f, 1.8f);
             testShell.GPCasingCount = 1.5f;
             testShell.RGCasingCount = 1;
             testShell.IsDif = false;
@@ -222,6 +224,7 @@ namespace ApsCalcUITests
             testShell.BaseModule = Module.BaseBleeder;
             testModuleCounts.CopyTo(testShell.BodyModuleCounts, 0);
             testShell.Gauge = 100;
+            testShell.GaugeCoefficient = MathF.Pow(testShell.Gauge / 500f, 1.8f);
             testShell.IsDif = false;
 
             testShell.CalculateLengths();
@@ -229,16 +232,19 @@ namespace ApsCalcUITests
             Assert.AreEqual(testShell.OverallInaccuracyModifier, 0.810000062f);
 
             testShell.Gauge = 300;
+            testShell.GaugeCoefficient = MathF.Pow(testShell.Gauge / 500f, 1.8f);
             testShell.CalculateLengths();
             testShell.CalculateMaxProjectileLengthForInaccuracy(16.5f, 0.3f);
             Assert.AreEqual(testShell.OverallInaccuracyModifier, 0.810000062f);
 
             testShell.Gauge = 400;
+            testShell.GaugeCoefficient = MathF.Pow(testShell.Gauge / 500f, 1.8f);
             testShell.CalculateLengths();
             testShell.CalculateMaxProjectileLengthForInaccuracy(22, 0.3f);
             Assert.AreEqual(testShell.OverallInaccuracyModifier, 0.944999993f);
 
             testShell.Gauge = 500;
+            testShell.GaugeCoefficient = MathF.Pow(testShell.Gauge / 500f, 1.8f);
             testShell.CalculateLengths();
             testShell.CalculateMaxProjectileLengthForInaccuracy(27.5f, 0.3f);
             Assert.AreEqual(testShell.OverallInaccuracyModifier, 1.02600002f);
@@ -254,6 +260,7 @@ namespace ApsCalcUITests
             testShell.BaseModule = Module.BaseBleeder;
             testModuleCounts.CopyTo(testShell.BodyModuleCounts, 0);
             testShell.Gauge = 392;
+            testShell.GaugeCoefficient = MathF.Pow(testShell.Gauge / 500f, 1.8f);
             testShell.IsDif = false;
 
             testShell.CalculateLengths();

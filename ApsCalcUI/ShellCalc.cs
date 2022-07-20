@@ -52,6 +52,7 @@ namespace ApsCalcUI
         /// </summary>
         /// <param name="barrelCount">Number of barrels</param>
         /// <param name="gauge">Desired gauge in mm</param>
+        /// <param name="gaugeCoefficient">(gauge / 500mm)^1.8; used for many calculations</param>
         /// <param name="headList">List of module indices for every module to be used as head</param>
         /// <param name="baseModule">The special base module, if any</param>
         /// <param name="fixedModuleCounts">An array of integers representing number of shells at that index in module list</param>
@@ -75,22 +76,25 @@ namespace ApsCalcUI
         /// <param name="minDisruptor">Minimum allowed disruptor shield reduction</param>
         /// <param name="targetArmorScheme">Target armor scheme, from Pencalc namespace</param>
         /// <param name="testType">0 for DPS per volume, 1 for DPS per cost</param>
-        /// <param name="labels">True if row headers should be printed on every line</param>
+        /// <param name="labelEveryRow">True if row headers should be printed on every line</param>
         /// <param name="testInterval">Test interval in min</param>
         /// <param name="storagePerVolume">Material storage per container volume</param>
         /// <param name="storagePerCost">Material storage per container cost</param>
-        /// <param name="ppm">Engine power per material</param>
-        /// <param name="ppv">Engine power per volume</param>
-        /// <param name="ppc">Engine power per block cost</param>
-        /// <param name="fuel">Whether engine uses special Fuel storage</param>
-        /// <param name="dif">Whether gun is using Direct Input Feed</param>
+        /// <param name="enginePpm">Engine power per material</param>
+        /// <param name="enginePpv">Engine power per volume</param>
+        /// <param name="enginePpc">Engine power per block cost</param>
+        /// <param name="engineUsesFuel">Whether engine uses special Fuel storage</param>
+        /// <param name="firingPieceIsDif">Whether gun is using Direct Input Feed</param>
+        /// <param name="gunUsesRecoilAbsorbers">Whether gun uses recoil absorbers; less inaccuracy, higher cost and volume</param>
         /// <param name="maxInaccuracy">Max allowed inaccuracy within barrel length limits</param>
+        /// <param name="rateOfFireRpm">Rate of fire in rounds per minute</param>
         /// <param name="limitBarrelLength">Whether to limit max barrel length</param>
         /// <param name="maxBarrelLength">Max barrel length in m or calibers</param>
         /// <param name="barrelLengthLimitType">Whether to limit barrel length by m or calibers (multiples of gauge)</param>
         public ShellCalc(
             int barrelCount,
             float gauge,
+            float gaugeCoefficient,
             List<int> headList,
             Module baseModule,
             float[] fixedModuleCounts,
@@ -114,16 +118,18 @@ namespace ApsCalcUI
             float minDisruptor,
             Scheme targetArmorScheme,
             int testType,
-            bool labels,
+            bool labelEveryRow,
             int testInterval,
             float storagePerVolume,
             float storagePerCost,
-            float ppm,
-            float ppv,
-            float ppc,
-            bool fuel,
-            bool dif,
+            float enginePpm,
+            float enginePpv,
+            float enginePpc,
+            bool engineUsesFuel,
+            bool firingPieceIsDif,
+            bool gunUsesRecoilAbsorbers,
             float maxInaccuracy,
+            float rateOfFireRpm,
             bool limitBarrelLength,
             float maxBarrelLength,
             BarrelLengthLimit barrelLengthLimitType
@@ -131,6 +137,7 @@ namespace ApsCalcUI
         {
             BarrelCount = barrelCount;
             Gauge = gauge;
+            GaugeCoefficient = gaugeCoefficient;
             HeadList = headList;
             BaseModule = baseModule;
             FixedModuleCounts = fixedModuleCounts;
@@ -154,17 +161,19 @@ namespace ApsCalcUI
             MinDisruptor = minDisruptor;
             TargetArmorScheme = targetArmorScheme;
             TestType = testType;
-            Labels = labels;
+            LabelEveryRow = labelEveryRow;
             TestInterval = testInterval;
             TestIntervalSeconds = testInterval * 60;
             StoragePerVolume = storagePerVolume;
             StoragePerCost = storagePerCost;
-            Ppm = ppm;
-            Ppv = ppv;
-            Ppc = ppc;
-            Fuel = fuel;
-            Dif = dif;
+            EnginePpm = enginePpm;
+            EnginePpv = enginePpv;
+            EnginePpc = enginePpc;
+            EngineUsesFuel = engineUsesFuel;
+            FiringPieceIsDif = firingPieceIsDif;
+            GunUsesRecoilAbsorbers = gunUsesRecoilAbsorbers;
             MaxInaccuracy = maxInaccuracy;
+            RateOfFireRpm = rateOfFireRpm;
             LimitBarrelLength = limitBarrelLength;
             if (limitBarrelLength && barrelLengthLimitType == BarrelLengthLimit.Calibers)
             {
@@ -189,6 +198,7 @@ namespace ApsCalcUI
 
         public int BarrelCount { get; }
         public float Gauge { get; }
+        public float GaugeCoefficient { get; }
         public List<int> HeadList { get; }
         public Module BaseModule { get; }
         public float[] FixedModuleCounts { get; }
@@ -213,17 +223,19 @@ namespace ApsCalcUI
         public float MinDisruptor { get; }
         public Scheme TargetArmorScheme { get; }
         public int TestType { get; }
-        public bool Labels { get; }
+        public bool LabelEveryRow { get; }
         public int TestInterval { get; }
         public int TestIntervalSeconds { get; }
         public float StoragePerVolume { get; }
         public float StoragePerCost { get; }
-        public float Ppm { get; }
-        public float Ppv { get; }
-        public float Ppc { get; }
-        public bool Fuel { get; }
-        public bool Dif { get; }
+        public float EnginePpm { get; }
+        public float EnginePpv { get; }
+        public float EnginePpc { get; }
+        public bool EngineUsesFuel { get; }
+        public bool FiringPieceIsDif { get; }
+        public bool GunUsesRecoilAbsorbers { get; }
         public float MaxInaccuracy { get; }
+        public float RateOfFireRpm { get; }
         public bool LimitBarrelLength { get; }
         public float MaxBarrelLengthInM { get; }
         public float MaxBarrelLengthInCalibers { get; }
@@ -405,6 +417,7 @@ namespace ApsCalcUI
                 FixedModuleCounts.CopyTo(shellUnderTesting.BodyModuleCounts, 0);
 
                 shellUnderTesting.Gauge = Gauge;
+                shellUnderTesting.GaugeCoefficient = GaugeCoefficient;
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[0]] += counts.Var0Count;
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[1]] += counts.Var1Count;
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[2]] += counts.Var2Count;
@@ -414,7 +427,9 @@ namespace ApsCalcUI
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[6]] += counts.Var6Count;
                 shellUnderTesting.GPCasingCount = counts.GPCount;
                 shellUnderTesting.RGCasingCount = counts.RGCount;
-                shellUnderTesting.IsDif = Dif;
+                shellUnderTesting.IsDif = FiringPieceIsDif;
+                shellUnderTesting.GunUsesRecoilAbsorbers = GunUsesRecoilAbsorbers;
+                shellUnderTesting.RateOfFireRpm = RateOfFireRpm;
 
                 shellUnderTesting.CalculateLengths();
                 bool lengthWithinBounds = true;
@@ -475,10 +490,10 @@ namespace ApsCalcUI
                                     TestIntervalSeconds,
                                     StoragePerVolume,
                                     StoragePerCost,
-                                    Ppm,
-                                    Ppv,
-                                    Ppc,
-                                    Fuel,
+                                    EnginePpm,
+                                    EnginePpv,
+                                    EnginePpc,
+                                    EngineUsesFuel,
                                     TargetArmorScheme,
                                     ImpactAngleFromPerpendicularDegrees);
                                 if (TestType == 0)
@@ -497,10 +512,10 @@ namespace ApsCalcUI
                                     TestIntervalSeconds,
                                     StoragePerVolume,
                                     StoragePerCost,
-                                    Ppm,
-                                    Ppv,
-                                    Ppc,
-                                    Fuel,
+                                    EnginePpm,
+                                    EnginePpv,
+                                    EnginePpc,
+                                    EngineUsesFuel,
                                     TargetArmorScheme,
                                     ImpactAngleFromPerpendicularDegrees);
                                 if (TestType == 0)
@@ -522,10 +537,10 @@ namespace ApsCalcUI
                                         TestIntervalSeconds,
                                         StoragePerVolume,
                                         StoragePerCost,
-                                        Ppm,
-                                        Ppv,
-                                        Ppc,
-                                        Fuel,
+                                        EnginePpm,
+                                        EnginePpv,
+                                        EnginePpc,
+                                        EngineUsesFuel,
                                         TargetArmorScheme,
                                         ImpactAngleFromPerpendicularDegrees);
                                     if (TestType == 0)
@@ -552,10 +567,10 @@ namespace ApsCalcUI
                                         TestIntervalSeconds,
                                         StoragePerVolume,
                                         StoragePerCost,
-                                        Ppm,
-                                        Ppv,
-                                        Ppc,
-                                        Fuel,
+                                        EnginePpm,
+                                        EnginePpv,
+                                        EnginePpc,
+                                        EngineUsesFuel,
                                         TargetArmorScheme,
                                         ImpactAngleFromPerpendicularDegrees);
                                     if (TestType == 0)
@@ -591,10 +606,10 @@ namespace ApsCalcUI
                                             TestIntervalSeconds,
                                             StoragePerVolume,
                                             StoragePerCost,
-                                            Ppm,
-                                            Ppv,
-                                            Ppc,
-                                            Fuel,
+                                            EnginePpm,
+                                            EnginePpv,
+                                            EnginePpc,
+                                            EngineUsesFuel,
                                             TargetArmorScheme,
                                             ImpactAngleFromPerpendicularDegrees);
                                         if (TestType == 0)
@@ -613,10 +628,10 @@ namespace ApsCalcUI
                                             TestIntervalSeconds,
                                             StoragePerVolume,
                                             StoragePerCost,
-                                            Ppm,
-                                            Ppv,
-                                            Ppc,
-                                            Fuel,
+                                            EnginePpm,
+                                            EnginePpv,
+                                            EnginePpc,
+                                            EngineUsesFuel,
                                             TargetArmorScheme,
                                             ImpactAngleFromPerpendicularDegrees);
                                         if (TestType == 0)
@@ -657,24 +672,24 @@ namespace ApsCalcUI
 
                             // Check performance against top shells
                             shellUnderTesting.RailDraw = optimalDraw;
+                            shellUnderTesting.CalculateVelocity();
+                            shellUnderTesting.CalculateEffectiveRange();
                             shellUnderTesting.CalculateDpsByType(
                                 DamageType,
                                 TargetAC,
                                 TestIntervalSeconds,
                                 StoragePerVolume,
                                 StoragePerCost,
-                                Ppm,
-                                Ppv,
-                                Ppc,
-                                Fuel,
+                                EnginePpm,
+                                EnginePpv,
+                                EnginePpc,
+                                EngineUsesFuel,
                                 TargetArmorScheme,
                                 ImpactAngleFromPerpendicularDegrees);
-                            shellUnderTesting.CalculateVelocity();
-                            shellUnderTesting.CalculateEffectiveRange();
 
                             if (TestType == 0)
                             {
-                                if (Dif)
+                                if (FiringPieceIsDif)
                                 {
                                     if (shellUnderTesting.DpsPerVolumeDict[DamageType] > TopDif.DpsPerVolumeDict[DamageType])
                                     {
@@ -740,7 +755,7 @@ namespace ApsCalcUI
                             }
                             else if (TestType == 1)
                             {
-                                if (Dif)
+                                if (FiringPieceIsDif)
                                 {
                                     if (shellUnderTesting.DpsPerCostDict[DamageType] > TopDif.DpsPerCostDict[DamageType])
                                     {
@@ -807,7 +822,7 @@ namespace ApsCalcUI
 
 
                             // Beltfed testing
-                            if (shellUnderTesting.TotalLength <= 1000f && !Dif)
+                            if (shellUnderTesting.TotalLength <= 1000f && !FiringPieceIsDif)
                             {
                                 Shell shellUnderTestingBelt = new();
                                 shellUnderTestingBelt.BarrelCount = BarrelCount;
@@ -816,6 +831,7 @@ namespace ApsCalcUI
                                 FixedModuleCounts.CopyTo(shellUnderTestingBelt.BodyModuleCounts, 0);
 
                                 shellUnderTestingBelt.Gauge = Gauge;
+                                shellUnderTestingBelt.GaugeCoefficient = GaugeCoefficient;
                                 shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[0]] += counts.Var0Count;
                                 shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[1]] += counts.Var1Count;
                                 shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[2]] += counts.Var2Count;
@@ -825,6 +841,8 @@ namespace ApsCalcUI
                                 shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[6]] += counts.Var6Count;
                                 shellUnderTestingBelt.GPCasingCount = counts.GPCount;
                                 shellUnderTestingBelt.RGCasingCount = counts.RGCount;
+                                shellUnderTestingBelt.GunUsesRecoilAbsorbers = GunUsesRecoilAbsorbers;
+                                shellUnderTestingBelt.RateOfFireRpm = RateOfFireRpm;
 
                                 shellUnderTestingBelt.IsBelt = true;
                                 shellUnderTestingBelt.CalculateLengths();
@@ -861,10 +879,10 @@ namespace ApsCalcUI
                                         TestIntervalSeconds,
                                         StoragePerVolume,
                                         StoragePerCost,
-                                        Ppm,
-                                        Ppv,
-                                        Ppc,
-                                        Fuel,
+                                        EnginePpm,
+                                        EnginePpv,
+                                        EnginePpc,
+                                        EngineUsesFuel,
                                         TargetArmorScheme,
                                         ImpactAngleFromPerpendicularDegrees);
                                     if (TestType == 0)
@@ -883,10 +901,10 @@ namespace ApsCalcUI
                                         TestIntervalSeconds,
                                         StoragePerVolume,
                                         StoragePerCost,
-                                        Ppm,
-                                        Ppv,
-                                        Ppc,
-                                        Fuel,
+                                        EnginePpm,
+                                        EnginePpv,
+                                        EnginePpc,
+                                        EngineUsesFuel,
                                         TargetArmorScheme,
                                         ImpactAngleFromPerpendicularDegrees);
                                     if (TestType == 0)
@@ -908,10 +926,10 @@ namespace ApsCalcUI
                                             TestIntervalSeconds,
                                             StoragePerVolume,
                                             StoragePerCost,
-                                            Ppm,
-                                            Ppv,
-                                            Ppc,
-                                            Fuel,
+                                            EnginePpm,
+                                            EnginePpv,
+                                            EnginePpc,
+                                            EngineUsesFuel,
                                             TargetArmorScheme,
                                             ImpactAngleFromPerpendicularDegrees);
                                         if (TestType == 0)
@@ -938,10 +956,10 @@ namespace ApsCalcUI
                                             TestIntervalSeconds,
                                             StoragePerVolume,
                                             StoragePerCost,
-                                            Ppm,
-                                            Ppv,
-                                            Ppc,
-                                            Fuel,
+                                            EnginePpm,
+                                            EnginePpv,
+                                            EnginePpc,
+                                            EngineUsesFuel,
                                             TargetArmorScheme,
                                             ImpactAngleFromPerpendicularDegrees);
                                         if (TestType == 0)
@@ -976,10 +994,10 @@ namespace ApsCalcUI
                                                 TestIntervalSeconds,
                                                 StoragePerVolume,
                                                 StoragePerCost,
-                                                Ppm,
-                                                Ppv,
-                                                Ppc,
-                                                Fuel,
+                                                EnginePpm,
+                                                EnginePpv,
+                                                EnginePpc,
+                                                EngineUsesFuel,
                                                 TargetArmorScheme,
                                                 ImpactAngleFromPerpendicularDegrees);
                                             if (TestType == 0)
@@ -998,10 +1016,10 @@ namespace ApsCalcUI
                                                 TestIntervalSeconds,
                                                 StoragePerVolume,
                                                 StoragePerCost,
-                                                Ppm,
-                                                Ppv,
-                                                Ppc,
-                                                Fuel,
+                                                EnginePpm,
+                                                EnginePpv,
+                                                EnginePpc,
+                                                EngineUsesFuel,
                                                 TargetArmorScheme,
                                                 ImpactAngleFromPerpendicularDegrees);
                                             if (TestType == 0)
@@ -1041,20 +1059,20 @@ namespace ApsCalcUI
 
                                 // Check performance against top shells
                                 shellUnderTestingBelt.RailDraw = optimalDraw;
+                                shellUnderTestingBelt.CalculateVelocity();
+                                shellUnderTestingBelt.CalculateEffectiveRange();
                                 shellUnderTestingBelt.CalculateDpsByTypeBelt(
                                     DamageType,
                                     TargetAC,
                                     TestIntervalSeconds,
                                     StoragePerVolume,
                                     StoragePerCost,
-                                    Ppm,
-                                    Ppv,
-                                    Ppc,
-                                    Fuel,
+                                    EnginePpm,
+                                    EnginePpv,
+                                    EnginePpc,
+                                    EngineUsesFuel,
                                     TargetArmorScheme,
                                     ImpactAngleFromPerpendicularDegrees);
-                                shellUnderTestingBelt.CalculateVelocity();
-                                shellUnderTestingBelt.CalculateEffectiveRange();
 
                                 if (TestType == 0)
                                 {
@@ -1203,7 +1221,7 @@ namespace ApsCalcUI
             {
                 if (TestType == 0)
                 {
-                    if (Dif)
+                    if (FiringPieceIsDif)
                     {
                         if (rawShell.DpsPerVolumeDict[DamageType] > TopDif.DpsPerVolumeDict[DamageType])
                         {
@@ -1276,7 +1294,7 @@ namespace ApsCalcUI
                 }
                 else if (TestType == 1)
                 {
-                    if (Dif)
+                    if (FiringPieceIsDif)
                     {
                         if (rawShell.DpsPerCostDict[DamageType] > TopDif.DpsPerCostDict[DamageType])
                         {
@@ -1498,6 +1516,10 @@ namespace ApsCalcUI
             if (BaseModule != null)
             {
                 writer.WriteLine("Base: " + BaseModule.Name);
+                if (BaseModule == Module.Tracer)
+                {
+                    writer.WriteLine("ROF (RPM): " + RateOfFireRpm);
+                }
             }
             else
             {
@@ -1530,10 +1552,10 @@ namespace ApsCalcUI
             writer.WriteLine("Max draw: " + MaxDrawInput);
             if(MaxDrawInput > 0)
             {
-                writer.WriteLine("Engine PPM: " + Ppm);
-                writer.WriteLine("Engine PPV: " + Ppv);
-                writer.WriteLine("Engine PPC: " + Ppc);
-                writer.WriteLine("Fuel engine: " + Fuel);
+                writer.WriteLine("Engine PPM: " + EnginePpm);
+                writer.WriteLine("Engine PPV: " + EnginePpv);
+                writer.WriteLine("Engine PPC: " + EnginePpc);
+                writer.WriteLine("Fuel engine: " + EngineUsesFuel);
             }
             writer.WriteLine("Max recoil: " + MaxRecoilInput);
             writer.WriteLine("Min length (mm): " + MinShellLength);
@@ -1553,9 +1575,14 @@ namespace ApsCalcUI
                 }
             }
             writer.WriteLine("Test interval (min): " + TestInterval);
-            if (Dif)
+            if (FiringPieceIsDif)
             {
                 writer.WriteLine("Gun is using Direct Input Feed");
+            }
+
+            if (!GunUsesRecoilAbsorbers)
+            {
+                writer.WriteLine("Gun is NOT using recoil absorbers");
             }
 
             // Determine whether to show target armor scheme
@@ -1607,7 +1634,7 @@ namespace ApsCalcUI
             writer.WriteLine("\n");
 
 
-            if (!Labels)
+            if (!LabelEveryRow)
             {
                 writer.WriteLine("Row headers");
                 writer.WriteLine("Gauge (mm)");
@@ -1759,10 +1786,10 @@ namespace ApsCalcUI
                                 TestIntervalSeconds,
                                 StoragePerVolume,
                                 StoragePerCost,
-                                Ppm,
-                                Ppv,
-                                Ppc,
-                                Fuel,
+                                EnginePpm,
+                                EnginePpv,
+                                EnginePpc,
+                                EngineUsesFuel,
                                 TargetArmorScheme,
                                 ImpactAngleFromPerpendicularDegrees);
                         }
@@ -1775,10 +1802,10 @@ namespace ApsCalcUI
                                 TestIntervalSeconds,
                                 StoragePerVolume,
                                 StoragePerCost,
-                                Ppm,
-                                Ppv,
-                                Ppc,
-                                Fuel,
+                                EnginePpm,
+                                EnginePpv,
+                                EnginePpc,
+                                EngineUsesFuel,
                                 TargetArmorScheme,
                                 ImpactAngleFromPerpendicularDegrees);
                         }
@@ -1786,7 +1813,7 @@ namespace ApsCalcUI
                     writer.WriteLine("\n");
                     writer.WriteLine(topShell.Key);
                     topShell.Value.GetModuleCounts();
-                    topShell.Value.WriteShellInfoToFile(writer, Labels, showGP, showRG, showDraw, dtToShow, modsToShow, TargetAC);
+                    topShell.Value.WriteShellInfoToFile(writer, LabelEveryRow, showGP, showRG, showDraw, dtToShow, modsToShow, TargetAC);
                 }
             }
         }
