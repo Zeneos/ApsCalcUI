@@ -61,6 +61,8 @@ shell which hits the target - excludes gunpowder and railgun casings). The
 base modules add functionality or modify performance, and in general I
 recommend using some kind of base; test with Base Bleeder versus no base if
 no additional functionality is required.
+	Visible Tracer: prompts Rate of Fire input. Visible tracer bonus to 
+		inaccuracy scales with rate of fire.
 
 Fixed Modules: modules to be included with every shell.
 n.b. The input validation for fixed modules is not perfect. Please double-

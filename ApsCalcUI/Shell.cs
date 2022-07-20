@@ -395,7 +395,7 @@ namespace ApsCalcUI
         /// <summary>
         /// Calculate min barrel length for inaccuracy and full propellant burn
         /// </summary>
-        public void CalculateRequiredBarrelLengths(float desiredInaccuracy = 0.3f)
+        public void CalculateRequiredBarrelLengths(float desiredInaccuracy)
         {
             CalculateInaccuracyModifier();
             BarrelLengthForInaccuracy = 4 * MathF.Pow(ProjectileLength / 1000f, 0.75f) * MathF.Pow(0.3f / desiredInaccuracy * OverallInaccuracyModifier, 2.5f);

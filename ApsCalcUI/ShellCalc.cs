@@ -432,6 +432,7 @@ namespace ApsCalcUI
                 shellUnderTesting.RateOfFireRpm = RateOfFireRpm;
 
                 shellUnderTesting.CalculateLengths();
+                shellUnderTesting.CalculateRecoil();
                 bool lengthWithinBounds = true;
                 if (LimitBarrelLength
                     && shellUnderTesting.ProjectileLength 
@@ -448,7 +449,6 @@ namespace ApsCalcUI
                 if (lengthWithinBounds)
                 {
                     shellUnderTesting.CalculateVelocityModifier();
-                    shellUnderTesting.CalculateRecoil();
                     shellUnderTesting.CalculateMaxDraw();
 
                     float maxDraw = MathF.Min(shellUnderTesting.MaxDraw, MaxDrawInput);
