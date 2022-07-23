@@ -169,8 +169,8 @@ namespace ApsCalcUI
         public float CoolerCost { get; set; }
         public float CoolerCostBelt { get; set; }
         public float CostPerShell { get; set; } // Material cost for one shell
-        public float ShellCost { get; set; } // Material cost for all shells
-        public float ShellCostBelt { get; set; }
+        public float AmmoUsed { get; set; } // Material cost for all shells
+        public float AmmoUsedBelt { get; set; }
         public float AmmoAccessCost { get; set; }
         public float AmmoAccessCostBelt { get; set; }
         public float AmmoStorageCost { get; set; }
@@ -777,11 +777,11 @@ namespace ApsCalcUI
                 * GaugeCoefficient
                 / Gauge;
 
-            ShellCost = CostPerShell * testIntervalSeconds / ReloadTime;
+            AmmoUsed = CostPerShell * testIntervalSeconds / ReloadTime;
 
             if (TotalLength <= 1000f)
             {
-                ShellCostBelt = CostPerShell * testIntervalSeconds / ReloadTimeBelt * UptimeBelt;
+                AmmoUsedBelt = CostPerShell * testIntervalSeconds / ReloadTimeBelt * UptimeBelt;
             }
 
             // Calculate volume and cost of ammo crates
@@ -833,7 +833,7 @@ namespace ApsCalcUI
                 + RecoilCost
                 + CoolerCost
                 + ChargerCost
-                + ShellCost
+                + AmmoUsed
                 + AmmoAccessCost
                 + AmmoStorageCost
                 + FuelBurned
@@ -861,7 +861,7 @@ namespace ApsCalcUI
                     + RecoilCostBelt
                     + CoolerCostBelt
                     + ChargerCostBelt
-                    + ShellCostBelt
+                    + AmmoUsedBelt
                     + AmmoAccessCostBelt
                     + AmmoStorageCostBelt
                     + FuelBurnedBelt
@@ -1612,385 +1612,6 @@ namespace ApsCalcUI
             }
 
             ModuleCountTotal += MathF.Ceiling(GPCasingCount) + RGCasingCount;
-        }
-
-
-        public void WriteShellInfoToFile(
-            StreamWriter writer,
-            bool labels,
-            bool showGP,
-            bool showRG,
-            bool showDraw,
-            Dictionary<DamageType, bool> dtToShow,
-            List<int> modsToShow,
-            float targetAC)
-        {
-            if (labels)
-            {
-                writer.WriteLine("Gauge (mm): " + Gauge);
-                writer.WriteLine("Total length (mm): " + TotalLength);
-                writer.WriteLine("Length without casings (mm): " + ProjectileLength);
-                writer.WriteLine("Total modules: " + ModuleCountTotal);
-
-                if (showGP)
-                {
-                    writer.WriteLine("GP casing: " + GPCasingCount);
-                }
-                if (showRG)
-                {
-                    writer.WriteLine("RG casing: " + RGCasingCount);
-                }
-
-                foreach (int index in modsToShow)
-                {
-                    writer.WriteLine(Module.AllModules[index].Name + ": " + BodyModuleCounts[index]);
-                }
-                writer.WriteLine("Head: " + HeadModule.Name);
-
-
-                if (showDraw)
-                {
-                    writer.WriteLine("Rail draw: " + RailDraw);
-                }
-                // Recoil = draw if no GP
-                if (showGP)
-                {
-                    writer.WriteLine("Recoil: " + TotalRecoil);
-                }
-
-                writer.WriteLine("Velocity (m/s): " + Velocity);
-                writer.WriteLine("Effective range (m): " + EffectiveRange);
-                writer.WriteLine("Barrel length for inaccuracy (m): " + BarrelLengthForInaccuracy);
-                writer.WriteLine("Barrel length for propellant burn (m): " + BarrelLengthForPropellant);
-
-                foreach (DamageType dt in dtToShow.Keys)
-                {
-                    if (dtToShow[dt])
-                    {
-                        if (dt == DamageType.Kinetic)
-                        {
-                            writer.WriteLine("Raw KD: " + RawKD);
-                            writer.WriteLine("AP: " + ArmorPierce);
-
-                            if (HeadModule == Module.HollowPoint || targetAC == 20f)
-                            {
-                                writer.WriteLine("KD multiplier from angle: 1");
-                            }
-                            else if (HeadModule == Module.SabotHead)
-                            {
-                                writer.WriteLine("KD multiplier from angle: " + SabotAngleMultiplier);
-                            }
-                            else
-                            {
-                                writer.WriteLine("KD multiplier from angle: " + NonSabotAngleMultiplier);
-                            }
-                        }
-                        else if (dt == DamageType.Frag)
-                        {
-                            writer.WriteLine("Frag count: " + FragCount);
-                            writer.WriteLine("Damage per frag: " + DamagePerFrag);
-                        }
-                        else if (dt == DamageType.FlaK)
-                        {
-                            writer.WriteLine("Raw FlaK damage: " + RawFlaK);
-                            writer.WriteLine("FlaK explosion radius (m): " + FlaKExplosionRadius);
-                        }
-                        else if (dt == DamageType.HE)
-                        {
-                            writer.WriteLine("Raw HE damage: " + RawHE);
-                            writer.WriteLine("HE explosion radius (m): " + HEExplosionRadius);
-                        }
-                        writer.WriteLine((DamageType)(int)dt + " damage: " + DamageDict[dt]);
-                    }
-                }
-
-
-                if (IsBelt)
-                {
-                    writer.WriteLine("Reload time (s): " + ReloadTimeBelt);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            writer.WriteLine((DamageType)(int)dt + " DPS: " + DpsDict[dt]);
-                        }
-                    }
-
-                    writer.WriteLine("Loader volume: " + LoaderVolumeBelt);
-                    writer.WriteLine("Cooler volume: " + CoolerVolumeBelt);
-                    writer.WriteLine("Charger volume: " + ChargerVolumeBelt);
-                    writer.WriteLine("Engine volume: " + EngineVolumeBelt);
-                    writer.WriteLine("Fuel access volume: " + FuelAccessVolumeBelt);
-                    writer.WriteLine("Fuel storage volume: " + FuelStorageVolumeBelt);
-                    writer.WriteLine("Recoil volume: " + RecoilVolumeBelt);
-                    writer.WriteLine("Ammo access volume: " + AmmoAccessVolumeBelt);
-                    writer.WriteLine("Ammo storage volume: " + AmmoStorageVolumeBelt);
-                    writer.WriteLine("Total volume: " + VolumePerIntakeBelt);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            writer.WriteLine((DamageType)(int)dt + " DPS per volume: " + DpsPerVolumeDict[dt]);
-                        }
-                    }
-
-                    writer.WriteLine("Cost per shell: " + CostPerShell);
-                    writer.WriteLine("Loader cost: " + LoaderCostBelt);
-                    writer.WriteLine("Cooler cost: " + CoolerCostBelt);
-                    writer.WriteLine("Charger cost: " + ChargerCostBelt);
-                    writer.WriteLine("Fuel burned: " + FuelBurnedBelt);
-                    writer.WriteLine("Engine cost: " + EngineCostBelt);
-                    writer.WriteLine("Fuel access cost: " + FuelAccessCostBelt);
-                    writer.WriteLine("Fuel storage cost: " + FuelStorageCostBelt);
-                    writer.WriteLine("Recoil cost: " + RecoilCostBelt);
-                    writer.WriteLine("Ammo used: " + ShellCostBelt);
-                    writer.WriteLine("Ammo access cost: " + AmmoAccessCostBelt);
-                    writer.WriteLine("Ammo storage cost: " + AmmoStorageCostBelt);
-                    writer.WriteLine("Total cost: " + CostPerIntakeBelt);
-                    writer.WriteLine("Cost per volume: " + CostPerVolumeBelt);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            writer.WriteLine((DamageType)(int)dt + " DPS per cost: " + DpsPerCostDict[dt]);
-                        }
-                    }
-                }
-                else
-                {
-                    writer.WriteLine("Reload time (s): " + ReloadTime);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            writer.WriteLine((DamageType)(int)dt + " DPS: " + DpsDict[dt]);
-                        }
-                    }
-
-                    writer.WriteLine("Loader volume: " + LoaderVolume);
-                    writer.WriteLine("Cooler volume: " + CoolerVolume);
-                    writer.WriteLine("Charger volume: " + ChargerVolume);
-                    writer.WriteLine("Engine volume: " + EngineVolume);
-                    writer.WriteLine("Fuel access volume: " + FuelAccessVolume);
-                    writer.WriteLine("Fuel storage volume: " + FuelStorageVolume);
-                    writer.WriteLine("Recoil volume: " + RecoilVolume);
-                    writer.WriteLine("Ammo access volume: " + AmmoAccessVolume);
-                    writer.WriteLine("Ammo storage volume: " + AmmoStorageVolume);
-                    writer.WriteLine("Total volume: " + VolumePerIntake);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            writer.WriteLine((DamageType)(int)dt + " DPS per volume: " + DpsPerVolumeDict[dt]);
-                        }
-                    }
-
-                    writer.WriteLine("Cost per shell: " + CostPerShell);
-                    writer.WriteLine("Loader cost: " + LoaderCost);
-                    writer.WriteLine("Cooler cost: " + CoolerCost);
-                    writer.WriteLine("Charger cost: " + ChargerCost);
-                    writer.WriteLine("Fuel burned: " + FuelBurned);
-                    writer.WriteLine("Engine cost: " + EngineCost);
-                    writer.WriteLine("Fuel access cost: " + FuelAccessCost);
-                    writer.WriteLine("Fuel storage cost: " + FuelStorageCost);
-                    writer.WriteLine("Recoil cost: " + RecoilCost);
-                    writer.WriteLine("Ammo used: " + ShellCost);
-                    writer.WriteLine("Ammo access cost: " + AmmoAccessCost);
-                    writer.WriteLine("Ammo storage cost: " + AmmoStorageCost);
-                    writer.WriteLine("Total cost: " + CostPerIntake);
-                    writer.WriteLine("Cost per volume: " + CostPerVolume);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            writer.WriteLine((DamageType)(int)dt + " DPS per cost: " + DpsPerCostDict[dt]);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                writer.WriteLine(Gauge);
-                writer.WriteLine(TotalLength);
-                writer.WriteLine(ProjectileLength);
-                writer.WriteLine(ModuleCountTotal);
-
-                if (showGP)
-                {
-                    writer.WriteLine(GPCasingCount);
-                }
-                if (showRG)
-                {
-                    writer.WriteLine(RGCasingCount);
-                }
-
-                foreach (int index in modsToShow)
-                {
-                    writer.WriteLine(BodyModuleCounts[index]);
-                }
-                writer.WriteLine(HeadModule.Name);
-
-
-                if (showDraw)
-                {
-                    writer.WriteLine(RailDraw);
-                }
-                // Recoil = draw if no GP
-                if (showGP)
-                {
-                    writer.WriteLine(TotalRecoil);
-                }
-
-                writer.WriteLine(Velocity);
-                writer.WriteLine(EffectiveRange);
-                writer.WriteLine(BarrelLengthForInaccuracy);
-                writer.WriteLine(BarrelLengthForPropellant);
-
-
-                foreach (DamageType dt in dtToShow.Keys)
-                {
-                    if (dtToShow[dt])
-                    {
-                        if (dt == DamageType.Kinetic)
-                        {
-                            writer.WriteLine(RawKD);
-                            writer.WriteLine(ArmorPierce);
-                            if (HeadModule == Module.HollowPoint || targetAC == 20f)
-                            {
-                                writer.WriteLine("1");
-                            }
-                            else if (HeadModule == Module.SabotHead)
-                            {
-                                writer.WriteLine(SabotAngleMultiplier);
-                            }
-                            else
-                            {
-                                writer.WriteLine(NonSabotAngleMultiplier);
-                            }
-                        }
-                        if (dt == DamageType.Frag)
-                        {
-                            writer.WriteLine(FragCount);
-                            writer.WriteLine(DamagePerFrag);
-                        }
-                        else if (dt == DamageType.FlaK)
-                        {
-                            writer.WriteLine(RawFlaK);
-                            writer.WriteLine(FlaKExplosionRadius);
-                        }
-                        else if (dt == DamageType.HE)
-                        {
-                            writer.WriteLine(RawHE);
-                            writer.WriteLine(HEExplosionRadius);
-                        }
-                        writer.WriteLine(DamageDict[dt]);
-                    }
-                }
-
-
-                if (IsBelt)
-                {
-                    writer.WriteLine(ReloadTimeBelt);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            writer.WriteLine(DpsDict[dt]);
-                        }
-                    }
-
-                    writer.WriteLine(LoaderVolumeBelt);
-                    writer.WriteLine(CoolerVolumeBelt);
-                    writer.WriteLine(ChargerVolumeBelt);
-                    writer.WriteLine(EngineVolumeBelt);
-                    writer.WriteLine(FuelAccessVolumeBelt);
-                    writer.WriteLine(FuelStorageVolumeBelt);
-                    writer.WriteLine(RecoilVolumeBelt);
-                    writer.WriteLine(AmmoAccessVolumeBelt);
-                    writer.WriteLine(AmmoStorageVolumeBelt);
-                    writer.WriteLine(VolumePerIntakeBelt);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            writer.WriteLine(DpsPerVolumeDict[dt]);
-                        }
-                    }
-
-                    writer.WriteLine(CostPerShell);
-                    writer.WriteLine(LoaderCostBelt);
-                    writer.WriteLine(CoolerCostBelt);
-                    writer.WriteLine(ChargerCostBelt);
-                    writer.WriteLine(FuelBurnedBelt);
-                    writer.WriteLine(EngineCostBelt);
-                    writer.WriteLine(FuelAccessCostBelt);
-                    writer.WriteLine(FuelStorageCostBelt);
-                    writer.WriteLine(RecoilCostBelt);
-                    writer.WriteLine(ShellCostBelt);
-                    writer.WriteLine(AmmoAccessCostBelt);
-                    writer.WriteLine(AmmoStorageCostBelt);
-                    writer.WriteLine(CostPerIntakeBelt);
-                    writer.WriteLine(CostPerVolumeBelt);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            writer.WriteLine(DpsPerCostDict[dt]);
-                        }
-                    }
-                }
-                else
-                {
-                    writer.WriteLine(ReloadTime);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            writer.WriteLine(DpsDict[dt]);
-                        }
-                    }
-
-                    writer.WriteLine(LoaderVolume);
-                    writer.WriteLine(CoolerVolume);
-                    writer.WriteLine(ChargerVolume);
-                    writer.WriteLine(EngineVolume);
-                    writer.WriteLine(FuelAccessVolume);
-                    writer.WriteLine(FuelStorageVolume);
-                    writer.WriteLine(RecoilVolume);
-                    writer.WriteLine(AmmoAccessVolume);
-                    writer.WriteLine(AmmoStorageVolume);
-                    writer.WriteLine(VolumePerIntake);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            writer.WriteLine(DpsPerVolumeDict[dt]);
-                        }
-                    }
-
-                    writer.WriteLine(CostPerShell);
-                    writer.WriteLine(LoaderCost);
-                    writer.WriteLine(CoolerCost);
-                    writer.WriteLine(ChargerCost);
-                    writer.WriteLine(FuelBurned);
-                    writer.WriteLine(EngineCost);
-                    writer.WriteLine(FuelAccessCost);
-                    writer.WriteLine(FuelStorageCost);
-                    writer.WriteLine(RecoilCost);
-                    writer.WriteLine(ShellCost);
-                    writer.WriteLine(AmmoAccessCost);
-                    writer.WriteLine(AmmoStorageCost);
-                    writer.WriteLine(CostPerIntake);
-                    writer.WriteLine(CostPerVolume);
-                    foreach (DamageType dt in dtToShow.Keys)
-                    {
-                        if (dtToShow[dt])
-                        {
-                            writer.WriteLine(DpsPerCostDict[dt]);
-                        }
-                    }
-                }
-            }
-        }
+        }        
     }
 }

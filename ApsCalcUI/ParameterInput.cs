@@ -759,23 +759,7 @@ namespace ApsCalcUI
                 testParameters.NonSabotAngleMultiplier = 
                     MathF.Abs(MathF.Cos((testParameters.ImpactAngle + targetArmorScheme.LayerList[0].BaseAngle) * MathF.PI / 180f));
 
-                if (PerVolumeRB.Checked)
-                {
-                    testParameters.TestType = 0;
-                }
-                else
-                {
-                    testParameters.TestType = 1;
-                }
-
-                if (LabelsCB.Checked)
-                {
-                    testParameters.Labels = true;
-                }
-                else
-                {
-                    testParameters.Labels = false;
-                }
+                testParameters.TestType = PerVolumeRB.Checked ? 0 : 1;
 
                 testParameters.TestInterval = (int)TestIntervalUD.Value;
 
@@ -873,7 +857,6 @@ namespace ApsCalcUI
                                     testParameters.MinDisruptor,
                                     testParameters.ArmorScheme,
                                     testParameters.TestType,
-                                    testParameters.Labels,
                                     testParameters.TestInterval,
                                     testParameters.StoragePerVolume,
                                     testParameters.StoragePerCost,
@@ -927,7 +910,6 @@ namespace ApsCalcUI
                                     testParameters.MinDisruptor,
                                     testParameters.ArmorScheme,
                                     testParameters.TestType,
-                                    testParameters.Labels,
                                     testParameters.TestInterval,
                                     testParameters.StoragePerVolume,
                                     testParameters.StoragePerCost,
@@ -982,7 +964,6 @@ namespace ApsCalcUI
                                 testParameters.MinDisruptor,
                                 testParameters.ArmorScheme,
                                 testParameters.TestType,
-                                testParameters.Labels,
                                 testParameters.TestInterval,
                                 testParameters.StoragePerVolume,
                                 testParameters.StoragePerCost,
@@ -1035,7 +1016,6 @@ namespace ApsCalcUI
                                 testParameters.MinDisruptor,
                                 testParameters.ArmorScheme,
                                 testParameters.TestType,
-                                testParameters.Labels,
                                 testParameters.TestInterval,
                                 testParameters.StoragePerVolume,
                                 testParameters.StoragePerCost,

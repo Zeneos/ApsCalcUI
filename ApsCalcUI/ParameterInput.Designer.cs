@@ -60,7 +60,6 @@ namespace ApsCalcUI
             this.AddParametersButton = new System.Windows.Forms.Button();
             this.RunButton = new System.Windows.Forms.Button();
             this.VariableModulesLabel = new System.Windows.Forms.Label();
-            this.LabelsCB = new System.Windows.Forms.CheckBox();
             this.MinLengthUD = new System.Windows.Forms.NumericUpDown();
             this.TestIntervalUD = new System.Windows.Forms.NumericUpDown();
             this.GenericStorageButton = new System.Windows.Forms.RadioButton();
@@ -92,6 +91,7 @@ namespace ApsCalcUI
             this.ImpactAngleUD = new System.Windows.Forms.NumericUpDown();
             this.FragAngleUD = new System.Windows.Forms.NumericUpDown();
             this.GunUsesRecoilAbsorbersCB = new System.Windows.Forms.CheckBox();
+            this.RofRpmUD = new System.Windows.Forms.NumericUpDown();
             this.BarrelCountLabel = new System.Windows.Forms.Label();
             this.MinGaugeLabel = new System.Windows.Forms.Label();
             this.MaxGaugeLabel = new System.Windows.Forms.Label();
@@ -143,7 +143,6 @@ namespace ApsCalcUI
             this.ImpactAngleLabel2 = new System.Windows.Forms.Label();
             this.FragAnglePanel = new System.Windows.Forms.Panel();
             this.FragAngleLabel = new System.Windows.Forms.Label();
-            this.RofRpmUD = new System.Windows.Forms.NumericUpDown();
             this.RofRpmLabel = new System.Windows.Forms.Label();
             this.RofRpmPanel = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).BeginInit();
@@ -173,6 +172,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.MaxInaccUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImpactAngleUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FragAngleUD)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.RofRpmUD)).BeginInit();
             this.BasePanel.SuspendLayout();
             this.FixedModulesPanel.SuspendLayout();
             this.VariableModulesPanel.SuspendLayout();
@@ -184,7 +184,6 @@ namespace ApsCalcUI
             this.StoragePanel.SuspendLayout();
             this.DisruptorPanel.SuspendLayout();
             this.FragAnglePanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.RofRpmUD)).BeginInit();
             this.RofRpmPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -601,21 +600,6 @@ namespace ApsCalcUI
             this.VariableModulesLabel.Text = "Variable Modules";
             this.VariableModulesLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.ToolTip.SetToolTip(this.VariableModulesLabel, "Modules to be tested in varying combinations");
-            // 
-            // LabelsCB
-            // 
-            this.LabelsCB.AutoSize = true;
-            this.LabelsCB.Checked = true;
-            this.LabelsCB.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.LabelsCB.Location = new System.Drawing.Point(452, 532);
-            this.LabelsCB.Name = "LabelsCB";
-            this.LabelsCB.Size = new System.Drawing.Size(111, 19);
-            this.LabelsCB.TabIndex = 30;
-            this.LabelsCB.Text = "Label Every Row";
-            this.ToolTip.SetToolTip(this.LabelsCB, "Check to include labels on every row of the output file.\r\nLabels make the results" +
-        " easier to read at a glance, but\r\nare inconvenient if the data will be copied to" +
-        " a spreadsheet.");
-            this.LabelsCB.UseVisualStyleBackColor = true;
             // 
             // MinLengthUD
             // 
@@ -1099,6 +1083,34 @@ namespace ApsCalcUI
             this.ToolTip.SetToolTip(this.GunUsesRecoilAbsorbersCB, "Recoil absorbers decrease inaccuracy, but increase cost and volume");
             this.GunUsesRecoilAbsorbersCB.UseVisualStyleBackColor = true;
             // 
+            // RofRpmUD
+            // 
+            this.RofRpmUD.DecimalPlaces = 1;
+            this.RofRpmUD.Location = new System.Drawing.Point(81, 9);
+            this.RofRpmUD.Maximum = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            this.RofRpmUD.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.RofRpmUD.Name = "RofRpmUD";
+            this.RofRpmUD.Size = new System.Drawing.Size(65, 23);
+            this.RofRpmUD.TabIndex = 56;
+            this.RofRpmUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.RofRpmUD.ThousandsSeparator = true;
+            this.ToolTip.SetToolTip(this.RofRpmUD, "Desired rate of fire in rounds per minute.\r\nUsed for inaccuracy calculations with" +
+        " tracers.");
+            this.RofRpmUD.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.RofRpmUD.Visible = false;
+            // 
             // BarrelCountLabel
             // 
             this.BarrelCountLabel.AutoSize = true;
@@ -1579,34 +1591,6 @@ namespace ApsCalcUI
             this.FragAngleLabel.Text = "Frag Cone Angle (°)";
             this.FragAngleLabel.Visible = false;
             // 
-            // RofRpmUD
-            // 
-            this.RofRpmUD.DecimalPlaces = 1;
-            this.RofRpmUD.Location = new System.Drawing.Point(81, 9);
-            this.RofRpmUD.Maximum = new decimal(new int[] {
-            2400,
-            0,
-            0,
-            0});
-            this.RofRpmUD.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-            this.RofRpmUD.Name = "RofRpmUD";
-            this.RofRpmUD.Size = new System.Drawing.Size(65, 23);
-            this.RofRpmUD.TabIndex = 56;
-            this.RofRpmUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.RofRpmUD.ThousandsSeparator = true;
-            this.ToolTip.SetToolTip(this.RofRpmUD, "Desired rate of fire in rounds per minute.\r\nUsed for inaccuracy calculations with" +
-        " tracers.");
-            this.RofRpmUD.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.RofRpmUD.Visible = false;
-            // 
             // RofRpmLabel
             // 
             this.RofRpmLabel.AutoSize = true;
@@ -1655,7 +1639,6 @@ namespace ApsCalcUI
             this.Controls.Add(this.MinLengthUD);
             this.Controls.Add(this.MinLengthLabel);
             this.Controls.Add(this.TestsInQueueLabel);
-            this.Controls.Add(this.LabelsCB);
             this.Controls.Add(this.RunButton);
             this.Controls.Add(this.AddParametersButton);
             this.Controls.Add(this.MinRangeUD);
@@ -1721,6 +1704,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.MaxInaccUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImpactAngleUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.FragAngleUD)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.RofRpmUD)).EndInit();
             this.BasePanel.ResumeLayout(false);
             this.BasePanel.PerformLayout();
             this.FixedModulesPanel.ResumeLayout(false);
@@ -1737,7 +1721,6 @@ namespace ApsCalcUI
             this.DisruptorPanel.ResumeLayout(false);
             this.FragAnglePanel.ResumeLayout(false);
             this.FragAnglePanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.RofRpmUD)).EndInit();
             this.RofRpmPanel.ResumeLayout(false);
             this.RofRpmPanel.PerformLayout();
             this.ResumeLayout(false);
@@ -1815,7 +1798,6 @@ namespace ApsCalcUI
         private System.Windows.Forms.Button RunButton;
         private System.Windows.Forms.ErrorProvider QueueErrorProvider;
         private System.Windows.Forms.ErrorProvider RunErrorProvider;
-        private System.Windows.Forms.CheckBox LabelsCB;
         private System.Windows.Forms.Label TestsInQueueLabel;
         private System.Windows.Forms.NumericUpDown MinLengthUD;
         private System.Windows.Forms.Label MinLengthLabel;

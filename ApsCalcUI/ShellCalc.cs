@@ -76,7 +76,6 @@ namespace ApsCalcUI
         /// <param name="minDisruptor">Minimum allowed disruptor shield reduction</param>
         /// <param name="targetArmorScheme">Target armor scheme, from Pencalc namespace</param>
         /// <param name="testType">0 for DPS per volume, 1 for DPS per cost</param>
-        /// <param name="labelEveryRow">True if row headers should be printed on every line</param>
         /// <param name="testInterval">Test interval in min</param>
         /// <param name="storagePerVolume">Material storage per container volume</param>
         /// <param name="storagePerCost">Material storage per container cost</param>
@@ -118,7 +117,6 @@ namespace ApsCalcUI
             float minDisruptor,
             Scheme targetArmorScheme,
             int testType,
-            bool labelEveryRow,
             int testInterval,
             float storagePerVolume,
             float storagePerCost,
@@ -161,7 +159,6 @@ namespace ApsCalcUI
             MinDisruptor = minDisruptor;
             TargetArmorScheme = targetArmorScheme;
             TestType = testType;
-            LabelEveryRow = labelEveryRow;
             TestInterval = testInterval;
             TestIntervalSeconds = testInterval * 60;
             StoragePerVolume = storagePerVolume;
@@ -223,7 +220,6 @@ namespace ApsCalcUI
         public float MinDisruptor { get; }
         public Scheme TargetArmorScheme { get; }
         public int TestType { get; }
-        public bool LabelEveryRow { get; }
         public int TestInterval { get; }
         public int TestIntervalSeconds { get; }
         public float StoragePerVolume { get; }
@@ -1475,7 +1471,7 @@ namespace ApsCalcUI
 
         {
             // Create filename from current time
-            string fileName = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-ff") + ".txt";
+            string fileName = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-ff") + ".csv";
 
             using var writer = new StreamWriter(fileName, append: true);
             FileStream fs = (FileStream)writer.BaseStream;
@@ -1634,125 +1630,6 @@ namespace ApsCalcUI
             writer.WriteLine("\n");
 
 
-            if (!LabelEveryRow)
-            {
-                writer.WriteLine("Row headers");
-                writer.WriteLine("Gauge (mm)");
-                writer.WriteLine("Total length (mm)");
-                writer.WriteLine("Length without casings (mm)");
-                writer.WriteLine("Total modules");
-                if (showGP)
-                {
-                    writer.WriteLine("GP casing");
-                }
-                if (showRG)
-                {
-                    writer.WriteLine("RG casing");
-                }
-
-                foreach (int index in modsToShow)
-                {
-                    writer.WriteLine(Module.AllModules[index].Name);
-                }
-                writer.WriteLine("Head");
-
-
-                if (showDraw)
-                {
-                    writer.WriteLine("Rail draw");
-                }
-                // Recoil = draw if no GP
-                if (showGP)
-                {
-                    writer.WriteLine("Recoil");
-                }
-
-                writer.WriteLine("Velocity (m/s)");
-                writer.WriteLine("Effective range (m)");
-                writer.WriteLine("Barrel length for inaccuracy (m)");
-                writer.WriteLine("Barrel length for propellant burn (m)");
-
-
-                foreach (DamageType dt in dtToShow.Keys)
-                {
-                    if (dtToShow[dt])
-                    {
-                        if (dt == DamageType.Kinetic)
-                        {
-                            writer.WriteLine("Raw KD");
-                            writer.WriteLine("AP");
-                            writer.WriteLine("KD multiplier from angle");
-                        }
-                        else if (dt == DamageType.Frag)
-                        {
-                            writer.WriteLine("Frag count");
-                            writer.WriteLine("Damage per frag");
-                        }
-                        else if (dt == DamageType.FlaK)
-                        {
-                            writer.WriteLine("Raw FlaK damage");
-                            writer.WriteLine("FlaK explosion radius (m)");
-                        }
-                        else if (dt == DamageType.HE)
-                        {
-                            writer.WriteLine("Raw HE damage");
-                            writer.WriteLine("HE explosion radius (m)");
-                        }
-                        writer.WriteLine((DamageType)(int)dt + " damage");
-                    }
-                }
-
-
-                writer.WriteLine("Reload time (s)");
-                foreach (DamageType dt in dtToShow.Keys)
-                {
-                    if (dtToShow[dt])
-                    {
-                        writer.WriteLine((DamageType)(int)dt + " DPS");
-                    }
-                }
-
-                writer.WriteLine("Loader volume");
-                writer.WriteLine("Cooler volume");
-                writer.WriteLine("Charger volume");
-                writer.WriteLine("Engine volume");
-                writer.WriteLine("Fuel access volume");
-                writer.WriteLine("Fuel storage volume");
-                writer.WriteLine("Recoil volume");
-                writer.WriteLine("Ammo access volume");
-                writer.WriteLine("Ammo storage volume");
-                writer.WriteLine("Total volume");
-                foreach (DamageType dt in dtToShow.Keys)
-                {
-                    if (dtToShow[dt])
-                    {
-                        writer.WriteLine((DamageType)(int)dt + " DPS per volume");
-                    }
-                }
-
-                writer.WriteLine("Cost per shell");
-                writer.WriteLine("Loader cost");
-                writer.WriteLine("Cooler cost");
-                writer.WriteLine("Charger cost");
-                writer.WriteLine("Fuel burned");
-                writer.WriteLine("Engine cost");
-                writer.WriteLine("Fuel access cost");
-                writer.WriteLine("Fuel storage cost");
-                writer.WriteLine("Recoil cost");
-                writer.WriteLine("Ammo used");
-                writer.WriteLine("Ammo access cost");
-                writer.WriteLine("Ammo storage cost");
-                writer.WriteLine("Total cost");
-                writer.WriteLine("Cost per volume");
-                foreach (DamageType dt in dtToShow.Keys)
-                {
-                    if (dtToShow[dt])
-                    {
-                        writer.WriteLine((DamageType)(int)dt + " DPS per cost");
-                    }
-                }
-            }
-
             // Determine whether any shells met test criteria
             bool shellsToPrint = false;
             foreach (string shellName in TopDpsShells.Keys)
@@ -1769,18 +1646,18 @@ namespace ApsCalcUI
             }
             else
             {
-                foreach (KeyValuePair<string, Shell> topShell in TopDpsShells)
+                foreach (KeyValuePair<string, Shell> topShellPair in TopDpsShells)
                 {
                     // Calculate barrel lengths
-                    topShell.Value.CalculateRequiredBarrelLengths(MaxInaccuracy);
+                    topShellPair.Value.CalculateRequiredBarrelLengths(MaxInaccuracy);
 
                     // Calculate all damage and DPS -- including those not used for optimizing
                     foreach (DamageType dt in dtToShow.Keys)
                     {
-                        if (dtToShow[dt] && topShell.Value.IsBelt)
+                        if (dtToShow[dt] && topShellPair.Value.IsBelt)
                         {
-                            topShell.Value.CalculateDamageByType(dt, FragAngleMultiplier);
-                            topShell.Value.CalculateDpsByTypeBelt(
+                            topShellPair.Value.CalculateDamageByType(dt, FragAngleMultiplier);
+                            topShellPair.Value.CalculateDpsByTypeBelt(
                                 dt,
                                 TargetAC,
                                 TestIntervalSeconds,
@@ -1795,8 +1672,8 @@ namespace ApsCalcUI
                         }
                         else if (dtToShow[dt])
                         {
-                            topShell.Value.CalculateDamageByType(dt, FragAngleMultiplier);
-                            topShell.Value.CalculateDpsByType(
+                            topShellPair.Value.CalculateDamageByType(dt, FragAngleMultiplier);
+                            topShellPair.Value.CalculateDpsByType(
                                 dt,
                                 TargetAC,
                                 TestIntervalSeconds,
@@ -1810,10 +1687,784 @@ namespace ApsCalcUI
                                 ImpactAngleFromPerpendicularDegrees);
                         }
                     }
-                    writer.WriteLine("\n");
-                    writer.WriteLine(topShell.Key);
-                    topShell.Value.GetModuleCounts();
-                    topShell.Value.WriteShellInfoToFile(writer, LabelEveryRow, showGP, showRG, showDraw, dtToShow, modsToShow, TargetAC);
+                    topShellPair.Value.GetModuleCounts();
+                }
+
+                List<string> loaderSizeList = new()
+                {
+                    " "
+                };
+                foreach (string topShellName in TopDpsShells.Keys)
+                {
+                    loaderSizeList.Add(topShellName);
+                }
+                writer.WriteLine(string.Join(',', loaderSizeList));
+
+                List<string> gaugeList = new()
+                {
+                    "Gauge (mm)"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    gaugeList.Add(topShell.Gauge.ToString());
+                }
+                writer.WriteLine(string.Join(',', gaugeList));
+
+                List<string> totalLengthList = new()
+                {
+                    "Total length (mm)"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    totalLengthList.Add(topShell.TotalLength.ToString());
+                }
+                writer.WriteLine(string.Join(',', totalLengthList));
+
+                List<string> lengthWithoutCasingsList = new()
+                {
+                    "Length without casings (mm)"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    lengthWithoutCasingsList.Add(topShell.ProjectileLength.ToString());
+                }
+                writer.WriteLine(string.Join(',', lengthWithoutCasingsList));
+
+                List<string> totalModulesList = new()
+                {
+                    "Total modules"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    totalModulesList.Add(topShell.ModuleCountTotal.ToString());
+                }
+                writer.WriteLine(string.Join(',', totalModulesList));
+
+
+
+                if (showGP)
+                {
+                    List<string> gpCasingList = new()
+                    {
+                        "GP casing"
+                    };
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        gpCasingList.Add(topShell.GPCasingCount.ToString());
+                    }
+                    writer.WriteLine(string.Join(',', gpCasingList));
+                }
+                if (showRG)
+                {
+                    List<string> rgCasingList = new()
+                    {
+                        "RG casing"
+                    };
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        rgCasingList.Add(topShell.RGCasingCount.ToString());
+                    }
+                    writer.WriteLine(string.Join(',', rgCasingList));
+                }
+
+                foreach (int index in modsToShow)
+                {
+                    List<string> modCountList = new()
+                    {
+                        Module.AllModules[index].Name
+                    };
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        modCountList.Add(topShell.BodyModuleCounts[index].ToString());
+                    }
+                    writer.WriteLine(string.Join(',', modCountList));
+                }
+
+                List<string> headList = new()
+                {
+                    "Head"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    headList.Add(topShell.HeadModule.Name);
+                }
+                writer.WriteLine(string.Join(',', headList));
+
+                if (showDraw)
+                {
+                    List<string> railDrawList = new()
+                    {
+                        "Rail draw"
+                    };
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        railDrawList.Add(topShell.RailDraw.ToString());
+                    }
+                    writer.WriteLine(string.Join(',', railDrawList));
+                }
+
+                // Recoil = draw if no GP
+                if (showGP)
+                {
+                    List<string> recoilList = new()
+                    {
+                        "Recoil"
+                    };
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        recoilList.Add(topShell.TotalRecoil.ToString());
+                    }
+                    writer.WriteLine(string.Join(',', recoilList));
+                }
+
+                List<string> velocityList = new()
+                {
+                    "Velocity (m/s)"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    velocityList.Add(topShell.Velocity.ToString());
+                }
+                writer.WriteLine(string.Join(',', velocityList));
+
+                List<string> effectiveRangeList = new()
+                {
+                    "Effective range (m)"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    effectiveRangeList.Add(topShell.EffectiveRange.ToString());
+                }
+                writer.WriteLine(string.Join(',', effectiveRangeList));
+
+                List<string> barrelLengthInaccuracyList = new()
+                {
+                    "Barrel length for inaccuracy (m)"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    barrelLengthInaccuracyList.Add(topShell.BarrelLengthForInaccuracy.ToString());
+                }
+                writer.WriteLine(string.Join(',', barrelLengthInaccuracyList));
+
+                List<string> barrelLengthPropellantBurnList = new()
+                {
+                    "Barrel length for propellant burn (m)"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    barrelLengthPropellantBurnList.Add(topShell.BarrelLengthForPropellant.ToString());
+                }
+                writer.WriteLine(string.Join(',', barrelLengthPropellantBurnList));
+
+
+                foreach (DamageType dt in dtToShow.Keys)
+                {
+                    if (dtToShow[dt])
+                    {
+                        if (dt == DamageType.Kinetic)
+                        {
+                            List<string> rawKDList = new()
+                            {
+                                "Raw KD"
+                            };
+                            foreach (Shell topShell in TopDpsShells.Values)
+                            {
+                                rawKDList.Add(topShell.RawKD.ToString());
+                            }
+                            writer.WriteLine(string.Join(',', rawKDList));
+
+                            List<string> apList = new()
+                            {
+                                "AP"
+                            };
+                            foreach (Shell topShell in TopDpsShells.Values)
+                            {
+                                apList.Add(topShell.ArmorPierce.ToString());
+                            }
+                            writer.WriteLine(string.Join(',', apList));
+
+                            List<string> kdMultiplierList = new()
+                            {
+                                "KD multiplier from angle"
+                            };
+                            foreach (Shell topShell in TopDpsShells.Values)
+                            {
+                                if (topShell.HeadModule == Module.HollowPoint || TargetAC == 20f)
+                                {
+                                    kdMultiplierList.Add("1");
+                                }
+                                else if (topShell.HeadModule == Module.SabotHead)
+                                {
+                                    kdMultiplierList.Add(topShell.SabotAngleMultiplier.ToString());
+                                }
+                                else
+                                {
+                                    kdMultiplierList.Add(topShell.NonSabotAngleMultiplier.ToString());
+                                }
+                            }
+                            writer.WriteLine(string.Join(',', kdMultiplierList));
+                        }
+                        else if (dt == DamageType.Frag)
+                        {
+                            List<string> fragCountList = new()
+                            {
+                                "Frag count"
+                            };
+                            foreach (Shell topShell in TopDpsShells.Values)
+                            {
+                                fragCountList.Add(topShell.FragCount.ToString());
+                            }
+                            writer.WriteLine(string.Join(',', fragCountList));
+
+                            List<string> damagePerFragList = new()
+                            {
+                                "Damage per frag"
+                            };
+                            foreach (Shell topShell in TopDpsShells.Values)
+                            {
+                                damagePerFragList.Add(topShell.DamagePerFrag.ToString());
+                            }
+                            writer.WriteLine(string.Join(',', damagePerFragList));
+                        }
+                        else if (dt == DamageType.FlaK)
+                        {
+                            List<string> rawFlakDamageList = new()
+                            {
+                                "Raw FlaK damage"
+                            };
+                            foreach (Shell topShell in TopDpsShells.Values)
+                            {
+                                rawFlakDamageList.Add(topShell.RawFlaK.ToString());
+                            }
+                            writer.WriteLine(string.Join(',', rawFlakDamageList));
+
+                            List<string> flakExplosionRadiusList = new()
+                            {
+                                "FlaK explosion radius (m)"
+                            };
+                            foreach (Shell topShell in TopDpsShells.Values)
+                            {
+                                flakExplosionRadiusList.Add(topShell.FlaKExplosionRadius.ToString());
+                            }
+                            writer.WriteLine(string.Join(',', flakExplosionRadiusList));
+                        }
+                        else if (dt == DamageType.HE)
+                        {
+                            List<string> rawHEDamageList = new()
+                            {
+                                "Raw HE damage"
+                            };
+                            foreach (Shell topShell in TopDpsShells.Values)
+                            {
+                                rawHEDamageList.Add(topShell.RawHE.ToString());
+                            }
+                            writer.WriteLine(string.Join(',', rawHEDamageList));
+
+                            List<string> heExplosionRadiusList = new()
+                            {
+                                "HE explosion radius (m)"
+                            };
+                            foreach (Shell topShell in TopDpsShells.Values)
+                            {
+                                heExplosionRadiusList.Add(topShell.HEExplosionRadius.ToString());
+                            }
+                            writer.WriteLine(string.Join(',', heExplosionRadiusList));
+                        }
+
+                        List<string> damageList = new()
+                        {
+                            (DamageType)(int)dt + " damage"
+                        };
+                        foreach (Shell topShell in TopDpsShells.Values)
+                        {
+                            damageList.Add(topShell.DamageDict[dt].ToString());
+                        }
+                        writer.WriteLine(string.Join(',', damageList));
+                    }
+                }
+
+                List<string> reloadTimeList = new()
+                {
+                    "Reload time (s)"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        reloadTimeList.Add(topShell.ReloadTimeBelt.ToString());
+                    }
+                    else
+                    {
+                        reloadTimeList.Add(topShell.ReloadTime.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', reloadTimeList));
+
+                List<string> uptimeList = new()
+                {
+                    "Uptime"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        uptimeList.Add(topShell.UptimeBelt.ToString());
+                    }
+                    else
+                    {
+                        uptimeList.Add("1");
+                    }
+                }
+                writer.WriteLine(string.Join(',', uptimeList));
+
+                foreach (DamageType dt in dtToShow.Keys)
+                {
+                    if (dtToShow[dt])
+                    {
+                        List<string> dpsList = new()
+                        {
+                            (DamageType)(int)dt + " DPS"
+                        };
+                        foreach (Shell topShell in TopDpsShells.Values)
+                        {
+                            dpsList.Add(topShell.DpsDict[dt].ToString());
+                        }
+                        writer.WriteLine(string.Join(',', dpsList));
+                    }
+                }
+
+                List<string> loaderVolumeList = new()
+                {
+                    "Loader volume"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        loaderVolumeList.Add(topShell.LoaderVolumeBelt.ToString());
+                    }
+                    else
+                    {
+                        loaderVolumeList.Add(topShell.LoaderVolume.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', loaderVolumeList));
+
+                List<string> coolerVolumeList = new()
+                {
+                    "Cooler volume"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        coolerVolumeList.Add(topShell.CoolerVolumeBelt.ToString());
+                    }
+                    else
+                    {
+                        coolerVolumeList.Add(topShell.CoolerVolume.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', coolerVolumeList));
+
+                List<string> chargerVolumeList = new()
+                {
+                    "Charger volume"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        chargerVolumeList.Add(topShell.ChargerVolumeBelt.ToString());
+                    }
+                    else
+                    {
+                        chargerVolumeList.Add(topShell.ChargerVolume.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', chargerVolumeList));
+
+                List<string> engineVolumeList = new()
+                {
+                    "Engine volume"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        engineVolumeList.Add(topShell.EngineVolumeBelt.ToString());
+                    }
+                    else
+                    {
+                        engineVolumeList.Add(topShell.EngineVolume.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', engineVolumeList));
+
+                List<string> fuelAccessVolumeList = new()
+                {
+                    "Fuel access volume"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        fuelAccessVolumeList.Add(topShell.FuelAccessVolumeBelt.ToString());
+                    }
+                    else
+                    {
+                        fuelAccessVolumeList.Add(topShell.FuelAccessVolume.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', fuelAccessVolumeList));
+
+                List<string> fuelStorageVolumeList = new()
+                {
+                    "Fuel storage volume"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        fuelStorageVolumeList.Add(topShell.FuelStorageVolumeBelt.ToString());
+                    }
+                    else
+                    {
+                        fuelStorageVolumeList.Add(topShell.FuelStorageVolume.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', fuelStorageVolumeList));
+
+                List<string> recoilVolumeList = new()
+                {
+                    "Recoil volume"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        recoilVolumeList.Add(topShell.RecoilVolumeBelt.ToString());
+                    }
+                    else
+                    {
+                        recoilVolumeList.Add(topShell.RecoilVolume.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', recoilVolumeList));
+
+                List<string> ammoAccessVolumeList = new()
+                {
+                    "Ammo access volume"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        ammoAccessVolumeList.Add(topShell.AmmoAccessVolumeBelt.ToString());
+                    }
+                    else
+                    {
+                        ammoAccessVolumeList.Add(topShell.AmmoAccessVolume.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', ammoAccessVolumeList));
+
+                List<string> ammoStorageVolumeList = new()
+                {
+                    "Ammo storage volume"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        ammoStorageVolumeList.Add(topShell.AmmoStorageVolumeBelt.ToString());
+                    }
+                    else
+                    {
+                        ammoStorageVolumeList.Add(topShell.AmmoStorageVolume.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', ammoStorageVolumeList));
+
+                List<string> totalVolumeList = new()
+                {
+                    "Total volume"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        totalVolumeList.Add(topShell.VolumePerIntakeBelt.ToString());
+                    }
+                    else
+                    {
+                        totalVolumeList.Add(topShell.VolumePerIntake.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', totalVolumeList));
+
+                foreach (DamageType dt in dtToShow.Keys)
+                {
+                    if (dtToShow[dt])
+                    {
+                        List<string> dpsPerVolumeList = new()
+                        {
+                            (DamageType)(int)dt + " DPS per volume"
+                        };
+                        foreach (Shell topShell in TopDpsShells.Values)
+                        {
+                            dpsPerVolumeList.Add(topShell.DpsPerVolumeDict[dt].ToString());
+                        }
+                        writer.WriteLine(string.Join(',', dpsPerVolumeList));
+                    }
+                }
+
+                List<string> costPerShellList = new()
+                {
+                    "Cost per shell"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    costPerShellList.Add(topShell.CostPerShell.ToString());
+                }
+                writer.WriteLine(string.Join(',', costPerShellList));
+
+                List<string> loaderCostList = new()
+                {
+                    "Loader cost"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        loaderCostList.Add(topShell.LoaderCostBelt.ToString());
+                    }
+                    else
+                    {
+                        loaderCostList.Add(topShell.LoaderCost.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', loaderCostList));
+
+                List<string> coolerCostList = new()
+                {
+                    "Cooler cost"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        coolerCostList.Add(topShell.CoolerCostBelt.ToString());
+                    }
+                    else
+                    {
+                        coolerCostList.Add(topShell.CoolerCost.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', coolerCostList));
+
+                List<string> chargerCostList = new()
+                {
+                    "Charger cost"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        chargerCostList.Add(topShell.ChargerCostBelt.ToString());
+                    }
+                    else
+                    {
+                        chargerCostList.Add(topShell.ChargerCost.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', chargerCostList));
+
+                List<string> fuelBurnedList = new()
+                {
+                    "Fuel burned"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        fuelBurnedList.Add(topShell.FuelBurnedBelt.ToString());
+                    }
+                    else
+                    {
+                        fuelBurnedList.Add(topShell.FuelBurned.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', fuelBurnedList));
+
+                List<string> engineCostList = new()
+                {
+                    "Engine cost"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        engineCostList.Add(topShell.EngineCostBelt.ToString());
+                    }
+                    else
+                    {
+                        engineCostList.Add(topShell.EngineCost.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', engineCostList));
+
+                List<string> fuelAccessCostList = new()
+                {
+                    "Fuel access cost"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        fuelAccessCostList.Add(topShell.FuelAccessCostBelt.ToString());
+                    }
+                    else
+                    {
+                        fuelAccessCostList.Add(topShell.FuelAccessCost.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', fuelAccessCostList));
+
+                List<string> fuelStorageCostList = new()
+                {
+                    "Fuel storage cost"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        fuelStorageCostList.Add(topShell.FuelStorageCostBelt.ToString());
+                    }
+                    else
+                    {
+                        fuelStorageCostList.Add(topShell.FuelStorageCost.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', fuelStorageCostList));
+
+                List<string> recoilCostList = new()
+                {
+                    "Recoil cost"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        recoilCostList.Add(topShell.RecoilCostBelt.ToString());
+                    }
+                    else
+                    {
+                        recoilCostList.Add(topShell.RecoilCost.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', recoilCostList));
+
+                List<string> ammoUsedList = new()
+                {
+                    "Ammo used"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        ammoUsedList.Add(topShell.AmmoUsedBelt.ToString());
+                    }
+                    else
+                    {
+                        ammoUsedList.Add(topShell.AmmoUsed.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', ammoUsedList));
+
+                List<string> ammoAccessCostList = new()
+                {
+                    "Ammo access cost"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        ammoAccessCostList.Add(topShell.AmmoAccessCostBelt.ToString());
+                    }
+                    else
+                    {
+                        ammoAccessCostList.Add(topShell.AmmoAccessCost.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', ammoAccessCostList));
+
+                List<string> ammoStorageCostList = new()
+                {
+                    "Ammo storage cost"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        ammoStorageCostList.Add(topShell.AmmoStorageCostBelt.ToString());
+                    }
+                    else
+                    {
+                        ammoStorageCostList.Add(topShell.AmmoStorageCost.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', ammoStorageCostList));
+
+                List<string> totalCostList = new()
+                {
+                    "Total cost"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        totalCostList.Add(topShell.AmmoStorageCostBelt.ToString());
+                    }
+                    else
+                    {
+                        totalCostList.Add(topShell.AmmoStorageCost.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', totalCostList));
+
+                List<string> costPerVolumeList = new()
+                {
+                    "Cost per volume"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    if (topShell.IsBelt)
+                    {
+                        costPerVolumeList.Add(topShell.CostPerVolumeBelt.ToString());
+                    }
+                    else
+                    {
+                        costPerVolumeList.Add(topShell.CostPerVolume.ToString());
+                    }
+                }
+                writer.WriteLine(string.Join(',', costPerVolumeList));
+
+                foreach (DamageType dt in dtToShow.Keys)
+                {
+                    if (dtToShow[dt])
+                    {
+                        List<string> dpsPerCostList = new()
+                        {
+                            (DamageType)(int)dt + " DPS per cost"
+                        };
+                        foreach (Shell topShell in TopDpsShells.Values)
+                        {
+                            dpsPerCostList.Add(topShell.DpsPerCostDict[dt].ToString());
+                        }
+                        writer.WriteLine(string.Join(',', dpsPerCostList));
+                    }
                 }
             }
         }

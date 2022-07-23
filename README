@@ -11,9 +11,10 @@ If running from the downloaded .zip file, run the executable "ApsCalcUI".
 The link to download is available in my Discord repository, linked above.
 
 ---- TEST PARAMETERS ----
-NOTE: Results for each test will be written to a text file in the ApsCalcUI
-folder. Filenames are automatically generated from current time. An example
-filename is "2021-07-04_09-12-11-12".
+NOTE: Results for each test will be written to a .csv file in the ApsCalcUI
+folder. Open using a spreadsheet program, such as LibreOffice Calc, using 
+UTF-8 encoding and comma separators. Filenames are automatically generated 
+from current time. An example filename is "2021-07-04_09-12-11-12".
 
 Barrel Count: number of barrels. APS cannons can have anywhere from 1-6
 barrels. Additional barrels help cooling, but impose an accuracy penalty and
@@ -27,7 +28,7 @@ by the barrel count, whichever is less).
 
 DIF Checkbox: Check if the inputs will be mounted directly to the firing
 piece, as opposed to using clips. This is known as Direct Input Feed, or DIF,
-and allows for longer shells (10 000mm in vanilla; 20 000mm with 1000mm APS
+and allows for longer shells (10,000mm in vanilla; 20,000mm with 1000mm APS
 mod), but limits the gun to 4 inputs max, and doubles reload time.
 
 1000mm APS Mod: if checked, allows the max gauge to be set as high as 1000mm.
@@ -62,7 +63,7 @@ base modules add functionality or modify performance, and in general I
 recommend using some kind of base; test with Base Bleeder versus no base if
 no additional functionality is required.
 	Visible Tracer: prompts Rate of Fire input. Visible tracer bonus to 
-		inaccuracy scales with rate of fire.
+	inaccuracy scales with rate of fire.
 
 Fixed Modules: modules to be included with every shell.
 n.b. The input validation for fixed modules is not perfect. Please double-
@@ -123,7 +124,7 @@ the configuration of the target armor. Note that all slopes are assumed to
 be built with the airgap facing outwards, away from the center of the craft.
 Additionally, each sloped block has a "shallow" and a "steep" option, for 
 shells hitting parallel or perpendicular to the slope. Shallow angles are 
-closer to parallel with the surface of the block, and thus will have a more
+nearer parallel with the surface of the block, and thus will have a more
 severe kinetic damage reduction and a greater ricochet chance.
 
 Damage Type: damage type to optimize.
@@ -159,25 +160,6 @@ are not counted, because their proprotion of the cost depends on the size of
 the gun and the Tetris skill of the builder. The components which are counted
 are the loader, input, recoil absorbers, coolers, and rail chargers. Beltfed
 loaders assume a fixed configuration of 1 clip and 2 inputs per loader.
-
-Label Every Row Checkbox: whether to include labels on every row of the 
-printout. Tests without row labels will print the row headers before the
-actual results; these are intended to be copied into a spreadsheet, with each
-loader length as its own column. For example:
-
-	WITH LABELS				WITHOUT LABELS
-	3 m					3 m
-	Gauge (mm): 200				200
-	Total length (mm): 3000			3000
-	Length without casings: 3000		3000
-	Total modules: 16			16
-	GP Casing: 0				0
-	RG Casing: 0				0
-	Solid body: 10				10
-	Frag body: 2				2
-	HE body: 1				1
-	Fuse: 1					1
-	Head: Hollow point head			Hollow point head
 
 Test Interval: the duration in minutes for which the gun will fire. This does
 not affect the cost of the gun itself (loader, recoil, charger, cooler, 
@@ -239,8 +221,7 @@ Effective range (m): range at which velocity decreases dramatically.
 Barrel length for inacccuracy (m): minimum barrel length to achieve desired
 inaccuracy (default 0.3°). Note that, unlike the ingame UI, the optimizer 
 includes bonuses from Base Bleeder and Visual Tracer in the calculation, so 
-this number may not match what is shown ingame. The optimizer assumes x0.72 
-from tracers, which may not be the case depending on actual ROF.
+this number may not match what is shown ingame.
 
 Barrel length for ful propellant burn (m): same value as shown ingame.
 
@@ -258,7 +239,7 @@ Damage:
 
 Reload time: shell reload speed per intake, in seconds.
 
-DPS: Damage per Second. See "Damage" above.
+DPS: Damage per Second.
 
 Loader volume: cubic metres taken up by the loader and input. For beltfed
 loaders, the volume is 4, because beltfed performance is calculated using
@@ -296,8 +277,8 @@ the materials the engine will burn as fuel. Fuel access tanks/beams hold
 enough materials to run themselves for 10 minutes, so this number will be 0
 if the testing interval is <= 10 minutes, or if the shell has no rail draw.
 
-Recoil volume: volume of recoil absorbers. Will never be 0 if the shell has
-any muzzle velocity.
+Recoil volume: volume of recoil absorbers. Will always be 0 if "Recoil 
+absorbers" is unchecked.
 
 Ammo access volume: volume of ammo crates needed to keep up with ammo 
 consumption.
