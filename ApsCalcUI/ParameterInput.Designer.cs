@@ -92,6 +92,7 @@ namespace ApsCalcUI
             this.FragAngleUD = new System.Windows.Forms.NumericUpDown();
             this.GunUsesRecoilAbsorbersCB = new System.Windows.Forms.CheckBox();
             this.RofRpmUD = new System.Windows.Forms.NumericUpDown();
+            this.CommaDecimalCB = new System.Windows.Forms.CheckBox();
             this.BarrelCountLabel = new System.Windows.Forms.Label();
             this.MinGaugeLabel = new System.Windows.Forms.Label();
             this.MaxGaugeLabel = new System.Windows.Forms.Label();
@@ -1111,6 +1112,17 @@ namespace ApsCalcUI
             0});
             this.RofRpmUD.Visible = false;
             // 
+            // CommaDecimalCB
+            // 
+            this.CommaDecimalCB.AutoSize = true;
+            this.CommaDecimalCB.Location = new System.Drawing.Point(452, 528);
+            this.CommaDecimalCB.Name = "CommaDecimalCB";
+            this.CommaDecimalCB.Size = new System.Drawing.Size(168, 19);
+            this.CommaDecimalCB.TabIndex = 59;
+            this.CommaDecimalCB.Text = "Comma Decimal Separator";
+            this.ToolTip.SetToolTip(this.CommaDecimalCB, "Check if your computer displays \"five and three tenths\" as 5,3 (with a comma).");
+            this.CommaDecimalCB.UseVisualStyleBackColor = true;
+            // 
             // BarrelCountLabel
             // 
             this.BarrelCountLabel.AutoSize = true;
@@ -1617,6 +1629,7 @@ namespace ApsCalcUI
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 608);
+            this.Controls.Add(this.CommaDecimalCB);
             this.Controls.Add(this.RofRpmPanel);
             this.Controls.Add(this.GunUsesRecoilAbsorbersCB);
             this.Controls.Add(this.FragAnglePanel);
@@ -1844,6 +1857,7 @@ namespace ApsCalcUI
         private System.Windows.Forms.Panel RofRpmPanel;
         private System.Windows.Forms.Label RofRpmLabel;
         private System.Windows.Forms.NumericUpDown RofRpmUD;
+        private System.Windows.Forms.CheckBox CommaDecimalCB;
     }
 }
 

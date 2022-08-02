@@ -51,6 +51,7 @@ namespace ApsCalcUI
         public bool LimitBarrelLength;
         public float MaxBarrelLength;
         public BarrelLengthLimit BarrelLengthLimitType;
+        public char ColumnDelimiter;
     }
 
     static class Program

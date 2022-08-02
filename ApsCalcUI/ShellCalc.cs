@@ -90,6 +90,7 @@ namespace ApsCalcUI
         /// <param name="limitBarrelLength">Whether to limit max barrel length</param>
         /// <param name="maxBarrelLength">Max barrel length in m or calibers</param>
         /// <param name="barrelLengthLimitType">Whether to limit barrel length by m or calibers (multiples of gauge)</param>
+        /// <param name="columnDelimiter">Character used to separate columns in .csv output; either comma or semicolon</param>
         public ShellCalc(
             int barrelCount,
             float gauge,
@@ -130,7 +131,8 @@ namespace ApsCalcUI
             float rateOfFireRpm,
             bool limitBarrelLength,
             float maxBarrelLength,
-            BarrelLengthLimit barrelLengthLimitType
+            BarrelLengthLimit barrelLengthLimitType,
+            char columnDelimiter
             )
         {
             BarrelCount = barrelCount;
@@ -191,6 +193,7 @@ namespace ApsCalcUI
             {
                 MaxGP = MaxGPInput;
             }
+            ColumnDelimiter = columnDelimiter;
         }
 
         public int BarrelCount { get; }
@@ -236,6 +239,7 @@ namespace ApsCalcUI
         public float MaxBarrelLengthInM { get; }
         public float MaxBarrelLengthInCalibers { get; }
         public BarrelLengthLimit BarrelLengthLimitType { get; }
+        public char ColumnDelimiter { get; }
 
 
         // Store top-DPS shells by loader length
@@ -1477,32 +1481,27 @@ namespace ApsCalcUI
             FileStream fs = (FileStream)writer.BaseStream;
 
             writer.WriteLine("\nTest Parameters");
-            if (BarrelCount == 1)
-            {
-                writer.WriteLine("1 barrel");
-            }
-            else
-            {
-                writer.WriteLine(BarrelCount + " barrels");
-            }
+
+            writer.WriteLine("Barrels" + ColumnDelimiter + BarrelCount);
             if (minGauge == maxGauge)
             {
-                writer.WriteLine("Gauge (mm): " + minGauge);
+                writer.WriteLine("Gauge (mm)" + ColumnDelimiter + minGauge);
             }
             else
             {
-                writer.WriteLine("Gauge (mm): " + minGauge + " thru " + maxGauge);
+                writer.WriteLine("Min gauge (mm)" + ColumnDelimiter + minGauge);
+                writer.WriteLine("Max gauge (mm)" + ColumnDelimiter + maxGauge);
             }
 
-            writer.WriteLine("Impact angle (°): " + ImpactAngleFromPerpendicularDegrees);
+            writer.WriteLine("Impact angle (°)" + ColumnDelimiter + ImpactAngleFromPerpendicularDegrees);
 
             if (HeadList.Count == 1)
             {
-                writer.WriteLine("Head: " + Module.AllModules[HeadList[0]].Name);
+                writer.WriteLine("Head" + ColumnDelimiter + Module.AllModules[HeadList[0]].Name);
             }
             else
             {
-                writer.WriteLine("Heads: ");
+                writer.WriteLine("Heads:");
                 foreach (int headIndex in HeadList)
                 {
                     writer.WriteLine(Module.AllModules[headIndex].Name);
@@ -1511,10 +1510,10 @@ namespace ApsCalcUI
 
             if (BaseModule != null)
             {
-                writer.WriteLine("Base: " + BaseModule.Name);
+                writer.WriteLine("Base" + ColumnDelimiter + BaseModule.Name);
                 if (BaseModule == Module.Tracer)
                 {
-                    writer.WriteLine("ROF (RPM): " + RateOfFireRpm);
+                    writer.WriteLine("ROF (RPM)" + ColumnDelimiter + RateOfFireRpm);
                 }
             }
             else
@@ -1522,14 +1521,14 @@ namespace ApsCalcUI
                 writer.WriteLine("No special base module");
             }
 
-            writer.WriteLine("Fixed module(s): ");
+            writer.WriteLine("Fixed module(s):");
 
             int modIndex = 0;
             foreach (float modCount in FixedModuleCounts)
             {
                 if (modCount > 0)
                 {
-                    writer.WriteLine(Module.AllModules[modIndex].Name + ": " + modCount);
+                    writer.WriteLine(Module.AllModules[modIndex].Name + ColumnDelimiter + modCount);
                 }
                 modIndex++;
             }
@@ -1543,34 +1542,34 @@ namespace ApsCalcUI
             }
 
 
-            writer.WriteLine("Max GP casings: " + MaxGPInput);
-            writer.WriteLine("Max RG casings: " + MaxRGInput);
-            writer.WriteLine("Max draw: " + MaxDrawInput);
+            writer.WriteLine("Max GP casings" + ColumnDelimiter + MaxGPInput);
+            writer.WriteLine("Max RG casings" + ColumnDelimiter + MaxRGInput);
+            writer.WriteLine("Max draw" + ColumnDelimiter + MaxDrawInput);
             if(MaxDrawInput > 0)
             {
-                writer.WriteLine("Engine PPM: " + EnginePpm);
-                writer.WriteLine("Engine PPV: " + EnginePpv);
-                writer.WriteLine("Engine PPC: " + EnginePpc);
-                writer.WriteLine("Fuel engine: " + EngineUsesFuel);
+                writer.WriteLine("Engine PPM" + ColumnDelimiter + EnginePpm);
+                writer.WriteLine("Engine PPV" + ColumnDelimiter + EnginePpv);
+                writer.WriteLine("Engine PPC" + ColumnDelimiter + EnginePpc);
+                writer.WriteLine("Fuel engine" + ColumnDelimiter + EngineUsesFuel);
             }
-            writer.WriteLine("Max recoil: " + MaxRecoilInput);
-            writer.WriteLine("Min length (mm): " + MinShellLength);
-            writer.WriteLine("Max length (mm): " + MaxShellLength);
-            writer.WriteLine("Min velocity (m/s): " + MinVelocityInput);
-            writer.WriteLine("Min effective range (m): " + MinEffectiveRangeInput);
+            writer.WriteLine("Max recoil" + ColumnDelimiter + MaxRecoilInput);
+            writer.WriteLine("Min length (mm)" + ColumnDelimiter + MinShellLength);
+            writer.WriteLine("Max length (mm)" + ColumnDelimiter + MaxShellLength);
+            writer.WriteLine("Min velocity (m/s)" + ColumnDelimiter + MinVelocityInput);
+            writer.WriteLine("Min effective range (m)" + ColumnDelimiter + MinEffectiveRangeInput);
             if (LimitBarrelLength)
             {
-                writer.WriteLine("Max inaccuracy (°): " + MaxInaccuracy);
+                writer.WriteLine("Max inaccuracy (°)" + ColumnDelimiter + MaxInaccuracy);
                 if (BarrelLengthLimitType == BarrelLengthLimit.Calibers)
                 {
-                    writer.WriteLine("Max barrel length (calibers): " + MaxBarrelLengthInCalibers);
+                    writer.WriteLine("Max barrel length (calibers)" + ColumnDelimiter + MaxBarrelLengthInCalibers);
                 }
                 else if (BarrelLengthLimitType == BarrelLengthLimit.FixedLength)
                 {
-                    writer.WriteLine("Max barrel length (m): " + MaxBarrelLengthInM);
+                    writer.WriteLine("Max barrel length (m)" + ColumnDelimiter + MaxBarrelLengthInM);
                 }
             }
-            writer.WriteLine("Test interval (min): " + TestInterval);
+            writer.WriteLine("Test interval (min)" + ColumnDelimiter + TestInterval);
             if (FiringPieceIsDif)
             {
                 writer.WriteLine("Gun is using Direct Input Feed");
@@ -1601,22 +1600,22 @@ namespace ApsCalcUI
 
             if (DamageType == DamageType.Kinetic)
             {
-                writer.WriteLine("Damage type: Kinetic");
-                writer.WriteLine("Target AC: " + TargetAC);
+                writer.WriteLine("Damage type" + ColumnDelimiter + "Kinetic");
+                writer.WriteLine("Target AC" + ColumnDelimiter + TargetAC);
             }
             else if (DamageType == DamageType.Disruptor)
             {
-                writer.WriteLine("Damage type: Disruptor");
-                writer.WriteLine("Min disruptor strength: " + MinDisruptor);
+                writer.WriteLine("Damage type" + ColumnDelimiter + "Disruptor");
+                writer.WriteLine("Min disruptor strength" + ColumnDelimiter + MinDisruptor);
             }
             else if (DamageType == DamageType.Frag)
             {
-                writer.WriteLine("Damage type: Frag");
-                writer.WriteLine("Frag cone angle (°): " + FragConeAngle);
+                writer.WriteLine("Damage type" + ColumnDelimiter + "Frag");
+                writer.WriteLine("Frag cone angle (°)" + ColumnDelimiter + FragConeAngle);
             }
             else
             {
-                writer.WriteLine("Damage type: " + (DamageType)(int)DamageType);
+                writer.WriteLine("Damage type" + ColumnDelimiter + (DamageType)(int)DamageType);
             }
 
             if (TestType == 0)
@@ -1698,7 +1697,7 @@ namespace ApsCalcUI
                 {
                     loaderSizeList.Add(topShellName);
                 }
-                writer.WriteLine(string.Join(',', loaderSizeList));
+                writer.WriteLine(string.Join(ColumnDelimiter, loaderSizeList));
 
                 List<string> gaugeList = new()
                 {
@@ -1708,7 +1707,7 @@ namespace ApsCalcUI
                 {
                     gaugeList.Add(topShell.Gauge.ToString());
                 }
-                writer.WriteLine(string.Join(',', gaugeList));
+                writer.WriteLine(string.Join(ColumnDelimiter, gaugeList));
 
                 List<string> totalLengthList = new()
                 {
@@ -1718,7 +1717,7 @@ namespace ApsCalcUI
                 {
                     totalLengthList.Add(topShell.TotalLength.ToString());
                 }
-                writer.WriteLine(string.Join(',', totalLengthList));
+                writer.WriteLine(string.Join(ColumnDelimiter, totalLengthList));
 
                 List<string> lengthWithoutCasingsList = new()
                 {
@@ -1728,17 +1727,17 @@ namespace ApsCalcUI
                 {
                     lengthWithoutCasingsList.Add(topShell.ProjectileLength.ToString());
                 }
-                writer.WriteLine(string.Join(',', lengthWithoutCasingsList));
+                writer.WriteLine(string.Join(ColumnDelimiter, lengthWithoutCasingsList));
 
                 List<string> totalModulesList = new()
                 {
                     "Total modules"
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
-                {
+                { 
                     totalModulesList.Add(topShell.ModuleCountTotal.ToString());
                 }
-                writer.WriteLine(string.Join(',', totalModulesList));
+                writer.WriteLine(string.Join(ColumnDelimiter, totalModulesList));
 
 
 
@@ -1752,7 +1751,7 @@ namespace ApsCalcUI
                     {
                         gpCasingList.Add(topShell.GPCasingCount.ToString());
                     }
-                    writer.WriteLine(string.Join(',', gpCasingList));
+                    writer.WriteLine(string.Join(ColumnDelimiter, gpCasingList));
                 }
                 if (showRG)
                 {
@@ -1764,7 +1763,7 @@ namespace ApsCalcUI
                     {
                         rgCasingList.Add(topShell.RGCasingCount.ToString());
                     }
-                    writer.WriteLine(string.Join(',', rgCasingList));
+                    writer.WriteLine(string.Join(ColumnDelimiter, rgCasingList));
                 }
 
                 foreach (int index in modsToShow)
@@ -1777,7 +1776,7 @@ namespace ApsCalcUI
                     {
                         modCountList.Add(topShell.BodyModuleCounts[index].ToString());
                     }
-                    writer.WriteLine(string.Join(',', modCountList));
+                    writer.WriteLine(string.Join(ColumnDelimiter, modCountList));
                 }
 
                 List<string> headList = new()
@@ -1788,7 +1787,7 @@ namespace ApsCalcUI
                 {
                     headList.Add(topShell.HeadModule.Name);
                 }
-                writer.WriteLine(string.Join(',', headList));
+                writer.WriteLine(string.Join(ColumnDelimiter, headList));
 
                 if (showDraw)
                 {
@@ -1800,7 +1799,7 @@ namespace ApsCalcUI
                     {
                         railDrawList.Add(topShell.RailDraw.ToString());
                     }
-                    writer.WriteLine(string.Join(',', railDrawList));
+                    writer.WriteLine(string.Join(ColumnDelimiter, railDrawList));
                 }
 
                 // Recoil = draw if no GP
@@ -1814,7 +1813,7 @@ namespace ApsCalcUI
                     {
                         recoilList.Add(topShell.TotalRecoil.ToString());
                     }
-                    writer.WriteLine(string.Join(',', recoilList));
+                    writer.WriteLine(string.Join(ColumnDelimiter, recoilList));
                 }
 
                 List<string> velocityList = new()
@@ -1825,7 +1824,7 @@ namespace ApsCalcUI
                 {
                     velocityList.Add(topShell.Velocity.ToString());
                 }
-                writer.WriteLine(string.Join(',', velocityList));
+                writer.WriteLine(string.Join(ColumnDelimiter, velocityList));
 
                 List<string> effectiveRangeList = new()
                 {
@@ -1835,7 +1834,7 @@ namespace ApsCalcUI
                 {
                     effectiveRangeList.Add(topShell.EffectiveRange.ToString());
                 }
-                writer.WriteLine(string.Join(',', effectiveRangeList));
+                writer.WriteLine(string.Join(ColumnDelimiter, effectiveRangeList));
 
                 List<string> barrelLengthInaccuracyList = new()
                 {
@@ -1845,7 +1844,7 @@ namespace ApsCalcUI
                 {
                     barrelLengthInaccuracyList.Add(topShell.BarrelLengthForInaccuracy.ToString());
                 }
-                writer.WriteLine(string.Join(',', barrelLengthInaccuracyList));
+                writer.WriteLine(string.Join(ColumnDelimiter, barrelLengthInaccuracyList));
 
                 List<string> barrelLengthPropellantBurnList = new()
                 {
@@ -1855,7 +1854,7 @@ namespace ApsCalcUI
                 {
                     barrelLengthPropellantBurnList.Add(topShell.BarrelLengthForPropellant.ToString());
                 }
-                writer.WriteLine(string.Join(',', barrelLengthPropellantBurnList));
+                writer.WriteLine(string.Join(ColumnDelimiter, barrelLengthPropellantBurnList));
 
 
                 foreach (DamageType dt in dtToShow.Keys)
@@ -1872,7 +1871,7 @@ namespace ApsCalcUI
                             {
                                 rawKDList.Add(topShell.RawKD.ToString());
                             }
-                            writer.WriteLine(string.Join(',', rawKDList));
+                            writer.WriteLine(string.Join(ColumnDelimiter, rawKDList));
 
                             List<string> apList = new()
                             {
@@ -1882,7 +1881,7 @@ namespace ApsCalcUI
                             {
                                 apList.Add(topShell.ArmorPierce.ToString());
                             }
-                            writer.WriteLine(string.Join(',', apList));
+                            writer.WriteLine(string.Join(ColumnDelimiter, apList));
 
                             List<string> kdMultiplierList = new()
                             {
@@ -1903,7 +1902,7 @@ namespace ApsCalcUI
                                     kdMultiplierList.Add(topShell.NonSabotAngleMultiplier.ToString());
                                 }
                             }
-                            writer.WriteLine(string.Join(',', kdMultiplierList));
+                            writer.WriteLine(string.Join(ColumnDelimiter, kdMultiplierList));
                         }
                         else if (dt == DamageType.Frag)
                         {
@@ -1915,7 +1914,7 @@ namespace ApsCalcUI
                             {
                                 fragCountList.Add(topShell.FragCount.ToString());
                             }
-                            writer.WriteLine(string.Join(',', fragCountList));
+                            writer.WriteLine(string.Join(ColumnDelimiter, fragCountList));
 
                             List<string> damagePerFragList = new()
                             {
@@ -1925,7 +1924,7 @@ namespace ApsCalcUI
                             {
                                 damagePerFragList.Add(topShell.DamagePerFrag.ToString());
                             }
-                            writer.WriteLine(string.Join(',', damagePerFragList));
+                            writer.WriteLine(string.Join(ColumnDelimiter, damagePerFragList));
                         }
                         else if (dt == DamageType.FlaK)
                         {
@@ -1937,7 +1936,7 @@ namespace ApsCalcUI
                             {
                                 rawFlakDamageList.Add(topShell.RawFlaK.ToString());
                             }
-                            writer.WriteLine(string.Join(',', rawFlakDamageList));
+                            writer.WriteLine(string.Join(ColumnDelimiter, rawFlakDamageList));
 
                             List<string> flakExplosionRadiusList = new()
                             {
@@ -1947,7 +1946,7 @@ namespace ApsCalcUI
                             {
                                 flakExplosionRadiusList.Add(topShell.FlaKExplosionRadius.ToString());
                             }
-                            writer.WriteLine(string.Join(',', flakExplosionRadiusList));
+                            writer.WriteLine(string.Join(ColumnDelimiter, flakExplosionRadiusList));
                         }
                         else if (dt == DamageType.HE)
                         {
@@ -1959,7 +1958,7 @@ namespace ApsCalcUI
                             {
                                 rawHEDamageList.Add(topShell.RawHE.ToString());
                             }
-                            writer.WriteLine(string.Join(',', rawHEDamageList));
+                            writer.WriteLine(string.Join(ColumnDelimiter, rawHEDamageList));
 
                             List<string> heExplosionRadiusList = new()
                             {
@@ -1969,7 +1968,7 @@ namespace ApsCalcUI
                             {
                                 heExplosionRadiusList.Add(topShell.HEExplosionRadius.ToString());
                             }
-                            writer.WriteLine(string.Join(',', heExplosionRadiusList));
+                            writer.WriteLine(string.Join(ColumnDelimiter, heExplosionRadiusList));
                         }
 
                         List<string> damageList = new()
@@ -1980,7 +1979,7 @@ namespace ApsCalcUI
                         {
                             damageList.Add(topShell.DamageDict[dt].ToString());
                         }
-                        writer.WriteLine(string.Join(',', damageList));
+                        writer.WriteLine(string.Join(ColumnDelimiter, damageList));
                     }
                 }
 
@@ -1999,7 +1998,7 @@ namespace ApsCalcUI
                         reloadTimeList.Add(topShell.ReloadTime.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', reloadTimeList));
+                writer.WriteLine(string.Join(ColumnDelimiter, reloadTimeList));
 
                 List<string> uptimeList = new()
                 {
@@ -2016,7 +2015,7 @@ namespace ApsCalcUI
                         uptimeList.Add("1");
                     }
                 }
-                writer.WriteLine(string.Join(',', uptimeList));
+                writer.WriteLine(string.Join(ColumnDelimiter, uptimeList));
 
                 foreach (DamageType dt in dtToShow.Keys)
                 {
@@ -2030,7 +2029,7 @@ namespace ApsCalcUI
                         {
                             dpsList.Add(topShell.DpsDict[dt].ToString());
                         }
-                        writer.WriteLine(string.Join(',', dpsList));
+                        writer.WriteLine(string.Join(ColumnDelimiter, dpsList));
                     }
                 }
 
@@ -2049,7 +2048,7 @@ namespace ApsCalcUI
                         loaderVolumeList.Add(topShell.LoaderVolume.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', loaderVolumeList));
+                writer.WriteLine(string.Join(ColumnDelimiter, loaderVolumeList));
 
                 List<string> coolerVolumeList = new()
                 {
@@ -2066,7 +2065,7 @@ namespace ApsCalcUI
                         coolerVolumeList.Add(topShell.CoolerVolume.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', coolerVolumeList));
+                writer.WriteLine(string.Join(ColumnDelimiter, coolerVolumeList));
 
                 List<string> chargerVolumeList = new()
                 {
@@ -2083,7 +2082,7 @@ namespace ApsCalcUI
                         chargerVolumeList.Add(topShell.ChargerVolume.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', chargerVolumeList));
+                writer.WriteLine(string.Join(ColumnDelimiter, chargerVolumeList));
 
                 List<string> engineVolumeList = new()
                 {
@@ -2100,7 +2099,7 @@ namespace ApsCalcUI
                         engineVolumeList.Add(topShell.EngineVolume.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', engineVolumeList));
+                writer.WriteLine(string.Join(ColumnDelimiter, engineVolumeList));
 
                 List<string> fuelAccessVolumeList = new()
                 {
@@ -2117,7 +2116,7 @@ namespace ApsCalcUI
                         fuelAccessVolumeList.Add(topShell.FuelAccessVolume.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', fuelAccessVolumeList));
+                writer.WriteLine(string.Join(ColumnDelimiter, fuelAccessVolumeList));
 
                 List<string> fuelStorageVolumeList = new()
                 {
@@ -2134,7 +2133,7 @@ namespace ApsCalcUI
                         fuelStorageVolumeList.Add(topShell.FuelStorageVolume.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', fuelStorageVolumeList));
+                writer.WriteLine(string.Join(ColumnDelimiter, fuelStorageVolumeList));
 
                 List<string> recoilVolumeList = new()
                 {
@@ -2151,7 +2150,7 @@ namespace ApsCalcUI
                         recoilVolumeList.Add(topShell.RecoilVolume.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', recoilVolumeList));
+                writer.WriteLine(string.Join(ColumnDelimiter, recoilVolumeList));
 
                 List<string> ammoAccessVolumeList = new()
                 {
@@ -2168,7 +2167,7 @@ namespace ApsCalcUI
                         ammoAccessVolumeList.Add(topShell.AmmoAccessVolume.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', ammoAccessVolumeList));
+                writer.WriteLine(string.Join(ColumnDelimiter, ammoAccessVolumeList));
 
                 List<string> ammoStorageVolumeList = new()
                 {
@@ -2185,7 +2184,7 @@ namespace ApsCalcUI
                         ammoStorageVolumeList.Add(topShell.AmmoStorageVolume.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', ammoStorageVolumeList));
+                writer.WriteLine(string.Join(ColumnDelimiter, ammoStorageVolumeList));
 
                 List<string> totalVolumeList = new()
                 {
@@ -2202,7 +2201,7 @@ namespace ApsCalcUI
                         totalVolumeList.Add(topShell.VolumePerIntake.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', totalVolumeList));
+                writer.WriteLine(string.Join(ColumnDelimiter, totalVolumeList));
 
                 foreach (DamageType dt in dtToShow.Keys)
                 {
@@ -2216,7 +2215,7 @@ namespace ApsCalcUI
                         {
                             dpsPerVolumeList.Add(topShell.DpsPerVolumeDict[dt].ToString());
                         }
-                        writer.WriteLine(string.Join(',', dpsPerVolumeList));
+                        writer.WriteLine(string.Join(ColumnDelimiter, dpsPerVolumeList));
                     }
                 }
 
@@ -2228,7 +2227,7 @@ namespace ApsCalcUI
                 {
                     costPerShellList.Add(topShell.CostPerShell.ToString());
                 }
-                writer.WriteLine(string.Join(',', costPerShellList));
+                writer.WriteLine(string.Join(ColumnDelimiter, costPerShellList));
 
                 List<string> loaderCostList = new()
                 {
@@ -2245,7 +2244,7 @@ namespace ApsCalcUI
                         loaderCostList.Add(topShell.LoaderCost.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', loaderCostList));
+                writer.WriteLine(string.Join(ColumnDelimiter, loaderCostList));
 
                 List<string> coolerCostList = new()
                 {
@@ -2262,7 +2261,7 @@ namespace ApsCalcUI
                         coolerCostList.Add(topShell.CoolerCost.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', coolerCostList));
+                writer.WriteLine(string.Join(ColumnDelimiter, coolerCostList));
 
                 List<string> chargerCostList = new()
                 {
@@ -2279,7 +2278,7 @@ namespace ApsCalcUI
                         chargerCostList.Add(topShell.ChargerCost.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', chargerCostList));
+                writer.WriteLine(string.Join(ColumnDelimiter, chargerCostList));
 
                 List<string> fuelBurnedList = new()
                 {
@@ -2296,7 +2295,7 @@ namespace ApsCalcUI
                         fuelBurnedList.Add(topShell.FuelBurned.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', fuelBurnedList));
+                writer.WriteLine(string.Join(ColumnDelimiter, fuelBurnedList));
 
                 List<string> engineCostList = new()
                 {
@@ -2313,7 +2312,7 @@ namespace ApsCalcUI
                         engineCostList.Add(topShell.EngineCost.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', engineCostList));
+                writer.WriteLine(string.Join(ColumnDelimiter, engineCostList));
 
                 List<string> fuelAccessCostList = new()
                 {
@@ -2330,7 +2329,7 @@ namespace ApsCalcUI
                         fuelAccessCostList.Add(topShell.FuelAccessCost.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', fuelAccessCostList));
+                writer.WriteLine(string.Join(ColumnDelimiter, fuelAccessCostList));
 
                 List<string> fuelStorageCostList = new()
                 {
@@ -2347,7 +2346,7 @@ namespace ApsCalcUI
                         fuelStorageCostList.Add(topShell.FuelStorageCost.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', fuelStorageCostList));
+                writer.WriteLine(string.Join(ColumnDelimiter, fuelStorageCostList));
 
                 List<string> recoilCostList = new()
                 {
@@ -2364,7 +2363,7 @@ namespace ApsCalcUI
                         recoilCostList.Add(topShell.RecoilCost.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', recoilCostList));
+                writer.WriteLine(string.Join(ColumnDelimiter, recoilCostList));
 
                 List<string> ammoUsedList = new()
                 {
@@ -2381,7 +2380,7 @@ namespace ApsCalcUI
                         ammoUsedList.Add(topShell.AmmoUsed.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', ammoUsedList));
+                writer.WriteLine(string.Join(ColumnDelimiter, ammoUsedList));
 
                 List<string> ammoAccessCostList = new()
                 {
@@ -2398,7 +2397,7 @@ namespace ApsCalcUI
                         ammoAccessCostList.Add(topShell.AmmoAccessCost.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', ammoAccessCostList));
+                writer.WriteLine(string.Join(ColumnDelimiter, ammoAccessCostList));
 
                 List<string> ammoStorageCostList = new()
                 {
@@ -2415,7 +2414,7 @@ namespace ApsCalcUI
                         ammoStorageCostList.Add(topShell.AmmoStorageCost.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', ammoStorageCostList));
+                writer.WriteLine(string.Join(ColumnDelimiter, ammoStorageCostList));
 
                 List<string> totalCostList = new()
                 {
@@ -2432,7 +2431,7 @@ namespace ApsCalcUI
                         totalCostList.Add(topShell.AmmoStorageCost.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', totalCostList));
+                writer.WriteLine(string.Join(ColumnDelimiter, totalCostList));
 
                 List<string> costPerVolumeList = new()
                 {
@@ -2449,7 +2448,7 @@ namespace ApsCalcUI
                         costPerVolumeList.Add(topShell.CostPerVolume.ToString());
                     }
                 }
-                writer.WriteLine(string.Join(',', costPerVolumeList));
+                writer.WriteLine(string.Join(ColumnDelimiter, costPerVolumeList));
 
                 foreach (DamageType dt in dtToShow.Keys)
                 {
@@ -2463,7 +2462,7 @@ namespace ApsCalcUI
                         {
                             dpsPerCostList.Add(topShell.DpsPerCostDict[dt].ToString());
                         }
-                        writer.WriteLine(string.Join(',', dpsPerCostList));
+                        writer.WriteLine(string.Join(ColumnDelimiter, dpsPerCostList));
                     }
                 }
             }

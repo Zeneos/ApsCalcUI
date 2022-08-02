@@ -794,6 +794,9 @@ namespace ApsCalcUI
                 testParameters.MaxBarrelLength = (float)BarrelLengthLimitUD.Value;
                 testParameters.BarrelLengthLimitType = ((BarrelLengthLimitTypeItem)BarrelLengthLimitDD.SelectedItem).ID;
 
+                // Must use semicolons to separate columns if using commas for decimals
+                testParameters.ColumnDelimiter = CommaDecimalCB.Checked ? ';' : ',';
+
                 parameterList.Add(testParameters);
             }
         }
@@ -870,7 +873,8 @@ namespace ApsCalcUI
                                     testParameters.RateOfFireRpm,
                                     testParameters.LimitBarrelLength,
                                     testParameters.MaxBarrelLength,
-                                    testParameters.BarrelLengthLimitType
+                                    testParameters.BarrelLengthLimitType,
+                                    testParameters.ColumnDelimiter
                                     );
 
 
@@ -923,7 +927,8 @@ namespace ApsCalcUI
                                     testParameters.RateOfFireRpm,
                                     testParameters.LimitBarrelLength,
                                     testParameters.MaxBarrelLength,
-                                    testParameters.BarrelLengthLimitType
+                                    testParameters.BarrelLengthLimitType,
+                                    testParameters.ColumnDelimiter
                                 );
 
                             calcFinal.FindTopShellsInList(shellBag);
@@ -977,7 +982,8 @@ namespace ApsCalcUI
                                 testParameters.RateOfFireRpm,
                                 testParameters.LimitBarrelLength,
                                 testParameters.MaxBarrelLength,
-                                testParameters.BarrelLengthLimitType
+                                testParameters.BarrelLengthLimitType,
+                                testParameters.ColumnDelimiter
                                 );
 
                             calcLocal.ShellTest();
@@ -1029,7 +1035,8 @@ namespace ApsCalcUI
                                 testParameters.RateOfFireRpm,
                                 testParameters.LimitBarrelLength,
                                 testParameters.MaxBarrelLength,
-                                testParameters.BarrelLengthLimitType
+                                testParameters.BarrelLengthLimitType,
+                                testParameters.ColumnDelimiter
                             );
 
                         calcFinal.FindTopShellsInList(shellBag);

@@ -13,8 +13,9 @@ The link to download is available in my Discord repository, linked above.
 ---- TEST PARAMETERS ----
 NOTE: Results for each test will be written to a .csv file in the ApsCalcUI
 folder. Open using a spreadsheet program, such as LibreOffice Calc, using 
-UTF-8 encoding and comma separators. Filenames are automatically generated 
-from current time. An example filename is "2021-07-04_09-12-11-12".
+UTF-8 encoding. If "Comma Decimal Separator" is checked, use semicolon column
+separators; otherwise, use comma separators. Filenames are automatically 
+generated from current time. An example filename is "2021-07-04_09-12-11-12".
 
 Barrel Count: number of barrels. APS cannons can have anywhere from 1-6
 barrels. Additional barrels help cooling, but impose an accuracy penalty and
@@ -185,7 +186,12 @@ which requires Fuel access (as shown on the default tab of the V menu). This
 includes Fuel engines and Custom jet engines. Disabled unless Max Rail Draw
 > 0.
 
-
+Comma Decimal Separator Checkbox: Check if your computer uses commas to 
+indicate decimals (if "five and three tenths" appears as '5,3' instead of 
+'5.3'). The output file is in .csv format, which by default uses commas to 
+separate columns in the spreadsheet; however, this does not work if your 
+system is already using commas to separate decimals. Checking this box will 
+cause the optimizer to output using semicolon column delimiters instead.
 
 
 ---- OPTIMIZER OUTPUT ----
