@@ -2424,11 +2424,11 @@ namespace ApsCalcUI
                 {
                     if (topShell.IsBelt)
                     {
-                        totalCostList.Add(topShell.AmmoStorageCostBelt.ToString());
+                        totalCostList.Add(topShell.CostPerIntakeBelt.ToString());
                     }
                     else
                     {
-                        totalCostList.Add(topShell.AmmoStorageCost.ToString());
+                        totalCostList.Add(topShell.CostPerIntake.ToString());
                     }
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, totalCostList));
