@@ -93,6 +93,10 @@ namespace ApsCalcUI
             this.GunUsesRecoilAbsorbersCB = new System.Windows.Forms.CheckBox();
             this.RofRpmUD = new System.Windows.Forms.NumericUpDown();
             this.CommaDecimalCB = new System.Windows.Forms.CheckBox();
+            this.BeltfedClipsPerLoaderUD = new System.Windows.Forms.NumericUpDown();
+            this.BeltfedInputsPerLoaderUD = new System.Windows.Forms.NumericUpDown();
+            this.RegularClipsPerLoaderUD = new System.Windows.Forms.NumericUpDown();
+            this.RegularInputsPerLoaderUD = new System.Windows.Forms.NumericUpDown();
             this.BarrelCountLabel = new System.Windows.Forms.Label();
             this.MinGaugeLabel = new System.Windows.Forms.Label();
             this.MaxGaugeLabel = new System.Windows.Forms.Label();
@@ -146,6 +150,11 @@ namespace ApsCalcUI
             this.FragAngleLabel = new System.Windows.Forms.Label();
             this.RofRpmLabel = new System.Windows.Forms.Label();
             this.RofRpmPanel = new System.Windows.Forms.Panel();
+            this.ClipCountPanel = new System.Windows.Forms.Panel();
+            this.InputsPerLoaderLabel = new System.Windows.Forms.Label();
+            this.ClipCountLabel = new System.Windows.Forms.Label();
+            this.RegularClipCountLabel = new System.Windows.Forms.Label();
+            this.BeltfedClipCountLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).BeginInit();
@@ -174,6 +183,10 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.ImpactAngleUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FragAngleUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.RofRpmUD)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BeltfedClipsPerLoaderUD)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BeltfedInputsPerLoaderUD)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.RegularClipsPerLoaderUD)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.RegularInputsPerLoaderUD)).BeginInit();
             this.BasePanel.SuspendLayout();
             this.FixedModulesPanel.SuspendLayout();
             this.VariableModulesPanel.SuspendLayout();
@@ -186,6 +199,7 @@ namespace ApsCalcUI
             this.DisruptorPanel.SuspendLayout();
             this.FragAnglePanel.SuspendLayout();
             this.RofRpmPanel.SuspendLayout();
+            this.ClipCountPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // BarrelCountDD
@@ -570,7 +584,7 @@ namespace ApsCalcUI
             // 
             // AddParametersButton
             // 
-            this.AddParametersButton.Location = new System.Drawing.Point(448, 550);
+            this.AddParametersButton.Location = new System.Drawing.Point(485, 557);
             this.AddParametersButton.Name = "AddParametersButton";
             this.AddParametersButton.Size = new System.Drawing.Size(157, 51);
             this.AddParametersButton.TabIndex = 29;
@@ -583,7 +597,7 @@ namespace ApsCalcUI
             // 
             this.RunButton.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.RunButton.Enabled = false;
-            this.RunButton.Location = new System.Drawing.Point(661, 550);
+            this.RunButton.Location = new System.Drawing.Point(665, 557);
             this.RunButton.Name = "RunButton";
             this.RunButton.Size = new System.Drawing.Size(121, 51);
             this.RunButton.TabIndex = 31;
@@ -594,7 +608,7 @@ namespace ApsCalcUI
             // 
             // VariableModulesLabel
             // 
-            this.VariableModulesLabel.Location = new System.Drawing.Point(0, 4);
+            this.VariableModulesLabel.Location = new System.Drawing.Point(0, 10);
             this.VariableModulesLabel.Name = "VariableModulesLabel";
             this.VariableModulesLabel.Size = new System.Drawing.Size(154, 27);
             this.VariableModulesLabel.TabIndex = 0;
@@ -1115,13 +1129,101 @@ namespace ApsCalcUI
             // CommaDecimalCB
             // 
             this.CommaDecimalCB.AutoSize = true;
-            this.CommaDecimalCB.Location = new System.Drawing.Point(452, 528);
+            this.CommaDecimalCB.Location = new System.Drawing.Point(482, 535);
             this.CommaDecimalCB.Name = "CommaDecimalCB";
             this.CommaDecimalCB.Size = new System.Drawing.Size(168, 19);
             this.CommaDecimalCB.TabIndex = 59;
             this.CommaDecimalCB.Text = "Comma Decimal Separator";
             this.ToolTip.SetToolTip(this.CommaDecimalCB, "Check if your computer displays \"five and three tenths\" as 5,3 (with a comma).");
             this.CommaDecimalCB.UseVisualStyleBackColor = true;
+            // 
+            // BeltfedClipsPerLoaderUD
+            // 
+            this.BeltfedClipsPerLoaderUD.Location = new System.Drawing.Point(155, 25);
+            this.BeltfedClipsPerLoaderUD.Maximum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            this.BeltfedClipsPerLoaderUD.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.BeltfedClipsPerLoaderUD.Name = "BeltfedClipsPerLoaderUD";
+            this.BeltfedClipsPerLoaderUD.Size = new System.Drawing.Size(40, 23);
+            this.BeltfedClipsPerLoaderUD.TabIndex = 4;
+            this.BeltfedClipsPerLoaderUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.ToolTip.SetToolTip(this.BeltfedClipsPerLoaderUD, "Number of clips connected to loader.");
+            this.BeltfedClipsPerLoaderUD.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.BeltfedClipsPerLoaderUD.ValueChanged += new System.EventHandler(this.BeltfedClipsPerLoaderUD_ValueChanged);
+            // 
+            // BeltfedInputsPerLoaderUD
+            // 
+            this.BeltfedInputsPerLoaderUD.Location = new System.Drawing.Point(155, 53);
+            this.BeltfedInputsPerLoaderUD.Maximum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.BeltfedInputsPerLoaderUD.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.BeltfedInputsPerLoaderUD.Name = "BeltfedInputsPerLoaderUD";
+            this.BeltfedInputsPerLoaderUD.Size = new System.Drawing.Size(40, 23);
+            this.BeltfedInputsPerLoaderUD.TabIndex = 5;
+            this.BeltfedInputsPerLoaderUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.ToolTip.SetToolTip(this.BeltfedInputsPerLoaderUD, "Ammo input feeders per loader/clip cluster.");
+            this.BeltfedInputsPerLoaderUD.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            // 
+            // RegularClipsPerLoaderUD
+            // 
+            this.RegularClipsPerLoaderUD.Location = new System.Drawing.Point(104, 25);
+            this.RegularClipsPerLoaderUD.Maximum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            this.RegularClipsPerLoaderUD.Name = "RegularClipsPerLoaderUD";
+            this.RegularClipsPerLoaderUD.Size = new System.Drawing.Size(40, 23);
+            this.RegularClipsPerLoaderUD.TabIndex = 6;
+            this.RegularClipsPerLoaderUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.ToolTip.SetToolTip(this.RegularClipsPerLoaderUD, "Number of clips connected directly to loader.");
+            this.RegularClipsPerLoaderUD.ValueChanged += new System.EventHandler(this.RegularClipsPerLoaderUD_ValueChanged);
+            // 
+            // RegularInputsPerLoaderUD
+            // 
+            this.RegularInputsPerLoaderUD.Location = new System.Drawing.Point(104, 53);
+            this.RegularInputsPerLoaderUD.Maximum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.RegularInputsPerLoaderUD.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.RegularInputsPerLoaderUD.Name = "RegularInputsPerLoaderUD";
+            this.RegularInputsPerLoaderUD.Size = new System.Drawing.Size(40, 23);
+            this.RegularInputsPerLoaderUD.TabIndex = 7;
+            this.RegularInputsPerLoaderUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.ToolTip.SetToolTip(this.RegularInputsPerLoaderUD, "Ammo input feeders per loader/clip cluster.");
+            this.RegularInputsPerLoaderUD.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // BarrelCountLabel
             // 
@@ -1238,7 +1340,7 @@ namespace ApsCalcUI
             this.FixedModulesPanel.Controls.Add(this.SabotBodyFixedLabel);
             this.FixedModulesPanel.Controls.Add(this.SolidBodyFixedLabel);
             this.FixedModulesPanel.Controls.Add(this.FixedModulesLabel);
-            this.FixedModulesPanel.Location = new System.Drawing.Point(255, 12);
+            this.FixedModulesPanel.Location = new System.Drawing.Point(255, 0);
             this.FixedModulesPanel.Name = "FixedModulesPanel";
             this.FixedModulesPanel.Size = new System.Drawing.Size(154, 361);
             this.FixedModulesPanel.TabIndex = 11;
@@ -1319,7 +1421,7 @@ namespace ApsCalcUI
             // 
             this.VariableModulesPanel.Controls.Add(this.VariableModulesCL);
             this.VariableModulesPanel.Controls.Add(this.VariableModulesLabel);
-            this.VariableModulesPanel.Location = new System.Drawing.Point(255, 376);
+            this.VariableModulesPanel.Location = new System.Drawing.Point(255, 361);
             this.VariableModulesPanel.Name = "VariableModulesPanel";
             this.VariableModulesPanel.Size = new System.Drawing.Size(154, 172);
             this.VariableModulesPanel.TabIndex = 12;
@@ -1500,7 +1602,7 @@ namespace ApsCalcUI
             // TestsInQueueLabel
             // 
             this.TestsInQueueLabel.AutoSize = true;
-            this.TestsInQueueLabel.Location = new System.Drawing.Point(661, 532);
+            this.TestsInQueueLabel.Location = new System.Drawing.Point(678, 535);
             this.TestsInQueueLabel.Name = "TestsInQueueLabel";
             this.TestsInQueueLabel.Size = new System.Drawing.Size(95, 15);
             this.TestsInQueueLabel.TabIndex = 35;
@@ -1618,17 +1720,69 @@ namespace ApsCalcUI
             this.RofRpmPanel.Controls.Add(this.RofRpmLabel);
             this.RofRpmPanel.Controls.Add(this.RofRpmUD);
             this.RofRpmPanel.Enabled = false;
-            this.RofRpmPanel.Location = new System.Drawing.Point(255, 557);
+            this.RofRpmPanel.Location = new System.Drawing.Point(41, 602);
             this.RofRpmPanel.Name = "RofRpmPanel";
             this.RofRpmPanel.Size = new System.Drawing.Size(154, 40);
             this.RofRpmPanel.TabIndex = 58;
             this.RofRpmPanel.Visible = false;
             // 
+            // ClipCountPanel
+            // 
+            this.ClipCountPanel.Controls.Add(this.RegularInputsPerLoaderUD);
+            this.ClipCountPanel.Controls.Add(this.RegularClipsPerLoaderUD);
+            this.ClipCountPanel.Controls.Add(this.BeltfedInputsPerLoaderUD);
+            this.ClipCountPanel.Controls.Add(this.BeltfedClipsPerLoaderUD);
+            this.ClipCountPanel.Controls.Add(this.InputsPerLoaderLabel);
+            this.ClipCountPanel.Controls.Add(this.ClipCountLabel);
+            this.ClipCountPanel.Controls.Add(this.RegularClipCountLabel);
+            this.ClipCountPanel.Controls.Add(this.BeltfedClipCountLabel);
+            this.ClipCountPanel.Location = new System.Drawing.Point(233, 537);
+            this.ClipCountPanel.Name = "ClipCountPanel";
+            this.ClipCountPanel.Size = new System.Drawing.Size(202, 83);
+            this.ClipCountPanel.TabIndex = 60;
+            // 
+            // InputsPerLoaderLabel
+            // 
+            this.InputsPerLoaderLabel.AutoSize = true;
+            this.InputsPerLoaderLabel.Location = new System.Drawing.Point(3, 57);
+            this.InputsPerLoaderLabel.Name = "InputsPerLoaderLabel";
+            this.InputsPerLoaderLabel.Size = new System.Drawing.Size(99, 15);
+            this.InputsPerLoaderLabel.TabIndex = 3;
+            this.InputsPerLoaderLabel.Text = "Inputs Per Loader";
+            // 
+            // ClipCountLabel
+            // 
+            this.ClipCountLabel.AutoSize = true;
+            this.ClipCountLabel.Location = new System.Drawing.Point(9, 29);
+            this.ClipCountLabel.Name = "ClipCountLabel";
+            this.ClipCountLabel.Size = new System.Drawing.Size(92, 15);
+            this.ClipCountLabel.TabIndex = 2;
+            this.ClipCountLabel.Text = "Clips Per Loader";
+            // 
+            // RegularClipCountLabel
+            // 
+            this.RegularClipCountLabel.AutoSize = true;
+            this.RegularClipCountLabel.Location = new System.Drawing.Point(100, 6);
+            this.RegularClipCountLabel.Name = "RegularClipCountLabel";
+            this.RegularClipCountLabel.Size = new System.Drawing.Size(47, 15);
+            this.RegularClipCountLabel.TabIndex = 1;
+            this.RegularClipCountLabel.Text = "Regular";
+            // 
+            // BeltfedClipCountLabel
+            // 
+            this.BeltfedClipCountLabel.AutoSize = true;
+            this.BeltfedClipCountLabel.Location = new System.Drawing.Point(153, 6);
+            this.BeltfedClipCountLabel.Name = "BeltfedClipCountLabel";
+            this.BeltfedClipCountLabel.Size = new System.Drawing.Size(44, 15);
+            this.BeltfedClipCountLabel.TabIndex = 0;
+            this.BeltfedClipCountLabel.Text = "Beltfed";
+            // 
             // ParameterInput
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 608);
+            this.ClientSize = new System.Drawing.Size(800, 656);
+            this.Controls.Add(this.ClipCountPanel);
             this.Controls.Add(this.CommaDecimalCB);
             this.Controls.Add(this.RofRpmPanel);
             this.Controls.Add(this.GunUsesRecoilAbsorbersCB);
@@ -1718,6 +1872,10 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.ImpactAngleUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.FragAngleUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.RofRpmUD)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BeltfedClipsPerLoaderUD)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BeltfedInputsPerLoaderUD)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.RegularClipsPerLoaderUD)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.RegularInputsPerLoaderUD)).EndInit();
             this.BasePanel.ResumeLayout(false);
             this.BasePanel.PerformLayout();
             this.FixedModulesPanel.ResumeLayout(false);
@@ -1736,6 +1894,8 @@ namespace ApsCalcUI
             this.FragAnglePanel.PerformLayout();
             this.RofRpmPanel.ResumeLayout(false);
             this.RofRpmPanel.PerformLayout();
+            this.ClipCountPanel.ResumeLayout(false);
+            this.ClipCountPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1858,6 +2018,15 @@ namespace ApsCalcUI
         private System.Windows.Forms.Label RofRpmLabel;
         private System.Windows.Forms.NumericUpDown RofRpmUD;
         private System.Windows.Forms.CheckBox CommaDecimalCB;
+        private System.Windows.Forms.Panel ClipCountPanel;
+        private System.Windows.Forms.NumericUpDown RegularInputsPerLoaderUD;
+        private System.Windows.Forms.NumericUpDown RegularClipsPerLoaderUD;
+        private System.Windows.Forms.NumericUpDown BeltfedInputsPerLoaderUD;
+        private System.Windows.Forms.NumericUpDown BeltfedClipsPerLoaderUD;
+        private System.Windows.Forms.Label InputsPerLoaderLabel;
+        private System.Windows.Forms.Label ClipCountLabel;
+        private System.Windows.Forms.Label RegularClipCountLabel;
+        private System.Windows.Forms.Label BeltfedClipCountLabel;
     }
 }
 

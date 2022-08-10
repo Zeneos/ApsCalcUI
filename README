@@ -29,11 +29,11 @@ by the barrel count, whichever is less).
 
 DIF Checkbox: Check if the inputs will be mounted directly to the firing
 piece, as opposed to using clips. This is known as Direct Input Feed, or DIF,
-and allows for longer shells (10,000mm in vanilla; 20,000mm with 1000mm APS
+and allows for longer shells (10 000mm in vanilla; 20 000mm with 1 000mm APS
 mod), but limits the gun to 4 inputs max, and doubles reload time.
 
-1000mm APS Mod: if checked, allows the max gauge to be set as high as 1000mm.
-This gauge is not possible ingame without mods.
+1 000mm APS Mod: if checked, allows the max gauge to be set as high as 
+1 000mm. This gauge is not possible ingame without mods.
 
 Impact Angle: Angle of impact from perpendicular, in °. Kinetic damage is 
 multiplied by the absolute value of the cosine of this angle: a 0° impact
@@ -70,10 +70,19 @@ Fixed Modules: modules to be included with every shell.
 n.b. The input validation for fixed modules is not perfect. Please double-
 check to ensure the total fixed module count adds up to 18 or less (17 if
 using a base).
+Note also that beltfed loaders cannot use ejectors; if the Emergency 
+Ejection Defuse is checked, all loaders except beltfed will use the defuse 
+and an ejector; the beltfed loader will not use either.
 
 Variable Module Indices: the optimizer will test every possible combination
 of variable modules. Examples would be Solid Body and Sabot Body for kinetic
 shells, or Solid Body and Frag Body for APF pendepth.
+
+Clips Per Loader: number of clips connected directly to loader. Clips cost 
+less than loaders and can hold more shells, but are more fragile and 
+difficult to Tetris.
+
+Inputs Per Loader: ammo Feeder Inputs per loader/clip cluster.
 
 Max Gunpowder Casings: maximum allowed number of GP casings. Note that GP
 casing length is adjustable up to two decimal places, although a decimal
@@ -106,7 +115,7 @@ shells may have an effective range of less than 1 km, and may not be suitable
 for use on certain craft.
 
 Maximum Inaccuracy: the inaccuracy value the optimizer will use to calculate
-required barrel length. Only enabled if the Limit barrel length Checkbox is
+required barrel length. Only enabled if the Limit Barrel Length Checkbox is
 checked (see below); has no effect otherwise.
 
 Limit Barrel Length Checkbox: enables barrel length limits. Every shell has a
@@ -155,12 +164,11 @@ Damage Type: damage type to optimize.
 
 Test Type: whether to optimize for DPS per Volume or DPS per Cost. "Volume"
 and "Cost" are both marginal - they include the volume (or cost) only of
-components which scale linearly with number of inputs. That is to say,
-components like the APS firing piece, barrels, gauge increases, ejectors, &c,
-are not counted, because their proprotion of the cost depends on the size of
-the gun and the Tetris skill of the builder. The components which are counted
-are the loader, input, recoil absorbers, coolers, and rail chargers. Beltfed
-loaders assume a fixed configuration of 1 clip and 2 inputs per loader.
+components which scale linearly with number of loaders. That is to say,
+components like the APS firing piece, barrels, gauge increases, &c, are not 
+counted, because their proprotion of the cost depends on the size of the gun 
+and the Tetris skill of the builder. The components which are counted are the
+loader, input, recoil absorbers, coolers, and rail chargers.
 
 Test Interval: the duration in minutes for which the gun will fire. This does
 not affect the cost of the gun itself (loader, recoil, charger, cooler, 
@@ -243,27 +251,28 @@ Damage:
 	Other chemical shells will show damage of their respective types.
 	Disruptor shells will show EMP damage and shield reduction (decimal%).
 
-Reload time: shell reload speed per intake, in seconds.
+Shell reload time: Base reload time, as shown in ammo customizer.
+
+Cluster reload time: Effective reload time, as shown on loader.
+
+Uptime: Percent of the time during which the loader will be providing shells 
+to the firing piece.
 
 DPS: Damage per Second.
 
-Loader volume: cubic metres taken up by the loader and input. For beltfed
-loaders, the volume is 4, because beltfed performance is calculated using
-a loader, clip, and two inputs.
-
 Volumes and Costs
 The various volumes and costs shown are the hypothetical amounts of each
-type of block needed to support a single input. The values -- cubic metres
+type of block needed to support a single loader. The values -- cubic metres
 for volume, and materials for cost -- will almost always be decimals because
 they are hypothetical and are meant to scale with the gun: rounding errors
-aside, the shell with the highest DPS per volume with one input will have the
-highest DPS per volume with 1,000 inputs; small guns, however, will not
+aside, the shell with the highest DPS per volume with one loader will have 
+the highest DPS per volume with 1 000 loaders; small guns, however, will not
 have the same actual DPS per volume or cost stats, because it is not possible
 to place 0.3338 cubic metres of gauge cooler.
 
-Loader volume: volume of loader and attached input. For beltfeds, will always
-be 4 -- loader, clip, and two inputs. This configuration gives good 
-performance.
+Loader volume: cubic metres taken up by loader, clips, inputs, and ejector.
+If the Emergency Ejection Defuze checkbox is checked, all non-beltfed loaders
+will get an ejector (2 volume, 10 cost).
 
 Cooler volume: volume of gauge coolers. Will always be 0 for shells with no
 GP casings.

@@ -73,11 +73,11 @@ namespace ApsCalcUI
             DamageTypeItem[] damageTypes = new[]
             {
                 new DamageTypeItem { ID = DamageType.Kinetic, Text = "Kinetic" },
-                new DamageTypeItem { ID = DamageType.EMP, Text = "EMP" },
+                new DamageTypeItem { ID = DamageType.Emp, Text = "EMP" },
                 new DamageTypeItem { ID = DamageType.FlaK, Text = "FlaK" },
                 new DamageTypeItem { ID = DamageType.Frag, Text = "Frag" },
                 new DamageTypeItem { ID = DamageType.HE, Text = "HE" },
-                new DamageTypeItem { ID = DamageType.HEAT, Text = "HEAT" },
+                new DamageTypeItem { ID = DamageType.Heat, Text = "HEAT" },
                 new DamageTypeItem { ID = DamageType.Disruptor, Text = "Disruptor" }
             };
             DamageTypeDD.DataSource = damageTypes;
@@ -492,6 +492,16 @@ namespace ApsCalcUI
             RofRpmUD.Visible = TracerRB.Checked;
         }
 
+        private void BeltfedClipsPerLoaderUD_ValueChanged(object sender, EventArgs e)
+        {
+            BeltfedInputsPerLoaderUD.Maximum = BeltfedClipsPerLoaderUD.Value + 1;
+        }
+
+        private void RegularClipsPerLoaderUD_ValueChanged(object sender, EventArgs e)
+        {
+            RegularInputsPerLoaderUD.Maximum = RegularClipsPerLoaderUD.Value + 1;
+        }
+
         /// <summary>
         /// Validates input and creates test parameters from current selections
         /// </summary>
@@ -683,6 +693,11 @@ namespace ApsCalcUI
                 int[] variableModuleIndices = varModIndices.ToArray();
                 testParameters.VariableModuleIndices = variableModuleIndices;
 
+                testParameters.RegularClipsPerLoader = (int)RegularClipsPerLoaderUD.Value;
+                testParameters.RegularInputsPerLoader = (int)RegularInputsPerLoaderUD.Value;
+                testParameters.BeltfedClipsPerLoader = (int)BeltfedClipsPerLoaderUD.Value;
+                testParameters.BeltfedInputsPerLoader = (int)BeltfedInputsPerLoaderUD.Value;
+
                 testParameters.MaxGPCasingCount = (float)MaxGPUD.Value;
                 testParameters.MaxRGCasingCount = (float)MaxRGUD.Value;
                 testParameters.MinLength = (float)MinLengthUD.Value;
@@ -696,7 +711,7 @@ namespace ApsCalcUI
                 testParameters.FragConeAngle = (float)FragAngleUD.Value;
                 testParameters.FragAngleMultiplier = (2 + MathF.Sqrt(testParameters.FragConeAngle)) / 16f;
 
-                if (testParameters.DamageType == DamageType.HEAT)
+                if (testParameters.DamageType == DamageType.Heat)
                 {
                     // Overwrite head list with shaped charge head
                     testParameters.HeadIndices.Clear();
@@ -842,6 +857,10 @@ namespace ApsCalcUI
                                     testParameters.FixedModulecounts,
                                     testParameters.MinModulecount,
                                     testParameters.VariableModuleIndices,
+                                    testParameters.RegularClipsPerLoader,
+                                    testParameters.RegularInputsPerLoader,
+                                    testParameters.BeltfedClipsPerLoader,
+                                    testParameters.BeltfedInputsPerLoader,
                                     testParameters.MaxGPCasingCount,
                                     testParameters.MaxRGCasingCount,
                                     testParameters.MinLength,
@@ -896,6 +915,10 @@ namespace ApsCalcUI
                                     testParameters.FixedModulecounts,
                                     testParameters.MinModulecount,
                                     testParameters.VariableModuleIndices,
+                                    testParameters.RegularClipsPerLoader,
+                                    testParameters.RegularInputsPerLoader,
+                                    testParameters.BeltfedClipsPerLoader,
+                                    testParameters.BeltfedInputsPerLoader,
                                     testParameters.MaxGPCasingCount,
                                     testParameters.MaxRGCasingCount,
                                     testParameters.MinLength,
@@ -951,6 +974,10 @@ namespace ApsCalcUI
                                 testParameters.FixedModulecounts,
                                 testParameters.MinModulecount,
                                 testParameters.VariableModuleIndices,
+                                testParameters.RegularClipsPerLoader,
+                                testParameters.RegularInputsPerLoader,
+                                testParameters.BeltfedClipsPerLoader,
+                                testParameters.BeltfedInputsPerLoader,
                                 testParameters.MaxGPCasingCount,
                                 testParameters.MaxRGCasingCount,
                                 testParameters.MinLength,
@@ -1004,6 +1031,10 @@ namespace ApsCalcUI
                                 testParameters.FixedModulecounts,
                                 testParameters.MinModulecount,
                                 testParameters.VariableModuleIndices,
+                                testParameters.RegularClipsPerLoader,
+                                testParameters.RegularInputsPerLoader,
+                                testParameters.BeltfedClipsPerLoader,
+                                testParameters.BeltfedInputsPerLoader,
                                 testParameters.MaxGPCasingCount,
                                 testParameters.MaxRGCasingCount,
                                 testParameters.MinLength,

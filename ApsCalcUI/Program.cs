@@ -17,6 +17,10 @@ namespace ApsCalcUI
         public float[] FixedModulecounts;
         public float MinModulecount;
         public int[] VariableModuleIndices;
+        public int RegularClipsPerLoader;
+        public int RegularInputsPerLoader;
+        public int BeltfedClipsPerLoader;
+        public int BeltfedInputsPerLoader;
         public float MaxGPCasingCount;
         public float MaxRGCasingCount;
         public float MinLength;

@@ -37,7 +37,7 @@ namespace ApsCalcUITests
             testShell.CalculateLengths();
             testShell.CalculateRecoil();
             testShell.CalculateMaxDraw();
-            testShell.CalculateReloadTime();
+            testShell.CalculateReloadTime(600f);
 
             // AP head
             testShell.NonSabotAngleMultiplier = MathF.Abs(MathF.Cos(directHitAngleFromPerpendicularDegrees * MathF.PI / 180));
@@ -189,13 +189,13 @@ namespace ApsCalcUITests
             testShell.CalculateRecoil();
             testShell.CalculateVelocity();
             testShell.CalculateMaxDraw();
-            testShell.CalculateReloadTime();
+            testShell.CalculateReloadTime(600f);
             testShell.CalculateDamageModifierByType(DamageType.HE);
             testShell.CalculateDamageByType(DamageType.Kinetic, fragAngleMultiplier);
             testShell.CalculateDamageByType(DamageType.HE, fragAngleMultiplier);
             testShell.CalculateDamageByType(DamageType.FlaK, fragAngleMultiplier);
             testShell.CalculateDamageByType(DamageType.Frag, fragAngleMultiplier);
-            testShell.CalculateDamageByType(DamageType.EMP, fragAngleMultiplier);
+            testShell.CalculateDamageByType(DamageType.Emp, fragAngleMultiplier);
 
             Assert.AreEqual(testShell.TotalLength, 5055);
             Assert.AreEqual(testShell.ProjectileLength, 3830);
@@ -206,12 +206,12 @@ namespace ApsCalcUITests
             Assert.AreEqual(testShell.TotalRecoil, 4116.08154f);
             Assert.AreEqual(testShell.Velocity, 385.603973f);
             Assert.AreEqual(testShell.MaxDraw, 100241.711f);
-            Assert.AreEqual(testShell.ReloadTime, 177.807022f);
+            Assert.AreEqual(testShell.ClusterReloadTime, 177.807022f);
             Assert.AreEqual(testShell.OverallChemModifier, 0.25f);
             Assert.AreEqual(testShell.RawHE, 743.169617f);
             Assert.AreEqual(testShell.RawFlaK, 675.936951f);
             Assert.AreEqual(testShell.DamageDict[DamageType.Frag], 9691.6084f);
-            Assert.AreEqual(testShell.DamageDict[DamageType.EMP], 397.768982f);
+            Assert.AreEqual(testShell.DamageDict[DamageType.Emp], 397.768982f);
         }
 
         [Test]

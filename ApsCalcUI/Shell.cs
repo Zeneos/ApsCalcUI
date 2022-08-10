@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using PenCalc;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ApsCalcUI
 {
@@ -23,6 +19,12 @@ namespace ApsCalcUI
 
         public Module BaseModule { get; set; } // Optional; is 'null' if no base is chosen by user
         public Module HeadModule { get; set; } // There must always be a Head
+
+        // Clip and input counts
+        public int RegularClipsPerLoader { get; set; }
+        public int RegularInputsPerLoader { get; set; }
+        public int BeltfedClipsPerLoader { get; set; }
+        public int BeltfedInputsPerLoader { get; set; }
 
         // Gunpowder and Railgun casing counts
         public float GPCasingCount { get; set; }
@@ -46,9 +48,9 @@ namespace ApsCalcUI
         public float OverallVelocityModifier { get; set; }
         public float OverallKineticDamageModifier { get; set; }
         public float OverallArmorPierceModifier { get; set; }
+        public float OverallChemModifier { get; set; }
         public float OverallInaccuracyModifier { get; set; }
         public float RateOfFireRpm { get; set; }
-        public float OverallChemModifier { get; set; }
 
 
         // Power
@@ -61,9 +63,9 @@ namespace ApsCalcUI
 
         // Reload
         public bool IsDif { get; set; } // Direct-Input Feed doubles reload time
-        public float ReloadTime { get; set; }
-        public float ReloadTimeBelt { get; set; } // Beltfed Loader
-        public float UptimeBelt { get; set; }
+        public float ShellReloadTime { get; set; }
+        public float ClusterReloadTime { get; set; }
+        public float Uptime { get; set; }
         public int BarrelCount { get; set; }
         public float CooldownTime { get; set; }
 
@@ -86,101 +88,78 @@ namespace ApsCalcUI
         public Dictionary<DamageType, float> DamageDict = new()
         {
             { DamageType.Kinetic, 0 },
-            { DamageType.EMP, 0 },
+            { DamageType.Emp, 0 },
             { DamageType.FlaK, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
-            { DamageType.HEAT, 0 },
+            { DamageType.Heat, 0 },
             { DamageType.Disruptor, 0 }
         };
 
         public Dictionary<DamageType, float> DpsDict = new()
         {
             { DamageType.Kinetic, 0 },
-            { DamageType.EMP, 0 },
+            { DamageType.Emp, 0 },
             { DamageType.FlaK, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
-            { DamageType.HEAT, 0 },
+            { DamageType.Heat, 0 },
             { DamageType.Disruptor, 0 }
         };
 
         public Dictionary<DamageType, float> DpsPerVolumeDict = new()
         {
             { DamageType.Kinetic, 0 },
-            { DamageType.EMP, 0 },
+            { DamageType.Emp, 0 },
             { DamageType.FlaK, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
-            { DamageType.HEAT, 0 },
+            { DamageType.Heat, 0 },
             { DamageType.Disruptor, 0 }
         };
 
         public Dictionary<DamageType, float> DpsPerCostDict = new()
         {
             { DamageType.Kinetic, 0 },
-            { DamageType.EMP, 0 },
+            { DamageType.Emp, 0 },
             { DamageType.FlaK, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
-            { DamageType.HEAT, 0 },
+            { DamageType.Heat, 0 },
             { DamageType.Disruptor, 0 }
         };
 
 
         // Volume
         public float LoaderVolume { get; set; }
-        public float LoaderVolumeBelt { get; } = 4f; // loader, clip, 2 intakes
         public float RecoilVolume { get; set; }
-        public float RecoilVolumeBelt { get; set; }
         public float ChargerVolume { get; set; }
-        public float ChargerVolumeBelt { get; set; }
         public float EngineVolume { get; set; }
-        public float EngineVolumeBelt { get; set; }
         public float FuelAccessVolume { get; set; }
-        public float FuelAccessVolumeBelt { get; set; }
         public float FuelStorageVolume { get; set; }
-        public float FuelStorageVolumeBelt { get; set; }
         public float CoolerVolume { get; set; }
-        public float CoolerVolumeBelt { get; set; }
         public float AmmoAccessVolume { get; set; }
-        public float AmmoAccessVolumeBelt { get; set; }
         public float AmmoStorageVolume { get; set; }
-        public float AmmoStorageVolumeBelt { get; set; }
-        public float VolumePerIntake { get; set; }
-        public float VolumePerIntakeBelt { get; set; }
+        public float VolumePerLoader { get; set; }
 
 
         // Cost
         public float LoaderCost { get; set; }
-        public float LoaderCostBelt { get; } = 860f; // loader, clip, 2 intakes
         public float RecoilCost { get; set; }
-        public float RecoilCostBelt { get; set; }
         public float ChargerCost { get; set; }
-        public float ChargerCostBelt { get; set; }
         public float EngineCost { get; set; }
-        public float EngineCostBelt { get; set; }
         public float FuelBurned { get; set; }
-        public float FuelBurnedBelt { get; set; }
         public float FuelAccessCost { get; set; }
-        public float FuelAccessCostBelt { get; set; }
         public float FuelStorageCost { get; set; }
-        public float FuelStorageCostBelt { get; set; }
         public float CoolerCost { get; set; }
-        public float CoolerCostBelt { get; set; }
         public float CostPerShell { get; set; } // Material cost for one shell
         public float AmmoUsed { get; set; } // Material cost for all shells
-        public float AmmoUsedBelt { get; set; }
         public float AmmoAccessCost { get; set; }
-        public float AmmoAccessCostBelt { get; set; }
         public float AmmoStorageCost { get; set; }
-        public float AmmoStorageCostBelt { get; set; }
-        public float CostPerIntake { get; set; }
-        public float CostPerIntakeBelt { get; set; }
+        public float CostPerLoader { get; set; }
 
         // Cost per Volume
         public float CostPerVolume { get; set; }
-        public float CostPerVolumeBelt { get; set; }
 
 
         /// <summary>
@@ -218,24 +197,6 @@ namespace ApsCalcUI
         }
 
         /// <summary>
-        /// Calculates recoil from gunpowder casings
-        /// </summary>
-        public void CalculateRecoil()
-        {
-            GPRecoil = GaugeCoefficient * GPCasingCount * 2500f;
-            TotalRecoil = GPRecoil + RailDraw;
-        }
-
-        /// <summary>
-        /// Calculates max rail draw of shell
-        /// </summary>
-        public void CalculateMaxDraw()
-        {
-            MaxDraw = 12500f * GaugeCoefficient * (EffectiveProjectileModuleCount + (0.5f * RGCasingCount));
-        }
-
-
-        /// <summary>
         /// Calculates velocity modifier
         /// </summary>
         public void CalculateVelocityModifier()
@@ -267,6 +228,20 @@ namespace ApsCalcUI
             if (BaseModule?.Name == "Base bleeder")
             {
                 OverallVelocityModifier += 0.15f;
+            }
+        }
+
+
+        /// <summary>
+        /// Calculate damage modifier according to current DamageType
+        /// </summary>
+        public void CalculateDamageModifierByType(DamageType dt)
+        {
+            CalculateKDModifier();
+            CalculateAPModifier();
+            if (dt != DamageType.Kinetic)
+            {
+                CalculateChemModifier();
             }
         }
 
@@ -332,6 +307,40 @@ namespace ApsCalcUI
             OverallArmorPierceModifier = weightedArmorPierceMod * HeadModule.ArmorPierceMod;
         }
 
+
+        /// <summary>
+        /// Calculates chemical payload modifier
+        /// </summary>
+        void CalculateChemModifier()
+        {
+            OverallChemModifier = 1f;
+            if (BaseModule != null)
+            {
+                OverallChemModifier = MathF.Min(OverallChemModifier, BaseModule.ChemMod);
+            }
+
+
+            int modIndex = 0;
+            foreach (float modCount in BodyModuleCounts)
+            {
+                if (modCount > 0)
+                {
+                    OverallChemModifier = MathF.Min(OverallChemModifier, Module.AllModules[modIndex].ChemMod);
+                }
+                modIndex++;
+            }
+
+            if (HeadModule == Module.Disruptor) // Disruptor 50% penalty stacks
+            {
+                OverallChemModifier *= 0.5f;
+            }
+            else
+            {
+                OverallChemModifier = MathF.Min(OverallChemModifier, HeadModule.ChemMod);
+            }
+        }
+
+
         /// <summary>
         /// Calculates inaccuracy modifier
         /// </summary>
@@ -381,16 +390,18 @@ namespace ApsCalcUI
             }
         }
 
+
         /// <summary>
         /// Calculate max body length for 0.3° inaccuracy
         /// </summary>
         public float CalculateMaxProjectileLengthForInaccuracy(float barrelLength, float desiredInaccuracy)
         {
             CalculateInaccuracyModifier();
-            float maxProjectileLength = MathF.Pow(barrelLength / 4f / MathF.Pow(0.3f / desiredInaccuracy * OverallInaccuracyModifier, 2.5f), 4f/3f);
+            float maxProjectileLength = MathF.Pow(barrelLength / 4f / MathF.Pow(0.3f / desiredInaccuracy * OverallInaccuracyModifier, 2.5f), 4f / 3f);
 
             return maxProjectileLength * 1000f;
         }
+
 
         /// <summary>
         /// Calculate min barrel length for inaccuracy and full propellant burn
@@ -405,35 +416,21 @@ namespace ApsCalcUI
 
 
         /// <summary>
-        /// Calculates chemical payload modifier
+        /// Calculates max rail draw of shell
         /// </summary>
-        void CalculateChemModifier()
+        public void CalculateMaxDraw()
         {
-            OverallChemModifier = 1f;
-            if (BaseModule != null)
-            {
-                OverallChemModifier = MathF.Min(OverallChemModifier, BaseModule.ChemMod);
-            }
+            MaxDraw = 12500f * GaugeCoefficient * (EffectiveProjectileModuleCount + (0.5f * RGCasingCount));
+        }
 
 
-            int modIndex = 0;
-            foreach (float modCount in BodyModuleCounts)
-            {
-                if (modCount > 0)
-                {
-                    OverallChemModifier = MathF.Min(OverallChemModifier, Module.AllModules[modIndex].ChemMod);
-                }
-                modIndex++;
-            }
-
-            if (HeadModule == Module.Disruptor) // Disruptor 50% penalty stacks
-            {
-                OverallChemModifier *= 0.5f;
-            }
-            else
-            {
-                OverallChemModifier = MathF.Min(OverallChemModifier, HeadModule.ChemMod);
-            }
+        /// <summary>
+        /// Calculates recoil from gunpowder casings
+        /// </summary>
+        public void CalculateRecoil()
+        {
+            GPRecoil = GaugeCoefficient * GPCasingCount * 2500f;
+            TotalRecoil = GPRecoil + RailDraw;
         }
 
 
@@ -485,6 +482,90 @@ namespace ApsCalcUI
 
 
         /// <summary>
+        /// Calculates reload time and uptime
+        /// </summary>
+        public void CalculateReloadTime(float testIntervalSeconds)
+        {
+            ShellReloadTime = MathF.Pow(Gauge / 500f, 1.35f)
+                * (2f + EffectiveProjectileModuleCount + 0.25f * (RGCasingCount + GPCasingCount))
+                * 17.5f;
+            
+            if (IsBelt)
+            {
+                ShellReloadTime *= 0.75f * MathF.Pow(Gauge / 1000f, 0.45f);
+                ClusterReloadTime = ShellReloadTime;
+
+                float gaugeModifier;
+                if (Gauge <= 250f)
+                {
+                    gaugeModifier = 2f;
+                }
+                else
+                {
+                    gaugeModifier = 1f;
+                }
+                float shellCapacity = BeltfedClipsPerLoader * MathF.Min(64f, MathF.Floor(1000f / Gauge) * gaugeModifier) + 1f;
+                float firingCycleLength = (shellCapacity - 1f) * ClusterReloadTime;
+                float loadingCycleLength = (shellCapacity - BeltfedInputsPerLoader) * ClusterReloadTime / BeltfedInputsPerLoader;
+                Uptime = firingCycleLength / (firingCycleLength + loadingCycleLength);
+            }
+            else if (IsDif)
+            {
+                ClusterReloadTime = ShellReloadTime * 2f;
+            }
+            else
+            {
+                ClusterReloadTime = ShellReloadTime / (1f + RegularClipsPerLoader);
+
+                float gaugeModifier;
+                if (Gauge <= 250f)
+                {
+                    gaugeModifier = 2f;
+                }
+                else
+                {
+                    gaugeModifier = 1f;
+                }
+                float shellCapacity = RegularClipsPerLoader * MathF.Min(64f, MathF.Floor(1000f / Gauge) * gaugeModifier) + 1f;
+                float timeToEmptySeconds =
+                    shellCapacity
+                    * ClusterReloadTime
+                    * (1f + RegularClipsPerLoader)
+                    / (1f + RegularClipsPerLoader - RegularInputsPerLoader);
+
+                if (timeToEmptySeconds >= testIntervalSeconds)
+                {
+                    Uptime = 1f;
+                }
+                else
+                {
+                    float reloadTimeWhenEmptySeconds = ClusterReloadTime * (1f + RegularClipsPerLoader) / RegularInputsPerLoader;
+                    float reducedRofDurationSeconds = MathF.Max(0f, testIntervalSeconds - timeToEmptySeconds);
+                    Uptime = 
+                        (timeToEmptySeconds + ClusterReloadTime / reloadTimeWhenEmptySeconds * reducedRofDurationSeconds)
+                        / testIntervalSeconds;
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Calculates barrel cooldown time
+        /// </summary>
+        public void CalculateCooldownTime()
+        {
+            CooldownTime =
+                3.75f
+                * GaugeCoefficient
+                / MathF.Pow(Gauge * Gauge * Gauge / 125000000f, 0.15f)
+                * 17.5f
+                * MathF.Pow(GPCasingCount, 0.35f)
+                / 2;
+            CooldownTime = MathF.Max(CooldownTime, 0);
+        }
+
+
+        /// <summary>
         /// Calculates effective range of shell
         /// </summary>
         public void CalculateEffectiveRange()
@@ -509,412 +590,40 @@ namespace ApsCalcUI
 
 
         /// <summary>
-        /// Calculate volume of intake and loader
+        /// Calculates damage according to current damageType
         /// </summary>
-        public void CalculateLoaderVolumeAndCost()
+        /// <param name="dt">Damage type to test</param>
+        /// <param name="fragAngleMultiplier">(2 + sqrt(angle °)) / 16</param>
+        public void CalculateDamageByType(DamageType dt, float fragAngleMultiplier)
         {
-            LoaderVolume = 0;
-            LoaderCost = 0;
-
-            // DIF can't use loaders, only inputs
-            if (!IsDif)
+            if (dt == DamageType.Kinetic)
             {
-                if (TotalLength <= 1000f)
-                {
-                    LoaderVolume = 1f;
-                    LoaderCost = 240f;
-                }
-                else if (TotalLength <= 2000f)
-                {
-                    LoaderVolume = 2f;
-                    LoaderCost = 300f;
-                }
-                else if (TotalLength <= 3000f)
-                {
-                    LoaderVolume = 3f;
-                    LoaderCost = 330f;
-                }
-                else if (TotalLength <= 4000f)
-                {
-                    LoaderVolume = 4f;
-                    LoaderCost = 360f;
-                }
-                else if (TotalLength <= 5000f)
-                {
-                    LoaderVolume = 5f;
-                    LoaderCost = 390f;
-                }
-                else if (TotalLength <= 6000f)
-                {
-                    LoaderVolume = 6f;
-                    LoaderCost = 420f;
-                }
-                else if (TotalLength <= 7000f)
-                {
-                    LoaderVolume = 7f;
-                    LoaderCost = 450f;
-                }
-                else if (TotalLength <= 8000f)
-                {
-                    LoaderVolume = 8f;
-                    LoaderCost = 480f;
-                }
+                CalculateKineticDamage();
+                CalculateAP();
             }
-
-            LoaderVolume += 1f; // Always have an intake, even for DIF
-            LoaderCost += 50f;
-        }
-
-        /// <summary>
-        /// Calculates volume per intake of recoil absorbers
-        /// </summary>
-        public void CalculateRecoilVolumeAndCost()
-        {
-            if (GunUsesRecoilAbsorbers)
+            else if (dt == DamageType.Emp)
             {
-                RecoilVolume = TotalRecoil / (ReloadTime * 120f); // Absorbers absorb 120 per second per metre
-                RecoilCost = RecoilVolume * 80f; // Absorbers cost 80 per metre
-
-                if (TotalLength <= 1000f)
-                {
-                    RecoilVolumeBelt = TotalRecoil / (ReloadTimeBelt * 120f);
-                    RecoilCostBelt = RecoilVolumeBelt * 80f;
-                }
-                else
-                {
-                    RecoilVolumeBelt = 0f;
-                    RecoilCostBelt = 0f;
-                }
+                CalculateEmpDamage();
             }
-        }
-
-        /// <summary>
-        /// Calculates barrel cooldown time
-        /// </summary>
-        public void CalculateCooldownTime()
-        {
-            CooldownTime =
-                3.75f
-                * GaugeCoefficient
-                / MathF.Pow(Gauge * Gauge * Gauge / 125000000f, 0.15f)
-                * 17.5f
-                * MathF.Pow(GPCasingCount, 0.35f)
-                / 2;
-            CooldownTime = MathF.Max(CooldownTime, 0);
-        }
-
-        /// <summary>
-        /// Calculates marginal volume of coolers to sustain fire from one additional intake.  Ignores cooling from firing piece
-        /// </summary>
-        public void CalculateCoolerVolumeAndCost()
-        {
-            float coolerVolume;
-            float coolerCost;
-
-            float coolerVolumeBelt;
-            float coolerCostBelt;
-            if (GPCasingCount > 0)
+            else if (dt == DamageType.FlaK)
             {
-                coolerVolume = CooldownTime * MathF.Sqrt(Gauge / 1000) / ReloadTime / (1 + BarrelCount * 0.05f) / 0.176775f;
-                coolerCost = coolerVolume * 50f;
-
-                if (TotalLength <= 1000f)
-                {
-                    coolerVolumeBelt = coolerVolume * ReloadTime / ReloadTimeBelt;
-                    coolerCostBelt = coolerVolumeBelt * 50f;
-                }
-                else
-                {
-                    coolerVolumeBelt = 0;
-                    coolerCostBelt = 0;
-                }
+                CalculateFlaKDamage();
             }
-            else
+            else if (dt == DamageType.Frag)
             {
-                coolerVolume = 0;
-                coolerCost = 0;
-                coolerVolumeBelt = 0;
-                coolerCostBelt = 0;
+                CalculateFragDamage(fragAngleMultiplier);
             }
-
-            CoolerVolume = coolerVolume;
-            CoolerCost = coolerCost;
-
-            CoolerVolumeBelt = coolerVolumeBelt;
-            CoolerCostBelt = coolerCostBelt;
-        }
-
-        /// <summary>
-        /// Calculates marginal volume per intake of rail chargers and engines
-        /// </summary>
-        public void CalculateRailVolumeAndCost(
-            int testIntervalSeconds,
-            float storagePerVolume,
-            float storagePerCost,
-            float ppm,
-            float ppv,
-            float ppc,
-            bool fuel)
-        {
-            if (RailDraw > 0)
+            else if (dt == DamageType.HE)
             {
-                float drawPerSecond = RailDraw / ReloadTime;
-                ChargerVolume = drawPerSecond / 200f; // Chargers provide 200 Energy per second
-                ChargerCost = ChargerVolume * 400f; // Chargers cost 400 per metre
-
-                // Volume and cost of engine
-                EngineVolume = drawPerSecond / ppv;
-                EngineCost = drawPerSecond / ppc;
-
-                // Materials burned by engine
-                FuelBurned = drawPerSecond * testIntervalSeconds / ppm;
-
-                float fuelStorageNeeded;
-                if (fuel)
-                {
-                    // Volume and cost of special fuel access blocks
-                    // 1 fuel per MINUTE = 1/50 m^3 and 0.2 material cost
-                    // 1 fuel per SECOND = 60/50 (1.2) m^3 and 12 material cost
-                    // 1 m^3 fuel access = 10 material cost
-                    float fuelAccessNeeded = drawPerSecond / ppm;
-                    FuelAccessVolume = fuelAccessNeeded * 1.2f;
-                    FuelAccessCost = FuelAccessVolume * 10;
-
-                    // Fuel access blocks store enough materials to run for 10 minutes
-                    fuelStorageNeeded = drawPerSecond * MathF.Max(testIntervalSeconds - 600f, 0) / ppm;
-                }
-                else
-                {
-                    fuelStorageNeeded = drawPerSecond * testIntervalSeconds / ppm;
-                }
-
-                // Storage for materials burned
-                FuelStorageVolume = fuelStorageNeeded / storagePerVolume;
-                FuelStorageCost = fuelStorageNeeded / storagePerCost;
-
-
-                if (TotalLength <= 1000f)
-                {
-                    float drawPerSecondBelt = RailDraw / ReloadTimeBelt;
-                    ChargerVolumeBelt = drawPerSecondBelt / 200f; // Chargers provide 200 Energy per second
-                    ChargerCostBelt = ChargerVolumeBelt * 400f; // Chargers cost 400 per metre
-
-                    // Volume and cost of engine
-                    EngineVolumeBelt = drawPerSecondBelt / ppv;
-                    EngineCostBelt = drawPerSecondBelt / ppc;
-
-                    // Materials burned by engine
-                    FuelBurnedBelt = drawPerSecondBelt * testIntervalSeconds / ppm * UptimeBelt;
-
-                    float fuelStorageNeededBelt;
-                    if (fuel)
-                    {
-                        // Volume and cost of special fuel access blocks
-                        // 1 fuel per MINUTE = 1/50 m^3 and 0.2 material cost
-                        // 1 fuel per SECOND = 60/50 m^3 and 12 material cost
-                        float fuelAccessNeededBelt = drawPerSecondBelt / ppm;
-                        FuelAccessVolumeBelt = fuelAccessNeededBelt / 50f * 60f;
-                        FuelAccessCostBelt = fuelAccessNeededBelt / 12f;
-
-                        // Fuel access blocks store enough materials to run for 10 minutes
-                        fuelStorageNeededBelt = drawPerSecondBelt * MathF.Max(testIntervalSeconds - 600f, 0) / ppm * UptimeBelt;
-                    }
-                    else
-                    {
-                        fuelStorageNeededBelt = drawPerSecondBelt * testIntervalSeconds / ppm * UptimeBelt;
-                    }
-
-                    // Storage for materials burned
-                    FuelStorageVolumeBelt = fuelStorageNeededBelt / storagePerVolume;
-                    FuelStorageCostBelt = fuelStorageNeededBelt / storagePerCost;
-                }
-                else
-                {
-                    ChargerVolumeBelt = 0;
-                    ChargerCostBelt = 0;
-                    FuelBurnedBelt = 0;
-                    EngineVolumeBelt = 0;
-                    EngineCostBelt = 0;
-                    FuelAccessVolumeBelt = 0;
-                    FuelAccessCostBelt = 0;
-                    FuelStorageVolumeBelt = 0;
-                    FuelStorageCostBelt = 0;
-                }
+                CalculateHEDamage();
             }
-            else
+            else if (dt == DamageType.Heat)
             {
-                ChargerVolume = 0;
-                ChargerCost = 0;
-                ChargerVolumeBelt = 0;
-                ChargerCostBelt = 0;
-                FuelBurned = 0;
-                FuelBurnedBelt = 0;
-                EngineVolume = 0;
-                EngineCost = 0;
-                EngineVolumeBelt = 0;
-                EngineCostBelt = 0;
-                FuelAccessVolume = 0;
-                FuelAccessCost = 0;
-                FuelAccessVolumeBelt = 0;
-                FuelAccessCostBelt = 0;
-                FuelStorageVolume = 0;
-                FuelStorageCost = 0;
-                FuelStorageVolumeBelt = 0;
-                FuelStorageCostBelt = 0;
+                CalculateHeatDamage();
             }
-        }
-
-
-        /// <summary>
-        /// Calculates all volumes and costs dependent on testing interval
-        /// </summary>
-        /// <param name="testInterval">Test interval in minutes</param>
-        public void CalculateVariableVolumesAndCosts(int testIntervalSeconds, float storagePerVolume, float storagePerCost)
-        {
-            // Calculate cost of shell itself
-            CostPerShell = (ProjectileLength + (GPCasingCount + RGCasingCount) / 4)
-                * 5f
-                * GaugeCoefficient
-                / Gauge;
-
-            AmmoUsed = CostPerShell * testIntervalSeconds / ReloadTime;
-
-            if (TotalLength <= 1000f)
+            else if (dt == DamageType.Disruptor)
             {
-                AmmoUsedBelt = CostPerShell * testIntervalSeconds / ReloadTimeBelt * UptimeBelt;
-            }
-
-            // Calculate volume and cost of ammo crates
-            // 1/50 m^3 and 1/5 material cost per material per minute
-            float shellCostPerMinute = CostPerShell / ReloadTime * 60f;
-            AmmoAccessVolume = shellCostPerMinute / 50f;
-            AmmoAccessCost = shellCostPerMinute / 5f;
-
-            if (TotalLength <= 1000f)
-            {
-                float shellCostPerMinuteBelt = CostPerShell / ReloadTimeBelt * UptimeBelt * 60f;
-                AmmoAccessVolumeBelt = shellCostPerMinuteBelt / 50f;
-                AmmoAccessCostBelt = shellCostPerMinuteBelt / 5f;
-            }
-
-            // Calculate volume and cost of material storage
-            // Ammo crates hold enough materials for 10 minutes
-            float ammoStorageNeeded = CostPerShell * MathF.Max(testIntervalSeconds - 600, 0) / ReloadTime;
-            AmmoStorageVolume = ammoStorageNeeded / storagePerVolume;
-            AmmoStorageCost = ammoStorageNeeded / storagePerCost;
-
-            if (TotalLength <= 1000f)
-            {
-                float ammoStorageNeededBelt = CostPerShell * MathF.Max(testIntervalSeconds - 600, 0) / ReloadTimeBelt * UptimeBelt;
-                AmmoStorageVolumeBelt = ammoStorageNeededBelt / storagePerVolume;
-                AmmoStorageCostBelt = ammoStorageNeededBelt / storagePerCost;
-            }
-        }
-
-        /// <summary>
-        /// Calculates volume used by shell, including intake, loader, cooling, recoil absorbers, and rail chargers
-        /// </summary>
-        public void CalculateVolumeAndCostPerIntake()
-        {
-
-            VolumePerIntake =
-                LoaderVolume
-                + RecoilVolume
-                + CoolerVolume
-                + ChargerVolume
-                + AmmoAccessVolume
-                + AmmoStorageVolume
-                + EngineVolume
-                + FuelAccessVolume
-                + FuelStorageVolume;
-
-            CostPerIntake =
-                LoaderCost
-                + RecoilCost
-                + CoolerCost
-                + ChargerCost
-                + AmmoUsed
-                + AmmoAccessCost
-                + AmmoStorageCost
-                + FuelBurned
-                + EngineCost
-                + FuelAccessCost
-                + FuelStorageCost;
-
-            CostPerVolume = CostPerIntake / VolumePerIntake;
-
-            if (TotalLength <= 1000f)
-            {
-                VolumePerIntakeBelt =
-                    LoaderVolumeBelt
-                    + RecoilVolumeBelt
-                    + CoolerVolumeBelt
-                    + ChargerVolumeBelt
-                    + AmmoAccessVolumeBelt
-                    + AmmoStorageVolumeBelt
-                    + EngineVolumeBelt
-                    + FuelAccessVolumeBelt
-                    + FuelStorageVolumeBelt;
-
-                CostPerIntakeBelt =
-                    LoaderCostBelt
-                    + RecoilCostBelt
-                    + CoolerCostBelt
-                    + ChargerCostBelt
-                    + AmmoUsedBelt
-                    + AmmoAccessCostBelt
-                    + AmmoStorageCostBelt
-                    + FuelBurnedBelt
-                    + EngineCostBelt
-                    + FuelAccessCostBelt
-                    + FuelStorageCostBelt;
-
-                CostPerVolumeBelt = CostPerIntakeBelt / VolumePerIntakeBelt;
-            }
-        }
-
-
-        /// <summary>
-        /// Calculates reload time; also calculates beltfed reload time for shells 1000 mm or shorter
-        /// </summary>
-        public void CalculateReloadTime()
-        {
-            ReloadTime = MathF.Pow(Gauge / 500f, 1.35f)
-                * (2f + EffectiveProjectileModuleCount + 0.25f * (RGCasingCount + GPCasingCount))
-                * 17.5f;
-
-            // DIF doubles reload time
-            if (IsDif)
-            {
-                ReloadTime *= 2f;
-            }
-        }
-
-        /// <summary>
-        /// Calculates beltfed loader reload time and uptime
-        /// </summary>
-        public void CalculateReloadTimeBelt()
-        {
-            if (TotalLength <= 1000f)
-            {
-                ReloadTimeBelt = ReloadTime * 0.75f * MathF.Pow(Gauge / 1000f, 0.45f);
-                float gaugeModifier;
-                if (Gauge <= 250f)
-                {
-                    gaugeModifier = 2f;
-                }
-                else
-                {
-                    gaugeModifier = 1f;
-                }
-                float shellCapacity = 1f * MathF.Min(64f, MathF.Floor(1000f / Gauge) * gaugeModifier) + 1f;
-                float firingCycleLength = (shellCapacity - 1f) * ReloadTimeBelt;
-                float loadingCycleLength = (shellCapacity - 2f) * ReloadTimeBelt / 2f; // 2 intakes
-                UptimeBelt = firingCycleLength / (firingCycleLength + loadingCycleLength);
-            }
-            else
-            {
-                ReloadTimeBelt = 0;
+                CalculateShieldReduction();
             }
         }
 
@@ -977,7 +686,7 @@ namespace ApsCalcUI
             {
                 empBodies++;
             }
-            DamageDict[DamageType.EMP] = GaugeCoefficient * empBodies * OverallChemModifier * 1650;
+            DamageDict[DamageType.Emp] = GaugeCoefficient * empBodies * OverallChemModifier * 1650;
         }
 
         /// <summary>
@@ -1100,7 +809,7 @@ namespace ApsCalcUI
                 float sphereVolume = MathF.Pow(HEExplosionRadius, 3) * MathF.PI * 4f / 3f;
                 DamageDict[DamageType.HE] = RawHE * sphereVolume / 1000f;
 
-                DamageDict[DamageType.HEAT] =
+                DamageDict[DamageType.Heat] =
                     GaugeCoefficient
                     * (heBodies + 0.8f)
                     * OverallChemModifier
@@ -1109,7 +818,7 @@ namespace ApsCalcUI
             else
             {
                 DamageDict[DamageType.HE] = 0;
-                DamageDict[DamageType.HEAT] = 0;
+                DamageDict[DamageType.Heat] = 0;
             }
         }
 
@@ -1121,12 +830,86 @@ namespace ApsCalcUI
             CalculateEmpDamage();
             if (HeadModule == Module.Disruptor)
             {
-                DamageDict[DamageType.Disruptor] = DamageDict[DamageType.EMP] * 0.75f / 1500;
+                DamageDict[DamageType.Disruptor] = DamageDict[DamageType.Emp] * 0.75f / 1500;
                 DamageDict[DamageType.Disruptor] = MathF.Min(DamageDict[DamageType.Disruptor], 1f);
             }
             else
             {
                 DamageDict[DamageType.Disruptor] = 0;
+            }
+        }
+
+
+        public void CalculateDpsByType(
+            DamageType dt,
+            float targetAC,
+            int testIntervalSeconds,
+            float storagePerVolume,
+            float storagePerCost,
+            float ppm,
+            float ppv,
+            float ppc,
+            bool fuel,
+            Scheme targetScheme,
+            float impactAngleFromPerpendicularDegrees)
+        {
+            CalculateRecoil();
+            CalculateRailVolumeAndCost(testIntervalSeconds, storagePerVolume, storagePerCost, ppm, ppv, ppc, fuel);
+            CalculateRecoilVolumeAndCost();
+            CalculateVariableVolumesAndCosts(testIntervalSeconds, storagePerVolume, storagePerCost);
+            CalculateVolumeAndCostPerLoader();
+
+            // Kinetic stats needed for pendepth testing
+            CalculateVelocity();
+            CalculateKineticDamage();
+            CalculateAP();
+
+            if (RawKD >= targetScheme.GetRequiredKD(ArmorPierce, impactAngleFromPerpendicularDegrees, HeadModule == Module.SabotHead)
+                || (HeadModule == Module.HollowPoint && RawKD >= targetScheme.GetRequiredThump(ArmorPierce)))
+            {
+                if (dt == DamageType.Kinetic)
+                {
+                    CalculateKineticDps(targetAC);
+                }
+                else if (dt == DamageType.Emp)
+                {
+                    CalculateEmpDps();
+                }
+                else if (dt == DamageType.FlaK)
+                {
+                    CalculateFlaKDps();
+                }
+                else if (dt == DamageType.Frag)
+                {
+                    CalculateFragDps();
+                }
+                else if (dt == DamageType.HE)
+                {
+                    CalculateHEDps();
+                }
+                else if (dt == DamageType.Heat)
+                {
+                    CalculateHeatDps();
+                }
+                else if (dt == DamageType.Disruptor)
+                {
+                    CalculateShieldRps();
+                }
+            }
+            else
+            {
+                foreach (DamageType dpstype in DpsDict.Keys)
+                {
+                    DpsDict[dpstype] = 0;
+                }
+                foreach (DamageType dpstype in DpsPerCostDict.Keys)
+                {
+                    DpsPerCostDict[dpstype] = 0;
+                }
+                foreach (DamageType dpstype in DpsPerVolumeDict.Keys)
+                {
+                    DpsPerVolumeDict[dpstype] = 0;
+                }
             }
         }
 
@@ -1153,71 +936,20 @@ namespace ApsCalcUI
                 DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC) * NonSabotAngleMultiplier;
             }
 
-            DpsDict[DamageType.Kinetic] = DamageDict[DamageType.Kinetic] / ReloadTime;
-            DpsPerVolumeDict[DamageType.Kinetic] = DpsDict[DamageType.Kinetic] / VolumePerIntake;
-            DpsPerCostDict[DamageType.Kinetic] = DpsDict[DamageType.Kinetic] / CostPerIntake;
+            DpsDict[DamageType.Kinetic] = DamageDict[DamageType.Kinetic] / ClusterReloadTime * Uptime;
+            DpsPerVolumeDict[DamageType.Kinetic] = DpsDict[DamageType.Kinetic] / VolumePerLoader;
+            DpsPerCostDict[DamageType.Kinetic] = DpsDict[DamageType.Kinetic] / CostPerLoader;
         }
 
-
-        void CalculateKineticDpsBelt(float targetAC)
-        {
-            if (TotalLength <= 1000f)
-            {
-                CalculateKineticDamage();
-                CalculateAP();
-
-                if (HeadModule == Module.HollowPoint || targetAC == 20f)
-                {
-                    DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC);
-                }
-                else if (HeadModule == Module.SabotHead)
-                {
-                    DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC) * SabotAngleMultiplier;
-                }
-                else
-                {
-                    DamageDict[DamageType.Kinetic] = RawKD * MathF.Min(1, ArmorPierce / targetAC) * NonSabotAngleMultiplier;
-                }
-
-                DpsDict[DamageType.Kinetic] = DamageDict[DamageType.Kinetic] / ReloadTimeBelt * UptimeBelt;
-                DpsPerVolumeDict[DamageType.Kinetic] = DpsDict[DamageType.Kinetic] / VolumePerIntakeBelt;
-                DpsPerCostDict[DamageType.Kinetic] = DpsDict[DamageType.Kinetic] / CostPerIntakeBelt;
-            }
-            else
-            {
-                DpsDict[DamageType.Kinetic] = 0;
-                DpsPerVolumeDict[DamageType.Kinetic] = 0;
-                DpsPerCostDict[DamageType.Kinetic] = 0;
-            }
-        }
 
         /// <summary>
         /// Calculates EMP damage per second
         /// </summary>
         void CalculateEmpDps()
         {
-            DpsDict[DamageType.EMP] = DamageDict[DamageType.EMP] / ReloadTime;
-            DpsPerVolumeDict[DamageType.EMP] = DpsDict[DamageType.EMP] / VolumePerIntake;
-            DpsPerCostDict[DamageType.EMP] = DpsDict[DamageType.EMP] / CostPerIntake;
-        }
-
-        /// <summary>
-        /// Calculates EMP damage per second for beltfed loaders
-        /// </summary>
-        void CalculateEmpDpsBelt()
-        {
-            if (TotalLength <= 1000)
-            {
-                DpsDict[DamageType.EMP] = DamageDict[DamageType.EMP] / ReloadTimeBelt * UptimeBelt;
-                DpsPerVolumeDict[DamageType.EMP] = DpsDict[DamageType.EMP] / VolumePerIntakeBelt;
-                DpsPerCostDict[DamageType.EMP] = DpsDict[DamageType.EMP] / CostPerIntakeBelt;
-            }
-            else
-            {
-                DpsDict[DamageType.EMP] = 0;
-                DpsPerVolumeDict[DamageType.EMP] = 0;
-                DpsPerCostDict[DamageType.EMP] = 0;
-            }
+            DpsDict[DamageType.Emp] = DamageDict[DamageType.Emp] / ClusterReloadTime * Uptime;
+            DpsPerVolumeDict[DamageType.Emp] = DpsDict[DamageType.Emp] / VolumePerLoader;
+            DpsPerCostDict[DamageType.Emp] = DpsDict[DamageType.Emp] / CostPerLoader;
         }
 
         /// <summary>
@@ -1225,28 +957,9 @@ namespace ApsCalcUI
         /// </summary>
         void CalculateFlaKDps()
         {
-            DpsDict[DamageType.FlaK] = DamageDict[DamageType.FlaK] / ReloadTime;
-            DpsPerVolumeDict[DamageType.FlaK] = DpsDict[DamageType.FlaK] / VolumePerIntake;
-            DpsPerCostDict[DamageType.FlaK] = DpsDict[DamageType.FlaK] / CostPerIntake;
-        }
-
-        /// <summary>
-        /// Calculates FlaK damage per second for beltfed loaders
-        /// </summary>
-        void CalculateFlaKDpsBelt()
-        {
-            if (TotalLength <= 1000)
-            {
-                DpsDict[DamageType.FlaK] = DamageDict[DamageType.FlaK] / ReloadTimeBelt * UptimeBelt;
-                DpsPerVolumeDict[DamageType.FlaK] = DpsDict[DamageType.FlaK] / VolumePerIntakeBelt;
-                DpsPerCostDict[DamageType.FlaK] = DpsDict[DamageType.FlaK] / CostPerIntakeBelt;
-            }
-            else
-            {
-                DpsDict[DamageType.FlaK] = 0;
-                DpsPerVolumeDict[DamageType.FlaK] = 0;
-                DpsPerCostDict[DamageType.FlaK] = 0;
-            }
+            DpsDict[DamageType.FlaK] = DamageDict[DamageType.FlaK] / ClusterReloadTime * Uptime;
+            DpsPerVolumeDict[DamageType.FlaK] = DpsDict[DamageType.FlaK] / VolumePerLoader;
+            DpsPerCostDict[DamageType.FlaK] = DpsDict[DamageType.FlaK] / CostPerLoader;
         }
 
         /// <summary>
@@ -1254,28 +967,9 @@ namespace ApsCalcUI
         /// </summary>
         void CalculateFragDps()
         {
-            DpsDict[DamageType.Frag] = DamageDict[DamageType.Frag] / ReloadTime;
-            DpsPerVolumeDict[DamageType.Frag] = DpsDict[DamageType.Frag] / VolumePerIntake;
-            DpsPerCostDict[DamageType.Frag] = DpsDict[DamageType.Frag] / CostPerIntake;
-        }
-
-        /// <summary>
-        /// Calculates Frag damage per second for beltfed loaders
-        /// </summary>
-        void CalculateFragDpsBelt()
-        {
-            if (TotalLength <= 1000)
-            {
-                DpsDict[DamageType.Frag] = DamageDict[DamageType.Frag] / ReloadTimeBelt * UptimeBelt;
-                DpsPerVolumeDict[DamageType.Frag] = DpsDict[DamageType.Frag] / VolumePerIntakeBelt;
-                DpsPerCostDict[DamageType.Frag] = DpsDict[DamageType.Frag] / CostPerIntakeBelt;
-            }
-            else
-            {
-                DpsDict[DamageType.Frag] = 0;
-                DpsPerVolumeDict[DamageType.Frag] = 0;
-                DpsPerCostDict[DamageType.Frag] = 0;
-            }
+            DpsDict[DamageType.Frag] = DamageDict[DamageType.Frag] / ClusterReloadTime * Uptime;
+            DpsPerVolumeDict[DamageType.Frag] = DpsDict[DamageType.Frag] / VolumePerLoader;
+            DpsPerCostDict[DamageType.Frag] = DpsDict[DamageType.Frag] / CostPerLoader;
         }
 
         /// <summary>
@@ -1283,28 +977,9 @@ namespace ApsCalcUI
         /// </summary>
         void CalculateHEDps()
         {
-            DpsDict[DamageType.HE] = DamageDict[DamageType.HE] / ReloadTime;
-            DpsPerVolumeDict[DamageType.HE] = DpsDict[DamageType.HE] / VolumePerIntake;
-            DpsPerCostDict[DamageType.HE] = DpsDict[DamageType.HE] / CostPerIntake;
-        }
-
-        /// <summary>
-        /// Calculates HE damage per second for beltfed loaders
-        /// </summary>
-        void CalculateHEDpsBelt()
-        {
-            if (TotalLength <= 1000)
-            {
-                DpsDict[DamageType.HE] = DamageDict[DamageType.HE] / ReloadTimeBelt * UptimeBelt;
-                DpsPerVolumeDict[DamageType.HE] = DpsDict[DamageType.HE] / VolumePerIntakeBelt;
-                DpsPerCostDict[DamageType.HE] = DpsDict[DamageType.HE] / CostPerIntakeBelt;
-            }
-            else
-            {
-                DpsDict[DamageType.HE] = 0;
-                DpsPerVolumeDict[DamageType.HE] = 0;
-                DpsPerCostDict[DamageType.HE] = 0;
-            }
+            DpsDict[DamageType.HE] = DamageDict[DamageType.HE] / ClusterReloadTime * Uptime;
+            DpsPerVolumeDict[DamageType.HE] = DpsDict[DamageType.HE] / VolumePerLoader;
+            DpsPerCostDict[DamageType.HE] = DpsDict[DamageType.HE] / CostPerLoader;
         }
 
         /// <summary>
@@ -1314,13 +989,13 @@ namespace ApsCalcUI
         {
             if (HeadModule == Module.ShapedChargeHead)
             {
-                DpsDict[DamageType.HE] = DamageDict[DamageType.HE] / ReloadTime;
-                DpsPerVolumeDict[DamageType.HE] = DpsDict[DamageType.HE] / VolumePerIntake;
-                DpsPerCostDict[DamageType.HE] = DpsDict[DamageType.HE] / CostPerIntake;
+                DpsDict[DamageType.HE] = DamageDict[DamageType.HE] / ClusterReloadTime * Uptime;
+                DpsPerVolumeDict[DamageType.HE] = DpsDict[DamageType.HE] / VolumePerLoader;
+                DpsPerCostDict[DamageType.HE] = DpsDict[DamageType.HE] / CostPerLoader;
 
-                DpsDict[DamageType.HEAT] = DamageDict[DamageType.HEAT] / ReloadTime;
-                DpsPerVolumeDict[DamageType.HEAT] = DpsDict[DamageType.HEAT] / VolumePerIntake;
-                DpsPerCostDict[DamageType.HEAT] = DpsDict[DamageType.HEAT] / CostPerIntake;
+                DpsDict[DamageType.Heat] = DamageDict[DamageType.Heat] / ClusterReloadTime * Uptime;
+                DpsPerVolumeDict[DamageType.Heat] = DpsDict[DamageType.Heat] / VolumePerLoader;
+                DpsPerCostDict[DamageType.Heat] = DpsDict[DamageType.Heat] / CostPerLoader;
             }
             else
             {
@@ -1328,36 +1003,9 @@ namespace ApsCalcUI
                 DpsPerVolumeDict[DamageType.HE] = 0;
                 DpsPerCostDict[DamageType.HE] = 0;
 
-                DpsDict[DamageType.HEAT] = 0;
-                DpsPerVolumeDict[DamageType.HEAT] = 0;
-                DpsPerCostDict[DamageType.HEAT] = 0;
-            }
-        }
-
-        /// <summary>
-        /// Calculates HEAT damage per second for beltfed loaders
-        /// </summary>
-        void CalculateHeatDpsBelt()
-        {
-            if (HeadModule == Module.ShapedChargeHead && TotalLength <= 1000)
-            {
-                DpsDict[DamageType.HE] = DamageDict[DamageType.HE] / ReloadTimeBelt * UptimeBelt;
-                DpsPerVolumeDict[DamageType.HE] = DpsDict[DamageType.HE] / VolumePerIntakeBelt;
-                DpsPerCostDict[DamageType.HE] = DpsDict[DamageType.HE] / CostPerIntakeBelt;
-
-                DpsDict[DamageType.HEAT] = DamageDict[DamageType.HEAT] / ReloadTimeBelt * UptimeBelt;
-                DpsPerVolumeDict[DamageType.HEAT] = DpsDict[DamageType.HEAT] / VolumePerIntakeBelt;
-                DpsPerCostDict[DamageType.HEAT] = DpsDict[DamageType.HEAT] / CostPerIntakeBelt;
-            }
-            else
-            {
-                DpsDict[DamageType.HE] = 0;
-                DpsPerVolumeDict[DamageType.HE] = 0;
-                DpsPerCostDict[DamageType.HE] = 0;
-
-                DpsDict[DamageType.HEAT] = 0;
-                DpsPerVolumeDict[DamageType.HEAT] = 0;
-                DpsPerCostDict[DamageType.HEAT] = 0;
+                DpsDict[DamageType.Heat] = 0;
+                DpsPerVolumeDict[DamageType.Heat] = 0;
+                DpsPerCostDict[DamageType.Heat] = 0;
             }
         }
 
@@ -1368,22 +1016,11 @@ namespace ApsCalcUI
         {
             CalculateEmpDps();
 
-            DpsDict[DamageType.Disruptor] = DamageDict[DamageType.Disruptor] / ReloadTime;
-
-            DpsPerVolumeDict[DamageType.Disruptor] = DpsDict[DamageType.Disruptor] / VolumePerIntake;
-            DpsPerCostDict[DamageType.Disruptor] = DpsDict[DamageType.Disruptor] / CostPerIntake;
-        }
-
-        void CalculateShieldRpsBelt()
-        {
-            if (TotalLength <= 1000f)
+            if (HeadModule == Module.Disruptor)
             {
-                CalculateEmpDpsBelt();
-
-                DpsDict[DamageType.Disruptor] = DamageDict[DamageType.Disruptor] / ReloadTimeBelt * UptimeBelt;
-
-                DpsPerVolumeDict[DamageType.Disruptor] = DpsDict[DamageType.Disruptor] / VolumePerIntakeBelt;
-                DpsPerCostDict[DamageType.Disruptor] = DpsDict[DamageType.Disruptor] / CostPerIntakeBelt;
+                DpsDict[DamageType.Disruptor] = DamageDict[DamageType.Disruptor] / ClusterReloadTime * Uptime;
+                DpsPerVolumeDict[DamageType.Disruptor] = DpsDict[DamageType.Disruptor] / VolumePerLoader;
+                DpsPerCostDict[DamageType.Disruptor] = DpsDict[DamageType.Disruptor] / CostPerLoader;
             }
             else
             {
@@ -1393,204 +1030,244 @@ namespace ApsCalcUI
             }
         }
 
+        /// <summary>
+        /// Calculate volume of input and loader
+        /// </summary>
+        public void CalculateLoaderVolumeAndCost()
+        {
+            LoaderVolume = 0;
+            LoaderCost = 0;
+
+            // DIF can't use loaders, only inputs
+            if (!IsDif)
+            {
+                if (IsBelt)
+                {
+                    LoaderVolume = 1f + BeltfedClipsPerLoader + BeltfedInputsPerLoader;
+                    LoaderCost = 600f + 160f * BeltfedClipsPerLoader + 50f * BeltfedInputsPerLoader;
+                }
+                else
+                {
+                    if (TotalLength <= 1000f)
+                    {
+                        LoaderVolume = 1f + RegularClipsPerLoader + RegularInputsPerLoader;
+                        LoaderCost = 240f + 160f * RegularClipsPerLoader + 50 * RegularInputsPerLoader;
+                    }
+                    else if (TotalLength <= 2000f)
+                    {
+                        LoaderVolume = 2f * (1f + RegularClipsPerLoader) + RegularInputsPerLoader;
+                        LoaderCost = 300f + 200f * RegularClipsPerLoader + 50 * RegularInputsPerLoader;
+                    }
+                    else if (TotalLength <= 3000f)
+                    {
+                        LoaderVolume = 3f * (1f + RegularClipsPerLoader) + RegularInputsPerLoader;
+                        LoaderCost = 330f + 220f * RegularClipsPerLoader + 50 * RegularInputsPerLoader;
+                    }
+                    else if (TotalLength <= 4000f)
+                    {
+                        LoaderVolume = 4f * (1f + RegularClipsPerLoader) + RegularInputsPerLoader;
+                        LoaderCost = 360f + 240f * RegularClipsPerLoader + 50 * RegularInputsPerLoader;
+                    }
+                    else if (TotalLength <= 5000f)
+                    {
+                        LoaderVolume = 5f * (1f + RegularClipsPerLoader) + RegularInputsPerLoader;
+                        LoaderCost = 390f + 260f * RegularClipsPerLoader + 50 * RegularInputsPerLoader;
+                    }
+                    else if (TotalLength <= 6000f)
+                    {
+                        LoaderVolume = 6f * (1f + RegularClipsPerLoader) + RegularInputsPerLoader;
+                        LoaderCost = 420f + 280f * RegularClipsPerLoader + 50 * RegularInputsPerLoader;
+                    }
+                    else if (TotalLength <= 7000f)
+                    {
+                        LoaderVolume = 7f * (1f + RegularClipsPerLoader) + RegularInputsPerLoader;
+                        LoaderCost = 450f + 300f * RegularClipsPerLoader + 50 * RegularInputsPerLoader;
+                    }
+                    else if (TotalLength <= 8000f)
+                    {
+                        LoaderVolume = 8f * (1f + RegularClipsPerLoader) + RegularInputsPerLoader;
+                        LoaderCost = 480f + 320f * RegularClipsPerLoader + 50 * RegularInputsPerLoader;
+                    }
+
+                    // Add ejector volume and cost; cannot ejector beltfed
+                    bool usesEjector = false;
+                    int modIndex = 0;
+                    foreach (float modCount in BodyModuleCounts)
+                    {
+                        if (Module.AllModules[modIndex] == Module.Defuse && modCount > 0)
+                        {
+                            usesEjector = true;
+                            break;
+                        }
+                        else
+                        {
+                            modIndex++;
+                        }
+                    }
+
+                    if (usesEjector)
+                    {
+                        LoaderVolume += 2f;
+                        LoaderCost += 10f;
+                    }
+                }
+            }
+        }
 
         /// <summary>
-        /// Calculate damage modifier according to current DamageType
+        /// Calculates volume per loader of recoil absorbers
         /// </summary>
-        public void CalculateDamageModifierByType(DamageType dt)
+        public void CalculateRecoilVolumeAndCost()
         {
-            CalculateKDModifier();
-            CalculateAPModifier();
-            if (dt != DamageType.Kinetic)
+            if (GunUsesRecoilAbsorbers)
             {
-                CalculateChemModifier();
+                RecoilVolume = TotalRecoil / (ClusterReloadTime * 120f); // Absorbers absorb 120 per second per metre
+                RecoilCost = RecoilVolume * 80f; // Absorbers cost 80 per metre
             }
         }
 
 
         /// <summary>
-        /// Calculates damage according to current damageType
+        /// Calculates marginal volume of coolers to sustain fire from one additional loader.  Ignores cooling from firing piece
         /// </summary>
-        /// <param name="dt">Damage type to test</param>
-        /// <param name="fragAngleMultiplier">(2 + sqrt(angle °)) / 16</param>
-        public void CalculateDamageByType(DamageType dt, float fragAngleMultiplier)
+        public void CalculateCoolerVolumeAndCost()
         {
-            if (dt == DamageType.Kinetic)
+            float coolerVolume;
+            float coolerCost;
+            if (GPCasingCount > 0)
             {
-                CalculateKineticDamage();
-                CalculateAP();
+                coolerVolume = CooldownTime * MathF.Sqrt(Gauge / 1000) / ClusterReloadTime / (1 + BarrelCount * 0.05f) / 0.176775f;
+                coolerCost = coolerVolume * 50f;
             }
-            else if (dt == DamageType.EMP)
+            else
             {
-                CalculateEmpDamage();
+                coolerVolume = 0;
+                coolerCost = 0;
             }
-            else if (dt == DamageType.FlaK)
-            {
-                CalculateFlaKDamage();
-            }
-            else if (dt == DamageType.Frag)
-            {
-                CalculateFragDamage(fragAngleMultiplier);
-            }
-            else if (dt == DamageType.HE)
-            {
-                CalculateHEDamage();
-            }
-            else if (dt == DamageType.HEAT)
-            {
-                CalculateHeatDamage();
-            }
-            else if (dt == DamageType.Disruptor)
-            {
-                CalculateShieldReduction();
-            }
+
+            CoolerVolume = coolerVolume;
+            CoolerCost = coolerCost;
         }
 
-
-        public void CalculateDpsByType(
-            DamageType dt,
-            float targetAC,
+        /// <summary>
+        /// Calculates marginal volume per loader of rail chargers and engines
+        /// </summary>
+        public void CalculateRailVolumeAndCost(
             int testIntervalSeconds,
             float storagePerVolume,
             float storagePerCost,
             float ppm,
             float ppv,
             float ppc,
-            bool fuel,
-            Scheme targetScheme,
-            float impactAngleFromPerpendicularDegrees)
+            bool fuel)
         {
-            CalculateRecoil();
-            CalculateRailVolumeAndCost(testIntervalSeconds, storagePerVolume, storagePerCost, ppm, ppv, ppc, fuel);
-            CalculateRecoilVolumeAndCost();
-            CalculateVariableVolumesAndCosts(testIntervalSeconds, storagePerVolume, storagePerCost);
-            CalculateVolumeAndCostPerIntake();
-
-            // Kinetic stats needed for pendepth testing
-            CalculateVelocity();
-            CalculateKineticDamage();
-            CalculateAP();
-
-            if (RawKD >= targetScheme.GetRequiredKD(ArmorPierce, impactAngleFromPerpendicularDegrees, HeadModule == Module.SabotHead)
-                || (HeadModule == Module.HollowPoint && RawKD >= targetScheme.GetRequiredThump(ArmorPierce)))
+            if (RailDraw > 0)
             {
-                if (dt == DamageType.Kinetic)
+                float drawPerSecond = RailDraw / ClusterReloadTime;
+                ChargerVolume = drawPerSecond / 200f; // Chargers provide 200 Energy per second
+                ChargerCost = ChargerVolume * 400f; // Chargers cost 400 per metre
+
+                // Volume and cost of engine
+                EngineVolume = drawPerSecond / ppv;
+                EngineCost = drawPerSecond / ppc;
+
+                // Materials burned by engine
+                FuelBurned = drawPerSecond * testIntervalSeconds / ppm * Uptime;
+
+                float fuelStorageNeeded;
+                if (fuel)
                 {
-                    CalculateKineticDps(targetAC);
+                    // Volume and cost of special fuel access blocks
+                    // 1 fuel per MINUTE = 1/50 m^3 and 0.2 material cost
+                    // 1 fuel per SECOND = 60/50 (1.2) m^3 and 12 material cost
+                    // 1 m^3 fuel access = 10 material cost
+                    float fuelAccessNeeded = drawPerSecond / ppm;
+                    FuelAccessVolume = fuelAccessNeeded * 1.2f;
+                    FuelAccessCost = FuelAccessVolume * 10;
+
+                    // Fuel access blocks store enough materials to run for 10 minutes
+                    fuelStorageNeeded = drawPerSecond * MathF.Max(testIntervalSeconds - 600f, 0) / ppm;
                 }
-                else if (dt == DamageType.EMP)
+                else
                 {
-                    CalculateEmpDps();
+                    fuelStorageNeeded = drawPerSecond * testIntervalSeconds / ppm;
                 }
-                else if (dt == DamageType.FlaK)
-                {
-                    CalculateFlaKDps();
-                }
-                else if (dt == DamageType.Frag)
-                {
-                    CalculateFragDps();
-                }
-                else if (dt == DamageType.HE)
-                {
-                    CalculateHEDps();
-                }
-                else if (dt == DamageType.HEAT)
-                {
-                    CalculateHeatDps();
-                }
-                else if (dt == DamageType.Disruptor)
-                {
-                    CalculateShieldRps();
-                }
+
+                // Storage for materials burned
+                FuelStorageVolume = fuelStorageNeeded / storagePerVolume * Uptime;
+                FuelStorageCost = fuelStorageNeeded / storagePerCost * Uptime;
             }
             else
             {
-                foreach (DamageType dpstype in DpsDict.Keys)
-                {
-                    DpsDict[dpstype] = 0;
-                }
-                foreach (DamageType dpstype in DpsPerCostDict.Keys)
-                {
-                    DpsPerCostDict[dpstype] = 0;
-                }
-                foreach (DamageType dpstype in DpsPerVolumeDict.Keys)
-                {
-                    DpsPerVolumeDict[dpstype] = 0;
-                }
+                ChargerVolume = 0;
+                ChargerCost = 0;
+                FuelBurned = 0;
+                EngineVolume = 0;
+                EngineCost = 0;
+                FuelAccessVolume = 0;
+                FuelAccessCost = 0;
+                FuelStorageVolume = 0;
+                FuelStorageCost = 0;
             }
-
         }
 
-        public void CalculateDpsByTypeBelt(
-            DamageType dt,
-            float targetAC,
-            int testIntervalSeconds,
-            float storagePerVolume,
-            float storagePerCost,
-            float ppm,
-            float ppv,
-            float ppc,
-            bool fuel,
-            Scheme targetScheme,
-            float impactAngleFromPerpendicularDegrees)
+
+        /// <summary>
+        /// Calculates all volumes and costs dependent on testing interval
+        /// </summary>
+        public void CalculateVariableVolumesAndCosts(int testIntervalSeconds, float storagePerVolume, float storagePerCost)
         {
-            CalculateRecoil();
-            CalculateRailVolumeAndCost(testIntervalSeconds, storagePerVolume, storagePerCost, ppm, ppv, ppc, fuel);
-            CalculateRecoilVolumeAndCost();
-            CalculateVolumeAndCostPerIntake();
+            // Calculate cost of shell itself
+            CostPerShell = (ProjectileLength + (GPCasingCount + RGCasingCount) / 4)
+                * 5f
+                * GaugeCoefficient
+                / Gauge;
 
-            // Kinetic stats needed for pendepth testing
-            CalculateVelocity();
-            CalculateKineticDamage();
-            CalculateAP();
+            AmmoUsed = CostPerShell * testIntervalSeconds / ClusterReloadTime * Uptime;
 
-            if (RawKD >= targetScheme.GetRequiredKD(ArmorPierce, impactAngleFromPerpendicularDegrees, HeadModule == Module.SabotHead)
-                || (HeadModule == Module.HollowPoint && RawKD >= targetScheme.GetRequiredThump(ArmorPierce)))
-            {
-                if (dt == DamageType.Kinetic)
-                {
-                    CalculateKineticDpsBelt(targetAC);
-                }
-                else if (dt == DamageType.EMP)
-                {
-                    CalculateEmpDpsBelt();
-                }
-                else if (dt == DamageType.FlaK)
-                {
-                    CalculateFlaKDpsBelt();
-                }
-                else if (dt == DamageType.Frag)
-                {
-                    CalculateFragDpsBelt();
-                }
-                else if (dt == DamageType.HE)
-                {
-                    CalculateHEDpsBelt();
-                }
-                else if (dt == DamageType.HEAT)
-                {
-                    CalculateHeatDpsBelt();
-                }
-                else if (dt == DamageType.Disruptor)
-                {
-                    CalculateShieldRpsBelt();
-                }
-            }
-            else
-            {
-                foreach (DamageType dpstype in DpsDict.Keys)
-                {
-                    DpsDict[dpstype] = 0;
-                }
-                foreach (DamageType dpstype in DpsPerCostDict.Keys)
-                {
-                    DpsPerCostDict[dpstype] = 0;
-                }
-                foreach (DamageType dpstype in DpsPerVolumeDict.Keys)
-                {
-                    DpsPerVolumeDict[dpstype] = 0;
-                }
-            }
+            // Calculate volume and cost of ammo crates
+            // 1/50 m^3 and 1/5 material cost per material per minute
+            float shellCostPerMinute = CostPerShell / ClusterReloadTime * 60f;
+            AmmoAccessVolume = shellCostPerMinute / 50f;
+            AmmoAccessCost = shellCostPerMinute / 5f;
+
+            // Calculate volume and cost of material storage
+            // Ammo crates hold enough materials for 10 minutes
+            float ammoStorageNeeded = CostPerShell * MathF.Max(testIntervalSeconds - 600f, 0) / ClusterReloadTime * Uptime;
+            AmmoStorageVolume = ammoStorageNeeded / storagePerVolume;
+            AmmoStorageCost = ammoStorageNeeded / storagePerCost;
+        }
+
+        /// <summary>
+        /// Calculates volume used by shell, including input, loader, cooling, recoil absorbers, and rail chargers
+        /// </summary>
+        public void CalculateVolumeAndCostPerLoader()
+        {
+            VolumePerLoader =
+                LoaderVolume
+                + RecoilVolume
+                + CoolerVolume
+                + ChargerVolume
+                + AmmoAccessVolume
+                + AmmoStorageVolume
+                + EngineVolume
+                + FuelAccessVolume
+                + FuelStorageVolume;
+
+            CostPerLoader =
+                LoaderCost
+                + RecoilCost
+                + CoolerCost
+                + ChargerCost
+                + AmmoUsed
+                + AmmoAccessCost
+                + AmmoStorageCost
+                + FuelBurned
+                + EngineCost
+                + FuelAccessCost
+                + FuelStorageCost;
+
+            CostPerVolume = CostPerLoader / VolumePerLoader;
         }
 
 

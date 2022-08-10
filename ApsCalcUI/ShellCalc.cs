@@ -29,11 +29,11 @@ namespace ApsCalcUI
     public enum DamageType : int
     {
         Kinetic,
-        EMP,
+        Emp,
         FlaK,
         Frag,
         HE,
-        HEAT,
+        Heat,
         Disruptor
     }
 
@@ -58,6 +58,10 @@ namespace ApsCalcUI
         /// <param name="fixedModuleCounts">An array of integers representing number of shells at that index in module list</param>
         /// <param name="fixedModuleTotal">Minimum number of modules on every shell</param>
         /// <param name="variableModuleIndices">Module indices of modules to be used in varying numbers in testing</param>
+        /// <param name="regularClipsPerLoader">Directly-connected clips for each regular loader</param>
+        /// <param name="regularInputsPerLoader">Ammo inputs per regular loader/clip cluster</param>
+        /// <param name="beltfedClipsPerLoader">Clips per beltfed loader</param>
+        /// <param name="beltfedInputsPerLoader">Inputs per beltfed loader/clip cluster</param>
         /// <param name="maxGPInput">Max desired number of gunpowder casings</param>
         /// <param name="maxRGInput">Max desired number of railgun casings</param>
         /// <param name="minShellLengthInput">Min desired shell length in mm, exclusive</param>
@@ -76,7 +80,7 @@ namespace ApsCalcUI
         /// <param name="minDisruptor">Minimum allowed disruptor shield reduction</param>
         /// <param name="targetArmorScheme">Target armor scheme, from Pencalc namespace</param>
         /// <param name="testType">0 for DPS per volume, 1 for DPS per cost</param>
-        /// <param name="testInterval">Test interval in min</param>
+        /// <param name="testIntervalMinutes">Test interval in min</param>
         /// <param name="storagePerVolume">Material storage per container volume</param>
         /// <param name="storagePerCost">Material storage per container cost</param>
         /// <param name="enginePpm">Engine power per material</param>
@@ -100,6 +104,10 @@ namespace ApsCalcUI
             float[] fixedModuleCounts,
             float fixedModuleTotal,
             int[] variableModuleIndices,
+            int regularClipsPerLoader,
+            int regularInputsPerLoader,
+            int beltfedClipsPerLoader,
+            int beltfedInputsPerLoader,
             float maxGPInput,
             float maxRGInput,
             float minShellLengthInput,
@@ -118,7 +126,7 @@ namespace ApsCalcUI
             float minDisruptor,
             Scheme targetArmorScheme,
             int testType,
-            int testInterval,
+            int testIntervalMinutes,
             float storagePerVolume,
             float storagePerCost,
             float enginePpm,
@@ -143,6 +151,10 @@ namespace ApsCalcUI
             FixedModuleCounts = fixedModuleCounts;
             FixedModuleTotal = fixedModuleTotal;
             VariableModuleIndices = variableModuleIndices;
+            RegularClipsPerLoader = regularClipsPerLoader;
+            RegularInputsPerLoader = regularInputsPerLoader;
+            BeltfedClipsPerLoader = beltfedClipsPerLoader;
+            BeltfedInputsPerLoader = beltfedInputsPerLoader;
             MaxGPInput = maxGPInput;
             MaxRGInput = maxRGInput;
             MinShellLength = minShellLengthInput;
@@ -161,8 +173,8 @@ namespace ApsCalcUI
             MinDisruptor = minDisruptor;
             TargetArmorScheme = targetArmorScheme;
             TestType = testType;
-            TestInterval = testInterval;
-            TestIntervalSeconds = testInterval * 60;
+            TestIntervalMinutes = testIntervalMinutes;
+            TestIntervalSeconds = testIntervalMinutes * 60;
             StoragePerVolume = storagePerVolume;
             StoragePerCost = storagePerCost;
             EnginePpm = enginePpm;
@@ -204,6 +216,10 @@ namespace ApsCalcUI
         public float[] FixedModuleCounts { get; }
         public float FixedModuleTotal { get; }
         public int[] VariableModuleIndices { get; }
+        public int RegularClipsPerLoader { get; }
+        public int RegularInputsPerLoader { get; }
+        public int BeltfedClipsPerLoader { get; }
+        public int BeltfedInputsPerLoader { get; }
         public float MaxGPInput { get; }
         public float MaxGP { get; }
         public float MaxRGInput { get; }
@@ -223,7 +239,7 @@ namespace ApsCalcUI
         public float MinDisruptor { get; }
         public Scheme TargetArmorScheme { get; }
         public int TestType { get; }
-        public int TestInterval { get; }
+        public int TestIntervalMinutes { get; }
         public int TestIntervalSeconds { get; }
         public float StoragePerVolume { get; }
         public float StoragePerCost { get; }
@@ -425,6 +441,10 @@ namespace ApsCalcUI
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[4]] += counts.Var4Count;
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[5]] += counts.Var5Count;
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[6]] += counts.Var6Count;
+                shellUnderTesting.RegularClipsPerLoader = RegularClipsPerLoader;
+                shellUnderTesting.RegularInputsPerLoader = RegularInputsPerLoader;
+                shellUnderTesting.BeltfedClipsPerLoader = BeltfedClipsPerLoader;
+                shellUnderTesting.BeltfedInputsPerLoader = BeltfedInputsPerLoader;
                 shellUnderTesting.GPCasingCount = counts.GPCount;
                 shellUnderTesting.RGCasingCount = counts.RGCount;
                 shellUnderTesting.IsDif = FiringPieceIsDif;
@@ -457,7 +477,7 @@ namespace ApsCalcUI
 
                     if (maxDraw >= minDraw)
                     {
-                        shellUnderTesting.CalculateReloadTime();
+                        shellUnderTesting.CalculateReloadTime(TestIntervalSeconds);
                         shellUnderTesting.CalculateDamageModifierByType(DamageType);
                         shellUnderTesting.SabotAngleMultiplier = SabotAngleMultiplier;
                         shellUnderTesting.NonSabotAngleMultiplier = NonSabotAngleMultiplier;
@@ -839,6 +859,26 @@ namespace ApsCalcUI
                                 shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[4]] += counts.Var4Count;
                                 shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[5]] += counts.Var5Count;
                                 shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[6]] += counts.Var6Count;
+
+                                // Beltfed loaders cannot use ejectors
+                                int modIndex = 0;
+                                foreach (float modCount in shellUnderTestingBelt.BodyModuleCounts)
+                                {
+                                    if (Module.AllModules[modIndex] == Module.Defuse)
+                                    {
+                                        shellUnderTestingBelt.BodyModuleCounts[modIndex] = 0f;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        modIndex++;
+                                    }
+                                }
+
+                                shellUnderTestingBelt.RegularClipsPerLoader = RegularClipsPerLoader;
+                                shellUnderTestingBelt.RegularInputsPerLoader = RegularInputsPerLoader;
+                                shellUnderTestingBelt.BeltfedClipsPerLoader = BeltfedClipsPerLoader;
+                                shellUnderTestingBelt.BeltfedInputsPerLoader = BeltfedInputsPerLoader;
                                 shellUnderTestingBelt.GPCasingCount = counts.GPCount;
                                 shellUnderTestingBelt.RGCasingCount = counts.RGCount;
                                 shellUnderTestingBelt.GunUsesRecoilAbsorbers = GunUsesRecoilAbsorbers;
@@ -849,8 +889,7 @@ namespace ApsCalcUI
                                 shellUnderTestingBelt.CalculateVelocityModifier();
                                 shellUnderTestingBelt.CalculateRecoil();
                                 shellUnderTestingBelt.CalculateMaxDraw();
-                                shellUnderTestingBelt.CalculateReloadTime();
-                                shellUnderTestingBelt.CalculateReloadTimeBelt();
+                                shellUnderTestingBelt.CalculateReloadTime(TestIntervalSeconds);
                                 shellUnderTestingBelt.CalculateVariableVolumesAndCosts(
                                     TestIntervalSeconds, 
                                     StoragePerVolume, 
@@ -873,7 +912,7 @@ namespace ApsCalcUI
                                     float midRangeUpperScore = 0;
 
                                     shellUnderTestingBelt.RailDraw = minDraw;
-                                    shellUnderTestingBelt.CalculateDpsByTypeBelt(
+                                    shellUnderTestingBelt.CalculateDpsByType(
                                         DamageType,
                                         TargetAC,
                                         TestIntervalSeconds,
@@ -895,7 +934,7 @@ namespace ApsCalcUI
                                     }
 
                                     shellUnderTestingBelt.RailDraw = maxDraw;
-                                    shellUnderTestingBelt.CalculateDpsByTypeBelt(
+                                    shellUnderTestingBelt.CalculateDpsByType(
                                         DamageType,
                                         TargetAC,
                                         TestIntervalSeconds,
@@ -920,7 +959,7 @@ namespace ApsCalcUI
                                     {
                                         // Check if max draw is optimal
                                         shellUnderTestingBelt.RailDraw = maxDraw - 1f;
-                                        shellUnderTestingBelt.CalculateDpsByTypeBelt(
+                                        shellUnderTestingBelt.CalculateDpsByType(
                                             DamageType,
                                             TargetAC,
                                             TestIntervalSeconds,
@@ -950,7 +989,7 @@ namespace ApsCalcUI
                                     {
                                         // Check if min draw is optimal
                                         shellUnderTestingBelt.RailDraw = minDraw + 1f;
-                                        shellUnderTestingBelt.CalculateDpsByTypeBelt(
+                                        shellUnderTestingBelt.CalculateDpsByType(
                                             DamageType,
                                             TargetAC,
                                             TestIntervalSeconds,
@@ -988,7 +1027,7 @@ namespace ApsCalcUI
                                             midRangeUpper = midRangeLower + 1f;
 
                                             shellUnderTestingBelt.RailDraw = midRangeLower;
-                                            shellUnderTestingBelt.CalculateDpsByTypeBelt(
+                                            shellUnderTestingBelt.CalculateDpsByType(
                                                 DamageType,
                                                 TargetAC,
                                                 TestIntervalSeconds,
@@ -1010,7 +1049,7 @@ namespace ApsCalcUI
                                             }
 
                                             shellUnderTestingBelt.RailDraw = midRangeUpper;
-                                            shellUnderTestingBelt.CalculateDpsByTypeBelt(
+                                            shellUnderTestingBelt.CalculateDpsByType(
                                                 DamageType,
                                                 TargetAC,
                                                 TestIntervalSeconds,
@@ -1061,7 +1100,7 @@ namespace ApsCalcUI
                                 shellUnderTestingBelt.RailDraw = optimalDraw;
                                 shellUnderTestingBelt.CalculateVelocity();
                                 shellUnderTestingBelt.CalculateEffectiveRange();
-                                shellUnderTestingBelt.CalculateDpsByTypeBelt(
+                                shellUnderTestingBelt.CalculateDpsByType(
                                     DamageType,
                                     TargetAC,
                                     TestIntervalSeconds,
@@ -1395,11 +1434,11 @@ namespace ApsCalcUI
             Dictionary<DamageType, bool> dtToShow = new()
             {
                 { DamageType.Kinetic, true },
-                { DamageType.EMP, false },
+                { DamageType.Emp, false },
                 { DamageType.FlaK, false },
                 { DamageType.Frag, false },
                 { DamageType.HE, false },
-                { DamageType.HEAT, false },
+                { DamageType.Heat, false },
                 { DamageType.Disruptor, false }
             };
 
@@ -1412,7 +1451,7 @@ namespace ApsCalcUI
                     modsToShow.Add(index);
                     if (Module.AllModules[index] == Module.EmpBody)
                     {
-                        dtToShow[DamageType.EMP] = true;
+                        dtToShow[DamageType.Emp] = true;
                     }
                     else if (Module.AllModules[index] == Module.FlaKBody)
                     {
@@ -1433,7 +1472,7 @@ namespace ApsCalcUI
             {
                 if (Module.AllModules[index] == Module.EmpHead)
                 {
-                    dtToShow[DamageType.EMP] = true;
+                    dtToShow[DamageType.Emp] = true;
                 }
                 else if (Module.AllModules[index] == Module.FlaKHead)
                 {
@@ -1449,7 +1488,7 @@ namespace ApsCalcUI
                 }
                 else if (Module.AllModules[index] == Module.ShapedChargeHead)
                 {
-                    dtToShow[DamageType.HEAT] = true;
+                    dtToShow[DamageType.Heat] = true;
                 }
                 else if (Module.AllModules[index] == Module.Disruptor)
                 {
@@ -1541,6 +1580,10 @@ namespace ApsCalcUI
                 writer.WriteLine(Module.AllModules[index].Name);
             }
 
+            writer.WriteLine("Clips per loader" + ColumnDelimiter + RegularClipsPerLoader);
+            writer.WriteLine("Inputs per loader" + ColumnDelimiter + RegularInputsPerLoader);
+            writer.WriteLine("Clips per loader (beltfed)" + ColumnDelimiter + BeltfedClipsPerLoader);
+            writer.WriteLine("Inputs per loader (beltfed)" + ColumnDelimiter + BeltfedInputsPerLoader);
 
             writer.WriteLine("Max GP casings" + ColumnDelimiter + MaxGPInput);
             writer.WriteLine("Max RG casings" + ColumnDelimiter + MaxRGInput);
@@ -1569,7 +1612,7 @@ namespace ApsCalcUI
                     writer.WriteLine("Max barrel length (m)" + ColumnDelimiter + MaxBarrelLengthInM);
                 }
             }
-            writer.WriteLine("Test interval (min)" + ColumnDelimiter + TestInterval);
+            writer.WriteLine("Test interval (min)" + ColumnDelimiter + TestIntervalMinutes);
             if (FiringPieceIsDif)
             {
                 writer.WriteLine("Gun is using Direct Input Feed");
@@ -1656,7 +1699,7 @@ namespace ApsCalcUI
                         if (dtToShow[dt] && topShellPair.Value.IsBelt)
                         {
                             topShellPair.Value.CalculateDamageByType(dt, FragAngleMultiplier);
-                            topShellPair.Value.CalculateDpsByTypeBelt(
+                            topShellPair.Value.CalculateDpsByType(
                                 dt,
                                 TargetAC,
                                 TestIntervalSeconds,
@@ -1983,22 +2026,25 @@ namespace ApsCalcUI
                     }
                 }
 
-                List<string> reloadTimeList = new()
+                List<string> shellReloadTimeList = new()
                 {
-                    "Reload time (s)"
+                    "Shell reload time (s)"
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        reloadTimeList.Add(topShell.ReloadTimeBelt.ToString());
-                    }
-                    else
-                    {
-                        reloadTimeList.Add(topShell.ReloadTime.ToString());
-                    }
+                    shellReloadTimeList.Add(topShell.ShellReloadTime.ToString());
                 }
-                writer.WriteLine(string.Join(ColumnDelimiter, reloadTimeList));
+                writer.WriteLine(string.Join(ColumnDelimiter, shellReloadTimeList));
+
+                List<string> clusterReloadTimeList = new()
+                {
+                    "Cluster reload time (s)"
+                };
+                foreach (Shell topShell in TopDpsShells.Values)
+                {
+                    clusterReloadTimeList.Add(topShell.ClusterReloadTime.ToString());
+                }
+                writer.WriteLine(string.Join(ColumnDelimiter, clusterReloadTimeList));
 
                 List<string> uptimeList = new()
                 {
@@ -2006,14 +2052,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        uptimeList.Add(topShell.UptimeBelt.ToString());
-                    }
-                    else
-                    {
-                        uptimeList.Add("1");
-                    }
+                    uptimeList.Add(topShell.Uptime.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, uptimeList));
 
@@ -2039,14 +2078,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        loaderVolumeList.Add(topShell.LoaderVolumeBelt.ToString());
-                    }
-                    else
-                    {
-                        loaderVolumeList.Add(topShell.LoaderVolume.ToString());
-                    }
+                    loaderVolumeList.Add(topShell.LoaderVolume.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, loaderVolumeList));
 
@@ -2056,14 +2088,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        coolerVolumeList.Add(topShell.CoolerVolumeBelt.ToString());
-                    }
-                    else
-                    {
-                        coolerVolumeList.Add(topShell.CoolerVolume.ToString());
-                    }
+                    coolerVolumeList.Add(topShell.CoolerVolume.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, coolerVolumeList));
 
@@ -2073,14 +2098,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        chargerVolumeList.Add(topShell.ChargerVolumeBelt.ToString());
-                    }
-                    else
-                    {
-                        chargerVolumeList.Add(topShell.ChargerVolume.ToString());
-                    }
+                    chargerVolumeList.Add(topShell.ChargerVolume.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, chargerVolumeList));
 
@@ -2090,14 +2108,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        engineVolumeList.Add(topShell.EngineVolumeBelt.ToString());
-                    }
-                    else
-                    {
-                        engineVolumeList.Add(topShell.EngineVolume.ToString());
-                    }
+                    engineVolumeList.Add(topShell.EngineVolume.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, engineVolumeList));
 
@@ -2107,14 +2118,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        fuelAccessVolumeList.Add(topShell.FuelAccessVolumeBelt.ToString());
-                    }
-                    else
-                    {
-                        fuelAccessVolumeList.Add(topShell.FuelAccessVolume.ToString());
-                    }
+                    fuelAccessVolumeList.Add(topShell.FuelAccessVolume.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, fuelAccessVolumeList));
 
@@ -2124,14 +2128,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        fuelStorageVolumeList.Add(topShell.FuelStorageVolumeBelt.ToString());
-                    }
-                    else
-                    {
-                        fuelStorageVolumeList.Add(topShell.FuelStorageVolume.ToString());
-                    }
+                    fuelStorageVolumeList.Add(topShell.FuelStorageVolume.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, fuelStorageVolumeList));
 
@@ -2141,14 +2138,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        recoilVolumeList.Add(topShell.RecoilVolumeBelt.ToString());
-                    }
-                    else
-                    {
-                        recoilVolumeList.Add(topShell.RecoilVolume.ToString());
-                    }
+                    recoilVolumeList.Add(topShell.RecoilVolume.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, recoilVolumeList));
 
@@ -2158,14 +2148,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        ammoAccessVolumeList.Add(topShell.AmmoAccessVolumeBelt.ToString());
-                    }
-                    else
-                    {
-                        ammoAccessVolumeList.Add(topShell.AmmoAccessVolume.ToString());
-                    }
+                    ammoAccessVolumeList.Add(topShell.AmmoAccessVolume.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, ammoAccessVolumeList));
 
@@ -2175,14 +2158,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        ammoStorageVolumeList.Add(topShell.AmmoStorageVolumeBelt.ToString());
-                    }
-                    else
-                    {
-                        ammoStorageVolumeList.Add(topShell.AmmoStorageVolume.ToString());
-                    }
+                    ammoStorageVolumeList.Add(topShell.AmmoStorageVolume.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, ammoStorageVolumeList));
 
@@ -2192,14 +2168,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        totalVolumeList.Add(topShell.VolumePerIntakeBelt.ToString());
-                    }
-                    else
-                    {
-                        totalVolumeList.Add(topShell.VolumePerIntake.ToString());
-                    }
+                    totalVolumeList.Add(topShell.VolumePerLoader.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, totalVolumeList));
 
@@ -2235,14 +2204,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        loaderCostList.Add(topShell.LoaderCostBelt.ToString());
-                    }
-                    else
-                    {
-                        loaderCostList.Add(topShell.LoaderCost.ToString());
-                    }
+                    loaderCostList.Add(topShell.LoaderCost.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, loaderCostList));
 
@@ -2252,14 +2214,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        coolerCostList.Add(topShell.CoolerCostBelt.ToString());
-                    }
-                    else
-                    {
-                        coolerCostList.Add(topShell.CoolerCost.ToString());
-                    }
+                    coolerCostList.Add(topShell.CoolerCost.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, coolerCostList));
 
@@ -2269,14 +2224,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        chargerCostList.Add(topShell.ChargerCostBelt.ToString());
-                    }
-                    else
-                    {
-                        chargerCostList.Add(topShell.ChargerCost.ToString());
-                    }
+                    chargerCostList.Add(topShell.ChargerCost.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, chargerCostList));
 
@@ -2286,14 +2234,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        fuelBurnedList.Add(topShell.FuelBurnedBelt.ToString());
-                    }
-                    else
-                    {
-                        fuelBurnedList.Add(topShell.FuelBurned.ToString());
-                    }
+                    fuelBurnedList.Add(topShell.FuelBurned.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, fuelBurnedList));
 
@@ -2303,14 +2244,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        engineCostList.Add(topShell.EngineCostBelt.ToString());
-                    }
-                    else
-                    {
-                        engineCostList.Add(topShell.EngineCost.ToString());
-                    }
+                    engineCostList.Add(topShell.EngineCost.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, engineCostList));
 
@@ -2320,14 +2254,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        fuelAccessCostList.Add(topShell.FuelAccessCostBelt.ToString());
-                    }
-                    else
-                    {
-                        fuelAccessCostList.Add(topShell.FuelAccessCost.ToString());
-                    }
+                    fuelAccessCostList.Add(topShell.FuelAccessCost.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, fuelAccessCostList));
 
@@ -2337,14 +2264,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        fuelStorageCostList.Add(topShell.FuelStorageCostBelt.ToString());
-                    }
-                    else
-                    {
-                        fuelStorageCostList.Add(topShell.FuelStorageCost.ToString());
-                    }
+                    fuelStorageCostList.Add(topShell.FuelStorageCost.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, fuelStorageCostList));
 
@@ -2354,14 +2274,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        recoilCostList.Add(topShell.RecoilCostBelt.ToString());
-                    }
-                    else
-                    {
-                        recoilCostList.Add(topShell.RecoilCost.ToString());
-                    }
+                    recoilCostList.Add(topShell.RecoilCost.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, recoilCostList));
 
@@ -2371,14 +2284,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        ammoUsedList.Add(topShell.AmmoUsedBelt.ToString());
-                    }
-                    else
-                    {
-                        ammoUsedList.Add(topShell.AmmoUsed.ToString());
-                    }
+                    ammoUsedList.Add(topShell.AmmoUsed.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, ammoUsedList));
 
@@ -2388,14 +2294,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        ammoAccessCostList.Add(topShell.AmmoAccessCostBelt.ToString());
-                    }
-                    else
-                    {
-                        ammoAccessCostList.Add(topShell.AmmoAccessCost.ToString());
-                    }
+                    ammoAccessCostList.Add(topShell.AmmoAccessCost.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, ammoAccessCostList));
 
@@ -2405,14 +2304,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        ammoStorageCostList.Add(topShell.AmmoStorageCostBelt.ToString());
-                    }
-                    else
-                    {
-                        ammoStorageCostList.Add(topShell.AmmoStorageCost.ToString());
-                    }
+                    ammoStorageCostList.Add(topShell.AmmoStorageCost.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, ammoStorageCostList));
 
@@ -2422,14 +2314,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        totalCostList.Add(topShell.CostPerIntakeBelt.ToString());
-                    }
-                    else
-                    {
-                        totalCostList.Add(topShell.CostPerIntake.ToString());
-                    }
+                    totalCostList.Add(topShell.CostPerLoader.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, totalCostList));
 
@@ -2439,14 +2324,7 @@ namespace ApsCalcUI
                 };
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
-                    if (topShell.IsBelt)
-                    {
-                        costPerVolumeList.Add(topShell.CostPerVolumeBelt.ToString());
-                    }
-                    else
-                    {
-                        costPerVolumeList.Add(topShell.CostPerVolume.ToString());
-                    }
+                    costPerVolumeList.Add(topShell.CostPerVolume.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, costPerVolumeList));
 
