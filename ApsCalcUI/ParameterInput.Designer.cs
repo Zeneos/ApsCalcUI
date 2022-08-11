@@ -155,6 +155,7 @@ namespace ApsCalcUI
             this.ClipCountLabel = new System.Windows.Forms.Label();
             this.RegularClipCountLabel = new System.Windows.Forms.Label();
             this.BeltfedClipCountLabel = new System.Windows.Forms.Label();
+            this.AmmoEjectorCB = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).BeginInit();
@@ -1728,6 +1729,7 @@ namespace ApsCalcUI
             // 
             // ClipCountPanel
             // 
+            this.ClipCountPanel.Controls.Add(this.AmmoEjectorCB);
             this.ClipCountPanel.Controls.Add(this.RegularInputsPerLoaderUD);
             this.ClipCountPanel.Controls.Add(this.RegularClipsPerLoaderUD);
             this.ClipCountPanel.Controls.Add(this.BeltfedInputsPerLoaderUD);
@@ -1738,7 +1740,7 @@ namespace ApsCalcUI
             this.ClipCountPanel.Controls.Add(this.BeltfedClipCountLabel);
             this.ClipCountPanel.Location = new System.Drawing.Point(233, 537);
             this.ClipCountPanel.Name = "ClipCountPanel";
-            this.ClipCountPanel.Size = new System.Drawing.Size(202, 83);
+            this.ClipCountPanel.Size = new System.Drawing.Size(202, 107);
             this.ClipCountPanel.TabIndex = 60;
             // 
             // InputsPerLoaderLabel
@@ -1776,6 +1778,18 @@ namespace ApsCalcUI
             this.BeltfedClipCountLabel.Size = new System.Drawing.Size(44, 15);
             this.BeltfedClipCountLabel.TabIndex = 0;
             this.BeltfedClipCountLabel.Text = "Beltfed";
+            // 
+            // AmmoEjectorCB
+            // 
+            this.AmmoEjectorCB.AutoSize = true;
+            this.AmmoEjectorCB.Location = new System.Drawing.Point(49, 82);
+            this.AmmoEjectorCB.Name = "AmmoEjectorCB";
+            this.AmmoEjectorCB.Size = new System.Drawing.Size(102, 19);
+            this.AmmoEjectorCB.TabIndex = 8;
+            this.AmmoEjectorCB.Text = "Ammo Ejector";
+            this.ToolTip.SetToolTip(this.AmmoEjectorCB, "Check to include an Ammo ejector.\r\nAutomatically included if Emergency Defuze is " +
+        "checked.");
+            this.AmmoEjectorCB.UseVisualStyleBackColor = true;
             // 
             // ParameterInput
             // 
@@ -2027,6 +2041,7 @@ namespace ApsCalcUI
         private System.Windows.Forms.Label ClipCountLabel;
         private System.Windows.Forms.Label RegularClipCountLabel;
         private System.Windows.Forms.Label BeltfedClipCountLabel;
+        private System.Windows.Forms.CheckBox AmmoEjectorCB;
     }
 }
 

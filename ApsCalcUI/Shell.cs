@@ -25,6 +25,7 @@ namespace ApsCalcUI
         public int RegularInputsPerLoader { get; set; }
         public int BeltfedClipsPerLoader { get; set; }
         public int BeltfedInputsPerLoader { get; set; }
+        public bool UsesAmmoEjector { get; set; }
 
         // Gunpowder and Railgun casing counts
         public float GPCasingCount { get; set; }
@@ -1089,23 +1090,7 @@ namespace ApsCalcUI
                         LoaderCost = 480f + 320f * RegularClipsPerLoader + 50 * RegularInputsPerLoader;
                     }
 
-                    // Add ejector volume and cost; cannot ejector beltfed
-                    bool usesEjector = false;
-                    int modIndex = 0;
-                    foreach (float modCount in BodyModuleCounts)
-                    {
-                        if (Module.AllModules[modIndex] == Module.Defuse && modCount > 0)
-                        {
-                            usesEjector = true;
-                            break;
-                        }
-                        else
-                        {
-                            modIndex++;
-                        }
-                    }
-
-                    if (usesEjector)
+                    if (UsesAmmoEjector && !IsBelt)
                     {
                         LoaderVolume += 2f;
                         LoaderCost += 10f;

@@ -432,6 +432,8 @@ namespace ApsCalcUI
         private void FixedDefuzeCB_CheckedChanged(object sender, EventArgs e)
         {
             UpdateModuleCounts();
+            AmmoEjectorCB.Enabled = !FixedDefuzeCB.Checked;
+            AmmoEjectorCB.Checked = FixedDefuzeCB.Checked;
         }
 
 
@@ -697,6 +699,7 @@ namespace ApsCalcUI
                 testParameters.RegularInputsPerLoader = (int)RegularInputsPerLoaderUD.Value;
                 testParameters.BeltfedClipsPerLoader = (int)BeltfedClipsPerLoaderUD.Value;
                 testParameters.BeltfedInputsPerLoader = (int)BeltfedInputsPerLoaderUD.Value;
+                testParameters.UsesAmmoEjector = AmmoEjectorCB.Checked;
 
                 testParameters.MaxGPCasingCount = (float)MaxGPUD.Value;
                 testParameters.MaxRGCasingCount = (float)MaxRGUD.Value;
@@ -861,6 +864,7 @@ namespace ApsCalcUI
                                     testParameters.RegularInputsPerLoader,
                                     testParameters.BeltfedClipsPerLoader,
                                     testParameters.BeltfedInputsPerLoader,
+                                    testParameters.UsesAmmoEjector,
                                     testParameters.MaxGPCasingCount,
                                     testParameters.MaxRGCasingCount,
                                     testParameters.MinLength,
@@ -919,6 +923,7 @@ namespace ApsCalcUI
                                     testParameters.RegularInputsPerLoader,
                                     testParameters.BeltfedClipsPerLoader,
                                     testParameters.BeltfedInputsPerLoader,
+                                    testParameters.UsesAmmoEjector,
                                     testParameters.MaxGPCasingCount,
                                     testParameters.MaxRGCasingCount,
                                     testParameters.MinLength,
@@ -978,6 +983,7 @@ namespace ApsCalcUI
                                 testParameters.RegularInputsPerLoader,
                                 testParameters.BeltfedClipsPerLoader,
                                 testParameters.BeltfedInputsPerLoader,
+                                testParameters.UsesAmmoEjector,
                                 testParameters.MaxGPCasingCount,
                                 testParameters.MaxRGCasingCount,
                                 testParameters.MinLength,
@@ -1035,6 +1041,7 @@ namespace ApsCalcUI
                                 testParameters.RegularInputsPerLoader,
                                 testParameters.BeltfedClipsPerLoader,
                                 testParameters.BeltfedInputsPerLoader,
+                                testParameters.UsesAmmoEjector,
                                 testParameters.MaxGPCasingCount,
                                 testParameters.MaxRGCasingCount,
                                 testParameters.MinLength,

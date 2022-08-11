@@ -62,6 +62,7 @@ namespace ApsCalcUI
         /// <param name="regularInputsPerLoader">Ammo inputs per regular loader/clip cluster</param>
         /// <param name="beltfedClipsPerLoader">Clips per beltfed loader</param>
         /// <param name="beltfedInputsPerLoader">Inputs per beltfed loader/clip cluster</param>
+        /// <param name="usesAmmoEjector">Whether loader cluster uses ammo ejector</param>
         /// <param name="maxGPInput">Max desired number of gunpowder casings</param>
         /// <param name="maxRGInput">Max desired number of railgun casings</param>
         /// <param name="minShellLengthInput">Min desired shell length in mm, exclusive</param>
@@ -108,6 +109,7 @@ namespace ApsCalcUI
             int regularInputsPerLoader,
             int beltfedClipsPerLoader,
             int beltfedInputsPerLoader,
+            bool usesAmmoEjector,
             float maxGPInput,
             float maxRGInput,
             float minShellLengthInput,
@@ -155,6 +157,7 @@ namespace ApsCalcUI
             RegularInputsPerLoader = regularInputsPerLoader;
             BeltfedClipsPerLoader = beltfedClipsPerLoader;
             BeltfedInputsPerLoader = beltfedInputsPerLoader;
+            UsesAmmoEjector = usesAmmoEjector;
             MaxGPInput = maxGPInput;
             MaxRGInput = maxRGInput;
             MinShellLength = minShellLengthInput;
@@ -220,6 +223,7 @@ namespace ApsCalcUI
         public int RegularInputsPerLoader { get; }
         public int BeltfedClipsPerLoader { get; }
         public int BeltfedInputsPerLoader { get; }
+        public bool UsesAmmoEjector { get; }
         public float MaxGPInput { get; }
         public float MaxGP { get; }
         public float MaxRGInput { get; }
@@ -445,6 +449,7 @@ namespace ApsCalcUI
                 shellUnderTesting.RegularInputsPerLoader = RegularInputsPerLoader;
                 shellUnderTesting.BeltfedClipsPerLoader = BeltfedClipsPerLoader;
                 shellUnderTesting.BeltfedInputsPerLoader = BeltfedInputsPerLoader;
+                shellUnderTesting.UsesAmmoEjector = UsesAmmoEjector;
                 shellUnderTesting.GPCasingCount = counts.GPCount;
                 shellUnderTesting.RGCasingCount = counts.RGCount;
                 shellUnderTesting.IsDif = FiringPieceIsDif;
@@ -879,6 +884,7 @@ namespace ApsCalcUI
                                 shellUnderTestingBelt.RegularInputsPerLoader = RegularInputsPerLoader;
                                 shellUnderTestingBelt.BeltfedClipsPerLoader = BeltfedClipsPerLoader;
                                 shellUnderTestingBelt.BeltfedInputsPerLoader = BeltfedInputsPerLoader;
+                                shellUnderTestingBelt.UsesAmmoEjector = UsesAmmoEjector;
                                 shellUnderTestingBelt.GPCasingCount = counts.GPCount;
                                 shellUnderTestingBelt.RGCasingCount = counts.RGCount;
                                 shellUnderTestingBelt.GunUsesRecoilAbsorbers = GunUsesRecoilAbsorbers;
@@ -1582,6 +1588,10 @@ namespace ApsCalcUI
 
             writer.WriteLine("Clips per loader" + ColumnDelimiter + RegularClipsPerLoader);
             writer.WriteLine("Inputs per loader" + ColumnDelimiter + RegularInputsPerLoader);
+            if (UsesAmmoEjector)
+            {
+                writer.WriteLine("Ammo ejector");
+            }
             writer.WriteLine("Clips per loader (beltfed)" + ColumnDelimiter + BeltfedClipsPerLoader);
             writer.WriteLine("Inputs per loader (beltfed)" + ColumnDelimiter + BeltfedInputsPerLoader);
 

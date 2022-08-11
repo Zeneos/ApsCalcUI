@@ -70,9 +70,6 @@ Fixed Modules: modules to be included with every shell.
 n.b. The input validation for fixed modules is not perfect. Please double-
 check to ensure the total fixed module count adds up to 18 or less (17 if
 using a base).
-Note also that beltfed loaders cannot use ejectors; if the Emergency 
-Ejection Defuse is checked, all loaders except beltfed will use the defuse 
-and an ejector; the beltfed loader will not use either.
 
 Variable Module Indices: the optimizer will test every possible combination
 of variable modules. Examples would be Solid Body and Sabot Body for kinetic
@@ -83,6 +80,12 @@ less than loaders and can hold more shells, but are more fragile and
 difficult to Tetris.
 
 Inputs Per Loader: ammo Feeder Inputs per loader/clip cluster.
+
+Ammo Ejector: check to include Ammo ejector, which ejects shells when a clip
+or loader is destroyed. Automatically checked if Emergency Defuze is checked,
+but can also be included without one (used for GP kinetic shells).
+n.b. Beltfed loaders cannot use Ammo ejectors; this option has no effect on 
+them.
 
 Max Gunpowder Casings: maximum allowed number of GP casings. Note that GP
 casing length is adjustable up to two decimal places, although a decimal

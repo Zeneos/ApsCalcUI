@@ -21,6 +21,7 @@ namespace ApsCalcUI
         public int RegularInputsPerLoader;
         public int BeltfedClipsPerLoader;
         public int BeltfedInputsPerLoader;
+        public bool UsesAmmoEjector;
         public float MaxGPCasingCount;
         public float MaxRGCasingCount;
         public float MinLength;
