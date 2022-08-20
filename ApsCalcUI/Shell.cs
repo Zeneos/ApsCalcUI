@@ -513,6 +513,7 @@ namespace ApsCalcUI
             else if (IsDif)
             {
                 ClusterReloadTime = ShellReloadTime * 2f;
+                Uptime = 1f;
             }
             else
             {
@@ -1040,7 +1041,12 @@ namespace ApsCalcUI
             LoaderCost = 0;
 
             // DIF can't use loaders, only inputs
-            if (!IsDif)
+            if (IsDif)
+            {
+                LoaderVolume = 1f;
+                LoaderCost = 50f;
+            }
+            else
             {
                 if (IsBelt)
                 {
