@@ -393,12 +393,27 @@ namespace ApsCalcUI
 
 
         /// <summary>
+        /// Calculates max allowed rail draw for given inaccuracy (only affects guns without recoil absorbers)
+        /// </summary>
+        public float CalculateMaxDrawForInaccuracy(float maxBarrelLengthInM, float desiredInaccuracy)
+        {
+            float maxDraw = 
+                (MathF.Pow(
+                    MathF.Pow(ProjectileLength / 1000f, 3f / 4f) / maxBarrelLengthInM * 4f, 1f / 2.5f)
+                / 0.3f * desiredInaccuracy / OverallInaccuracyModifier - 1f)
+                / 0.6f * 12500f * GaugeCoefficient - GPRecoil;
+
+            return maxDraw;
+        }
+
+
+        /// <summary>
         /// Calculate max body length for 0.3° inaccuracy
         /// </summary>
-        public float CalculateMaxProjectileLengthForInaccuracy(float barrelLength, float desiredInaccuracy)
+        public float CalculateMaxProjectileLengthForInaccuracy(float maxBarrelLengthInM, float desiredInaccuracy)
         {
             CalculateInaccuracyModifier();
-            float maxProjectileLength = MathF.Pow(barrelLength / 4f / MathF.Pow(0.3f / desiredInaccuracy * OverallInaccuracyModifier, 2.5f), 4f / 3f);
+            float maxProjectileLength = MathF.Pow(maxBarrelLengthInM / 4f / MathF.Pow(0.3f / desiredInaccuracy * OverallInaccuracyModifier, 2.5f), 4f / 3f);
 
             return maxProjectileLength * 1000f;
         }
