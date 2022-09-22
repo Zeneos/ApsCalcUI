@@ -275,6 +275,11 @@ namespace ApsCalcUI
             weightedKineticDamageMod /= EffectiveBodyLength;
 
             OverallKineticDamageModifier = weightedKineticDamageMod * HeadModule.KineticDamageMod;
+
+            if (BaseModule?.Name == Module.GravRam.Name)
+            {
+                OverallKineticDamageModifier *= 0.7f;
+            }
         }
 
 

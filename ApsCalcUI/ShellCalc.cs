@@ -1903,16 +1903,18 @@ namespace ApsCalcUI
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, barrelLengthInaccuracyList));
 
-                List<string> barrelLengthPropellantBurnList = new()
+                if (MaxGP > 0f)
                 {
-                    "Barrel length for propellant burn (m)"
-                };
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    barrelLengthPropellantBurnList.Add(topShell.BarrelLengthForPropellant.ToString());
+                    List<string> barrelLengthPropellantBurnList = new()
+                    {
+                        "Barrel length for propellant burn (m)"
+                    };
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        barrelLengthPropellantBurnList.Add(topShell.BarrelLengthForPropellant.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, barrelLengthPropellantBurnList));
                 }
-                writer.WriteLine(string.Join(ColumnDelimiter, barrelLengthPropellantBurnList));
-
 
                 foreach (DamageType dt in dtToShow.Keys)
                 {

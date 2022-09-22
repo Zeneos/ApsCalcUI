@@ -51,34 +51,34 @@ namespace ApsCalcUI
         public bool CanBeVariable { get; }
 
         // Initialize every unique module type
-        public static Module SolidBody { get; } = new Module("Solid body", 1.1f, 1.0f, 1.0f, 1.0f, 1.0f, 500, Position.Middle, true);
-        public static Module SabotBody { get; } = new Module("Sabot body", 1.1f, 0.8f, 1.4f, 0.25f, 1.0f, 500, Position.Middle, true);
-        public static Module EmpBody { get; } = new Module("EMP body", 1.0f, 1.0f, 0.8f, 1.0f, 1.0f, 500, Position.Middle, true);
-        public static Module FlaKBody { get; } = new Module("FlaK body", 1.0f, 1.0f, 0.1f, 1.0f, 1.0f, 500, Position.Middle, true);
-        public static Module FragBody { get; } = new Module("Frag body", 1.0f, 1.0f, 0.8f, 1.0f, 1.0f, 500, Position.Middle, true);
-        public static Module HEBody { get; } = new Module("HE body", 1.0f, 1.0f, 0.8f, 1.0f, 1.0f, 500, Position.Middle, true);
-        public static Module FinBody { get; } = new Module("Stabilizer fin body", 0.95f, 1.0f, 1.0f, 1.0f, 0.2f, 300, Position.Middle, true);
-        public static Module PenDepthFuse { get; } = new Module("Pendepth fuse", 1.1f, 1.0f, 1.0f, 1.0f, 1.0f, 100, Position.Middle, false);
-        public static Module TimedFuse { get; } = new Module("Timed fuse", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 100, Position.Middle, false);
-        public static Module InertialFuse { get; } = new Module("Inertial fuse", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 100, Position.Middle, false);
-        public static Module AltitudeFuse { get; } = new Module("Altitude fuse", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 100, Position.Middle, false);
-        public static Module Defuse { get; } = new Module("Emergency defuse", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 100, Position.Middle, false);
-        public static Module GravCompensator { get; } = new Module("Grav. compensator", 1.0f, 1.0f, 1.0f, 1.0f, 100, 1.0f, Position.Middle, false);
-        public static Module EmpHead { get; } = new Module("EMP head", 1.45f, 1.2f, 1.0f, 1.0f, 1.0f, 500, Position.Head, false);
-        public static Module FlaKHead { get; } = new Module("FlaK head", 1.45f, 1.0f, 0.1f, 1.0f, 1.0f, 500, Position.Head, false);
-        public static Module FragHead { get; } = new Module("Frag head", 1.45f, 1.2f, 1.0f, 1.0f, 1.0f, 500, Position.Head, false);
-        public static Module HEHead { get; } = new Module("HE head", 1.45f, 1.2f, 1.0f, 1.0f, 1.0f, 500, Position.Head, false);
-        public static Module ShapedChargeHead { get; } = new Module("Shaped charge head", 1.6f, 0.1f, 0.1f, 1.0f, 1.0f, 500, Position.Head, false);
-        public static Module APHead { get; } = new Module("AP head", 1.6f, 1.0f, 1.65f, 1.0f, 1.0f, 500, Position.Head, false);
-        public static Module SabotHead { get; } = new Module("Sabot head", 1.6f, 0.85f, 2.5f, 0.25f, 1.0f, 500, Position.Head, false);
-        public static Module HeavyHead { get; } = new Module("Heavy head", 1.45f, 1.75f, 1.0f, 1.0f, 1.0f, 500, Position.Head, false);
-        public static Module HollowPoint { get; } = new Module("Hollow point head", 1.45f, 1.0f, 1.15f, 1.0f, 1.0f, 500, Position.Head, false);
-        public static Module SkimmerTip { get; } = new Module("Skimmer tip", 1.6f, 1.0f, 1.4f, 1.0f, 1.0f, 500, Position.Head, false);
-        public static Module Disruptor { get; } = new Module("Disruptor conduit", 1.6f, 1.0f, 1.0f, 1.0f, 1.0f, 500, Position.Head, false);
-        public static Module BaseBleeder { get; } = new Module("Base bleeder", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 100, Position.Base, false);
-        public static Module Supercav { get; } = new Module("Supercavitation base", 1.0f, 1.0f, 1.0f, 0.75f, 1.0f, 100, Position.Base, false);
-        public static Module Tracer { get; } = new Module("Visible tracer", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 100, Position.Base, false);
-        public static Module GravRam { get; } = new Module("Graviton ram", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 500, Position.Base, false);
+        public static Module SolidBody { get; } = new Module("Solid body", 1.1f, 1.0f, 1.0f, 1.0f, 1.0f, 1000f, Position.Middle, true);
+        public static Module SabotBody { get; } = new Module("Sabot body", 1.1f, 0.8f, 1.4f, 0.25f, 1.0f, 1000f, Position.Middle, true);
+        public static Module EmpBody { get; } = new Module("EMP body", 1.0f, 1.0f, 0.8f, 1.0f, 1.0f, 1000f, Position.Middle, true);
+        public static Module FlaKBody { get; } = new Module("FlaK body", 1.0f, 1.0f, 0.1f, 1.0f, 1.0f, 1000f, Position.Middle, true);
+        public static Module FragBody { get; } = new Module("Frag body", 1.0f, 1.0f, 0.8f, 1.0f, 1.0f, 1000f, Position.Middle, true);
+        public static Module HEBody { get; } = new Module("HE body", 1.0f, 1.0f, 0.8f, 1.0f, 1.0f, 1000f, Position.Middle, true);
+        public static Module FinBody { get; } = new Module("Stabilizer fin body", 0.95f, 1.0f, 1.0f, 1.0f, 0.2f, 300f, Position.Middle, true);
+        public static Module PenDepthFuse { get; } = new Module("Pendepth fuse", 1.1f, 1.0f, 1.0f, 1.0f, 1.0f, 100f, Position.Middle, false);
+        public static Module TimedFuse { get; } = new Module("Timed fuse", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 100f, Position.Middle, false);
+        public static Module InertialFuse { get; } = new Module("Inertial fuse", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 100f, Position.Middle, false);
+        public static Module AltitudeFuse { get; } = new Module("Altitude fuse", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 100f, Position.Middle, false);
+        public static Module Defuse { get; } = new Module("Emergency defuse", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 100f, Position.Middle, false);
+        public static Module GravCompensator { get; } = new Module("Grav. compensator", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 100f, Position.Middle, false);
+        public static Module EmpHead { get; } = new Module("EMP head", 1.45f, 1.2f, 1.0f, 1.0f, 1.0f, 1000f, Position.Head, false);
+        public static Module FlaKHead { get; } = new Module("FlaK head", 1.45f, 1.0f, 0.1f, 1.0f, 1.0f, 1000f, Position.Head, false);
+        public static Module FragHead { get; } = new Module("Frag head", 1.45f, 1.2f, 1.0f, 1.0f, 1.0f, 1000f, Position.Head, false);
+        public static Module HEHead { get; } = new Module("HE head", 1.45f, 1.2f, 1.0f, 1.0f, 1.0f, 1000f, Position.Head, false);
+        public static Module ShapedChargeHead { get; } = new Module("Shaped charge head", 1.6f, 0.1f, 0.1f, 1.0f, 1.0f, 1000f, Position.Head, false);
+        public static Module APHead { get; } = new Module("AP head", 1.6f, 1.0f, 1.65f, 1.0f, 1.0f, 1000f, Position.Head, false);
+        public static Module SabotHead { get; } = new Module("Sabot head", 1.6f, 0.85f, 2.5f, 0.25f, 1.0f, 1000f, Position.Head, false);
+        public static Module HeavyHead { get; } = new Module("Heavy head", 1.45f, 1.75f, 1.0f, 1.0f, 1.0f, 1000f, Position.Head, false);
+        public static Module HollowPoint { get; } = new Module("Hollow point head", 1.45f, 1.0f, 1.15f, 1.0f, 1.0f, 1000f, Position.Head, false);
+        public static Module SkimmerTip { get; } = new Module("Skimmer tip", 1.6f, 1.0f, 1.4f, 1.0f, 1.0f, 1000f, Position.Head, false);
+        public static Module Disruptor { get; } = new Module("Disruptor conduit", 1.6f, 1.0f, 1.0f, 1.0f, 1.0f, 1000f, Position.Head, false);
+        public static Module BaseBleeder { get; } = new Module("Base bleeder", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 100f, Position.Base, false);
+        public static Module Supercav { get; } = new Module("Supercavitation base", 1.0f, 1.0f, 1.0f, 0.75f, 1.0f, 100f, Position.Base, false);
+        public static Module Tracer { get; } = new Module("Visible tracer", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 100f, Position.Base, false);
+        public static Module GravRam { get; } = new Module("Graviton ram", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1000f, Position.Base, false);
 
         // List modules for reference
         public static Module[] AllModules { get; } =
