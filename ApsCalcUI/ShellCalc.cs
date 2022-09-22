@@ -1903,7 +1903,7 @@ namespace ApsCalcUI
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, barrelLengthInaccuracyList));
 
-                if (MaxGP > 0f)
+                if (showGP)
                 {
                     List<string> barrelLengthPropellantBurnList = new()
                     {
