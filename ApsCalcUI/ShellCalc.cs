@@ -30,7 +30,7 @@ namespace ApsCalcUI
     {
         Kinetic,
         Emp,
-        FlaK,
+        Flak,
         Frag,
         HE,
         Heat,
@@ -308,7 +308,7 @@ namespace ApsCalcUI
                     }
                     else
                     {
-                        var1Max = 20f - (FixedModuleTotal + var0Count);
+                        var1Max = 20f - FixedModuleTotal - var0Count;
                     }
 
                     for (float var1Count = 0; var1Count <= var1Max; var1Count++)
@@ -319,7 +319,7 @@ namespace ApsCalcUI
                         }
                         else
                         {
-                            var2Max = 20f - (FixedModuleTotal + var0Count + var1Count);
+                            var2Max = 20f - FixedModuleTotal - var0Count - var1Count;
                         }
 
                         for (float var2Count = 0; var2Count <= var2Max; var2Count++)
@@ -330,7 +330,7 @@ namespace ApsCalcUI
                             }
                             else
                             {
-                                var3Max = 20f - (FixedModuleTotal + var0Count + var1Count + var2Count);
+                                var3Max = 20f - FixedModuleTotal - var0Count - var1Count - var2Count;
                             }
 
                             for (float var3Count = 0; var3Count <= var3Max; var3Count++)
@@ -341,7 +341,7 @@ namespace ApsCalcUI
                                 }
                                 else
                                 {
-                                    var4Max = 20f - (FixedModuleTotal + var0Count + var1Count + var2Count + var3Count);
+                                    var4Max = 20f - FixedModuleTotal - var0Count - var1Count - var2Count - var3Count;
                                 }
 
                                 for (float var4Count = 0; var4Count <= var4Max; var4Count++)
@@ -352,7 +352,7 @@ namespace ApsCalcUI
                                     }
                                     else
                                     {
-                                        var5Max = 20f - (FixedModuleTotal + var0Count + var1Count + var2Count + var3Count + var4Count);
+                                        var5Max = 20f - FixedModuleTotal - var0Count - var1Count - var2Count - var3Count - var4Count;
                                     }
 
                                     for (float var5Count = 0; var5Count <= var5Max; var5Count++)
@@ -364,21 +364,21 @@ namespace ApsCalcUI
                                         else
                                         {
                                             var6Max = 
-                                                20f - 
-                                                    (FixedModuleTotal 
-                                                    + var0Count 
-                                                    + var1Count 
-                                                    + var2Count 
-                                                    + var3Count 
-                                                    + var4Count 
-                                                    + var5Count);
+                                                20f 
+                                                - FixedModuleTotal 
+                                                - var0Count 
+                                                - var1Count 
+                                                - var2Count 
+                                                - var3Count 
+                                                - var4Count 
+                                                - var5Count;
                                         }
 
                                         for (float var6Count = 0; var6Count <= var6Max; var6Count++)
                                         {
                                             gpMax = MathF.Min(
-                                                20f -
-                                                FixedModuleTotal
+                                                20f 
+                                                - FixedModuleTotal
                                                 - var0Count
                                                 - var1Count
                                                 - var2Count
@@ -390,8 +390,18 @@ namespace ApsCalcUI
 
                                             for (float gpCount = 0; gpCount <= gpMax; gpCount += 0.01f)
                                             {
-                                                rgMax = 
-                                                    MathF.Min(20f - (FixedModuleTotal + var0Count + var1Count + gpCount), MaxRGInput);
+                                                rgMax = MathF.Min(
+                                                    20f 
+                                                    - FixedModuleTotal 
+                                                    - var0Count 
+                                                    - var1Count 
+                                                    - var2Count
+                                                    - var3Count
+                                                    - var4Count
+                                                    - var5Count
+                                                    - var6Count
+                                                    - gpCount
+                                                    , MaxRGInput);
 
                                                 for (float rgCount = 0; rgCount <= rgMax; rgCount++)
                                                 {
@@ -1445,7 +1455,7 @@ namespace ApsCalcUI
             {
                 { DamageType.Kinetic, true },
                 { DamageType.Emp, false },
-                { DamageType.FlaK, false },
+                { DamageType.Flak, false },
                 { DamageType.Frag, false },
                 { DamageType.HE, false },
                 { DamageType.Heat, false },
@@ -1463,9 +1473,9 @@ namespace ApsCalcUI
                     {
                         dtToShow[DamageType.Emp] = true;
                     }
-                    else if (Module.AllModules[index] == Module.FlaKBody)
+                    else if (Module.AllModules[index] == Module.FlakBody)
                     {
-                        dtToShow[DamageType.FlaK] = true;
+                        dtToShow[DamageType.Flak] = true;
                     }
                     else if (Module.AllModules[index] == Module.FragBody)
                     {
@@ -1484,9 +1494,9 @@ namespace ApsCalcUI
                 {
                     dtToShow[DamageType.Emp] = true;
                 }
-                else if (Module.AllModules[index] == Module.FlaKHead)
+                else if (Module.AllModules[index] == Module.FlakHead)
                 {
-                    dtToShow[DamageType.FlaK] = true;
+                    dtToShow[DamageType.Flak] = true;
                 }
                 else if (Module.AllModules[index] == Module.FragHead)
                 {
@@ -1710,23 +1720,7 @@ namespace ApsCalcUI
                     // Calculate all damage and DPS -- including those not used for optimizing
                     foreach (DamageType dt in dtToShow.Keys)
                     {
-                        if (dtToShow[dt] && topShellPair.Value.IsBelt)
-                        {
-                            topShellPair.Value.CalculateDamageByType(dt, FragAngleMultiplier);
-                            topShellPair.Value.CalculateDpsByType(
-                                dt,
-                                TargetAC,
-                                TestIntervalSeconds,
-                                StoragePerVolume,
-                                StoragePerCost,
-                                EnginePpm,
-                                EnginePpv,
-                                EnginePpc,
-                                EngineUsesFuel,
-                                TargetArmorScheme,
-                                ImpactAngleFromPerpendicularDegrees);
-                        }
-                        else if (dtToShow[dt])
+                        if (dtToShow[dt])
                         {
                             topShellPair.Value.CalculateDamageByType(dt, FragAngleMultiplier);
                             topShellPair.Value.CalculateDpsByType(
@@ -1985,25 +1979,25 @@ namespace ApsCalcUI
                             }
                             writer.WriteLine(string.Join(ColumnDelimiter, damagePerFragList));
                         }
-                        else if (dt == DamageType.FlaK)
+                        else if (dt == DamageType.Flak)
                         {
                             List<string> rawFlakDamageList = new()
                             {
-                                "Raw FlaK damage"
+                                "Raw Flak damage"
                             };
                             foreach (Shell topShell in TopDpsShells.Values)
                             {
-                                rawFlakDamageList.Add(topShell.RawFlaK.ToString());
+                                rawFlakDamageList.Add(topShell.RawFlak.ToString());
                             }
                             writer.WriteLine(string.Join(ColumnDelimiter, rawFlakDamageList));
 
                             List<string> flakExplosionRadiusList = new()
                             {
-                                "FlaK explosion radius (m)"
+                                "Flak explosion radius (m)"
                             };
                             foreach (Shell topShell in TopDpsShells.Values)
                             {
-                                flakExplosionRadiusList.Add(topShell.FlaKExplosionRadius.ToString());
+                                flakExplosionRadiusList.Add(topShell.FlakExplosionRadius.ToString());
                             }
                             writer.WriteLine(string.Join(ColumnDelimiter, flakExplosionRadiusList));
                         }

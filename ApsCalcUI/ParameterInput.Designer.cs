@@ -46,7 +46,7 @@ namespace ApsCalcUI
             this.SolidBodyFixedUD = new System.Windows.Forms.NumericUpDown();
             this.SabotBodyFixedUD = new System.Windows.Forms.NumericUpDown();
             this.EmpBodyFixedUD = new System.Windows.Forms.NumericUpDown();
-            this.FlaKBodyFixedUD = new System.Windows.Forms.NumericUpDown();
+            this.FlakBodyFixedUD = new System.Windows.Forms.NumericUpDown();
             this.FragBodyFixedUD = new System.Windows.Forms.NumericUpDown();
             this.HEBodyFixedUD = new System.Windows.Forms.NumericUpDown();
             this.FinFixedUD = new System.Windows.Forms.NumericUpDown();
@@ -110,7 +110,7 @@ namespace ApsCalcUI
             this.FinLabel = new System.Windows.Forms.Label();
             this.HEBodyFixedLabel = new System.Windows.Forms.Label();
             this.FragBodyFixedLabel = new System.Windows.Forms.Label();
-            this.FlaKBodyFixedLabel = new System.Windows.Forms.Label();
+            this.FlakBodyFixedLabel = new System.Windows.Forms.Label();
             this.EmpBodyFixedLabel = new System.Windows.Forms.Label();
             this.SabotBodyFixedLabel = new System.Windows.Forms.Label();
             this.SolidBodyFixedLabel = new System.Windows.Forms.Label();
@@ -161,7 +161,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SabotBodyFixedUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.EmpBodyFixedUD)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FlaKBodyFixedUD)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FlakBodyFixedUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FragBodyFixedUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HEBodyFixedUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FinFixedUD)).BeginInit();
@@ -408,19 +408,19 @@ namespace ApsCalcUI
             this.EmpBodyFixedUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ToolTip.SetToolTip(this.EmpBodyFixedUD, "Minimum EMP bodies to include in every shell");
             // 
-            // FlaKBodyFixedUD
+            // FlakBodyFixedUD
             // 
-            this.FlaKBodyFixedUD.Location = new System.Drawing.Point(110, 104);
-            this.FlaKBodyFixedUD.Maximum = new decimal(new int[] {
+            this.FlakBodyFixedUD.Location = new System.Drawing.Point(110, 104);
+            this.FlakBodyFixedUD.Maximum = new decimal(new int[] {
             19,
             0,
             0,
             0});
-            this.FlaKBodyFixedUD.Name = "FlaKBodyFixedUD";
-            this.FlaKBodyFixedUD.Size = new System.Drawing.Size(40, 23);
-            this.FlaKBodyFixedUD.TabIndex = 8;
-            this.FlaKBodyFixedUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.ToolTip.SetToolTip(this.FlaKBodyFixedUD, "Minimum FlaK bodies to include in every shell");
+            this.FlakBodyFixedUD.Name = "FlakBodyFixedUD";
+            this.FlakBodyFixedUD.Size = new System.Drawing.Size(40, 23);
+            this.FlakBodyFixedUD.TabIndex = 8;
+            this.FlakBodyFixedUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.ToolTip.SetToolTip(this.FlakBodyFixedUD, "Minimum Flak bodies to include in every shell");
             // 
             // FragBodyFixedUD
             // 
@@ -1329,14 +1329,14 @@ namespace ApsCalcUI
             this.FixedModulesPanel.Controls.Add(this.FinFixedUD);
             this.FixedModulesPanel.Controls.Add(this.HEBodyFixedUD);
             this.FixedModulesPanel.Controls.Add(this.FragBodyFixedUD);
-            this.FixedModulesPanel.Controls.Add(this.FlaKBodyFixedUD);
+            this.FixedModulesPanel.Controls.Add(this.FlakBodyFixedUD);
             this.FixedModulesPanel.Controls.Add(this.EmpBodyFixedUD);
             this.FixedModulesPanel.Controls.Add(this.SabotBodyFixedUD);
             this.FixedModulesPanel.Controls.Add(this.SolidBodyFixedUD);
             this.FixedModulesPanel.Controls.Add(this.FinLabel);
             this.FixedModulesPanel.Controls.Add(this.HEBodyFixedLabel);
             this.FixedModulesPanel.Controls.Add(this.FragBodyFixedLabel);
-            this.FixedModulesPanel.Controls.Add(this.FlaKBodyFixedLabel);
+            this.FixedModulesPanel.Controls.Add(this.FlakBodyFixedLabel);
             this.FixedModulesPanel.Controls.Add(this.EmpBodyFixedLabel);
             this.FixedModulesPanel.Controls.Add(this.SabotBodyFixedLabel);
             this.FixedModulesPanel.Controls.Add(this.SolidBodyFixedLabel);
@@ -1373,14 +1373,14 @@ namespace ApsCalcUI
             this.FragBodyFixedLabel.TabIndex = 14;
             this.FragBodyFixedLabel.Text = "Frag Body";
             // 
-            // FlaKBodyFixedLabel
+            // FlakBodyFixedLabel
             // 
-            this.FlaKBodyFixedLabel.AutoSize = true;
-            this.FlaKBodyFixedLabel.Location = new System.Drawing.Point(4, 106);
-            this.FlaKBodyFixedLabel.Name = "FlaKBodyFixedLabel";
-            this.FlaKBodyFixedLabel.Size = new System.Drawing.Size(59, 15);
-            this.FlaKBodyFixedLabel.TabIndex = 12;
-            this.FlaKBodyFixedLabel.Text = "FlaK Body";
+            this.FlakBodyFixedLabel.AutoSize = true;
+            this.FlakBodyFixedLabel.Location = new System.Drawing.Point(4, 106);
+            this.FlakBodyFixedLabel.Name = "FlakBodyFixedLabel";
+            this.FlakBodyFixedLabel.Size = new System.Drawing.Size(59, 15);
+            this.FlakBodyFixedLabel.TabIndex = 12;
+            this.FlakBodyFixedLabel.Text = "Flak Body";
             // 
             // EmpBodyFixedLabel
             // 
@@ -1862,7 +1862,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SabotBodyFixedUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.EmpBodyFixedUD)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FlaKBodyFixedUD)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FlakBodyFixedUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.FragBodyFixedUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HEBodyFixedUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.FinFixedUD)).EndInit();
@@ -1935,7 +1935,7 @@ namespace ApsCalcUI
         private System.Windows.Forms.Label FinLabel;
         private System.Windows.Forms.Label HEBodyFixedLabel;
         private System.Windows.Forms.Label FragBodyFixedLabel;
-        private System.Windows.Forms.Label FlaKBodyFixedLabel;
+        private System.Windows.Forms.Label FlakBodyFixedLabel;
         private System.Windows.Forms.Label EmpBodyFixedLabel;
         private System.Windows.Forms.Label SabotBodyFixedLabel;
         private System.Windows.Forms.Panel VariableModulesPanel;
@@ -1970,7 +1970,7 @@ namespace ApsCalcUI
         private System.Windows.Forms.NumericUpDown FinFixedUD;
         private System.Windows.Forms.NumericUpDown HEBodyFixedUD;
         private System.Windows.Forms.NumericUpDown FragBodyFixedUD;
-        private System.Windows.Forms.NumericUpDown FlaKBodyFixedUD;
+        private System.Windows.Forms.NumericUpDown FlakBodyFixedUD;
         private System.Windows.Forms.NumericUpDown EmpBodyFixedUD;
         private System.Windows.Forms.NumericUpDown SabotBodyFixedUD;
         private System.Windows.Forms.NumericUpDown SolidBodyFixedUD;

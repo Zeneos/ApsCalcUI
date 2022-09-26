@@ -193,7 +193,7 @@ namespace ApsCalcUITests
             testShell.CalculateDamageModifierByType(DamageType.HE);
             testShell.CalculateDamageByType(DamageType.Kinetic, fragAngleMultiplier);
             testShell.CalculateDamageByType(DamageType.HE, fragAngleMultiplier);
-            testShell.CalculateDamageByType(DamageType.FlaK, fragAngleMultiplier);
+            testShell.CalculateDamageByType(DamageType.Flak, fragAngleMultiplier);
             testShell.CalculateDamageByType(DamageType.Frag, fragAngleMultiplier);
             testShell.CalculateDamageByType(DamageType.Emp, fragAngleMultiplier);
 
@@ -209,7 +209,7 @@ namespace ApsCalcUITests
             Assert.AreEqual(testShell.ClusterReloadTime, 177.807022f);
             Assert.AreEqual(testShell.OverallChemModifier, 0.25f);
             Assert.AreEqual(testShell.RawHE, 743.169617f);
-            Assert.AreEqual(testShell.RawFlaK, 675.936951f);
+            Assert.AreEqual(testShell.RawFlak, 675.936951f);
             Assert.AreEqual(testShell.DamageDict[DamageType.Frag], 9691.6084f);
             Assert.AreEqual(testShell.DamageDict[DamageType.Emp], 397.768982f);
         }

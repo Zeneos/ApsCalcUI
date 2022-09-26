@@ -54,7 +54,7 @@ namespace ApsCalcUI
         public static Module SolidBody { get; } = new Module("Solid body", 1.1f, 1.0f, 1.0f, 1.0f, 1.0f, 1000f, Position.Middle, true);
         public static Module SabotBody { get; } = new Module("Sabot body", 1.1f, 0.8f, 1.4f, 0.25f, 1.0f, 1000f, Position.Middle, true);
         public static Module EmpBody { get; } = new Module("EMP body", 1.0f, 1.0f, 0.8f, 1.0f, 1.0f, 1000f, Position.Middle, true);
-        public static Module FlaKBody { get; } = new Module("FlaK body", 1.0f, 1.0f, 0.1f, 1.0f, 1.0f, 1000f, Position.Middle, true);
+        public static Module FlakBody { get; } = new Module("Flak body", 1.0f, 1.0f, 0.1f, 1.0f, 1.0f, 1000f, Position.Middle, true);
         public static Module FragBody { get; } = new Module("Frag body", 1.0f, 1.0f, 0.8f, 1.0f, 1.0f, 1000f, Position.Middle, true);
         public static Module HEBody { get; } = new Module("HE body", 1.0f, 1.0f, 0.8f, 1.0f, 1.0f, 1000f, Position.Middle, true);
         public static Module FinBody { get; } = new Module("Stabilizer fin body", 0.95f, 1.0f, 1.0f, 1.0f, 0.2f, 300f, Position.Middle, true);
@@ -65,7 +65,7 @@ namespace ApsCalcUI
         public static Module Defuse { get; } = new Module("Emergency defuse", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 100f, Position.Middle, false);
         public static Module GravCompensator { get; } = new Module("Grav. compensator", 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 100f, Position.Middle, false);
         public static Module EmpHead { get; } = new Module("EMP head", 1.45f, 1.2f, 1.0f, 1.0f, 1.0f, 1000f, Position.Head, false);
-        public static Module FlaKHead { get; } = new Module("FlaK head", 1.45f, 1.0f, 0.1f, 1.0f, 1.0f, 1000f, Position.Head, false);
+        public static Module FlakHead { get; } = new Module("Flak head", 1.45f, 1.0f, 0.1f, 1.0f, 1.0f, 1000f, Position.Head, false);
         public static Module FragHead { get; } = new Module("Frag head", 1.45f, 1.2f, 1.0f, 1.0f, 1.0f, 1000f, Position.Head, false);
         public static Module HEHead { get; } = new Module("HE head", 1.45f, 1.2f, 1.0f, 1.0f, 1.0f, 1000f, Position.Head, false);
         public static Module ShapedChargeHead { get; } = new Module("Shaped charge head", 1.6f, 0.1f, 0.1f, 1.0f, 1.0f, 1000f, Position.Head, false);
@@ -86,7 +86,7 @@ namespace ApsCalcUI
         SolidBody,
         SabotBody,
         EmpBody,
-        FlaKBody,
+        FlakBody,
         FragBody,
         HEBody,
         FinBody,
@@ -97,7 +97,7 @@ namespace ApsCalcUI
         Defuse,
         GravCompensator,
         EmpHead,
-        FlaKHead,
+        FlakHead,
         FragHead,
         HEHead,
         ShapedChargeHead,

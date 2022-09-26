@@ -34,8 +34,8 @@ namespace ApsCalcUI
 
         // Lengths
         public float CasingLength { get; set; }
-        public float ProjectileLength { get; set; } // Everything but casings and Head
-        public float BodyLength { get; set; } // Everything but casings
+        public float ProjectileLength { get; set; } // Everything but casings
+        public float BodyLength { get; set; } // Everything but casings and Head
         public float TotalLength { get; set; }
         public float ShortLength { get; set; } // Used for penalizing short shells
         public float LengthDifferential { get; set; } // Used for penalizing short shells
@@ -83,14 +83,14 @@ namespace ApsCalcUI
         public float DamagePerFrag { get; set; }
         public float RawHE { get; set; }
         public float HEExplosionRadius { get; set; }
-        public float RawFlaK { get; set; }
-        public float FlaKExplosionRadius { get; set; }
+        public float RawFlak { get; set; }
+        public float FlakExplosionRadius { get; set; }
 
         public Dictionary<DamageType, float> DamageDict = new()
         {
             { DamageType.Kinetic, 0 },
             { DamageType.Emp, 0 },
-            { DamageType.FlaK, 0 },
+            { DamageType.Flak, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
             { DamageType.Heat, 0 },
@@ -101,7 +101,7 @@ namespace ApsCalcUI
         {
             { DamageType.Kinetic, 0 },
             { DamageType.Emp, 0 },
-            { DamageType.FlaK, 0 },
+            { DamageType.Flak, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
             { DamageType.Heat, 0 },
@@ -112,7 +112,7 @@ namespace ApsCalcUI
         {
             { DamageType.Kinetic, 0 },
             { DamageType.Emp, 0 },
-            { DamageType.FlaK, 0 },
+            { DamageType.Flak, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
             { DamageType.Heat, 0 },
@@ -123,7 +123,7 @@ namespace ApsCalcUI
         {
             { DamageType.Kinetic, 0 },
             { DamageType.Emp, 0 },
-            { DamageType.FlaK, 0 },
+            { DamageType.Flak, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
             { DamageType.Heat, 0 },
@@ -627,9 +627,9 @@ namespace ApsCalcUI
             {
                 CalculateEmpDamage();
             }
-            else if (dt == DamageType.FlaK)
+            else if (dt == DamageType.Flak)
             {
-                CalculateFlaKDamage();
+                CalculateFlakDamage();
             }
             else if (dt == DamageType.Frag)
             {
@@ -712,15 +712,15 @@ namespace ApsCalcUI
         }
 
         /// <summary>
-        /// Calculates FlaK damage
+        /// Calculates Flak damage
         /// </summary>
-        void CalculateFlaKDamage()
+        void CalculateFlakDamage()
         {
-            // Get index of FlaK body
+            // Get index of Flak body
             int flakIndex = int.MaxValue;
             for (int i = 0; i < Module.AllModules.Length; i++)
             {
-                if (Module.AllModules[i] == Module.FlaKBody)
+                if (Module.AllModules[i] == Module.FlakBody)
                 {
                     flakIndex = i;
                     break;
@@ -729,15 +729,15 @@ namespace ApsCalcUI
 
             float flaKBodies = BodyModuleCounts[flakIndex];
 
-            if (HeadModule == Module.FlaKHead || HeadModule == Module.FlaKBody)
+            if (HeadModule == Module.FlakHead || HeadModule == Module.FlakBody)
             {
                 flaKBodies++;
             }
-            RawFlaK = 3000f * MathF.Pow(GaugeCoefficient * flaKBodies * 0.792f * OverallChemModifier, 0.9f);
-            FlaKExplosionRadius = MathF.Min(MathF.Pow(RawFlaK, 0.3f) * 3f, 30f);
+            RawFlak = 3000f * MathF.Pow(GaugeCoefficient * flaKBodies * 0.792f * OverallChemModifier, 0.9f);
+            FlakExplosionRadius = MathF.Min(MathF.Pow(RawFlak, 0.3f) * 3f, 30f);
             // Multiply by volume to approximate applied damage; divide by 1000 to make result more manageable
-            float sphereVolume = MathF.Pow(FlaKExplosionRadius, 3) * MathF.PI * 4f / 3f;
-            DamageDict[DamageType.FlaK] = RawFlaK * sphereVolume / 1000f;
+            float sphereVolume = MathF.Pow(FlakExplosionRadius, 3) * MathF.PI * 4f / 3f;
+            DamageDict[DamageType.Flak] = RawFlak * sphereVolume / 1000f;
         }
 
         /// <summary>
@@ -897,9 +897,9 @@ namespace ApsCalcUI
                 {
                     CalculateEmpDps();
                 }
-                else if (dt == DamageType.FlaK)
+                else if (dt == DamageType.Flak)
                 {
-                    CalculateFlaKDps();
+                    CalculateFlakDps();
                 }
                 else if (dt == DamageType.Frag)
                 {
@@ -975,13 +975,13 @@ namespace ApsCalcUI
         }
 
         /// <summary>
-        /// Calculates FlaK damage per second
+        /// Calculates Flak damage per second
         /// </summary>
-        void CalculateFlaKDps()
+        void CalculateFlakDps()
         {
-            DpsDict[DamageType.FlaK] = DamageDict[DamageType.FlaK] / ClusterReloadTime * Uptime;
-            DpsPerVolumeDict[DamageType.FlaK] = DpsDict[DamageType.FlaK] / VolumePerLoader;
-            DpsPerCostDict[DamageType.FlaK] = DpsDict[DamageType.FlaK] / CostPerLoader;
+            DpsDict[DamageType.Flak] = DamageDict[DamageType.Flak] / ClusterReloadTime * Uptime;
+            DpsPerVolumeDict[DamageType.Flak] = DpsDict[DamageType.Flak] / VolumePerLoader;
+            DpsPerCostDict[DamageType.Flak] = DpsDict[DamageType.Flak] / CostPerLoader;
         }
 
         /// <summary>

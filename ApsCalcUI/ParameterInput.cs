@@ -74,7 +74,7 @@ namespace ApsCalcUI
             {
                 new DamageTypeItem { ID = DamageType.Kinetic, Text = "Kinetic" },
                 new DamageTypeItem { ID = DamageType.Emp, Text = "EMP" },
-                new DamageTypeItem { ID = DamageType.FlaK, Text = "FlaK" },
+                new DamageTypeItem { ID = DamageType.Flak, Text = "Flak" },
                 new DamageTypeItem { ID = DamageType.Frag, Text = "Frag" },
                 new DamageTypeItem { ID = DamageType.HE, Text = "HE" },
                 new DamageTypeItem { ID = DamageType.Heat, Text = "HEAT" },
@@ -154,8 +154,8 @@ namespace ApsCalcUI
             SolidBodyFixedUD.Maximum = maxFixedCount;
             SabotBodyFixedUD.Maximum = SolidBodyFixedUD.Maximum - SolidBodyFixedUD.Value;
             EmpBodyFixedUD.Maximum = SabotBodyFixedUD.Maximum - SabotBodyFixedUD.Value;
-            FlaKBodyFixedUD.Maximum = EmpBodyFixedUD.Maximum - EmpBodyFixedUD.Value;
-            FragBodyFixedUD.Maximum = FlaKBodyFixedUD.Maximum - FlaKBodyFixedUD.Value;
+            FlakBodyFixedUD.Maximum = EmpBodyFixedUD.Maximum - EmpBodyFixedUD.Value;
+            FragBodyFixedUD.Maximum = FlakBodyFixedUD.Maximum - FlakBodyFixedUD.Value;
             HEBodyFixedUD.Maximum = FragBodyFixedUD.Maximum - FragBodyFixedUD.Value;
             FinFixedUD.Maximum = HEBodyFixedUD.Maximum - HEBodyFixedUD.Value;
 
@@ -172,7 +172,7 @@ namespace ApsCalcUI
             minLength += (float)SolidBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.SolidBody.MaxLength);
             minLength += (float)SabotBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.SabotBody.MaxLength);
             minLength += (float)EmpBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.EmpBody.MaxLength);
-            minLength += (float)FlaKBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.FlaKBody.MaxLength);
+            minLength += (float)FlakBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.FlakBody.MaxLength);
             minLength += (float)FragBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.FragBody.MaxLength);
             minLength += (float)HEBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.HEBody.MaxLength);
             minLength += (float)FinFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.FinBody.MaxLength);
@@ -255,7 +255,7 @@ namespace ApsCalcUI
             UpdateModuleCounts();
         }
 
-        private void FlaKBodyFixedUD_ValueChanged(object sender, EventArgs e)
+        private void FlakBodyFixedUD_ValueChanged(object sender, EventArgs e)
         {
             UpdateModuleCounts();
         }
@@ -657,7 +657,7 @@ namespace ApsCalcUI
                     (float)SolidBodyFixedUD.Value,
                     (float)SabotBodyFixedUD.Value,
                     (float)EmpBodyFixedUD.Value,
-                    (float)FlaKBodyFixedUD.Value,
+                    (float)FlakBodyFixedUD.Value,
                     (float)FragBodyFixedUD.Value,
                     (float)HEBodyFixedUD.Value,
                     (float)FinFixedUD.Value,
