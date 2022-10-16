@@ -97,6 +97,7 @@ namespace ApsCalcUI
             this.BeltfedInputsPerLoaderUD = new System.Windows.Forms.NumericUpDown();
             this.RegularClipsPerLoaderUD = new System.Windows.Forms.NumericUpDown();
             this.RegularInputsPerLoaderUD = new System.Windows.Forms.NumericUpDown();
+            this.AmmoEjectorCB = new System.Windows.Forms.CheckBox();
             this.BarrelCountLabel = new System.Windows.Forms.Label();
             this.MinGaugeLabel = new System.Windows.Forms.Label();
             this.MaxGaugeLabel = new System.Windows.Forms.Label();
@@ -155,7 +156,6 @@ namespace ApsCalcUI
             this.ClipCountLabel = new System.Windows.Forms.Label();
             this.RegularClipCountLabel = new System.Windows.Forms.Label();
             this.BeltfedClipCountLabel = new System.Windows.Forms.Label();
-            this.AmmoEjectorCB = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.MinGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxGaugeUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SolidBodyFixedUD)).BeginInit();
@@ -1226,6 +1226,18 @@ namespace ApsCalcUI
             0,
             0});
             // 
+            // AmmoEjectorCB
+            // 
+            this.AmmoEjectorCB.AutoSize = true;
+            this.AmmoEjectorCB.Location = new System.Drawing.Point(49, 82);
+            this.AmmoEjectorCB.Name = "AmmoEjectorCB";
+            this.AmmoEjectorCB.Size = new System.Drawing.Size(102, 19);
+            this.AmmoEjectorCB.TabIndex = 8;
+            this.AmmoEjectorCB.Text = "Ammo Ejector";
+            this.ToolTip.SetToolTip(this.AmmoEjectorCB, "Check to include an Ammo ejector.\r\nAutomatically included if Emergency Defuze is " +
+        "checked.");
+            this.AmmoEjectorCB.UseVisualStyleBackColor = true;
+            // 
             // BarrelCountLabel
             // 
             this.BarrelCountLabel.AutoSize = true;
@@ -1378,7 +1390,7 @@ namespace ApsCalcUI
             this.FlakBodyFixedLabel.AutoSize = true;
             this.FlakBodyFixedLabel.Location = new System.Drawing.Point(4, 106);
             this.FlakBodyFixedLabel.Name = "FlakBodyFixedLabel";
-            this.FlakBodyFixedLabel.Size = new System.Drawing.Size(59, 15);
+            this.FlakBodyFixedLabel.Size = new System.Drawing.Size(58, 15);
             this.FlakBodyFixedLabel.TabIndex = 12;
             this.FlakBodyFixedLabel.Text = "Flak Body";
             // 
@@ -1779,22 +1791,11 @@ namespace ApsCalcUI
             this.BeltfedClipCountLabel.TabIndex = 0;
             this.BeltfedClipCountLabel.Text = "Beltfed";
             // 
-            // AmmoEjectorCB
-            // 
-            this.AmmoEjectorCB.AutoSize = true;
-            this.AmmoEjectorCB.Location = new System.Drawing.Point(49, 82);
-            this.AmmoEjectorCB.Name = "AmmoEjectorCB";
-            this.AmmoEjectorCB.Size = new System.Drawing.Size(102, 19);
-            this.AmmoEjectorCB.TabIndex = 8;
-            this.AmmoEjectorCB.Text = "Ammo Ejector";
-            this.ToolTip.SetToolTip(this.AmmoEjectorCB, "Check to include an Ammo ejector.\r\nAutomatically included if Emergency Defuze is " +
-        "checked.");
-            this.AmmoEjectorCB.UseVisualStyleBackColor = true;
-            // 
             // ParameterInput
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(800, 656);
             this.Controls.Add(this.ClipCountPanel);
             this.Controls.Add(this.CommaDecimalCB);
