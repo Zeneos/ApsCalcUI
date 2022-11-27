@@ -1612,7 +1612,7 @@ namespace ApsCalcUI
             writer.WriteLine("Max GP casings" + ColumnDelimiter + MaxGPInput);
             writer.WriteLine("Max RG casings" + ColumnDelimiter + MaxRGInput);
             writer.WriteLine("Max draw" + ColumnDelimiter + MaxDrawInput);
-            if(MaxDrawInput > 0)
+            if (MaxDrawInput > 0)
             {
                 writer.WriteLine("Engine PPM" + ColumnDelimiter + EnginePpm);
                 writer.WriteLine("Engine PPV" + ColumnDelimiter + EnginePpv);
@@ -1665,24 +1665,36 @@ namespace ApsCalcUI
                 }
             }
 
+            // Determine optimized damage type
             if (DamageType == DamageType.Kinetic)
             {
                 writer.WriteLine("Damage type" + ColumnDelimiter + "Kinetic");
-                writer.WriteLine("Target AC" + ColumnDelimiter + TargetAC);
             }
             else if (DamageType == DamageType.Disruptor)
             {
                 writer.WriteLine("Damage type" + ColumnDelimiter + "Disruptor");
-                writer.WriteLine("Min disruptor strength" + ColumnDelimiter + MinDisruptor);
             }
             else if (DamageType == DamageType.Frag)
             {
                 writer.WriteLine("Damage type" + ColumnDelimiter + "Frag");
-                writer.WriteLine("Frag cone angle (°)" + ColumnDelimiter + FragConeAngle);
             }
             else
             {
                 writer.WriteLine("Damage type" + ColumnDelimiter + (DamageType)(int)DamageType);
+            }
+
+            // Display common stats for all calculated damage types
+            if (dtToShow[DamageType.Kinetic])
+            {
+                writer.WriteLine("Target AC" + ColumnDelimiter + TargetAC);
+            }
+            if (dtToShow[DamageType.Disruptor])
+            {
+                writer.WriteLine("Min disruptor strength" + ColumnDelimiter + MinDisruptor);
+            }
+            if (dtToShow[DamageType.Frag])
+            {
+                writer.WriteLine("Frag cone angle (°)" + ColumnDelimiter + FragConeAngle);
             }
 
             if (TestType == 0)
@@ -1716,6 +1728,15 @@ namespace ApsCalcUI
                 {
                     // Calculate barrel lengths
                     topShellPair.Value.CalculateRequiredBarrelLengths(MaxInaccuracy);
+                    if (dtToShow[DamageType.Disruptor] 
+                        || dtToShow[DamageType.Emp]
+                        || dtToShow[DamageType.Flak] 
+                        || dtToShow[DamageType.Frag] 
+                        || dtToShow[DamageType.HE]
+                        || dtToShow[DamageType.Heat])
+                    {
+                        topShellPair.Value.CalculateChemModifier();
+                    }
 
                     // Calculate all damage and DPS -- including those not used for optimizing
                     foreach (DamageType dt in dtToShow.Keys)

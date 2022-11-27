@@ -317,7 +317,7 @@ namespace ApsCalcUI
         /// <summary>
         /// Calculates chemical payload modifier
         /// </summary>
-        void CalculateChemModifier()
+        public void CalculateChemModifier()
         {
             OverallChemModifier = 1f;
             if (BaseModule != null)
