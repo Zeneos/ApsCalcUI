@@ -6,6 +6,7 @@ namespace ApsCalcUI
 {
     public class Shell
     {
+        public const float ApsModifier = 23; // Used as global multiplier in damage calculations
         public Shell() { BaseModule = default; }
         public float Gauge { get; set; }
         public float GaugeCoefficient { get; set; } // Expensive to calculate and used in several formulae
@@ -664,7 +665,8 @@ namespace ApsCalcUI
                     * EffectiveProjectileModuleCount
                     * Velocity
                     * OverallKineticDamageModifier
-                    * 3.5f;
+                    * 0.16f
+                    * ApsModifier;
             }
             else
             {
@@ -674,7 +676,8 @@ namespace ApsCalcUI
                     * EffectiveProjectileModuleCount
                     * Velocity
                     * OverallKineticDamageModifier
-                    * 3.5f;
+                    * 0.16f
+                    * ApsModifier;
             }
         }
 
@@ -708,7 +711,7 @@ namespace ApsCalcUI
             {
                 empBodies++;
             }
-            DamageDict[DamageType.Emp] = GaugeCoefficient * empBodies * OverallChemModifier * 1650;
+            DamageDict[DamageType.Emp] = GaugeCoefficient * empBodies * OverallChemModifier * 75f * ApsModifier;
         }
 
         /// <summary>
@@ -733,7 +736,7 @@ namespace ApsCalcUI
             {
                 flaKBodies++;
             }
-            RawFlak = 3000f * MathF.Pow(GaugeCoefficient * flaKBodies * 0.792f * OverallChemModifier, 0.9f);
+            RawFlak = 3000f * MathF.Pow(GaugeCoefficient * flaKBodies * 108f * ApsModifier / 3000f * OverallChemModifier, 0.9f);
             FlakExplosionRadius = MathF.Min(MathF.Pow(RawFlak, 0.3f) * 3f, 30f);
             // Multiply by volume to approximate applied damage; divide by 1000 to make result more manageable
             float sphereVolume = MathF.Pow(FlakExplosionRadius, 3) * MathF.PI * 4f / 3f;
@@ -763,7 +766,7 @@ namespace ApsCalcUI
             {
                 fragBodies++;
             }
-            DamageDict[DamageType.Frag] = GaugeCoefficient * fragBodies * OverallChemModifier * 66000;
+            DamageDict[DamageType.Frag] = GaugeCoefficient * fragBodies * OverallChemModifier * 3000f * ApsModifier;
             // Frag count is based on raw damage before angle multiplier
             FragCount = MathF.Floor(MathF.Pow(DamageDict[DamageType.Frag], 0.25f));
             DamageDict[DamageType.Frag] *= fragAngleMultiplier;
@@ -796,7 +799,7 @@ namespace ApsCalcUI
             {
                 heBodies++;
             }
-            RawHE = 3000f * MathF.Pow(GaugeCoefficient * heBodies * 0.88f * OverallChemModifier, 0.9f);
+            RawHE = 3000f * MathF.Pow(GaugeCoefficient * heBodies * 120f * ApsModifier / 3000f * OverallChemModifier, 0.9f);
             HEExplosionRadius = MathF.Min(MathF.Pow(RawHE, 0.3f), 30f);
             // Multiply by volume to approximate applied damage; divide by 1000 to make result more manageable
             float sphereVolume = MathF.Pow(HEExplosionRadius, 3) * MathF.PI * 4f / 3f;
@@ -825,7 +828,7 @@ namespace ApsCalcUI
                 float heBodies = BodyModuleCounts[heIndex];
                 // Calculate HE damage assuming special factor of 1 for HE bodies
                 // Special heads count as HE body with special factor of 0.8, leaving 0.2 body equivalents for actual HE damage
-                RawHE = 3000f * MathF.Pow(GaugeCoefficient * 0.2f * 0.88f * OverallChemModifier, 0.9f);
+                RawHE = 3000f * MathF.Pow(GaugeCoefficient * 0.2f * 120f * ApsModifier / 3000f * OverallChemModifier, 0.9f);
                 HEExplosionRadius = MathF.Min(MathF.Pow(RawHE, 0.3f), 30f);
                 // Multiply by volume to approximate applied damage
                 float sphereVolume = MathF.Pow(HEExplosionRadius, 3) * MathF.PI * 4f / 3f;
@@ -835,7 +838,8 @@ namespace ApsCalcUI
                     GaugeCoefficient
                     * (heBodies + 0.8f)
                     * OverallChemModifier
-                    * 17447.75f; // 26400 / 16 / sqrt(0.5) * (2 + sqrt(30))
+                    * ApsModifier
+                    * 957.6435f; // 3000 * 1.15 * 0.42 / 16 / sqrt(0.5) * (2 + sqrt(30))
             }
             else
             {

@@ -76,8 +76,8 @@ namespace ApsCalcUITests
                 nonDirectHitAngleFromPerpendicularDegrees);
             float nonSabotNonDirectHit = testShell.DamageDict[DamageType.Kinetic];
             Assert.AreEqual(nonSabotDirectHit, testShell.RawKD);
-            Assert.AreEqual(nonSabotDirectHit, 9903.79883f);
-            Assert.AreEqual(nonSabotNonDirectHit, 9566.33496f);
+            Assert.AreEqual(nonSabotDirectHit, 10413.1367f);
+            Assert.AreEqual(nonSabotNonDirectHit, 10058.3174f);
 
 
             // Sabot head uses 3/4 angle
@@ -118,8 +118,8 @@ namespace ApsCalcUITests
                 nonDirectHitAngleFromPerpendicularDegrees);
             float sabotNonDirectHit = testShell.DamageDict[DamageType.Kinetic];
             Assert.AreEqual(sabotDirectHit, testShell.RawKD);
-            Assert.AreEqual(sabotDirectHit, 8418.22852f);
-            Assert.AreEqual(sabotNonDirectHit, 8256.47461f);
+            Assert.AreEqual(sabotDirectHit, 8851.16602f);
+            Assert.AreEqual(sabotNonDirectHit, 8681.09277f);
 
 
             // Hollow point head ignores angle
@@ -160,7 +160,7 @@ namespace ApsCalcUITests
                 nonDirectHitAngleFromPerpendicularDegrees);
             float hollowPointNonDirectHit = testShell.DamageDict[DamageType.Kinetic];
             Assert.AreEqual(hollowPointDirectHit, testShell.RawKD);
-            Assert.AreEqual(hollowPointDirectHit, 9025.74219f);
+            Assert.AreEqual(hollowPointDirectHit, 9489.92285f);
             Assert.AreEqual(hollowPointNonDirectHit, hollowPointDirectHit);
         }
 
@@ -208,10 +208,15 @@ namespace ApsCalcUITests
             Assert.AreEqual(testShell.MaxDraw, 100241.711f);
             Assert.AreEqual(testShell.ClusterReloadTime, 177.807022f);
             Assert.AreEqual(testShell.OverallChemModifier, 0.25f);
-            Assert.AreEqual(testShell.RawHE, 743.169617f);
-            Assert.AreEqual(testShell.RawFlak, 675.936951f);
-            Assert.AreEqual(testShell.DamageDict[DamageType.Frag], 9691.6084f);
-            Assert.AreEqual(testShell.DamageDict[DamageType.Emp], 397.768982f);
+            Assert.AreEqual(testShell.RawHE, 773.504028f);
+            Assert.AreEqual(testShell.RawFlak, 703.5271f);
+            Assert.AreEqual(testShell.DamageDict[DamageType.Frag], 10132.1357f);
+            Assert.AreEqual(testShell.DamageDict[DamageType.Emp], 415.849396f);
+
+            // Note: when testing HEAT damage, ensure HE warhead is directly behind head
+            testShell.HeadModule = Module.ShapedChargeHead;
+            testShell.CalculateDamageByType(DamageType.Heat, fragAngleMultiplier);
+            Assert.AreEqual(testShell.DamageDict[DamageType.Heat], 9557.65039f);
         }
 
         [Test]
