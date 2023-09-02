@@ -29,11 +29,11 @@ namespace ApsCalcUI
     public enum DamageType : int
     {
         Kinetic,
-        Emp,
+        EMP,
         Flak,
         Frag,
         HE,
-        Heat,
+        HEAT,
         Disruptor
     }
 
@@ -1454,11 +1454,11 @@ namespace ApsCalcUI
             Dictionary<DamageType, bool> dtToShow = new()
             {
                 { DamageType.Kinetic, true },
-                { DamageType.Emp, false },
+                { DamageType.EMP, false },
                 { DamageType.Flak, false },
                 { DamageType.Frag, false },
                 { DamageType.HE, false },
-                { DamageType.Heat, false },
+                { DamageType.HEAT, false },
                 { DamageType.Disruptor, false }
             };
 
@@ -1471,7 +1471,7 @@ namespace ApsCalcUI
                     modsToShow.Add(index);
                     if (Module.AllModules[index] == Module.EmpBody)
                     {
-                        dtToShow[DamageType.Emp] = true;
+                        dtToShow[DamageType.EMP] = true;
                     }
                     else if (Module.AllModules[index] == Module.FlakBody)
                     {
@@ -1492,7 +1492,7 @@ namespace ApsCalcUI
             {
                 if (Module.AllModules[index] == Module.EmpHead)
                 {
-                    dtToShow[DamageType.Emp] = true;
+                    dtToShow[DamageType.EMP] = true;
                 }
                 else if (Module.AllModules[index] == Module.FlakHead)
                 {
@@ -1508,7 +1508,7 @@ namespace ApsCalcUI
                 }
                 else if (Module.AllModules[index] == Module.ShapedChargeHead)
                 {
-                    dtToShow[DamageType.Heat] = true;
+                    dtToShow[DamageType.HEAT] = true;
                 }
                 else if (Module.AllModules[index] == Module.Disruptor)
                 {
@@ -1729,11 +1729,11 @@ namespace ApsCalcUI
                     // Calculate barrel lengths
                     topShellPair.Value.CalculateRequiredBarrelLengths(MaxInaccuracy);
                     if (dtToShow[DamageType.Disruptor] 
-                        || dtToShow[DamageType.Emp]
+                        || dtToShow[DamageType.EMP]
                         || dtToShow[DamageType.Flak] 
                         || dtToShow[DamageType.Frag] 
                         || dtToShow[DamageType.HE]
-                        || dtToShow[DamageType.Heat])
+                        || dtToShow[DamageType.HEAT])
                     {
                         topShellPair.Value.CalculateChemModifier();
                     }

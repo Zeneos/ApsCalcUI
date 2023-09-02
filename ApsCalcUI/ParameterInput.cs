@@ -73,11 +73,11 @@ namespace ApsCalcUI
             DamageTypeItem[] damageTypes = new[]
             {
                 new DamageTypeItem { ID = DamageType.Kinetic, Text = "Kinetic" },
-                new DamageTypeItem { ID = DamageType.Emp, Text = "EMP" },
+                new DamageTypeItem { ID = DamageType.EMP, Text = "EMP" },
                 new DamageTypeItem { ID = DamageType.Flak, Text = "Flak" },
                 new DamageTypeItem { ID = DamageType.Frag, Text = "Frag" },
                 new DamageTypeItem { ID = DamageType.HE, Text = "HE" },
-                new DamageTypeItem { ID = DamageType.Heat, Text = "HEAT" },
+                new DamageTypeItem { ID = DamageType.HEAT, Text = "HEAT" },
                 new DamageTypeItem { ID = DamageType.Disruptor, Text = "Disruptor" }
             };
             DamageTypeDD.DataSource = damageTypes;
@@ -123,7 +123,6 @@ namespace ApsCalcUI
             {
                 maxFixedCount -= 1;
             }
-
             if (FixedGravCompCB.Checked)
             {
                 maxFixedCount -= 1;
@@ -149,21 +148,67 @@ namespace ApsCalcUI
                 maxFixedCount -= 1;
             }
 
-            decimal maxCasingCount;            
+            decimal maxCasingCount;
 
             SolidBodyFixedUD.Maximum = maxFixedCount;
+            if (SolidBodyFixedUD.Value > SolidBodyFixedUD.Maximum)
+            {
+                SolidBodyFixedUD.Value = SolidBodyFixedUD.Maximum;
+            }
+
             SabotBodyFixedUD.Maximum = SolidBodyFixedUD.Maximum - SolidBodyFixedUD.Value;
+            if (SabotBodyFixedUD.Value > SabotBodyFixedUD.Maximum)
+            {
+                SabotBodyFixedUD.Value = SabotBodyFixedUD.Maximum;
+            }
+
             EmpBodyFixedUD.Maximum = SabotBodyFixedUD.Maximum - SabotBodyFixedUD.Value;
+            if (EmpBodyFixedUD.Value > EmpBodyFixedUD.Maximum)
+            {
+                EmpBodyFixedUD.Value = EmpBodyFixedUD.Maximum;
+            }
+
             FlakBodyFixedUD.Maximum = EmpBodyFixedUD.Maximum - EmpBodyFixedUD.Value;
+            if (FlakBodyFixedUD.Value > FlakBodyFixedUD.Maximum)
+            {
+                FlakBodyFixedUD.Value = FlakBodyFixedUD.Maximum;
+            }
+
             FragBodyFixedUD.Maximum = FlakBodyFixedUD.Maximum - FlakBodyFixedUD.Value;
+            if (FragBodyFixedUD.Value > FragBodyFixedUD.Maximum)
+            {
+                FragBodyFixedUD.Value = FragBodyFixedUD.Maximum;
+            }
+
             HEBodyFixedUD.Maximum = FragBodyFixedUD.Maximum - FragBodyFixedUD.Value;
+            if (HEBodyFixedUD.Value > HEBodyFixedUD.Maximum)
+            {
+                HEBodyFixedUD.Value = HEBodyFixedUD.Maximum;
+            }
+
             FinFixedUD.Maximum = HEBodyFixedUD.Maximum - HEBodyFixedUD.Value;
+            if (FinFixedUD.Value > FinFixedUD.Maximum)
+            {
+                FinFixedUD.Value = FinFixedUD.Maximum;
+            }
+
 
             maxCasingCount = HEBodyFixedUD.Maximum - HEBodyFixedUD.Value;
             MaxGPUD.Maximum = maxCasingCount;
+            if (MaxGPUD.Value > MaxGPUD.Maximum)
+            {
+                MaxGPUD.Value = MaxGPUD.Maximum;
+            }
+
             MaxRGUD.Maximum = maxCasingCount;
+            if (MaxRGUD.Value > MaxRGUD.Maximum)
+            {
+                MaxRGUD.Value = MaxRGUD.Maximum;
+            }
 
             // Set length restrictions
+            // Check whether min length is currently set to minimum possible value
+            bool minLengthAtMinPossibleValue = MinLengthUD.Value == MinLengthUD.Minimum;
             float minLength = (float)MinGaugeUD.Value;
             if (!NoBaseRB.Checked)
             {
@@ -208,6 +253,12 @@ namespace ApsCalcUI
             }
 
             MinLengthUD.Minimum = (decimal)minLength;
+            // Set min length to min value if it was there before updating
+            if (minLengthAtMinPossibleValue)
+            {
+                MinLengthUD.Value = (decimal)minLength;
+            }
+
             MaxLengthUD.Minimum = Math.Max(MinLengthUD.Minimum + 1, MinLengthUD.Value + 1);
         }
 
@@ -714,7 +765,7 @@ namespace ApsCalcUI
                 testParameters.FragConeAngle = (float)FragAngleUD.Value;
                 testParameters.FragAngleMultiplier = (2 + MathF.Sqrt(testParameters.FragConeAngle)) / 16f;
 
-                if (testParameters.DamageType == DamageType.Heat)
+                if (testParameters.DamageType == DamageType.HEAT)
                 {
                     // Overwrite head list with shaped charge head
                     testParameters.HeadIndices.Clear();

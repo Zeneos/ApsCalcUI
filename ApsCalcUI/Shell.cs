@@ -90,44 +90,44 @@ namespace ApsCalcUI
         public Dictionary<DamageType, float> DamageDict = new()
         {
             { DamageType.Kinetic, 0 },
-            { DamageType.Emp, 0 },
+            { DamageType.EMP, 0 },
             { DamageType.Flak, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
-            { DamageType.Heat, 0 },
+            { DamageType.HEAT, 0 },
             { DamageType.Disruptor, 0 }
         };
 
         public Dictionary<DamageType, float> DpsDict = new()
         {
             { DamageType.Kinetic, 0 },
-            { DamageType.Emp, 0 },
+            { DamageType.EMP, 0 },
             { DamageType.Flak, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
-            { DamageType.Heat, 0 },
+            { DamageType.HEAT, 0 },
             { DamageType.Disruptor, 0 }
         };
 
         public Dictionary<DamageType, float> DpsPerVolumeDict = new()
         {
             { DamageType.Kinetic, 0 },
-            { DamageType.Emp, 0 },
+            { DamageType.EMP, 0 },
             { DamageType.Flak, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
-            { DamageType.Heat, 0 },
+            { DamageType.HEAT, 0 },
             { DamageType.Disruptor, 0 }
         };
 
         public Dictionary<DamageType, float> DpsPerCostDict = new()
         {
             { DamageType.Kinetic, 0 },
-            { DamageType.Emp, 0 },
+            { DamageType.EMP, 0 },
             { DamageType.Flak, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
-            { DamageType.Heat, 0 },
+            { DamageType.HEAT, 0 },
             { DamageType.Disruptor, 0 }
         };
 
@@ -624,7 +624,7 @@ namespace ApsCalcUI
                 CalculateKineticDamage();
                 CalculateAP();
             }
-            else if (dt == DamageType.Emp)
+            else if (dt == DamageType.EMP)
             {
                 CalculateEmpDamage();
             }
@@ -640,7 +640,7 @@ namespace ApsCalcUI
             {
                 CalculateHEDamage();
             }
-            else if (dt == DamageType.Heat)
+            else if (dt == DamageType.HEAT)
             {
                 CalculateHeatDamage();
             }
@@ -711,7 +711,7 @@ namespace ApsCalcUI
             {
                 empBodies++;
             }
-            DamageDict[DamageType.Emp] = GaugeCoefficient * empBodies * OverallChemModifier * 75f * ApsModifier;
+            DamageDict[DamageType.EMP] = GaugeCoefficient * empBodies * OverallChemModifier * 75f * ApsModifier;
         }
 
         /// <summary>
@@ -834,7 +834,7 @@ namespace ApsCalcUI
                 float sphereVolume = MathF.Pow(HEExplosionRadius, 3) * MathF.PI * 4f / 3f;
                 DamageDict[DamageType.HE] = RawHE * sphereVolume / 1000f;
 
-                DamageDict[DamageType.Heat] =
+                DamageDict[DamageType.HEAT] =
                     GaugeCoefficient
                     * (heBodies + 0.8f)
                     * OverallChemModifier
@@ -844,7 +844,7 @@ namespace ApsCalcUI
             else
             {
                 DamageDict[DamageType.HE] = 0;
-                DamageDict[DamageType.Heat] = 0;
+                DamageDict[DamageType.HEAT] = 0;
             }
         }
 
@@ -856,7 +856,7 @@ namespace ApsCalcUI
             CalculateEmpDamage();
             if (HeadModule == Module.Disruptor)
             {
-                DamageDict[DamageType.Disruptor] = DamageDict[DamageType.Emp] * 0.75f / 1500;
+                DamageDict[DamageType.Disruptor] = DamageDict[DamageType.EMP] * 0.75f / 1500;
                 DamageDict[DamageType.Disruptor] = MathF.Min(DamageDict[DamageType.Disruptor], 1f);
             }
             else
@@ -897,7 +897,7 @@ namespace ApsCalcUI
                 {
                     CalculateKineticDps(targetAC);
                 }
-                else if (dt == DamageType.Emp)
+                else if (dt == DamageType.EMP)
                 {
                     CalculateEmpDps();
                 }
@@ -913,7 +913,7 @@ namespace ApsCalcUI
                 {
                     CalculateHEDps();
                 }
-                else if (dt == DamageType.Heat)
+                else if (dt == DamageType.HEAT)
                 {
                     CalculateHeatDps();
                 }
@@ -973,9 +973,9 @@ namespace ApsCalcUI
         /// </summary>
         void CalculateEmpDps()
         {
-            DpsDict[DamageType.Emp] = DamageDict[DamageType.Emp] / ClusterReloadTime * Uptime;
-            DpsPerVolumeDict[DamageType.Emp] = DpsDict[DamageType.Emp] / VolumePerLoader;
-            DpsPerCostDict[DamageType.Emp] = DpsDict[DamageType.Emp] / CostPerLoader;
+            DpsDict[DamageType.EMP] = DamageDict[DamageType.EMP] / ClusterReloadTime * Uptime;
+            DpsPerVolumeDict[DamageType.EMP] = DpsDict[DamageType.EMP] / VolumePerLoader;
+            DpsPerCostDict[DamageType.EMP] = DpsDict[DamageType.EMP] / CostPerLoader;
         }
 
         /// <summary>
@@ -1019,9 +1019,9 @@ namespace ApsCalcUI
                 DpsPerVolumeDict[DamageType.HE] = DpsDict[DamageType.HE] / VolumePerLoader;
                 DpsPerCostDict[DamageType.HE] = DpsDict[DamageType.HE] / CostPerLoader;
 
-                DpsDict[DamageType.Heat] = DamageDict[DamageType.Heat] / ClusterReloadTime * Uptime;
-                DpsPerVolumeDict[DamageType.Heat] = DpsDict[DamageType.Heat] / VolumePerLoader;
-                DpsPerCostDict[DamageType.Heat] = DpsDict[DamageType.Heat] / CostPerLoader;
+                DpsDict[DamageType.HEAT] = DamageDict[DamageType.HEAT] / ClusterReloadTime * Uptime;
+                DpsPerVolumeDict[DamageType.HEAT] = DpsDict[DamageType.HEAT] / VolumePerLoader;
+                DpsPerCostDict[DamageType.HEAT] = DpsDict[DamageType.HEAT] / CostPerLoader;
             }
             else
             {
@@ -1029,9 +1029,9 @@ namespace ApsCalcUI
                 DpsPerVolumeDict[DamageType.HE] = 0;
                 DpsPerCostDict[DamageType.HE] = 0;
 
-                DpsDict[DamageType.Heat] = 0;
-                DpsPerVolumeDict[DamageType.Heat] = 0;
-                DpsPerCostDict[DamageType.Heat] = 0;
+                DpsDict[DamageType.HEAT] = 0;
+                DpsPerVolumeDict[DamageType.HEAT] = 0;
+                DpsPerCostDict[DamageType.HEAT] = 0;
             }
         }
 

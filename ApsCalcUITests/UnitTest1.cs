@@ -195,7 +195,7 @@ namespace ApsCalcUITests
             testShell.CalculateDamageByType(DamageType.HE, fragAngleMultiplier);
             testShell.CalculateDamageByType(DamageType.Flak, fragAngleMultiplier);
             testShell.CalculateDamageByType(DamageType.Frag, fragAngleMultiplier);
-            testShell.CalculateDamageByType(DamageType.Emp, fragAngleMultiplier);
+            testShell.CalculateDamageByType(DamageType.EMP, fragAngleMultiplier);
 
             Assert.AreEqual(testShell.TotalLength, 5055);
             Assert.AreEqual(testShell.ProjectileLength, 3830);
@@ -211,12 +211,12 @@ namespace ApsCalcUITests
             Assert.AreEqual(testShell.RawHE, 773.504028f);
             Assert.AreEqual(testShell.RawFlak, 703.5271f);
             Assert.AreEqual(testShell.DamageDict[DamageType.Frag], 10132.1357f);
-            Assert.AreEqual(testShell.DamageDict[DamageType.Emp], 415.849396f);
+            Assert.AreEqual(testShell.DamageDict[DamageType.EMP], 415.849396f);
 
             // Note: when testing HEAT damage, ensure HE warhead is directly behind head
             testShell.HeadModule = Module.ShapedChargeHead;
-            testShell.CalculateDamageByType(DamageType.Heat, fragAngleMultiplier);
-            Assert.AreEqual(testShell.DamageDict[DamageType.Heat], 9557.65039f);
+            testShell.CalculateDamageByType(DamageType.HEAT, fragAngleMultiplier);
+            Assert.AreEqual(testShell.DamageDict[DamageType.HEAT], 9557.65039f);
         }
 
         [Test]
