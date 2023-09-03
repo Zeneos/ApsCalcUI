@@ -194,14 +194,17 @@ namespace ApsCalcUI
 
 
             maxCasingCount = HEBodyFixedUD.Maximum - HEBodyFixedUD.Value;
+            // Check whether max GP casing count is current set to maximum possible value
+            bool maxGPAtMaxPossibleValue = MaxGPUD.Value == MaxGPUD.Maximum;
             MaxGPUD.Maximum = maxCasingCount;
-            if (MaxGPUD.Value > MaxGPUD.Maximum)
+            if (MaxGPUD.Value > MaxGPUD.Maximum || maxGPAtMaxPossibleValue)
             {
                 MaxGPUD.Value = MaxGPUD.Maximum;
             }
 
+            bool maxRGAtMaxPossibleValue = MaxRGUD.Value == MaxRGUD.Maximum;
             MaxRGUD.Maximum = maxCasingCount;
-            if (MaxRGUD.Value > MaxRGUD.Maximum)
+            if (MaxRGUD.Value > MaxRGUD.Maximum || maxRGAtMaxPossibleValue)
             {
                 MaxRGUD.Value = MaxRGUD.Maximum;
             }
