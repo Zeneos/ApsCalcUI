@@ -6,7 +6,7 @@ namespace ApsCalcUI
 {
     public class Shell
     {
-        public const float ApsModifier = 23; // Used as global multiplier in damage calculations
+        private const float ApsModifier = 23; // Used as global multiplier in damage calculations
         public Shell() { BaseModule = default; }
         public float Gauge { get; set; }
         public float GaugeCoefficient { get; set; } // Expensive to calculate and used in several formulae
