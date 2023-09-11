@@ -550,7 +550,7 @@ namespace ApsCalcUI
 
         private void BeltfedClipsPerLoaderUD_ValueChanged(object sender, EventArgs e)
         {
-            BeltfedInputsPerLoaderUD.Maximum = BeltfedClipsPerLoaderUD.Value + 1;
+            BeltfedInputsPerLoaderUD.Maximum = 4 + 3 + 2 * (BeltfedClipsPerLoaderUD.Value - 1);
         }
 
         private void RegularClipsPerLoaderUD_ValueChanged(object sender, EventArgs e)
