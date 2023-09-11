@@ -4,9 +4,11 @@ Special thanks to HerpeDerpeDerp and MrNukealizer, without whom this project
 would not have been possible.
 
 For update notifications and useful links to my other documents, join my
-Discord repository server: https://discord.gg/B7RrpZAA
+Discord repository server: https://discord.gg/GJ794YxSxj
 
 ---- HOW TO RUN ----
+This package requires .NET 7.0 to run.
+https://dotnet.microsoft.com/en-us/download/dotnet/7.0
 If running from the downloaded .zip file, run the executable "ApsCalcUI".
 The link to download is available in my Discord repository, linked above.
 
