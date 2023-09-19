@@ -97,12 +97,12 @@ namespace ApsCalcUI
             TargetACCL.DisplayMember = "Text";
 
             // Armor layer dropdown
-            for (int index = 0; index < PenCalc.Layer.AllLayers.Length; index++)
+            for (int index = 0; index < Layer.AllLayers.Length; index++)
             {
                 ArmorLayerDD.Items.Add(new ArmorLayerItem
                 {
-                    Name = PenCalc.Layer.AllLayers[index].Name,
-                    Layer = PenCalc.Layer.AllLayers[index]
+                    Name = Layer.AllLayers[index].Name,
+                    Layer = Layer.AllLayers[index]
                 });
             }
             ArmorLayerDD.DisplayMember = "Name";
