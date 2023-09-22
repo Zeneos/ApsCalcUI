@@ -6,6 +6,7 @@ using PenCalc;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace ApsCalcUI
 {
@@ -1213,7 +1214,7 @@ namespace ApsCalcUI
 
 
         /// <summary>
-        /// Adds current top-performing shells to TopShells dictionary for writing to console
+        /// Adds current top-performing shells to TopShells dictionary for writing to file
         /// Note that DPS is used only to determine whether a shell has been assigned to a length slot
         /// </summary>
         public void AddTopShellsToDictionary()
