@@ -2003,6 +2003,7 @@ namespace ApsCalcUI
                         }
                         else if (dt == DamageType.Flak)
                         {
+                            /*
                             List<string> rawFlakDamageList = new()
                             {
                                 "Raw Flak damage"
@@ -2012,6 +2013,7 @@ namespace ApsCalcUI
                                 rawFlakDamageList.Add(topShell.RawFlak.ToString());
                             }
                             writer.WriteLine(string.Join(ColumnDelimiter, rawFlakDamageList));
+                            */
 
                             List<string> flakExplosionRadiusList = new()
                             {

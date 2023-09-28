@@ -84,7 +84,6 @@ namespace ApsCalcUI
         public float DamagePerFrag { get; set; }
         public float RawHE { get; set; }
         public float HEExplosionRadius { get; set; }
-        public float RawFlak { get; set; }
         public float FlakExplosionRadius { get; set; }
 
         public Dictionary<DamageType, float> DamageDict = new()
@@ -736,11 +735,13 @@ namespace ApsCalcUI
             {
                 flaKBodies++;
             }
-            RawFlak = 3000f * MathF.Pow(GaugeCoefficient * flaKBodies * 108f * ApsModifier / 3000f * OverallChemModifier, 0.9f);
-            FlakExplosionRadius = MathF.Min(MathF.Pow(RawFlak, 0.3f) * 3f, 30f);
-            // Multiply by volume to approximate applied damage; divide by 1000 to make result more manageable
+            DamageDict[DamageType.Flak] = 3000f * MathF.Pow(GaugeCoefficient * flaKBodies * 108f * ApsModifier / 3000f * OverallChemModifier, 0.9f);
+            FlakExplosionRadius = MathF.Min(MathF.Pow(DamageDict[DamageType.Flak], 0.3f) * 3f, 30f);
+            /* 
+             * Multiply by volume to approximate applied damage; divide by 1000 to make result more manageable
             float sphereVolume = MathF.Pow(FlakExplosionRadius, 3) * MathF.PI * 4f / 3f;
             DamageDict[DamageType.Flak] = RawFlak * sphereVolume / 1000f;
+            */
         }
 
         /// <summary>
