@@ -35,7 +35,8 @@ namespace ApsCalcUI
         Frag,
         HE,
         HEAT,
-        Disruptor
+        Disruptor,
+        Smoke
     }
 
     // Barrel length limit parameter
@@ -1460,7 +1461,8 @@ namespace ApsCalcUI
                 { DamageType.Frag, false },
                 { DamageType.HE, false },
                 { DamageType.HEAT, false },
-                { DamageType.Disruptor, false }
+                { DamageType.Disruptor, false },
+                { DamageType.Smoke, false }
             };
 
             List<int> modsToShow = new();
@@ -1486,6 +1488,14 @@ namespace ApsCalcUI
                     {
                         dtToShow[DamageType.HE] = true;
                     }
+                }
+            }
+
+            for (int index = 0; index < VariableModuleIndices.Length; index++)
+            {
+                if (Module.AllModules[index] == Module.SmokeBody)
+                {
+                    dtToShow[DamageType.Smoke] = true;
                 }
             }
 

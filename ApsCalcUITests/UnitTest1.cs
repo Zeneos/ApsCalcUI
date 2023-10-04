@@ -20,7 +20,7 @@ namespace ApsCalcUITests
             float directHitAngleFromPerpendicularDegrees = 0f;
             float nonDirectHitAngleFromPerpendicularDegrees = 15f;
 
-            float[] testModuleCounts = { 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 };
+            float[] testModuleCounts = { 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 };
             PenCalc.Scheme testScheme = new();
             Shell testShell = new();
             testShell.BarrelCount = 1;
@@ -170,7 +170,7 @@ namespace ApsCalcUITests
             float fragConeAngle = 60f;
             float fragAngleMultiplier = (2 + MathF.Sqrt(fragConeAngle)) / 16f;
 
-            float[] testModuleCounts = { 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 };
+            float[] testModuleCounts = { 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 };
             PenCalc.Scheme testScheme = new();
             Shell testShell = new();
             testShell.BarrelCount = 1;
@@ -196,22 +196,24 @@ namespace ApsCalcUITests
             testShell.CalculateDamageByType(DamageType.Flak, fragAngleMultiplier);
             testShell.CalculateDamageByType(DamageType.Frag, fragAngleMultiplier);
             testShell.CalculateDamageByType(DamageType.EMP, fragAngleMultiplier);
+            testShell.CalculateDamageByType(DamageType.Smoke, fragAngleMultiplier);
 
-            Assert.AreEqual(testShell.TotalLength, 5055);
-            Assert.AreEqual(testShell.ProjectileLength, 3830);
+            Assert.AreEqual(testShell.TotalLength, 5545);
+            Assert.AreEqual(testShell.ProjectileLength, 4320);
             Assert.AreEqual(testShell.LengthDifferential, 0);
-            Assert.AreEqual(testShell.BodyLength, 3340);
+            Assert.AreEqual(testShell.BodyLength, 3830);
             Assert.AreEqual(testShell.CasingLength, 1225);
-            Assert.AreEqual(testShell.OverallVelocityModifier, 1.78976035f);
+            Assert.AreEqual(testShell.OverallVelocityModifier, 1.78467369f);
             Assert.AreEqual(testShell.TotalRecoil, 4116.08154f);
-            Assert.AreEqual(testShell.Velocity, 385.603973f);
-            Assert.AreEqual(testShell.MaxDraw, 100241.711f);
-            Assert.AreEqual(testShell.ClusterReloadTime, 177.807022f);
+            Assert.AreEqual(testShell.Velocity, 362.045319f);
+            Assert.AreEqual(testShell.MaxDraw, 112295.32f);
+            Assert.AreEqual(testShell.ClusterReloadTime, 194.836182f);
             Assert.AreEqual(testShell.OverallChemModifier, 0.25f);
             Assert.AreEqual(testShell.RawHE, 773.504028f);
             Assert.AreEqual(testShell.DamageDict[DamageType.Flak], 703.5271f);
             Assert.AreEqual(testShell.DamageDict[DamageType.Frag], 10132.1357f);
             Assert.AreEqual(testShell.DamageDict[DamageType.EMP], 415.849396f);
+            Assert.AreEqual(testShell.DamageDict[DamageType.Smoke], 964.288391f);
 
             // Note: when testing HEAT damage, ensure HE warhead is directly behind head
             testShell.HeadModule = Module.ShapedChargeHead;
@@ -222,7 +224,7 @@ namespace ApsCalcUITests
         [Test]
         public void InaccuracyTest1()
         {
-            float[] testModuleCounts = { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 };
+            float[] testModuleCounts = { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
             Shell testShell = new();
             testShell.BarrelCount = 1;
             testShell.HeadModule = Module.APHead;
@@ -258,7 +260,7 @@ namespace ApsCalcUITests
         [Test]
         public void InaccuracyTest2()
         {
-            float[] testModuleCounts = { 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            float[] testModuleCounts = { 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             Shell testShell = new();
             testShell.BarrelCount = 1;
             testShell.HeadModule = Module.APHead;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 using PenCalc;
 
 namespace ApsCalcUI
@@ -14,7 +15,7 @@ namespace ApsCalcUI
         public bool IsBelt;
 
         // Keep counts of body modules.
-        public float[] BodyModuleCounts { get; set; } = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        public float[] BodyModuleCounts { get; set; } = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         public float ModuleCountTotal { get; set; }
 
 
@@ -94,7 +95,8 @@ namespace ApsCalcUI
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
             { DamageType.HEAT, 0 },
-            { DamageType.Disruptor, 0 }
+            { DamageType.Disruptor, 0 },
+            { DamageType.Smoke, 0 }
         };
 
         public Dictionary<DamageType, float> DpsDict = new()
@@ -105,7 +107,8 @@ namespace ApsCalcUI
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
             { DamageType.HEAT, 0 },
-            { DamageType.Disruptor, 0 }
+            { DamageType.Disruptor, 0 },
+            { DamageType.Smoke, 0 }
         };
 
         public Dictionary<DamageType, float> DpsPerVolumeDict = new()
@@ -116,7 +119,8 @@ namespace ApsCalcUI
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
             { DamageType.HEAT, 0 },
-            { DamageType.Disruptor, 0 }
+            { DamageType.Disruptor, 0 },
+            { DamageType.Smoke, 0 }
         };
 
         public Dictionary<DamageType, float> DpsPerCostDict = new()
@@ -127,7 +131,8 @@ namespace ApsCalcUI
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
             { DamageType.HEAT, 0 },
-            { DamageType.Disruptor, 0 }
+            { DamageType.Disruptor, 0 },
+            { DamageType.Smoke, 0 }
         };
 
 
@@ -647,6 +652,10 @@ namespace ApsCalcUI
             {
                 CalculateShieldReduction();
             }
+            else if (dt == DamageType.Smoke)
+            {
+                CalculateSmokeStrength();
+            }
         }
 
 
@@ -866,6 +875,34 @@ namespace ApsCalcUI
             }
         }
 
+        /// <summary>
+        /// Calculates strength of smoke warheads
+        /// </summary>
+        void CalculateSmokeStrength()
+        {
+            if (Gauge >= 200)
+            {
+                // Get index of smoke body
+                int smokeIndex = int.MaxValue;
+                for (int i = 0; i < Module.AllModules.Length; i++)
+                {
+                    if (Module.AllModules[i] == Module.SmokeBody)
+                    {
+                        smokeIndex = i;
+                        break;
+                    }
+                }
+                float smokeBodies = BodyModuleCounts[smokeIndex];
+
+                // Smoke is not affected by chem multiplier
+                DamageDict[DamageType.Smoke] = GaugeCoefficient * smokeBodies * 1000;
+            }
+            else
+            {
+                DamageDict[DamageType.Smoke] = 0;
+            }
+        }
+
 
         public void CalculateDpsByType(
             DamageType dt,
@@ -921,6 +958,10 @@ namespace ApsCalcUI
                 else if (dt == DamageType.Disruptor)
                 {
                     CalculateShieldRps();
+                }
+                else if (dt == DamageType.Smoke)
+                {
+                    CalculateSmokeDPS();
                 }
             }
             else
@@ -1055,6 +1096,16 @@ namespace ApsCalcUI
                 DpsPerVolumeDict[DamageType.Disruptor] = 0;
                 DpsPerCostDict[DamageType.Disruptor] = 0;
             }
+        }
+
+        /// <summary>
+        /// Calculates smoke strength per second
+        /// </summary>
+        void CalculateSmokeDPS()
+        {
+            DpsDict[DamageType.Smoke] = DamageDict[DamageType.Smoke] / ClusterReloadTime * Uptime;
+            DpsPerVolumeDict[DamageType.Smoke] = DpsDict[DamageType.Smoke] / VolumePerLoader;
+            DpsPerCostDict[DamageType.Smoke] = DpsDict[DamageType.Smoke] / CostPerLoader;
         }
 
         /// <summary>

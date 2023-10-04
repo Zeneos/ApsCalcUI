@@ -166,6 +166,8 @@ Damage Type: damage type to optimize.
   Disruptor Strength field, which sets the cutoff strength below which the 
   optimizer will reject shells.
 
+  Smoke. Calculates smoke strength.
+
 
 Test Type: whether to optimize for DPS per Volume or DPS per Cost. "Volume"
 and "Cost" are both marginal - they include the volume (or cost) only of

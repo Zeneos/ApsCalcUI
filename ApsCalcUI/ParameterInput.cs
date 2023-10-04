@@ -78,7 +78,8 @@ namespace ApsCalcUI
                 new DamageTypeItem { ID = DamageType.Frag, Text = "Frag" },
                 new DamageTypeItem { ID = DamageType.HE, Text = "HE" },
                 new DamageTypeItem { ID = DamageType.HEAT, Text = "HEAT" },
-                new DamageTypeItem { ID = DamageType.Disruptor, Text = "Disruptor" }
+                new DamageTypeItem { ID = DamageType.Disruptor, Text = "Disruptor" },
+                new DamageTypeItem { ID = DamageType.Smoke, Text = "Smoke" }
             };
             DamageTypeDD.DataSource = damageTypes;
             DamageTypeDD.DisplayMember = "Text";
@@ -389,20 +390,7 @@ namespace ApsCalcUI
                 TargetACLabel.Visible = false;
             }
 
-            if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID == DamageType.Disruptor)
-            {
-                DisruptorPanel.Enabled = true;
-                DisruptorPanel.Visible = true;
-                DisruptorLabel.Visible = true;
-                DisruptorUD.Visible = true;
-            }
-            else
-            {
-                DisruptorPanel.Enabled = false;
-                DisruptorPanel.Visible = false;
-                DisruptorLabel.Visible = false;
-                DisruptorUD.Visible = false;
-            }
+            UpdateDisruptorPanel();
 
             if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID == DamageType.Frag)
             {
@@ -418,6 +406,33 @@ namespace ApsCalcUI
                 FragAngleLabel.Visible = false;
                 FragAngleUD.Visible = false;
             }
+        }
+
+        private void HeadModulesCL_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateDisruptorPanel();
+        }
+
+        private void UpdateDisruptorPanel()
+        {
+            bool disruptorSelected = false;
+            foreach (HeadModuleItem item in HeadModulesCL.CheckedItems)
+            {
+                if (item.Name == "Disruptor conduit")
+                {
+                    disruptorSelected = true;
+                    break;
+                }
+            }
+            if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID == DamageType.Disruptor)
+            {
+                disruptorSelected = true;
+            }
+
+            DisruptorPanel.Enabled = disruptorSelected;
+            DisruptorPanel.Visible = disruptorSelected;
+            DisruptorLabel.Visible = disruptorSelected;
+            DisruptorUD.Visible = disruptorSelected;
         }
 
 
@@ -828,7 +843,7 @@ namespace ApsCalcUI
 
                 testParameters.SabotAngleMultiplier =
                     MathF.Abs(MathF.Cos((testParameters.ImpactAngle + targetArmorScheme.LayerList[0].BaseAngle) * MathF.PI / 240f));
-                testParameters.NonSabotAngleMultiplier = 
+                testParameters.NonSabotAngleMultiplier =
                     MathF.Abs(MathF.Cos((testParameters.ImpactAngle + targetArmorScheme.LayerList[0].BaseAngle) * MathF.PI / 180f));
 
                 testParameters.TestType = PerVolumeRB.Checked ? 0 : 1;
