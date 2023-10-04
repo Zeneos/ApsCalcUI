@@ -12,6 +12,9 @@ namespace ApsCalcUI
     {
         List<TestParameters> parameterList = new();
         int testsInQueue = 0;
+        // For automatically setting min gauge to compensate for smoke minimum 200 mm
+        decimal nonSmokeMinGauge = 18;
+        DamageType previousDT;
 
         readonly Dictionary<int, int> gaugeHardCaps = new()
         {
@@ -286,6 +289,11 @@ namespace ApsCalcUI
         /// <param name="e"></param>
         private void MinGaugeUD_ValueChanged(object sender, EventArgs e)
         {
+            // Update non-smoke minimum
+            if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID != DamageType.Smoke)
+            {
+                nonSmokeMinGauge = MinGaugeUD.Value;
+            }
             MaxGaugeUD.Minimum = MinGaugeUD.Value;
             UpdateModuleCounts();
         }
@@ -374,6 +382,18 @@ namespace ApsCalcUI
         /// <param name="e"></param>
         private void DamageTypeDD_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // Set and reset minimum gauge to compensate for smoke minimum 200 mm
+            if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID != DamageType.Smoke)
+            {
+                MinGaugeUD.Minimum = 18;
+                MinGaugeUD.Value = nonSmokeMinGauge;
+            }
+            else if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID == DamageType.Smoke)
+            {
+                MinGaugeUD.Minimum = 200;
+                MinGaugeUD.Value = Math.Max(200, nonSmokeMinGauge);
+            }
+
             if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID == DamageType.Kinetic)
             {
                 TargetACPanel.Enabled = true;
