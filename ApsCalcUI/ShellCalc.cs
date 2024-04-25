@@ -1488,32 +1488,29 @@ namespace ApsCalcUI
                     {
                         dtToShow[DamageType.HE] = true;
                     }
-                }
-            }
-
-            for (int index = 0; index < VariableModuleIndices.Length; index++)
-            {
-                if (Module.AllModules[index] == Module.SmokeBody)
-                {
-                    dtToShow[DamageType.Smoke] = true;
+                    else if (Module.AllModules[index] == Module.SmokeBody)
+                    {
+                        Debug.WriteLine("SmokeBody found at Fixed/Variable index " + index + ": " + Module.AllModules[index].Name);
+                        dtToShow[DamageType.Smoke] = true;
+                    }
                 }
             }
 
             foreach (int index in HeadList)
             {
-                if (Module.AllModules[index] == Module.EmpHead)
+                if (Module.AllModules[index] == Module.EmpHead || Module.AllModules[index] == Module.EmpBody)
                 {
                     dtToShow[DamageType.EMP] = true;
                 }
-                else if (Module.AllModules[index] == Module.FlakHead)
+                else if (Module.AllModules[index] == Module.FlakHead || Module.AllModules[index] == Module.FlakBody)
                 {
                     dtToShow[DamageType.Flak] = true;
                 }
-                else if (Module.AllModules[index] == Module.FragHead)
+                else if (Module.AllModules[index] == Module.FragHead || Module.AllModules[index] == Module.FragBody)
                 {
                     dtToShow[DamageType.Frag] = true;
                 }
-                else if (Module.AllModules[index] == Module.HEHead)
+                else if (Module.AllModules[index] == Module.HEHead || Module.AllModules[index] == Module.HEBody)
                 {
                     dtToShow[DamageType.HE] = true;
                 }
@@ -1524,6 +1521,10 @@ namespace ApsCalcUI
                 else if (Module.AllModules[index] == Module.Disruptor)
                 {
                     dtToShow[DamageType.Disruptor] = true;
+                }
+                else if (Module.AllModules[index] == Module.SmokeBody)
+                {
+                    dtToShow[DamageType.Smoke] = true;
                 }
             }
 

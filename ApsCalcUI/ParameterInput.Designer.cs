@@ -289,7 +289,7 @@ namespace ApsCalcUI
             ArmorLayerDD.Name = "ArmorLayerDD";
             ArmorLayerDD.Size = new System.Drawing.Size(168, 23);
             ArmorLayerDD.TabIndex = 26;
-            ToolTip.SetToolTip(ArmorLayerDD, "Select an armor type to add to target armor scheme.\r\nAdd outermost layer first");
+            ToolTip.SetToolTip(ArmorLayerDD, "Select an armor type to add to target armor scheme.\r\nAdd outermost layer first\r\nFor slopes, steep angles are nearer pependicular;\r\nshallow angles have a higher penalty to applied KD");
             // 
             // AddLayerButton
             // 
@@ -1014,6 +1014,7 @@ namespace ApsCalcUI
             // 
             // HeadModulesCL
             // 
+            HeadModulesCL.CheckOnClick = true;
             HeadModulesCL.FormattingEnabled = true;
             HeadModulesCL.Location = new System.Drawing.Point(13, 163);
             HeadModulesCL.Name = "HeadModulesCL";
@@ -1188,6 +1189,7 @@ namespace ApsCalcUI
             // 
             // VariableModulesCL
             // 
+            VariableModulesCL.CheckOnClick = true;
             VariableModulesCL.FormattingEnabled = true;
             VariableModulesCL.Location = new System.Drawing.Point(3, 34);
             VariableModulesCL.Name = "VariableModulesCL";
@@ -1295,6 +1297,7 @@ namespace ApsCalcUI
             // 
             // TargetACCL
             // 
+            TargetACCL.CheckOnClick = true;
             TargetACCL.FormattingEnabled = true;
             TargetACCL.Location = new System.Drawing.Point(0, 31);
             TargetACCL.Name = "TargetACCL";
