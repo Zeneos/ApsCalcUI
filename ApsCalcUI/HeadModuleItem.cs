@@ -8,8 +8,14 @@ namespace ApsCalcUI
 {
     class HeadModuleItem
     {
-        public int Index { get; set; }
-        public string Name { get; set; }
+        public HeadModuleItem(int index, string name)
+        {
+            Index = index;
+            Name = name;
+        }
+
+        public int Index { get; }
+        public string Name { get; }
 
 
         /// <summary>
@@ -22,11 +28,7 @@ namespace ApsCalcUI
                 if (Module.AllModules[index].ModulePosition == Module.Position.Head
                     || (Module.AllModules[index].ModulePosition == Module.Position.Middle && Module.AllModules[index].CanBeVariable))
                 {
-                    HeadModuleItem head = new()
-                    {
-                        Index = index,
-                        Name = Module.AllModules[index].Name
-                    };
+                    HeadModuleItem head = new(index,Module.AllModules[index].Name);
 
                     yield return head;
                 }

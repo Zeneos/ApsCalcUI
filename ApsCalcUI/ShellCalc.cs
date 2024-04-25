@@ -265,16 +265,16 @@ namespace ApsCalcUI
 
 
         // Store top-DPS shells by loader length
-        public Shell TopBelt { get; set; } = new();
-        public Shell Top1000 { get; set; } = new();
-        public Shell Top2000 { get; set; } = new();
-        public Shell Top3000 { get; set; } = new();
-        public Shell Top4000 { get; set; } = new();
-        public Shell Top5000 { get; set; } = new();
-        public Shell Top6000 { get; set; } = new();
-        public Shell Top7000 { get; set; } = new();
-        public Shell Top8000 { get; set; } = new();
-        public Shell TopDif { get; set; } = new();
+        public Shell TopBelt { get; set; } = new(default);
+        public Shell Top1000 { get; set; } = new(default);
+        public Shell Top2000 { get; set; } = new(default);
+        public Shell Top3000 { get; set; } = new(default);
+        public Shell Top4000 { get; set; } = new(default);
+        public Shell Top5000 { get; set; } = new(default);
+        public Shell Top6000 { get; set; } = new(default);
+        public Shell Top7000 { get; set; } = new(default);
+        public Shell Top8000 { get; set; } = new(default);
+        public Shell TopDif { get; set; } = new(default);
 
         public Dictionary<string, Shell> TopDpsShells { get; set; } = new Dictionary<string, Shell>();
         public List<Shell> TopShellsLocal { get; set; } = new List<Shell>();
@@ -442,14 +442,24 @@ namespace ApsCalcUI
 
             foreach (ModuleCount counts in GenerateModuleCounts())
             {
-                Shell shellUnderTesting = new();
-                shellUnderTesting.BarrelCount = BarrelCount;
-                shellUnderTesting.HeadModule = Module.AllModules[counts.HeadIndex];
-                shellUnderTesting.BaseModule = BaseModule;
+                Shell shellUnderTesting = new(Module.AllModules[counts.HeadIndex], BaseModule)
+                {
+                    BarrelCount = BarrelCount,
+                    Gauge = Gauge,
+                    GaugeCoefficient = GaugeCoefficient,
+                    RegularClipsPerLoader = RegularClipsPerLoader,
+                    RegularInputsPerLoader = RegularInputsPerLoader,
+                    BeltfedClipsPerLoader = BeltfedClipsPerLoader,
+                    BeltfedInputsPerLoader = BeltfedInputsPerLoader,
+                    UsesAmmoEjector = UsesAmmoEjector,
+                    GPCasingCount = counts.GPCount,
+                    RGCasingCount = counts.RGCount,
+                    IsDif = FiringPieceIsDif,
+                    GunUsesRecoilAbsorbers = GunUsesRecoilAbsorbers,
+                    RateOfFireRpm = RateOfFireRpm
+            };
                 FixedModuleCounts.CopyTo(shellUnderTesting.BodyModuleCounts, 0);
 
-                shellUnderTesting.Gauge = Gauge;
-                shellUnderTesting.GaugeCoefficient = GaugeCoefficient;
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[0]] += counts.Var0Count;
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[1]] += counts.Var1Count;
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[2]] += counts.Var2Count;
@@ -457,16 +467,6 @@ namespace ApsCalcUI
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[4]] += counts.Var4Count;
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[5]] += counts.Var5Count;
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[6]] += counts.Var6Count;
-                shellUnderTesting.RegularClipsPerLoader = RegularClipsPerLoader;
-                shellUnderTesting.RegularInputsPerLoader = RegularInputsPerLoader;
-                shellUnderTesting.BeltfedClipsPerLoader = BeltfedClipsPerLoader;
-                shellUnderTesting.BeltfedInputsPerLoader = BeltfedInputsPerLoader;
-                shellUnderTesting.UsesAmmoEjector = UsesAmmoEjector;
-                shellUnderTesting.GPCasingCount = counts.GPCount;
-                shellUnderTesting.RGCasingCount = counts.RGCount;
-                shellUnderTesting.IsDif = FiringPieceIsDif;
-                shellUnderTesting.GunUsesRecoilAbsorbers = GunUsesRecoilAbsorbers;
-                shellUnderTesting.RateOfFireRpm = RateOfFireRpm;
 
                 shellUnderTesting.CalculateLengths();
                 shellUnderTesting.CalculateRecoil();
@@ -865,14 +865,25 @@ namespace ApsCalcUI
                             // Beltfed testing
                             if (shellUnderTesting.TotalLength <= 1000f && !FiringPieceIsDif)
                             {
-                                Shell shellUnderTestingBelt = new();
-                                shellUnderTestingBelt.BarrelCount = BarrelCount;
-                                shellUnderTestingBelt.HeadModule = Module.AllModules[counts.HeadIndex];
-                                shellUnderTestingBelt.BaseModule = BaseModule;
+                                Shell shellUnderTestingBelt = new(Module.AllModules[counts.HeadIndex], BaseModule)
+                                {
+                                    BarrelCount = BarrelCount,
+                                    Gauge = Gauge,
+                                    GaugeCoefficient = GaugeCoefficient,
+                                    RegularClipsPerLoader = RegularClipsPerLoader,
+                                    RegularInputsPerLoader = RegularInputsPerLoader,
+                                    BeltfedClipsPerLoader = BeltfedClipsPerLoader,
+                                    BeltfedInputsPerLoader = BeltfedInputsPerLoader,
+                                    UsesAmmoEjector = UsesAmmoEjector,
+                                    GPCasingCount = counts.GPCount,
+                                    RGCasingCount = counts.RGCount,
+                                    GunUsesRecoilAbsorbers = GunUsesRecoilAbsorbers,
+                                    RateOfFireRpm = RateOfFireRpm,
+                                    IsBelt = true
+                            };
                                 FixedModuleCounts.CopyTo(shellUnderTestingBelt.BodyModuleCounts, 0);
 
-                                shellUnderTestingBelt.Gauge = Gauge;
-                                shellUnderTestingBelt.GaugeCoefficient = GaugeCoefficient;
+
                                 shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[0]] += counts.Var0Count;
                                 shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[1]] += counts.Var1Count;
                                 shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[2]] += counts.Var2Count;
@@ -895,18 +906,6 @@ namespace ApsCalcUI
                                         modIndex++;
                                     }
                                 }
-
-                                shellUnderTestingBelt.RegularClipsPerLoader = RegularClipsPerLoader;
-                                shellUnderTestingBelt.RegularInputsPerLoader = RegularInputsPerLoader;
-                                shellUnderTestingBelt.BeltfedClipsPerLoader = BeltfedClipsPerLoader;
-                                shellUnderTestingBelt.BeltfedInputsPerLoader = BeltfedInputsPerLoader;
-                                shellUnderTestingBelt.UsesAmmoEjector = UsesAmmoEjector;
-                                shellUnderTestingBelt.GPCasingCount = counts.GPCount;
-                                shellUnderTestingBelt.RGCasingCount = counts.RGCount;
-                                shellUnderTestingBelt.GunUsesRecoilAbsorbers = GunUsesRecoilAbsorbers;
-                                shellUnderTestingBelt.RateOfFireRpm = RateOfFireRpm;
-
-                                shellUnderTestingBelt.IsBelt = true;
                                 shellUnderTestingBelt.CalculateLengths();
                                 shellUnderTestingBelt.CalculateVelocityModifier();
                                 shellUnderTestingBelt.CalculateRecoil();
@@ -1434,23 +1433,11 @@ namespace ApsCalcUI
         /// </summary>
         public void WriteTopShells(float minGauge, float maxGauge)
         {
-            bool showGP = false;
-            if (MaxGPInput > 0)
-            {
-                showGP = true;
-            }
+            bool showGP = MaxGPInput > 0;
 
-            bool showRG = false;
-            if (MaxRGInput > 0)
-            {
-                showRG = true;
-            }
+            bool showRG = MaxRGInput > 0;
 
-            bool showDraw = false;
-            if (MaxDrawInput > 0)
-            {
-                showDraw = true;
-            }
+            bool showDraw = MaxDrawInput > 0;
 
             // Determine module and damage types to show
             Dictionary<DamageType, bool> dtToShow = new()

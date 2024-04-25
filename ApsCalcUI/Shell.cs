@@ -7,8 +7,25 @@ namespace ApsCalcUI
 {
     public class Shell
     {
+        public Shell(
+            float gauge = default,
+            float gaugeCoefficient = default,
+            bool isBelt = default,
+            Module headModule = default,
+            Module baseModule = default,
+            int regularClipsPerLoader = default,
+            int regularInputsPerLoader = default,
+            int beltfedClipsPerLoader = default,
+            int beltfedInputsPerLoader = default,
+            bool usesAmmoEjector = default,
+            float gpCasingCount = default,
+            float rgCasingCount = default
+            )
+        {
+            HeadModule = headModule; // Shell must always contain a head, even if shell is only 1 module
+            BaseModule = baseModule;
+        }
         private const float ApsModifier = 23; // Used as global multiplier in damage calculations
-        public Shell() { BaseModule = default; }
         public float Gauge { get; set; }
         public float GaugeCoefficient { get; set; } // Expensive to calculate and used in several formulae
 
@@ -19,8 +36,8 @@ namespace ApsCalcUI
         public float ModuleCountTotal { get; set; }
 
 
-        public Module BaseModule { get; set; } // Optional; is 'null' if no base is chosen by user
-        public Module HeadModule { get; set; } // There must always be a Head
+        public Module BaseModule { get; }
+        public Module HeadModule { get; }
 
         // Clip and input counts
         public int RegularClipsPerLoader { get; set; }

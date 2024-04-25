@@ -8,7 +8,12 @@ namespace ApsCalcUI
 {
     class BarrelLengthLimitTypeItem
     {
-        public BarrelLengthLimit ID { get; set; }
-        public string Text { get; set; }
+        public BarrelLengthLimitTypeItem(BarrelLengthLimit id, string text)
+        {
+            ID = id;
+            Text = text;
+        }
+        public BarrelLengthLimit ID { get; }
+        public string Text { get; }
     }
 }

@@ -14,7 +14,6 @@ namespace ApsCalcUI
         int testsInQueue = 0;
         // For automatically setting min gauge to compensate for smoke minimum 200 mm
         decimal nonSmokeMinGauge = 18;
-        DamageType previousDT;
 
         readonly Dictionary<int, int> gaugeHardCaps = new()
         {
@@ -37,12 +36,12 @@ namespace ApsCalcUI
             // Barrel count dropdown
             BarrelCountItem[] barrelCounts = new[]
             {
-                new BarrelCountItem { ID = 1, Text = "1, 500 mm max" },
-                new BarrelCountItem { ID = 2, Text = "2, 250 mm max" },
-                new BarrelCountItem { ID = 3, Text = "3, 225 mm max" },
-                new BarrelCountItem { ID = 4, Text = "4, 200 mm max" },
-                new BarrelCountItem { ID = 5, Text = "5, 175 mm max" },
-                new BarrelCountItem { ID = 6, Text = "6, 150 mm max" }
+                new BarrelCountItem(1, "1, 500 mm max"),
+                new BarrelCountItem(2,"2, 250 mm max"),
+                new BarrelCountItem(3,"3, 225 mm max"),
+                new BarrelCountItem(4,"4, 200 mm max"),
+                new BarrelCountItem(5,"5, 175 mm max"),
+                new BarrelCountItem(6,"6, 150 mm max")
             };
             BarrelCountDD.DataSource = barrelCounts;
             BarrelCountDD.DisplayMember = "Text";
@@ -51,8 +50,8 @@ namespace ApsCalcUI
             // Barrel length limit type dropdown
             BarrelLengthLimitTypeItem[] barrelLengthLimitTypeItems = new[]
             {
-                new BarrelLengthLimitTypeItem { ID = BarrelLengthLimit.Calibers, Text = "calibers" },
-                new BarrelLengthLimitTypeItem { ID = BarrelLengthLimit.FixedLength, Text = "m" }
+                new BarrelLengthLimitTypeItem(BarrelLengthLimit.Calibers, "calibers"),
+                new BarrelLengthLimitTypeItem(BarrelLengthLimit.FixedLength, "m")
             };
             BarrelLengthLimitDD.DataSource = barrelLengthLimitTypeItems;
             BarrelLengthLimitDD.DisplayMember = "Text";
@@ -75,39 +74,35 @@ namespace ApsCalcUI
             // Damage type dropdown
             DamageTypeItem[] damageTypes = new[]
             {
-                new DamageTypeItem { ID = DamageType.Kinetic, Text = "Kinetic" },
-                new DamageTypeItem { ID = DamageType.EMP, Text = "EMP" },
-                new DamageTypeItem { ID = DamageType.Flak, Text = "Flak" },
-                new DamageTypeItem { ID = DamageType.Frag, Text = "Frag" },
-                new DamageTypeItem { ID = DamageType.HE, Text = "HE" },
-                new DamageTypeItem { ID = DamageType.HEAT, Text = "HEAT" },
-                new DamageTypeItem { ID = DamageType.Disruptor, Text = "Disruptor" },
-                new DamageTypeItem { ID = DamageType.Smoke, Text = "Smoke" }
+                new DamageTypeItem(DamageType.Kinetic, "Kinetic"),
+                new DamageTypeItem(DamageType.EMP, "EMP"),
+                new DamageTypeItem(DamageType.Flak, "Flak"),
+                new DamageTypeItem(DamageType.Frag, "Frag"),
+                new DamageTypeItem(DamageType.HE, "HE" ),
+                new DamageTypeItem(DamageType.HEAT, "HEAT"),
+                new DamageTypeItem(DamageType.Disruptor, "Disruptor"),
+                new DamageTypeItem(DamageType.Smoke, "Smoke")
             };
             DamageTypeDD.DataSource = damageTypes;
             DamageTypeDD.DisplayMember = "Text";
             DamageTypeDD.SelectedIndex = 0;
 
             // Target AC checked list
-            TargetACCL.Items.Add(new TargetACItem { ID = 8, Text = "8, wood" });
-            TargetACCL.Items.Add(new TargetACItem { ID = 9.6f, Text = "9.6, stacked wood" });
-            TargetACCL.Items.Add(new TargetACItem { ID = 20, Text = "20, munitions" });
-            TargetACCL.Items.Add(new TargetACItem { ID = 35, Text = "35, alloy" });
-            TargetACCL.Items.Add(new TargetACItem { ID = 40, Text = "40, metal" });
-            TargetACCL.Items.Add(new TargetACItem { ID = 42, Text = "42, stacked alloy" });
-            TargetACCL.Items.Add(new TargetACItem { ID = 48, Text = "48, stacked metal" });
-            TargetACCL.Items.Add(new TargetACItem { ID = 60, Text = "60, heavy armour" });
-            TargetACCL.Items.Add(new TargetACItem { ID = 72, Text = "72, stacked heavy armour" });
+            TargetACCL.Items.Add(new TargetACItem(8, "8, wood"));
+            TargetACCL.Items.Add(new TargetACItem(9.6f, "9.6, stacked wood"));
+            TargetACCL.Items.Add(new TargetACItem(20, "20, munitions"));
+            TargetACCL.Items.Add(new TargetACItem(35, "35, alloy"));
+            TargetACCL.Items.Add(new TargetACItem(40, "40, metal"));
+            TargetACCL.Items.Add(new TargetACItem(42, "42, stacked alloy"));
+            TargetACCL.Items.Add(new TargetACItem(48, "48, stacked metal"));
+            TargetACCL.Items.Add(new TargetACItem(60, "60, heavy armour"));
+            TargetACCL.Items.Add(new TargetACItem(72, "72, stacked heavy armour"));
             TargetACCL.DisplayMember = "Text";
 
             // Armor layer dropdown
             foreach (Layer armorLayer in Layer.AllLayers)
             {
-                ArmorLayerDD.Items.Add(new ArmorLayerItem
-                {
-                    Name = armorLayer.Name,
-                    Layer = armorLayer
-                });
+                ArmorLayerDD.Items.Add(new ArmorLayerItem(armorLayer.Name, armorLayer));
             }
             ArmorLayerDD.DisplayMember = "Name";
             ArmorLayerDD.SelectedIndex = 0;
@@ -645,12 +640,14 @@ namespace ApsCalcUI
                 testsInQueue += 1;
                 TestsInQueueLabel.Text = "Tests in Queue: " + testsInQueue.ToString();
 
-                TestParameters testParameters = new();
-                testParameters.BarrelCount = ((BarrelCountItem)BarrelCountDD.SelectedItem).ID;
-                testParameters.MinGauge = (int)MinGaugeUD.Value;
-                testParameters.MaxGauge = (int)MaxGaugeUD.Value;
+                TestParameters testParameters = new()
+                {
+                    BarrelCount = ((BarrelCountItem)BarrelCountDD.SelectedItem).ID,
+                    MinGauge = (int)MinGaugeUD.Value,
+                    MaxGauge = (int)MaxGaugeUD.Value,
 
-                testParameters.ImpactAngle = (float)ImpactAngleUD.Value;
+                    ImpactAngle = (float)ImpactAngleUD.Value
+                };
 
                 List<int> headIndices = new();
                 foreach (HeadModuleItem head in HeadModulesCL.CheckedItems)

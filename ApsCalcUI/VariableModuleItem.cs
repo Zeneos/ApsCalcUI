@@ -8,8 +8,13 @@ namespace ApsCalcUI
 {
     class VariableModuleItem
     {
-        public int Index { get; set; }
-        public string Name { get; set; }
+        public VariableModuleItem(int index, string name)
+        {
+            Index = index;
+            Name = name;
+        }
+        public int Index { get; }
+        public string Name { get; }
 
 
         /// <summary>
@@ -21,11 +26,7 @@ namespace ApsCalcUI
             {
                 if (Module.AllModules[index].CanBeVariable)
                 {
-                    VariableModuleItem varMod = new()
-                    {
-                        Index = index,
-                        Name = Module.AllModules[index].Name
-                    };
+                    VariableModuleItem varMod = new(index, Module.AllModules[index].Name);
 
                     yield return varMod;
                 }

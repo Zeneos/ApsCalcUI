@@ -2,7 +2,13 @@
 {
     class DamageTypeItem
     {
-        public DamageType ID { get; set; }
-        public string Text { get; set; }
+        public DamageTypeItem(DamageType iD, string text)
+        {
+            ID = iD;
+            Text = text;
+        }
+
+        public DamageType ID { get; }
+        public string Text { get; }
     }
 }

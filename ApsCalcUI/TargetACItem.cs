@@ -8,7 +8,12 @@ namespace ApsCalcUI
 {
     class TargetACItem
     {
-        public float ID { get; set; }
-        public string Text { get; set; }
+        public TargetACItem(float id, string text)
+        {
+            ID = id;
+            Text = text;
+        }
+        public float ID { get; }
+        public string Text { get; }
     }
 }

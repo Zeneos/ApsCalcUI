@@ -8,7 +8,12 @@ namespace ApsCalcUI
 {
     class BarrelCountItem
     {
-        public int ID { get; set; }
-        public string Text { get; set; }
+        public BarrelCountItem(int id, string text)
+        {
+            ID = id;
+            Text = text;
+        }
+        public int ID { get; }
+        public string Text { get; }
     }
 }

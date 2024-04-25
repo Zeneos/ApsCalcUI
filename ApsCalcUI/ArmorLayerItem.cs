@@ -4,7 +4,13 @@ namespace ApsCalcUI
 {
     class ArmorLayerItem
     {
-        public string Name { get; set; }
-        public Layer Layer { get; set; }
+        public ArmorLayerItem(string name, Layer layer)
+        {
+            Name = name;
+            Layer = layer;
+        }
+
+        public string Name { get; }
+        public Layer Layer { get; }
     }
 }
