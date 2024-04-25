@@ -6,33 +6,19 @@ using System.Threading.Tasks;
 
 namespace ApsCalcUI
 {
-    public class Module
+    /// <summary>
+    /// Stores module information
+    /// </summary>
+    /// <param name="name">Module name</param>
+    /// <param name="vMod">Velocity modifier</param>
+    /// <param name="kdMod">Kinetic damage modifier</param>
+    /// <param name="apMod">Armor pierce modifier</param>
+    /// <param name="cMod">Chemical payload modifier</param>
+    /// <param name="mLength">Max length of module in mm (length equals gauge at or below this value)</param>
+    /// <param name="mType">Type of module - base, middle, or head</param>
+    /// <param name="canBeVariable">Whether module can be a Variable Module</param>
+    public class Module(string name, float vMod, float kdMod, float apMod, float cMod, float inaccMod, float mLength, Module.Position mType, bool canBeVariable)
     {
-        /// <summary>
-        /// Stores module information
-        /// </summary>
-        /// <param name="name">Module name</param>
-        /// <param name="vMod">Velocity modifier</param>
-        /// <param name="kdMod">Kinetic damage modifier</param>
-        /// <param name="apMod">Armor pierce modifier</param>
-        /// <param name="cMod">Chemical payload modifier</param>
-        /// <param name="mLength">Max length of module in mm (length equals gauge at or below this value)</param>
-        /// <param name="mType">Type of module - base, middle, or head</param>
-        /// <param name="canBeVariable">Whether module can be a Variable Module</param>
-#pragma warning disable IDE0290 // Use primary constructor
-        public Module(string name, float vMod, float kdMod, float apMod, float cMod, float inaccMod, float mLength, Position mType, bool canBeVariable)
-#pragma warning restore IDE0290 // Use primary constructor
-        {
-            Name = name;
-            VelocityMod = vMod;
-            KineticDamageMod = kdMod;
-            ArmorPierceMod = apMod;
-            ChemMod = cMod;
-            InaccuracyMod = inaccMod;
-            MaxLength = mLength;
-            ModulePosition = mType;
-            CanBeVariable = canBeVariable;
-        }
 
         // Module positions.  Enum is faster than strings.
         public enum Position : int
@@ -42,15 +28,15 @@ namespace ApsCalcUI
             Head
         }
 
-        public string Name { get; }
-        public float VelocityMod { get; }
-        public float KineticDamageMod { get; }
-        public float ArmorPierceMod { get; }
-        public float ChemMod { get; }
-        public float InaccuracyMod { get; }
-        public float MaxLength { get; }
-        public Position ModulePosition { get; }
-        public bool CanBeVariable { get; }
+        public string Name { get; } = name;
+        public float VelocityMod { get; } = vMod;
+        public float KineticDamageMod { get; } = kdMod;
+        public float ArmorPierceMod { get; } = apMod;
+        public float ChemMod { get; } = cMod;
+        public float InaccuracyMod { get; } = inaccMod;
+        public float MaxLength { get; } = mLength;
+        public Position ModulePosition { get; } = mType;
+        public bool CanBeVariable { get; } = canBeVariable;
 
         // Initialize every unique module type
         public static Module SolidBody { get; } = new Module("Solid body", 1.1f, 1.0f, 1.0f, 1.0f, 1.0f, 1000f, Position.Middle, true);

@@ -778,7 +778,7 @@ namespace ApsCalcUI
                 {
                     varModIndices.Add(varModIndices[0]);
                 }
-                int[] variableModuleIndices = varModIndices.ToArray();
+                int[] variableModuleIndices = [.. varModIndices];
                 testParameters.VariableModuleIndices = variableModuleIndices;
 
                 testParameters.RegularClipsPerLoader = (int)RegularClipsPerLoaderUD.Value;
