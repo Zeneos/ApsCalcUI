@@ -1490,7 +1490,6 @@ namespace ApsCalcUI
                     }
                     else if (Module.AllModules[index] == Module.SmokeBody)
                     {
-                        Debug.WriteLine("SmokeBody found at Fixed/Variable index " + index + ": " + Module.AllModules[index].Name);
                         dtToShow[DamageType.Smoke] = true;
                     }
                 }
