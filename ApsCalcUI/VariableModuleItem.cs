@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace ApsCalcUI
 {
-    class VariableModuleItem
+    class VariableModuleItem(int index, string name)
     {
-        public int Index { get; set; }
-        public string Name { get; set; }
+        public int Index { get; } = index;
+        public string Name { get; } = name;
 
 
         /// <summary>
@@ -21,11 +21,7 @@ namespace ApsCalcUI
             {
                 if (Module.AllModules[index].CanBeVariable)
                 {
-                    VariableModuleItem varMod = new()
-                    {
-                        Index = index,
-                        Name = Module.AllModules[index].Name
-                    };
+                    VariableModuleItem varMod = new(index, Module.AllModules[index].Name);
 
                     yield return varMod;
                 }

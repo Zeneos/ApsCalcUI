@@ -10,11 +10,10 @@ namespace ApsCalcUI
 {
     public partial class ParameterInput : Form
     {
-        List<TestParameters> parameterList = new();
+        List<TestParameters> parameterList = [];
         int testsInQueue = 0;
         // For automatically setting min gauge to compensate for smoke minimum 200 mm
         decimal nonSmokeMinGauge = 18;
-        DamageType previousDT;
 
         readonly Dictionary<int, int> gaugeHardCaps = new()
         {
@@ -35,25 +34,25 @@ namespace ApsCalcUI
         private void ParameterInput_Load(object sender, EventArgs e)
         {
             // Barrel count dropdown
-            BarrelCountItem[] barrelCounts = new[]
-            {
-                new BarrelCountItem { ID = 1, Text = "1, 500 mm max" },
-                new BarrelCountItem { ID = 2, Text = "2, 250 mm max" },
-                new BarrelCountItem { ID = 3, Text = "3, 225 mm max" },
-                new BarrelCountItem { ID = 4, Text = "4, 200 mm max" },
-                new BarrelCountItem { ID = 5, Text = "5, 175 mm max" },
-                new BarrelCountItem { ID = 6, Text = "6, 150 mm max" }
-            };
+            BarrelCountItem[] barrelCounts =
+            [
+                new BarrelCountItem(1, "1, 500 mm max"),
+                new BarrelCountItem(2,"2, 250 mm max"),
+                new BarrelCountItem(3,"3, 225 mm max"),
+                new BarrelCountItem(4,"4, 200 mm max"),
+                new BarrelCountItem(5,"5, 175 mm max"),
+                new BarrelCountItem(6,"6, 150 mm max")
+            ];
             BarrelCountDD.DataSource = barrelCounts;
             BarrelCountDD.DisplayMember = "Text";
             BarrelCountDD.SelectedIndex = 0;
 
             // Barrel length limit type dropdown
-            BarrelLengthLimitTypeItem[] barrelLengthLimitTypeItems = new[]
-            {
-                new BarrelLengthLimitTypeItem { ID = BarrelLengthLimit.Calibers, Text = "calibers" },
-                new BarrelLengthLimitTypeItem { ID = BarrelLengthLimit.FixedLength, Text = "m" }
-            };
+            BarrelLengthLimitTypeItem[] barrelLengthLimitTypeItems =
+            [
+                new BarrelLengthLimitTypeItem(BarrelLengthLimit.Calibers, "calibers"),
+                new BarrelLengthLimitTypeItem(BarrelLengthLimit.FixedLength, "m")
+            ];
             BarrelLengthLimitDD.DataSource = barrelLengthLimitTypeItems;
             BarrelLengthLimitDD.DisplayMember = "Text";
             BarrelLengthLimitDD.SelectedIndex = 0;
@@ -73,41 +72,37 @@ namespace ApsCalcUI
             VariableModulesCL.DisplayMember = "Name";
 
             // Damage type dropdown
-            DamageTypeItem[] damageTypes = new[]
-            {
-                new DamageTypeItem { ID = DamageType.Kinetic, Text = "Kinetic" },
-                new DamageTypeItem { ID = DamageType.EMP, Text = "EMP" },
-                new DamageTypeItem { ID = DamageType.Flak, Text = "Flak" },
-                new DamageTypeItem { ID = DamageType.Frag, Text = "Frag" },
-                new DamageTypeItem { ID = DamageType.HE, Text = "HE" },
-                new DamageTypeItem { ID = DamageType.HEAT, Text = "HEAT" },
-                new DamageTypeItem { ID = DamageType.Disruptor, Text = "Disruptor" },
-                new DamageTypeItem { ID = DamageType.Smoke, Text = "Smoke" }
-            };
+            DamageTypeItem[] damageTypes =
+            [
+                new DamageTypeItem(DamageType.Kinetic, "Kinetic"),
+                new DamageTypeItem(DamageType.EMP, "EMP"),
+                new DamageTypeItem(DamageType.Flak, "Flak"),
+                new DamageTypeItem(DamageType.Frag, "Frag"),
+                new DamageTypeItem(DamageType.HE, "HE" ),
+                new DamageTypeItem(DamageType.HEAT, "HEAT"),
+                new DamageTypeItem(DamageType.Disruptor, "Disruptor"),
+                new DamageTypeItem(DamageType.Smoke, "Smoke")
+            ];
             DamageTypeDD.DataSource = damageTypes;
             DamageTypeDD.DisplayMember = "Text";
             DamageTypeDD.SelectedIndex = 0;
 
             // Target AC checked list
-            TargetACCL.Items.Add(new TargetACItem { ID = 8, Text = "8, wood" });
-            TargetACCL.Items.Add(new TargetACItem { ID = 9.6f, Text = "9.6, stacked wood" });
-            TargetACCL.Items.Add(new TargetACItem { ID = 20, Text = "20, munitions" });
-            TargetACCL.Items.Add(new TargetACItem { ID = 35, Text = "35, alloy" });
-            TargetACCL.Items.Add(new TargetACItem { ID = 40, Text = "40, metal" });
-            TargetACCL.Items.Add(new TargetACItem { ID = 42, Text = "42, stacked alloy" });
-            TargetACCL.Items.Add(new TargetACItem { ID = 48, Text = "48, stacked metal" });
-            TargetACCL.Items.Add(new TargetACItem { ID = 60, Text = "60, heavy armour" });
-            TargetACCL.Items.Add(new TargetACItem { ID = 72, Text = "72, stacked heavy armour" });
+            TargetACCL.Items.Add(new TargetACItem(8, "8, wood"));
+            TargetACCL.Items.Add(new TargetACItem(9.6f, "9.6, stacked wood"));
+            TargetACCL.Items.Add(new TargetACItem(20, "20, munitions"));
+            TargetACCL.Items.Add(new TargetACItem(35, "35, alloy"));
+            TargetACCL.Items.Add(new TargetACItem(40, "40, metal"));
+            TargetACCL.Items.Add(new TargetACItem(42, "42, stacked alloy"));
+            TargetACCL.Items.Add(new TargetACItem(48, "48, stacked metal"));
+            TargetACCL.Items.Add(new TargetACItem(60, "60, heavy armour"));
+            TargetACCL.Items.Add(new TargetACItem(72, "72, stacked heavy armour"));
             TargetACCL.DisplayMember = "Text";
 
             // Armor layer dropdown
             foreach (Layer armorLayer in Layer.AllLayers)
             {
-                ArmorLayerDD.Items.Add(new ArmorLayerItem
-                {
-                    Name = armorLayer.Name,
-                    Layer = armorLayer
-                });
+                ArmorLayerDD.Items.Add(new ArmorLayerItem(armorLayer.Name, armorLayer));
             }
             ArmorLayerDD.DisplayMember = "Name";
             ArmorLayerDD.SelectedIndex = 0;
@@ -604,7 +599,7 @@ namespace ApsCalcUI
             QueueErrorProvider.Clear();
 
             // For checking chemical types for pendepth
-            List<Module> varModList = new();
+            List<Module> varModList = [];
             foreach (VariableModuleItem varModItem in VariableModulesCL.CheckedItems)
             {
                 varModList.Add(Module.AllModules[varModItem.Index]);
@@ -645,14 +640,16 @@ namespace ApsCalcUI
                 testsInQueue += 1;
                 TestsInQueueLabel.Text = "Tests in Queue: " + testsInQueue.ToString();
 
-                TestParameters testParameters = new();
-                testParameters.BarrelCount = ((BarrelCountItem)BarrelCountDD.SelectedItem).ID;
-                testParameters.MinGauge = (int)MinGaugeUD.Value;
-                testParameters.MaxGauge = (int)MaxGaugeUD.Value;
+                TestParameters testParameters = new()
+                {
+                    BarrelCount = ((BarrelCountItem)BarrelCountDD.SelectedItem).ID,
+                    MinGauge = (int)MinGaugeUD.Value,
+                    MaxGauge = (int)MaxGaugeUD.Value,
 
-                testParameters.ImpactAngle = (float)ImpactAngleUD.Value;
+                    ImpactAngle = (float)ImpactAngleUD.Value
+                };
 
-                List<int> headIndices = new();
+                List<int> headIndices = [];
                 foreach (HeadModuleItem head in HeadModulesCL.CheckedItems)
                 {
                     headIndices.Add(head.Index);
@@ -741,8 +738,8 @@ namespace ApsCalcUI
                     gravCompCount = 0f;
                 }
 
-                float[] fixedModuleCounts = new float[]
-                {
+                float[] fixedModuleCounts =
+                [
                     (float)SolidBodyFixedUD.Value,
                     (float)SabotBodyFixedUD.Value,
                     (float)EmpBodyFixedUD.Value,
@@ -756,7 +753,7 @@ namespace ApsCalcUI
                     altitudeFuzeCount,
                     defuzeCount,
                     gravCompCount
-                };
+                ];
                 testParameters.FixedModulecounts = fixedModuleCounts;
 
                 float minModuleCount;
@@ -771,7 +768,7 @@ namespace ApsCalcUI
                 minModuleCount += (float)fixedModuleCounts.Sum();
                 testParameters.MinModulecount = minModuleCount;
 
-                List<int> varModIndices = new();
+                List<int> varModIndices = [];
                 foreach (VariableModuleItem varMod in VariableModulesCL.CheckedItems)
                 {
                     varModIndices.Add(varMod.Index);
@@ -834,7 +831,7 @@ namespace ApsCalcUI
                     }
                 }
 
-                List<float> targetACList = new();
+                List<float> targetACList = [];
                 if (testParameters.DamageType == DamageType.Kinetic)
                 {
                     foreach (TargetACItem ac in TargetACCL.CheckedItems)
@@ -937,7 +934,7 @@ namespace ApsCalcUI
                     {
                         foreach (float ac in testParameters.TargetACList)
                         {
-                            ConcurrentBag<Shell> shellBag = new();
+                            ConcurrentBag<Shell> shellBag = [];
                             Parallel.For(testParameters.MinGauge, testParameters.MaxGauge + 1, gauge =>
                             {
                                 ShellCalc calcLocal = new(
@@ -1055,7 +1052,7 @@ namespace ApsCalcUI
                     }
                     else
                     {
-                        ConcurrentBag<Shell> shellBag = new();
+                        ConcurrentBag<Shell> shellBag = [];
                         Parallel.For(testParameters.MinGauge, testParameters.MaxGauge + 1, gauge =>
                         {
                             float gaugeFloat = gauge;

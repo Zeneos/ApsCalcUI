@@ -13,7 +13,7 @@ namespace PenCalc
         public Scheme() { }
 
         // List of layers
-        public List<Layer> LayerList { get; set; } = new List<Layer>();
+        public List<Layer> LayerList { get; set; } = [];
 
         // Maximum useful AC
         public float MaxAC { get; set; }

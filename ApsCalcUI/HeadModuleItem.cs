@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace ApsCalcUI
 {
-    class HeadModuleItem
+    class HeadModuleItem(int index, string name)
     {
-        public int Index { get; set; }
-        public string Name { get; set; }
+        public int Index { get; } = index;
+        public string Name { get; } = name;
 
 
         /// <summary>
@@ -22,11 +22,7 @@ namespace ApsCalcUI
                 if (Module.AllModules[index].ModulePosition == Module.Position.Head
                     || (Module.AllModules[index].ModulePosition == Module.Position.Middle && Module.AllModules[index].CanBeVariable))
                 {
-                    HeadModuleItem head = new()
-                    {
-                        Index = index,
-                        Name = Module.AllModules[index].Name
-                    };
+                    HeadModuleItem head = new(index,Module.AllModules[index].Name);
 
                     yield return head;
                 }

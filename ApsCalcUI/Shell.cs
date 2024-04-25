@@ -5,33 +5,49 @@ using PenCalc;
 
 namespace ApsCalcUI
 {
-    public class Shell
+    public class Shell(
+        int barrelCount,
+        float gauge,
+        float gaugeCoefficient,
+        bool isBelt,
+        Module headModule,
+        Module baseModule,
+        int regularClipsPerLoader,
+        int regularInputsPerLoader,
+        int beltfedClipsPerLoader,
+        int beltfedInputsPerLoader,
+        bool usesAmmoEjector,
+        float gpCasingCount,
+        float rgCasingCount,
+        float rateOfFireRpm,
+        bool gunUsesRecoilAbsorbers,
+        bool isDif
+            )
     {
         private const float ApsModifier = 23; // Used as global multiplier in damage calculations
-        public Shell() { BaseModule = default; }
-        public float Gauge { get; set; }
-        public float GaugeCoefficient { get; set; } // Expensive to calculate and used in several formulae
+        public float Gauge { get; set; } = gauge;
+        public float GaugeCoefficient { get; set; } = gaugeCoefficient;
 
-        public bool IsBelt;
+        public bool IsBelt = isBelt;
 
         // Keep counts of body modules.
-        public float[] BodyModuleCounts { get; set; } = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        public float[] BodyModuleCounts { get; set; } = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         public float ModuleCountTotal { get; set; }
 
 
-        public Module BaseModule { get; set; } // Optional; is 'null' if no base is chosen by user
-        public Module HeadModule { get; set; } // There must always be a Head
+        public Module BaseModule { get; } = baseModule;
+        public Module HeadModule { get; } = headModule; // Shell must always contain a head, even if shell is only 1 module
 
         // Clip and input counts
-        public int RegularClipsPerLoader { get; set; }
-        public int RegularInputsPerLoader { get; set; }
-        public int BeltfedClipsPerLoader { get; set; }
-        public int BeltfedInputsPerLoader { get; set; }
-        public bool UsesAmmoEjector { get; set; }
+        public int RegularClipsPerLoader { get; set; } = regularClipsPerLoader;
+        public int RegularInputsPerLoader { get; set; } = regularInputsPerLoader;
+        public int BeltfedClipsPerLoader { get; set; } = beltfedClipsPerLoader;
+        public int BeltfedInputsPerLoader { get; set; } = beltfedInputsPerLoader;
+        public bool UsesAmmoEjector { get; set; } = usesAmmoEjector;
 
         // Gunpowder and Railgun casing counts
-        public float GPCasingCount { get; set; }
-        public float RGCasingCount { get; set; }
+        public float GPCasingCount { get; set; } = gpCasingCount;
+        public float RGCasingCount { get; set; } = rgCasingCount;
 
 
         // Lengths
@@ -53,7 +69,7 @@ namespace ApsCalcUI
         public float OverallArmorPierceModifier { get; set; }
         public float OverallChemModifier { get; set; }
         public float OverallInaccuracyModifier { get; set; }
-        public float RateOfFireRpm { get; set; }
+        public float RateOfFireRpm { get; set; } = rateOfFireRpm;
 
 
         // Power
@@ -61,15 +77,15 @@ namespace ApsCalcUI
         public float MaxDraw { get; set; }
         public float RailDraw { get; set; }
         public float TotalRecoil { get; set; }
-        public bool GunUsesRecoilAbsorbers { get; set; }
+        public bool GunUsesRecoilAbsorbers { get; set; } = gunUsesRecoilAbsorbers;
         public float Velocity { get; set; }
 
         // Reload
-        public bool IsDif { get; set; } // Direct-Input Feed doubles reload time
+        public bool IsDif { get; set; } = isDif;
         public float ShellReloadTime { get; set; }
         public float ClusterReloadTime { get; set; }
         public float Uptime { get; set; }
-        public int BarrelCount { get; set; }
+        public int BarrelCount { get; set; } = barrelCount;
         public float CooldownTime { get; set; }
 
         // Effective range

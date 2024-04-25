@@ -7,6 +7,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace ApsCalcUI
 {
@@ -265,19 +266,29 @@ namespace ApsCalcUI
 
 
         // Store top-DPS shells by loader length
-        public Shell TopBelt { get; set; } = new();
-        public Shell Top1000 { get; set; } = new();
-        public Shell Top2000 { get; set; } = new();
-        public Shell Top3000 { get; set; } = new();
-        public Shell Top4000 { get; set; } = new();
-        public Shell Top5000 { get; set; } = new();
-        public Shell Top6000 { get; set; } = new();
-        public Shell Top7000 { get; set; } = new();
-        public Shell Top8000 { get; set; } = new();
-        public Shell TopDif { get; set; } = new();
+        public Shell TopBelt { get; set; } = new(default, default, default, default, default, default, default, default,
+            default, default, default, default, default, default, default, default);
+        public Shell Top1000 { get; set; } = new(default, default, default, default, default, default, default, default,
+            default, default, default, default, default, default, default, default);
+        public Shell Top2000 { get; set; } = new(default, default, default, default, default, default, default, default,
+            default, default, default, default, default, default, default, default);
+        public Shell Top3000 { get; set; } = new(default, default, default, default, default, default, default, default,
+            default, default, default, default, default, default, default, default);
+        public Shell Top4000 { get; set; } = new(default, default, default, default, default, default, default, default,
+            default, default, default, default, default, default, default, default);
+        public Shell Top5000 { get; set; } = new(default, default, default, default, default, default, default, default,
+            default, default, default, default, default, default, default, default);
+        public Shell Top6000 { get; set; } = new(default, default, default, default, default, default, default, default,
+            default, default, default, default, default, default, default, default);
+        public Shell Top7000 { get; set; } = new(default, default, default, default, default, default, default, default,
+            default, default, default, default, default, default, default, default);
+        public Shell Top8000 { get; set; } = new(default, default, default, default, default, default, default, default,
+            default, default, default, default, default, default, default, default);
+        public Shell TopDif { get; set; } = new(default, default, default, default, default, default, default, default,
+            default, default, default, default, default, default, default, default);
 
-        public Dictionary<string, Shell> TopDpsShells { get; set; } = new Dictionary<string, Shell>();
-        public List<Shell> TopShellsLocal { get; set; } = new List<Shell>();
+        public Dictionary<string, Shell> TopDpsShells { get; set; } = [];
+        public List<Shell> TopShellsLocal { get; set; } = [];
 
 
         /// <summary>
@@ -442,14 +453,26 @@ namespace ApsCalcUI
 
             foreach (ModuleCount counts in GenerateModuleCounts())
             {
-                Shell shellUnderTesting = new();
-                shellUnderTesting.BarrelCount = BarrelCount;
-                shellUnderTesting.HeadModule = Module.AllModules[counts.HeadIndex];
-                shellUnderTesting.BaseModule = BaseModule;
+                Shell shellUnderTesting = new(
+                    BarrelCount,
+                    Gauge,
+                    GaugeCoefficient,
+                    false,
+                    Module.AllModules[counts.HeadIndex],
+                    BaseModule,
+                    RegularClipsPerLoader,
+                    RegularInputsPerLoader,
+                    BeltfedClipsPerLoader,
+                    BeltfedInputsPerLoader,
+                    UsesAmmoEjector,
+                    counts.GPCount,
+                    counts.RGCount,
+                    RateOfFireRpm,
+                    GunUsesRecoilAbsorbers,
+                    FiringPieceIsDif
+                    );
                 FixedModuleCounts.CopyTo(shellUnderTesting.BodyModuleCounts, 0);
 
-                shellUnderTesting.Gauge = Gauge;
-                shellUnderTesting.GaugeCoefficient = GaugeCoefficient;
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[0]] += counts.Var0Count;
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[1]] += counts.Var1Count;
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[2]] += counts.Var2Count;
@@ -457,16 +480,6 @@ namespace ApsCalcUI
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[4]] += counts.Var4Count;
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[5]] += counts.Var5Count;
                 shellUnderTesting.BodyModuleCounts[VariableModuleIndices[6]] += counts.Var6Count;
-                shellUnderTesting.RegularClipsPerLoader = RegularClipsPerLoader;
-                shellUnderTesting.RegularInputsPerLoader = RegularInputsPerLoader;
-                shellUnderTesting.BeltfedClipsPerLoader = BeltfedClipsPerLoader;
-                shellUnderTesting.BeltfedInputsPerLoader = BeltfedInputsPerLoader;
-                shellUnderTesting.UsesAmmoEjector = UsesAmmoEjector;
-                shellUnderTesting.GPCasingCount = counts.GPCount;
-                shellUnderTesting.RGCasingCount = counts.RGCount;
-                shellUnderTesting.IsDif = FiringPieceIsDif;
-                shellUnderTesting.GunUsesRecoilAbsorbers = GunUsesRecoilAbsorbers;
-                shellUnderTesting.RateOfFireRpm = RateOfFireRpm;
 
                 shellUnderTesting.CalculateLengths();
                 shellUnderTesting.CalculateRecoil();
@@ -865,14 +878,26 @@ namespace ApsCalcUI
                             // Beltfed testing
                             if (shellUnderTesting.TotalLength <= 1000f && !FiringPieceIsDif)
                             {
-                                Shell shellUnderTestingBelt = new();
-                                shellUnderTestingBelt.BarrelCount = BarrelCount;
-                                shellUnderTestingBelt.HeadModule = Module.AllModules[counts.HeadIndex];
-                                shellUnderTestingBelt.BaseModule = BaseModule;
+                                Shell shellUnderTestingBelt = new(
+                                    BarrelCount,
+                                    Gauge,
+                                    GaugeCoefficient,
+                                    true,
+                                    Module.AllModules[counts.HeadIndex],
+                                    BaseModule,
+                                    RegularClipsPerLoader,
+                                    RegularInputsPerLoader,
+                                    BeltfedClipsPerLoader,
+                                    BeltfedInputsPerLoader,
+                                    UsesAmmoEjector,
+                                    counts.GPCount,
+                                    counts.RGCount,
+                                    RateOfFireRpm,
+                                    GunUsesRecoilAbsorbers,
+                                    FiringPieceIsDif);
                                 FixedModuleCounts.CopyTo(shellUnderTestingBelt.BodyModuleCounts, 0);
 
-                                shellUnderTestingBelt.Gauge = Gauge;
-                                shellUnderTestingBelt.GaugeCoefficient = GaugeCoefficient;
+
                                 shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[0]] += counts.Var0Count;
                                 shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[1]] += counts.Var1Count;
                                 shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[2]] += counts.Var2Count;
@@ -895,18 +920,6 @@ namespace ApsCalcUI
                                         modIndex++;
                                     }
                                 }
-
-                                shellUnderTestingBelt.RegularClipsPerLoader = RegularClipsPerLoader;
-                                shellUnderTestingBelt.RegularInputsPerLoader = RegularInputsPerLoader;
-                                shellUnderTestingBelt.BeltfedClipsPerLoader = BeltfedClipsPerLoader;
-                                shellUnderTestingBelt.BeltfedInputsPerLoader = BeltfedInputsPerLoader;
-                                shellUnderTestingBelt.UsesAmmoEjector = UsesAmmoEjector;
-                                shellUnderTestingBelt.GPCasingCount = counts.GPCount;
-                                shellUnderTestingBelt.RGCasingCount = counts.RGCount;
-                                shellUnderTestingBelt.GunUsesRecoilAbsorbers = GunUsesRecoilAbsorbers;
-                                shellUnderTestingBelt.RateOfFireRpm = RateOfFireRpm;
-
-                                shellUnderTestingBelt.IsBelt = true;
                                 shellUnderTestingBelt.CalculateLengths();
                                 shellUnderTestingBelt.CalculateVelocityModifier();
                                 shellUnderTestingBelt.CalculateRecoil();
@@ -1434,23 +1447,11 @@ namespace ApsCalcUI
         /// </summary>
         public void WriteTopShells(float minGauge, float maxGauge)
         {
-            bool showGP = false;
-            if (MaxGPInput > 0)
-            {
-                showGP = true;
-            }
+            bool showGP = MaxGPInput > 0;
 
-            bool showRG = false;
-            if (MaxRGInput > 0)
-            {
-                showRG = true;
-            }
+            bool showRG = MaxRGInput > 0;
 
-            bool showDraw = false;
-            if (MaxDrawInput > 0)
-            {
-                showDraw = true;
-            }
+            bool showDraw = MaxDrawInput > 0;
 
             // Determine module and damage types to show
             Dictionary<DamageType, bool> dtToShow = new()
@@ -1465,7 +1466,7 @@ namespace ApsCalcUI
                 { DamageType.Smoke, false }
             };
 
-            List<int> modsToShow = new();
+            List<int> modsToShow = [];
 
             for (int index = 0; index < FixedModuleCounts.Length; index++)
             {
@@ -1772,50 +1773,46 @@ namespace ApsCalcUI
                     topShellPair.Value.GetModuleCounts();
                 }
 
-                List<string> loaderSizeList = new()
-                {
-                    " "
-                };
-                foreach (string topShellName in TopDpsShells.Keys)
-                {
-                    loaderSizeList.Add(topShellName);
-                }
+                List<string> loaderSizeList =
+                [
+                    " ", .. TopDpsShells.Keys
+                ];
                 writer.WriteLine(string.Join(ColumnDelimiter, loaderSizeList));
 
-                List<string> gaugeList = new()
-                {
+                List<string> gaugeList =
+                [
                     "Gauge (mm)"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     gaugeList.Add(topShell.Gauge.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, gaugeList));
 
-                List<string> totalLengthList = new()
-                {
+                List<string> totalLengthList =
+                [
                     "Total length (mm)"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     totalLengthList.Add(topShell.TotalLength.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, totalLengthList));
 
-                List<string> lengthWithoutCasingsList = new()
-                {
+                List<string> lengthWithoutCasingsList =
+                [
                     "Length without casings (mm)"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     lengthWithoutCasingsList.Add(topShell.ProjectileLength.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, lengthWithoutCasingsList));
 
-                List<string> totalModulesList = new()
-                {
+                List<string> totalModulesList =
+                [
                     "Total modules"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 { 
                     totalModulesList.Add(topShell.ModuleCountTotal.ToString());
@@ -1826,10 +1823,10 @@ namespace ApsCalcUI
 
                 if (showGP)
                 {
-                    List<string> gpCasingList = new()
-                    {
+                    List<string> gpCasingList =
+                    [
                         "GP casing"
-                    };
+                    ];
                     foreach (Shell topShell in TopDpsShells.Values)
                     {
                         gpCasingList.Add(topShell.GPCasingCount.ToString());
@@ -1838,10 +1835,10 @@ namespace ApsCalcUI
                 }
                 if (showRG)
                 {
-                    List<string> rgCasingList = new()
-                    {
+                    List<string> rgCasingList =
+                    [
                         "RG casing"
-                    };
+                    ];
                     foreach (Shell topShell in TopDpsShells.Values)
                     {
                         rgCasingList.Add(topShell.RGCasingCount.ToString());
@@ -1851,10 +1848,10 @@ namespace ApsCalcUI
 
                 foreach (int index in modsToShow)
                 {
-                    List<string> modCountList = new()
-                    {
+                    List<string> modCountList =
+                    [
                         Module.AllModules[index].Name
-                    };
+                    ];
                     foreach (Shell topShell in TopDpsShells.Values)
                     {
                         modCountList.Add(topShell.BodyModuleCounts[index].ToString());
@@ -1862,10 +1859,10 @@ namespace ApsCalcUI
                     writer.WriteLine(string.Join(ColumnDelimiter, modCountList));
                 }
 
-                List<string> headList = new()
-                {
+                List<string> headList =
+                [
                     "Head"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     headList.Add(topShell.HeadModule.Name);
@@ -1874,10 +1871,10 @@ namespace ApsCalcUI
 
                 if (showDraw)
                 {
-                    List<string> railDrawList = new()
-                    {
+                    List<string> railDrawList =
+                    [
                         "Rail draw"
-                    };
+                    ];
                     foreach (Shell topShell in TopDpsShells.Values)
                     {
                         railDrawList.Add(topShell.RailDraw.ToString());
@@ -1888,10 +1885,10 @@ namespace ApsCalcUI
                 // Recoil = draw if no GP
                 if (showGP)
                 {
-                    List<string> recoilList = new()
-                    {
+                    List<string> recoilList =
+                    [
                         "Recoil"
-                    };
+                    ];
                     foreach (Shell topShell in TopDpsShells.Values)
                     {
                         recoilList.Add(topShell.TotalRecoil.ToString());
@@ -1899,30 +1896,30 @@ namespace ApsCalcUI
                     writer.WriteLine(string.Join(ColumnDelimiter, recoilList));
                 }
 
-                List<string> velocityList = new()
-                {
+                List<string> velocityList =
+                [
                     "Velocity (m/s)"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     velocityList.Add(topShell.Velocity.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, velocityList));
 
-                List<string> effectiveRangeList = new()
-                {
+                List<string> effectiveRangeList =
+                [
                     "Effective range (m)"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     effectiveRangeList.Add(topShell.EffectiveRange.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, effectiveRangeList));
 
-                List<string> barrelLengthInaccuracyList = new()
-                {
+                List<string> barrelLengthInaccuracyList =
+                [
                     "Barrel length for inaccuracy (m)"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     barrelLengthInaccuracyList.Add(topShell.BarrelLengthForInaccuracy.ToString());
@@ -1931,10 +1928,10 @@ namespace ApsCalcUI
 
                 if (showGP)
                 {
-                    List<string> barrelLengthPropellantBurnList = new()
-                    {
+                    List<string> barrelLengthPropellantBurnList =
+                    [
                         "Barrel length for propellant burn (m)"
-                    };
+                    ];
                     foreach (Shell topShell in TopDpsShells.Values)
                     {
                         barrelLengthPropellantBurnList.Add(topShell.BarrelLengthForPropellant.ToString());
@@ -1948,30 +1945,30 @@ namespace ApsCalcUI
                     {
                         if (dt == DamageType.Kinetic)
                         {
-                            List<string> rawKDList = new()
-                            {
+                            List<string> rawKDList =
+                            [
                                 "Raw KD"
-                            };
+                            ];
                             foreach (Shell topShell in TopDpsShells.Values)
                             {
                                 rawKDList.Add(topShell.RawKD.ToString());
                             }
                             writer.WriteLine(string.Join(ColumnDelimiter, rawKDList));
 
-                            List<string> apList = new()
-                            {
+                            List<string> apList =
+                            [
                                 "AP"
-                            };
+                            ];
                             foreach (Shell topShell in TopDpsShells.Values)
                             {
                                 apList.Add(topShell.ArmorPierce.ToString());
                             }
                             writer.WriteLine(string.Join(ColumnDelimiter, apList));
 
-                            List<string> kdMultiplierList = new()
-                            {
+                            List<string> kdMultiplierList =
+                            [
                                 "KD multiplier from angle"
-                            };
+                            ];
                             foreach (Shell topShell in TopDpsShells.Values)
                             {
                                 if (topShell.HeadModule == Module.HollowPoint || TargetAC == 20f)
@@ -1991,20 +1988,20 @@ namespace ApsCalcUI
                         }
                         else if (dt == DamageType.Frag)
                         {
-                            List<string> fragCountList = new()
-                            {
+                            List<string> fragCountList =
+                            [
                                 "Frag count"
-                            };
+                            ];
                             foreach (Shell topShell in TopDpsShells.Values)
                             {
                                 fragCountList.Add(topShell.FragCount.ToString());
                             }
                             writer.WriteLine(string.Join(ColumnDelimiter, fragCountList));
 
-                            List<string> damagePerFragList = new()
-                            {
+                            List<string> damagePerFragList =
+                            [
                                 "Damage per frag"
-                            };
+                            ];
                             foreach (Shell topShell in TopDpsShells.Values)
                             {
                                 damagePerFragList.Add(topShell.DamagePerFrag.ToString());
@@ -2025,10 +2022,10 @@ namespace ApsCalcUI
                             writer.WriteLine(string.Join(ColumnDelimiter, rawFlakDamageList));
                             */
 
-                            List<string> flakExplosionRadiusList = new()
-                            {
+                            List<string> flakExplosionRadiusList =
+                            [
                                 "Flak explosion radius (m)"
-                            };
+                            ];
                             foreach (Shell topShell in TopDpsShells.Values)
                             {
                                 flakExplosionRadiusList.Add(topShell.FlakExplosionRadius.ToString());
@@ -2037,20 +2034,20 @@ namespace ApsCalcUI
                         }
                         else if (dt == DamageType.HE)
                         {
-                            List<string> rawHEDamageList = new()
-                            {
+                            List<string> rawHEDamageList =
+                            [
                                 "Raw HE damage"
-                            };
+                            ];
                             foreach (Shell topShell in TopDpsShells.Values)
                             {
                                 rawHEDamageList.Add(topShell.RawHE.ToString());
                             }
                             writer.WriteLine(string.Join(ColumnDelimiter, rawHEDamageList));
 
-                            List<string> heExplosionRadiusList = new()
-                            {
+                            List<string> heExplosionRadiusList =
+                            [
                                 "HE explosion radius (m)"
-                            };
+                            ];
                             foreach (Shell topShell in TopDpsShells.Values)
                             {
                                 heExplosionRadiusList.Add(topShell.HEExplosionRadius.ToString());
@@ -2058,10 +2055,10 @@ namespace ApsCalcUI
                             writer.WriteLine(string.Join(ColumnDelimiter, heExplosionRadiusList));
                         }
 
-                        List<string> damageList = new()
-                        {
+                        List<string> damageList =
+                        [
                             (DamageType)(int)dt + " damage"
-                        };
+                        ];
                         foreach (Shell topShell in TopDpsShells.Values)
                         {
                             damageList.Add(topShell.DamageDict[dt].ToString());
@@ -2070,30 +2067,30 @@ namespace ApsCalcUI
                     }
                 }
 
-                List<string> shellReloadTimeList = new()
-                {
+                List<string> shellReloadTimeList =
+                [
                     "Shell reload time (s)"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     shellReloadTimeList.Add(topShell.ShellReloadTime.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, shellReloadTimeList));
 
-                List<string> clusterReloadTimeList = new()
-                {
+                List<string> clusterReloadTimeList =
+                [
                     "Cluster reload time (s)"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     clusterReloadTimeList.Add(topShell.ClusterReloadTime.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, clusterReloadTimeList));
 
-                List<string> uptimeList = new()
-                {
+                List<string> uptimeList =
+                [
                     "Uptime"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     uptimeList.Add(topShell.Uptime.ToString());
@@ -2104,10 +2101,10 @@ namespace ApsCalcUI
                 {
                     if (dtToShow[dt])
                     {
-                        List<string> dpsList = new()
-                        {
+                        List<string> dpsList =
+                        [
                             (DamageType)(int)dt + " DPS"
-                        };
+                        ];
                         foreach (Shell topShell in TopDpsShells.Values)
                         {
                             dpsList.Add(topShell.DpsDict[dt].ToString());
@@ -2116,100 +2113,106 @@ namespace ApsCalcUI
                     }
                 }
 
-                List<string> loaderVolumeList = new()
-                {
+                List<string> loaderVolumeList =
+                [
                     "Loader volume"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     loaderVolumeList.Add(topShell.LoaderVolume.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, loaderVolumeList));
 
-                List<string> coolerVolumeList = new()
+                if (showGP)
                 {
+                    List<string> coolerVolumeList = 
+                    [
                     "Cooler volume"
-                };
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    coolerVolumeList.Add(topShell.CoolerVolume.ToString());
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        coolerVolumeList.Add(topShell.CoolerVolume.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, coolerVolumeList));
                 }
-                writer.WriteLine(string.Join(ColumnDelimiter, coolerVolumeList));
 
-                List<string> chargerVolumeList = new()
+                if (showDraw)
                 {
-                    "Charger volume"
-                };
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    chargerVolumeList.Add(topShell.ChargerVolume.ToString());
+                    List<string> chargerVolumeList = 
+                    [
+                        "Charger volume"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        chargerVolumeList.Add(topShell.ChargerVolume.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, chargerVolumeList));
+
+                    List<string> engineVolumeList = 
+                    [
+                        "Engine volume"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        engineVolumeList.Add(topShell.EngineVolume.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, engineVolumeList));
+
+                    List<string> fuelAccessVolumeList =
+                    [
+                        "Fuel access volume"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        fuelAccessVolumeList.Add(topShell.FuelAccessVolume.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, fuelAccessVolumeList));
+
+                    List<string> fuelStorageVolumeList =
+                    [
+                        "Fuel storage volume"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        fuelStorageVolumeList.Add(topShell.FuelStorageVolume.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, fuelStorageVolumeList));
                 }
-                writer.WriteLine(string.Join(ColumnDelimiter, chargerVolumeList));
 
-                List<string> engineVolumeList = new()
-                {
-                    "Engine volume"
-                };
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    engineVolumeList.Add(topShell.EngineVolume.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, engineVolumeList));
-
-                List<string> fuelAccessVolumeList = new()
-                {
-                    "Fuel access volume"
-                };
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    fuelAccessVolumeList.Add(topShell.FuelAccessVolume.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, fuelAccessVolumeList));
-
-                List<string> fuelStorageVolumeList = new()
-                {
-                    "Fuel storage volume"
-                };
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    fuelStorageVolumeList.Add(topShell.FuelStorageVolume.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, fuelStorageVolumeList));
-
-                List<string> recoilVolumeList = new()
-                {
+                List<string> recoilVolumeList =
+                [
                     "Recoil volume"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     recoilVolumeList.Add(topShell.RecoilVolume.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, recoilVolumeList));
 
-                List<string> ammoAccessVolumeList = new()
-                {
+                List<string> ammoAccessVolumeList =
+                [
                     "Ammo access volume"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     ammoAccessVolumeList.Add(topShell.AmmoAccessVolume.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, ammoAccessVolumeList));
 
-                List<string> ammoStorageVolumeList = new()
-                {
+                List<string> ammoStorageVolumeList =
+                [
                     "Ammo storage volume"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     ammoStorageVolumeList.Add(topShell.AmmoStorageVolume.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, ammoStorageVolumeList));
 
-                List<string> totalVolumeList = new()
-                {
+                List<string> totalVolumeList =
+                [
                     "Total volume"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     totalVolumeList.Add(topShell.VolumePerLoader.ToString());
@@ -2220,10 +2223,10 @@ namespace ApsCalcUI
                 {
                     if (dtToShow[dt])
                     {
-                        List<string> dpsPerVolumeList = new()
-                        {
+                        List<string> dpsPerVolumeList =
+                        [
                             (DamageType)(int)dt + " DPS per volume"
-                        };
+                        ];
                         foreach (Shell topShell in TopDpsShells.Values)
                         {
                             dpsPerVolumeList.Add(topShell.DpsPerVolumeDict[dt].ToString());
@@ -2232,140 +2235,147 @@ namespace ApsCalcUI
                     }
                 }
 
-                List<string> costPerShellList = new()
-                {
+                List<string> costPerShellList =
+                [
                     "Cost per shell"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     costPerShellList.Add(topShell.CostPerShell.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, costPerShellList));
 
-                List<string> loaderCostList = new()
-                {
+                List<string> loaderCostList =
+                [
                     "Loader cost"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     loaderCostList.Add(topShell.LoaderCost.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, loaderCostList));
 
-                List<string> coolerCostList = new()
+                if (showGP)
                 {
-                    "Cooler cost"
-                };
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    coolerCostList.Add(topShell.CoolerCost.ToString());
+                    List<string> coolerCostList =
+                    [
+                        "Cooler cost"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        coolerCostList.Add(topShell.CoolerCost.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, coolerCostList));
                 }
-                writer.WriteLine(string.Join(ColumnDelimiter, coolerCostList));
 
-                List<string> chargerCostList = new()
+                if (showDraw)
                 {
-                    "Charger cost"
-                };
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    chargerCostList.Add(topShell.ChargerCost.ToString());
+                    List<string> chargerCostList =
+                    [
+                        "Charger cost"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        chargerCostList.Add(topShell.ChargerCost.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, chargerCostList));
+
+                    List<string> fuelBurnedList =
+                    [
+                        "Fuel burned"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        fuelBurnedList.Add(topShell.FuelBurned.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, fuelBurnedList));
+
+                    List<string> engineCostList =
+                    [
+                        "Engine cost"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        engineCostList.Add(topShell.EngineCost.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, engineCostList));
+
+                    List<string> fuelAccessCostList =
+                    [
+                        "Fuel access cost"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        fuelAccessCostList.Add(topShell.FuelAccessCost.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, fuelAccessCostList));
+
+                    List<string> fuelStorageCostList =
+                    [
+                        "Fuel storage cost"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        fuelStorageCostList.Add(topShell.FuelStorageCost.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, fuelStorageCostList));
                 }
-                writer.WriteLine(string.Join(ColumnDelimiter, chargerCostList));
 
-                List<string> fuelBurnedList = new()
-                {
-                    "Fuel burned"
-                };
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    fuelBurnedList.Add(topShell.FuelBurned.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, fuelBurnedList));
 
-                List<string> engineCostList = new()
-                {
-                    "Engine cost"
-                };
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    engineCostList.Add(topShell.EngineCost.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, engineCostList));
-
-                List<string> fuelAccessCostList = new()
-                {
-                    "Fuel access cost"
-                };
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    fuelAccessCostList.Add(topShell.FuelAccessCost.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, fuelAccessCostList));
-
-                List<string> fuelStorageCostList = new()
-                {
-                    "Fuel storage cost"
-                };
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    fuelStorageCostList.Add(topShell.FuelStorageCost.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, fuelStorageCostList));
-
-                List<string> recoilCostList = new()
-                {
+                List<string> recoilCostList =
+                [
                     "Recoil cost"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     recoilCostList.Add(topShell.RecoilCost.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, recoilCostList));
 
-                List<string> ammoUsedList = new()
-                {
+                List<string> ammoUsedList =
+                [
                     "Ammo used"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     ammoUsedList.Add(topShell.AmmoUsed.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, ammoUsedList));
 
-                List<string> ammoAccessCostList = new()
-                {
+                List<string> ammoAccessCostList =
+                [
                     "Ammo access cost"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     ammoAccessCostList.Add(topShell.AmmoAccessCost.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, ammoAccessCostList));
 
-                List<string> ammoStorageCostList = new()
-                {
+                List<string> ammoStorageCostList =
+                [
                     "Ammo storage cost"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     ammoStorageCostList.Add(topShell.AmmoStorageCost.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, ammoStorageCostList));
 
-                List<string> totalCostList = new()
-                {
+                List<string> totalCostList =
+                [
                     "Total cost"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     totalCostList.Add(topShell.CostPerLoader.ToString());
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, totalCostList));
 
-                List<string> costPerVolumeList = new()
-                {
+                List<string> costPerVolumeList =
+                [
                     "Cost per volume"
-                };
+                ];
                 foreach (Shell topShell in TopDpsShells.Values)
                 {
                     costPerVolumeList.Add(topShell.CostPerVolume.ToString());
@@ -2376,10 +2386,10 @@ namespace ApsCalcUI
                 {
                     if (dtToShow[dt])
                     {
-                        List<string> dpsPerCostList = new()
-                        {
+                        List<string> dpsPerCostList =
+                        [
                             (DamageType)(int)dt + " DPS per cost"
-                        };
+                        ];
                         foreach (Shell topShell in TopDpsShells.Values)
                         {
                             dpsPerCostList.Add(topShell.DpsPerCostDict[dt].ToString());
