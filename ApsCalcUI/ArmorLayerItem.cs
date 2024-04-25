@@ -2,15 +2,9 @@
 
 namespace ApsCalcUI
 {
-    class ArmorLayerItem
+    class ArmorLayerItem(string name, Layer layer)
     {
-        public ArmorLayerItem(string name, Layer layer)
-        {
-            Name = name;
-            Layer = layer;
-        }
-
-        public string Name { get; }
-        public Layer Layer { get; }
+        public string Name { get; } = name;
+        public Layer Layer { get; } = layer;
     }
 }

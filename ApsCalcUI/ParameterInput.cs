@@ -10,7 +10,7 @@ namespace ApsCalcUI
 {
     public partial class ParameterInput : Form
     {
-        List<TestParameters> parameterList = new();
+        List<TestParameters> parameterList = [];
         int testsInQueue = 0;
         // For automatically setting min gauge to compensate for smoke minimum 200 mm
         decimal nonSmokeMinGauge = 18;
@@ -34,25 +34,25 @@ namespace ApsCalcUI
         private void ParameterInput_Load(object sender, EventArgs e)
         {
             // Barrel count dropdown
-            BarrelCountItem[] barrelCounts = new[]
-            {
+            BarrelCountItem[] barrelCounts =
+            [
                 new BarrelCountItem(1, "1, 500 mm max"),
                 new BarrelCountItem(2,"2, 250 mm max"),
                 new BarrelCountItem(3,"3, 225 mm max"),
                 new BarrelCountItem(4,"4, 200 mm max"),
                 new BarrelCountItem(5,"5, 175 mm max"),
                 new BarrelCountItem(6,"6, 150 mm max")
-            };
+            ];
             BarrelCountDD.DataSource = barrelCounts;
             BarrelCountDD.DisplayMember = "Text";
             BarrelCountDD.SelectedIndex = 0;
 
             // Barrel length limit type dropdown
-            BarrelLengthLimitTypeItem[] barrelLengthLimitTypeItems = new[]
-            {
+            BarrelLengthLimitTypeItem[] barrelLengthLimitTypeItems =
+            [
                 new BarrelLengthLimitTypeItem(BarrelLengthLimit.Calibers, "calibers"),
                 new BarrelLengthLimitTypeItem(BarrelLengthLimit.FixedLength, "m")
-            };
+            ];
             BarrelLengthLimitDD.DataSource = barrelLengthLimitTypeItems;
             BarrelLengthLimitDD.DisplayMember = "Text";
             BarrelLengthLimitDD.SelectedIndex = 0;
@@ -72,8 +72,8 @@ namespace ApsCalcUI
             VariableModulesCL.DisplayMember = "Name";
 
             // Damage type dropdown
-            DamageTypeItem[] damageTypes = new[]
-            {
+            DamageTypeItem[] damageTypes =
+            [
                 new DamageTypeItem(DamageType.Kinetic, "Kinetic"),
                 new DamageTypeItem(DamageType.EMP, "EMP"),
                 new DamageTypeItem(DamageType.Flak, "Flak"),
@@ -82,7 +82,7 @@ namespace ApsCalcUI
                 new DamageTypeItem(DamageType.HEAT, "HEAT"),
                 new DamageTypeItem(DamageType.Disruptor, "Disruptor"),
                 new DamageTypeItem(DamageType.Smoke, "Smoke")
-            };
+            ];
             DamageTypeDD.DataSource = damageTypes;
             DamageTypeDD.DisplayMember = "Text";
             DamageTypeDD.SelectedIndex = 0;
@@ -599,7 +599,7 @@ namespace ApsCalcUI
             QueueErrorProvider.Clear();
 
             // For checking chemical types for pendepth
-            List<Module> varModList = new();
+            List<Module> varModList = [];
             foreach (VariableModuleItem varModItem in VariableModulesCL.CheckedItems)
             {
                 varModList.Add(Module.AllModules[varModItem.Index]);
@@ -649,7 +649,7 @@ namespace ApsCalcUI
                     ImpactAngle = (float)ImpactAngleUD.Value
                 };
 
-                List<int> headIndices = new();
+                List<int> headIndices = [];
                 foreach (HeadModuleItem head in HeadModulesCL.CheckedItems)
                 {
                     headIndices.Add(head.Index);
@@ -738,8 +738,8 @@ namespace ApsCalcUI
                     gravCompCount = 0f;
                 }
 
-                float[] fixedModuleCounts = new float[]
-                {
+                float[] fixedModuleCounts =
+                [
                     (float)SolidBodyFixedUD.Value,
                     (float)SabotBodyFixedUD.Value,
                     (float)EmpBodyFixedUD.Value,
@@ -753,7 +753,7 @@ namespace ApsCalcUI
                     altitudeFuzeCount,
                     defuzeCount,
                     gravCompCount
-                };
+                ];
                 testParameters.FixedModulecounts = fixedModuleCounts;
 
                 float minModuleCount;
@@ -768,7 +768,7 @@ namespace ApsCalcUI
                 minModuleCount += (float)fixedModuleCounts.Sum();
                 testParameters.MinModulecount = minModuleCount;
 
-                List<int> varModIndices = new();
+                List<int> varModIndices = [];
                 foreach (VariableModuleItem varMod in VariableModulesCL.CheckedItems)
                 {
                     varModIndices.Add(varMod.Index);
@@ -831,7 +831,7 @@ namespace ApsCalcUI
                     }
                 }
 
-                List<float> targetACList = new();
+                List<float> targetACList = [];
                 if (testParameters.DamageType == DamageType.Kinetic)
                 {
                     foreach (TargetACItem ac in TargetACCL.CheckedItems)
@@ -934,7 +934,7 @@ namespace ApsCalcUI
                     {
                         foreach (float ac in testParameters.TargetACList)
                         {
-                            ConcurrentBag<Shell> shellBag = new();
+                            ConcurrentBag<Shell> shellBag = [];
                             Parallel.For(testParameters.MinGauge, testParameters.MaxGauge + 1, gauge =>
                             {
                                 ShellCalc calcLocal = new(
@@ -1052,7 +1052,7 @@ namespace ApsCalcUI
                     }
                     else
                     {
-                        ConcurrentBag<Shell> shellBag = new();
+                        ConcurrentBag<Shell> shellBag = [];
                         Parallel.For(testParameters.MinGauge, testParameters.MaxGauge + 1, gauge =>
                         {
                             float gaugeFloat = gauge;

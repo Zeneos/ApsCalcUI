@@ -1,14 +1,8 @@
 ﻿namespace ApsCalcUI
 {
-    class DamageTypeItem
+    class DamageTypeItem(DamageType iD, string text)
     {
-        public DamageTypeItem(DamageType iD, string text)
-        {
-            ID = iD;
-            Text = text;
-        }
-
-        public DamageType ID { get; }
-        public string Text { get; }
+        public DamageType ID { get; } = iD;
+        public string Text { get; } = text;
     }
 }

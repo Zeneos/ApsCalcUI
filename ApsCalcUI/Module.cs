@@ -19,7 +19,9 @@ namespace ApsCalcUI
         /// <param name="mLength">Max length of module in mm (length equals gauge at or below this value)</param>
         /// <param name="mType">Type of module - base, middle, or head</param>
         /// <param name="canBeVariable">Whether module can be a Variable Module</param>
+#pragma warning disable IDE0290 // Use primary constructor
         public Module(string name, float vMod, float kdMod, float apMod, float cMod, float inaccMod, float mLength, Position mType, bool canBeVariable)
+#pragma warning restore IDE0290 // Use primary constructor
         {
             Name = name;
             VelocityMod = vMod;
@@ -83,7 +85,7 @@ namespace ApsCalcUI
 
         // List modules for reference
         public static Module[] AllModules { get; } =
-        {
+        [
         SolidBody,
         SabotBody,
         EmpBody,
@@ -113,6 +115,6 @@ namespace ApsCalcUI
         Supercav,
         Tracer,
         GravRam
-        };
+        ];
     }
 }

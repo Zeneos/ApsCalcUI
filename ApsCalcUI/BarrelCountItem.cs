@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace ApsCalcUI
 {
-    class BarrelCountItem
+    class BarrelCountItem(int id, string text)
     {
-        public BarrelCountItem(int id, string text)
-        {
-            ID = id;
-            Text = text;
-        }
-        public int ID { get; }
-        public string Text { get; }
+        public int ID { get; } = id;
+        public string Text { get; } = text;
     }
 }

@@ -20,15 +20,32 @@ namespace ApsCalcUITests
             float directHitAngleFromPerpendicularDegrees = 0f;
             float nonDirectHitAngleFromPerpendicularDegrees = 15f;
 
-            float[] testModuleCounts = { 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 };
+            float[] testModuleCounts = [1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0];
             PenCalc.Scheme testScheme = new();
-            Shell testShellAP = new(Module.APHead, Module.BaseBleeder)
+            float gauge = 490;
+            float gaugeCoefficient = MathF.Pow(gauge / 500f, 1.8f);
+            float gpCasingCount = 1.5f;
+            float rgCasingCount = 1;
+            bool isBelt = false;
+            bool isDif = false;
+            Shell testShellAP = new(
+                1,
+                gauge,
+                gaugeCoefficient,
+                isBelt,
+                Module.APHead,
+                Module.BaseBleeder,
+                default,
+                default,
+                default,
+                default,
+                default,
+                gpCasingCount,
+                rgCasingCount,
+                default,
+                default,
+                isDif)
             {
-                BarrelCount = 1,
-                Gauge = 490,
-                GPCasingCount = 1.5f,
-                RGCasingCount = 1,
-                IsDif = false,
                 RailDraw = 500
             };
             testModuleCounts.CopyTo(testShellAP.BodyModuleCounts, 0);
@@ -80,13 +97,24 @@ namespace ApsCalcUITests
 
 
             // Sabot head uses 3/4 angle
-            Shell testShellSabot = new(Module.SabotHead, Module.BaseBleeder)
+            Shell testShellSabot = new(
+                1,
+                gauge,
+                gaugeCoefficient,
+                isBelt,
+                Module.SabotHead,
+                Module.BaseBleeder,
+                default,
+                default,
+                default,
+                default,
+                default,
+                gpCasingCount,
+                rgCasingCount,
+                default,
+                default,
+                isDif)
             {
-                BarrelCount = 1,
-                Gauge = 490,
-                GPCasingCount = 1.5f,
-                RGCasingCount = 1,
-                IsDif = false,
                 RailDraw = 500
             };
             testModuleCounts.CopyTo(testShellSabot.BodyModuleCounts, 0);
@@ -137,13 +165,24 @@ namespace ApsCalcUITests
 
 
             // Hollow point head ignores angle
-            Shell testShellHollowPoint = new(Module.HollowPoint, Module.BaseBleeder)
+            Shell testShellHollowPoint = new(
+                1,
+                gauge,
+                gaugeCoefficient,
+                isBelt,
+                Module.HollowPoint,
+                Module.BaseBleeder,
+                default,
+                default,
+                default,
+                default,
+                default,
+                gpCasingCount,
+                rgCasingCount,
+                default,
+                default,
+                isDif)
             {
-                BarrelCount = 1,
-                Gauge = 490,
-                GPCasingCount = 1.5f,
-                RGCasingCount = 1,
-                IsDif = false,
                 RailDraw = 500
             };
             testModuleCounts.CopyTo(testShellHollowPoint.BodyModuleCounts, 0);
@@ -199,16 +238,33 @@ namespace ApsCalcUITests
             float fragConeAngle = 60f;
             float fragAngleMultiplier = (2 + MathF.Sqrt(fragConeAngle)) / 16f;
 
-            float[] testModuleCounts = { 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 };
-            Shell testShellAP = new(Module.APHead, Module.BaseBleeder)
+            float[] testModuleCounts = [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0];
+            float gauge = 490;
+            float gaugeCoefficient = MathF.Pow(gauge / 500f, 1.8f);
+            float gpCasingCount = 1.5f;
+            float rgCasingCount = 1;
+            bool isBelt = false;
+            bool isDif = false;
+            Shell testShellAP = new(
+                1,
+                gauge,
+                gaugeCoefficient,
+                isBelt,
+                Module.APHead,
+                Module.BaseBleeder,
+                default,
+                default,
+                default,
+                default,
+                default,
+                gpCasingCount,
+                rgCasingCount,
+                default,
+                default,
+                isDif)
             {
-                BarrelCount = 1,
-                Gauge = 490,
-                GPCasingCount = 1.5f,
-                RGCasingCount = 1,
-                IsDif = false,
                 RailDraw = 500
-        };
+            };
             testShellAP.GaugeCoefficient = MathF.Pow(testShellAP.Gauge / 500f, 1.8f);
             testModuleCounts.CopyTo(testShellAP.BodyModuleCounts, 0);
 
@@ -244,13 +300,24 @@ namespace ApsCalcUITests
             Assert.AreEqual(testShellAP.DamageDict[DamageType.Smoke], 964.288391f);
 
             // Note: when testing HEAT damage, ensure HE warhead is directly behind head
-            Shell testShellHeat = new(Module.ShapedChargeHead, Module.BaseBleeder)
+            Shell testShellHeat = new(
+                1,
+                gauge,
+                gaugeCoefficient,
+                isBelt,
+                Module.ShapedChargeHead,
+                Module.BaseBleeder,
+                default,
+                default,
+                default,
+                default,
+                default,
+                gpCasingCount,
+                rgCasingCount,
+                default,
+                default,
+                isDif)
             {
-                BarrelCount = 1,
-                Gauge = 490,
-                GPCasingCount = 1.5f,
-                RGCasingCount = 1,
-                IsDif = false,
                 RailDraw = 500
             };
             testShellHeat.GaugeCoefficient = MathF.Pow(testShellHeat.Gauge / 500f, 1.8f);
@@ -276,13 +343,29 @@ namespace ApsCalcUITests
         [Test]
         public void InaccuracyTest1()
         {
-            float[] testModuleCounts = { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
-            Shell testShell = new(Module.APHead, Module.BaseBleeder)
-            {
-                BarrelCount = 1,
-                Gauge = 100,
-                IsDif = false
-        };
+            float[] testModuleCounts = [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0];
+            int barrelCount = 1;
+            float gauge = 100;
+            float gaugeCoefficient = MathF.Pow(gauge / 500f, 1.8f);
+            bool isDif = false;
+            Shell testShell = new(
+                barrelCount,
+                gauge,
+                gaugeCoefficient,
+                default,
+                Module.APHead,
+                Module.BaseBleeder,
+                default,
+                default,
+                default,
+                default,
+                default,
+                default,
+                default,
+                default,
+                default,
+                isDif
+                );
             testModuleCounts.CopyTo(testShell.BodyModuleCounts, 0);
 
             testShell.GaugeCoefficient = MathF.Pow(testShell.Gauge / 500f, 1.8f);
@@ -313,13 +396,29 @@ namespace ApsCalcUITests
         [Test]
         public void InaccuracyTest2()
         {
-            float[] testModuleCounts = { 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            Shell testShell = new(Module.APHead, Module.BaseBleeder)
-            {
-                BarrelCount = 1,
-                Gauge = 392,
-                IsDif = false
-        };
+            float[] testModuleCounts = [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            int barrelCount = 1;
+            float gauge = 392;
+            float gaugeCoefficient = MathF.Pow(gauge / 500f, 1.8f);
+            bool isDif = false;
+            Shell testShell = new(
+                barrelCount,
+                gauge,
+                gaugeCoefficient,
+                default,
+                Module.APHead,
+                Module.BaseBleeder,
+                default,
+                default,
+                default,
+                default,
+                default,
+                default,
+                default,
+                default,
+                default,
+                isDif
+                );
             testModuleCounts.CopyTo(testShell.BodyModuleCounts, 0);
 
             testShell.GaugeCoefficient = MathF.Pow(testShell.Gauge / 500f, 1.8f);

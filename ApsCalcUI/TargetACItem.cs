@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace ApsCalcUI
 {
-    class TargetACItem
+    class TargetACItem(float id, string text)
     {
-        public TargetACItem(float id, string text)
-        {
-            ID = id;
-            Text = text;
-        }
-        public float ID { get; }
-        public string Text { get; }
+        public float ID { get; } = id;
+        public string Text { get; } = text;
     }
 }
