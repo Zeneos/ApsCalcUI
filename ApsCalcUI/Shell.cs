@@ -537,19 +537,12 @@ namespace ApsCalcUI
                 ShellReloadTime *= 0.75f * MathF.Pow(Gauge / 1000f, 0.45f);
                 ClusterReloadTime = ShellReloadTime;
 
-                float gaugeModifier;
-                if (Gauge <= 250f)
-                {
-                    gaugeModifier = 2f;
-                }
-                else
-                {
-                    gaugeModifier = 1f;
-                }
-                float shellCapacity = BeltfedClipsPerLoader * MathF.Min(64f, MathF.Floor(1000f / Gauge) * gaugeModifier) + 1f;
+                float capacityModifier = Gauge <= 250f ? 2 : 1;
+                float shellCapacity = BeltfedClipsPerLoader * MathF.Min(64f, MathF.Floor(1000f / Gauge) * capacityModifier) + 1f;
                 float firingCycleLength = (shellCapacity - 1f) * ClusterReloadTime;
                 float loadingCycleLength = (shellCapacity - BeltfedInputsPerLoader) * ClusterReloadTime / BeltfedInputsPerLoader;
-                Uptime = firingCycleLength / (firingCycleLength + loadingCycleLength);
+                float fullCycleLength = firingCycleLength + loadingCycleLength;
+                Uptime = MathF.Min(firingCycleLength / MathF.Min(fullCycleLength, testIntervalSeconds), 1f);
             }
             else if (IsDif)
             {
@@ -560,16 +553,8 @@ namespace ApsCalcUI
             {
                 ClusterReloadTime = ShellReloadTime / (1f + RegularClipsPerLoader);
 
-                float gaugeModifier;
-                if (Gauge <= 250f)
-                {
-                    gaugeModifier = 2f;
-                }
-                else
-                {
-                    gaugeModifier = 1f;
-                }
-                float shellCapacity = RegularClipsPerLoader * MathF.Min(64f, MathF.Floor(1000f / Gauge) * gaugeModifier) + 1f;
+                float capacityModifier = Gauge <= 250f ? 2 : 1;
+                float shellCapacity = RegularClipsPerLoader * MathF.Min(64f, MathF.Floor(1000f / Gauge) * capacityModifier) + 1f;
                 float timeToEmptySeconds =
                     shellCapacity
                     * ClusterReloadTime

@@ -13,6 +13,75 @@ namespace ApsCalcUITests
         }
 
         [Test]
+        public void ReloadTimeTest()
+        {
+            float[] testModuleCounts = [1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0];
+            float gauge = 60;
+            float gaugeCoefficient = MathF.Pow(gauge / 500f, 1.8f);
+            int clipsPerLoader = 2;
+            int inputsPerLoader = 3;
+            float gpCasingCount = 1.5f;
+            float rgCasingCount = 1;
+            bool isBelt = false;
+            bool isDif = false;
+            float testIntervalSeconds = 600;
+            Shell testShell = new(
+                1,
+                gauge,
+                gaugeCoefficient,
+                isBelt,
+                Module.APHead,
+                Module.BaseBleeder,
+                clipsPerLoader,
+                inputsPerLoader,
+                clipsPerLoader,
+                inputsPerLoader,
+                default,
+                gpCasingCount,
+                rgCasingCount,
+                default,
+                default,
+                isDif);
+
+            testModuleCounts.CopyTo(testShell.BodyModuleCounts, 0);
+            testShell.GaugeCoefficient = MathF.Pow(testShell.Gauge / 500f, 1.8f);
+            testShell.CalculateLengths();
+            testShell.CalculateReloadTime(testIntervalSeconds);
+
+            Assert.AreEqual(testShell.ShellReloadTime, 11.6231985f);
+            Assert.AreEqual(testShell.ClusterReloadTime, 3.87439942f);
+            Assert.AreEqual(testShell.Uptime, 1f);
+
+            isBelt = true;
+            Shell testShellBelt = new(
+                1,
+                gauge,
+                gaugeCoefficient,
+                isBelt,
+                Module.APHead,
+                Module.BaseBleeder,
+                clipsPerLoader,
+                inputsPerLoader,
+                clipsPerLoader,
+                inputsPerLoader,
+                default,
+                gpCasingCount,
+                rgCasingCount,
+                default,
+                default,
+                isDif);
+
+            testModuleCounts.CopyTo(testShellBelt.BodyModuleCounts, 0);
+            testShellBelt.GaugeCoefficient = MathF.Pow(testShellBelt.Gauge / 500f, 1.8f);
+            testShellBelt.CalculateLengths();
+            testShellBelt.CalculateReloadTime(testIntervalSeconds);
+
+            Assert.AreEqual(testShellBelt.ShellReloadTime, 2.45784783f);
+            Assert.AreEqual(testShellBelt.ClusterReloadTime, 2.45784783f);
+            Assert.AreEqual(testShellBelt.Uptime, 0.755905509f);
+        }
+
+        [Test]
         public void KineticDamageTest()
         {
             float fragConeAngle = 60f;
