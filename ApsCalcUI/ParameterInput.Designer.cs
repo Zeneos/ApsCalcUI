@@ -98,6 +98,8 @@ namespace ApsCalcUI
             RegularClipsPerLoaderUD = new System.Windows.Forms.NumericUpDown();
             RegularInputsPerLoaderUD = new System.Windows.Forms.NumericUpDown();
             AmmoEjectorCB = new System.Windows.Forms.CheckBox();
+            SmokeBodyFixedUD = new System.Windows.Forms.NumericUpDown();
+            IncendiaryBodyFixedUD = new System.Windows.Forms.NumericUpDown();
             BarrelCountLabel = new System.Windows.Forms.Label();
             MinGaugeLabel = new System.Windows.Forms.Label();
             MaxGaugeLabel = new System.Windows.Forms.Label();
@@ -108,7 +110,9 @@ namespace ApsCalcUI
             TracerRB = new System.Windows.Forms.RadioButton();
             BaseBleederRB = new System.Windows.Forms.RadioButton();
             FixedModulesPanel = new System.Windows.Forms.Panel();
-            FinLabel = new System.Windows.Forms.Label();
+            IncendiaryBodyFixedLabel = new System.Windows.Forms.Label();
+            SmokeBodyFixedLabel = new System.Windows.Forms.Label();
+            FinFixedLabel = new System.Windows.Forms.Label();
             HEBodyFixedLabel = new System.Windows.Forms.Label();
             FragBodyFixedLabel = new System.Windows.Forms.Label();
             FlakBodyFixedLabel = new System.Windows.Forms.Label();
@@ -188,6 +192,8 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)BeltfedInputsPerLoaderUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)RegularClipsPerLoaderUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)RegularInputsPerLoaderUD).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)SmokeBodyFixedUD).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)IncendiaryBodyFixedUD).BeginInit();
             BasePanel.SuspendLayout();
             FixedModulesPanel.SuspendLayout();
             VariableModulesPanel.SuspendLayout();
@@ -495,7 +501,7 @@ namespace ApsCalcUI
             // 
             // AddParametersButton
             // 
-            AddParametersButton.Location = new System.Drawing.Point(485, 601);
+            AddParametersButton.Location = new System.Drawing.Point(485, 669);
             AddParametersButton.Name = "AddParametersButton";
             AddParametersButton.Size = new System.Drawing.Size(157, 51);
             AddParametersButton.TabIndex = 29;
@@ -508,7 +514,7 @@ namespace ApsCalcUI
             // 
             RunButton.BackColor = System.Drawing.SystemColors.ControlLightLight;
             RunButton.Enabled = false;
-            RunButton.Location = new System.Drawing.Point(665, 601);
+            RunButton.Location = new System.Drawing.Point(665, 669);
             RunButton.Name = "RunButton";
             RunButton.Size = new System.Drawing.Size(121, 51);
             RunButton.TabIndex = 31;
@@ -519,7 +525,7 @@ namespace ApsCalcUI
             // 
             // VariableModulesLabel
             // 
-            VariableModulesLabel.Location = new System.Drawing.Point(0, 10);
+            VariableModulesLabel.Location = new System.Drawing.Point(0, -8);
             VariableModulesLabel.Name = "VariableModulesLabel";
             VariableModulesLabel.Size = new System.Drawing.Size(154, 27);
             VariableModulesLabel.TabIndex = 0;
@@ -708,7 +714,7 @@ namespace ApsCalcUI
             // FixedGravCompCB
             // 
             FixedGravCompCB.AutoSize = true;
-            FixedGravCompCB.Location = new System.Drawing.Point(4, 209);
+            FixedGravCompCB.Location = new System.Drawing.Point(4, 264);
             FixedGravCompCB.Name = "FixedGravCompCB";
             FixedGravCompCB.Size = new System.Drawing.Size(125, 19);
             FixedGravCompCB.TabIndex = 21;
@@ -720,7 +726,7 @@ namespace ApsCalcUI
             // FixedPendepthFuzeCB
             // 
             FixedPendepthFuzeCB.AutoSize = true;
-            FixedPendepthFuzeCB.Location = new System.Drawing.Point(4, 234);
+            FixedPendepthFuzeCB.Location = new System.Drawing.Point(4, 289);
             FixedPendepthFuzeCB.Name = "FixedPendepthFuzeCB";
             FixedPendepthFuzeCB.Size = new System.Drawing.Size(104, 19);
             FixedPendepthFuzeCB.TabIndex = 22;
@@ -732,7 +738,7 @@ namespace ApsCalcUI
             // FixedTimedFuzeCB
             // 
             FixedTimedFuzeCB.AutoSize = true;
-            FixedTimedFuzeCB.Location = new System.Drawing.Point(4, 259);
+            FixedTimedFuzeCB.Location = new System.Drawing.Point(4, 314);
             FixedTimedFuzeCB.Name = "FixedTimedFuzeCB";
             FixedTimedFuzeCB.Size = new System.Drawing.Size(86, 19);
             FixedTimedFuzeCB.TabIndex = 23;
@@ -744,7 +750,7 @@ namespace ApsCalcUI
             // FixedInertialFuzeCB
             // 
             FixedInertialFuzeCB.AutoSize = true;
-            FixedInertialFuzeCB.Location = new System.Drawing.Point(4, 284);
+            FixedInertialFuzeCB.Location = new System.Drawing.Point(4, 339);
             FixedInertialFuzeCB.Name = "FixedInertialFuzeCB";
             FixedInertialFuzeCB.Size = new System.Drawing.Size(89, 19);
             FixedInertialFuzeCB.TabIndex = 24;
@@ -756,7 +762,7 @@ namespace ApsCalcUI
             // FixedAltitudeFuzeCB
             // 
             FixedAltitudeFuzeCB.AutoSize = true;
-            FixedAltitudeFuzeCB.Location = new System.Drawing.Point(4, 309);
+            FixedAltitudeFuzeCB.Location = new System.Drawing.Point(4, 364);
             FixedAltitudeFuzeCB.Name = "FixedAltitudeFuzeCB";
             FixedAltitudeFuzeCB.Size = new System.Drawing.Size(95, 19);
             FixedAltitudeFuzeCB.TabIndex = 25;
@@ -768,7 +774,7 @@ namespace ApsCalcUI
             // FixedDefuzeCB
             // 
             FixedDefuzeCB.AutoSize = true;
-            FixedDefuzeCB.Location = new System.Drawing.Point(4, 334);
+            FixedDefuzeCB.Location = new System.Drawing.Point(4, 389);
             FixedDefuzeCB.Name = "FixedDefuzeCB";
             FixedDefuzeCB.Size = new System.Drawing.Size(124, 19);
             FixedDefuzeCB.TabIndex = 26;
@@ -917,7 +923,7 @@ namespace ApsCalcUI
             // CommaDecimalCB
             // 
             CommaDecimalCB.AutoSize = true;
-            CommaDecimalCB.Location = new System.Drawing.Point(629, 556);
+            CommaDecimalCB.Location = new System.Drawing.Point(629, 624);
             CommaDecimalCB.Name = "CommaDecimalCB";
             CommaDecimalCB.Size = new System.Drawing.Size(168, 19);
             CommaDecimalCB.TabIndex = 59;
@@ -984,6 +990,28 @@ namespace ApsCalcUI
             ToolTip.SetToolTip(AmmoEjectorCB, "Check to include an Ammo ejector.\r\nAutomatically included if Emergency Defuze is checked.");
             AmmoEjectorCB.UseVisualStyleBackColor = true;
             // 
+            // SmokeBodyFixedUD
+            // 
+            SmokeBodyFixedUD.Location = new System.Drawing.Point(110, 204);
+            SmokeBodyFixedUD.Maximum = new decimal(new int[] { 19, 0, 0, 0 });
+            SmokeBodyFixedUD.Name = "SmokeBodyFixedUD";
+            SmokeBodyFixedUD.Size = new System.Drawing.Size(40, 23);
+            SmokeBodyFixedUD.TabIndex = 27;
+            SmokeBodyFixedUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            ToolTip.SetToolTip(SmokeBodyFixedUD, "Minimum Smoke bodies to include in every shell");
+            SmokeBodyFixedUD.ValueChanged += SmokeBodyFixedUD_ValueChanged;
+            // 
+            // IncendiaryBodyFixedUD
+            // 
+            IncendiaryBodyFixedUD.Location = new System.Drawing.Point(110, 229);
+            IncendiaryBodyFixedUD.Maximum = new decimal(new int[] { 19, 0, 0, 0 });
+            IncendiaryBodyFixedUD.Name = "IncendiaryBodyFixedUD";
+            IncendiaryBodyFixedUD.Size = new System.Drawing.Size(40, 23);
+            IncendiaryBodyFixedUD.TabIndex = 61;
+            IncendiaryBodyFixedUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            ToolTip.SetToolTip(IncendiaryBodyFixedUD, "Minimum Incendiary bodies to include in every shell");
+            IncendiaryBodyFixedUD.ValueChanged += IncendiaryBodyFixedUD_ValueChanged;
+            // 
             // BarrelCountLabel
             // 
             BarrelCountLabel.AutoSize = true;
@@ -1018,7 +1046,7 @@ namespace ApsCalcUI
             HeadModulesCL.FormattingEnabled = true;
             HeadModulesCL.Location = new System.Drawing.Point(13, 163);
             HeadModulesCL.Name = "HeadModulesCL";
-            HeadModulesCL.Size = new System.Drawing.Size(205, 346);
+            HeadModulesCL.Size = new System.Drawing.Size(205, 382);
             HeadModulesCL.TabIndex = 3;
             HeadModulesCL.SelectedIndexChanged += HeadModulesCL_SelectedIndexChanged;
             // 
@@ -1030,7 +1058,7 @@ namespace ApsCalcUI
             BasePanel.Controls.Add(TracerRB);
             BasePanel.Controls.Add(SupercavRB);
             BasePanel.Controls.Add(BaseBleederRB);
-            BasePanel.Location = new System.Drawing.Point(12, 513);
+            BasePanel.Location = new System.Drawing.Point(12, 599);
             BasePanel.Name = "BasePanel";
             BasePanel.Size = new System.Drawing.Size(206, 97);
             BasePanel.TabIndex = 4;
@@ -1080,6 +1108,10 @@ namespace ApsCalcUI
             // 
             // FixedModulesPanel
             // 
+            FixedModulesPanel.Controls.Add(IncendiaryBodyFixedUD);
+            FixedModulesPanel.Controls.Add(SmokeBodyFixedUD);
+            FixedModulesPanel.Controls.Add(IncendiaryBodyFixedLabel);
+            FixedModulesPanel.Controls.Add(SmokeBodyFixedLabel);
             FixedModulesPanel.Controls.Add(FixedDefuzeCB);
             FixedModulesPanel.Controls.Add(FixedAltitudeFuzeCB);
             FixedModulesPanel.Controls.Add(FixedInertialFuzeCB);
@@ -1093,7 +1125,7 @@ namespace ApsCalcUI
             FixedModulesPanel.Controls.Add(EmpBodyFixedUD);
             FixedModulesPanel.Controls.Add(SabotBodyFixedUD);
             FixedModulesPanel.Controls.Add(SolidBodyFixedUD);
-            FixedModulesPanel.Controls.Add(FinLabel);
+            FixedModulesPanel.Controls.Add(FinFixedLabel);
             FixedModulesPanel.Controls.Add(HEBodyFixedLabel);
             FixedModulesPanel.Controls.Add(FragBodyFixedLabel);
             FixedModulesPanel.Controls.Add(FlakBodyFixedLabel);
@@ -1103,17 +1135,35 @@ namespace ApsCalcUI
             FixedModulesPanel.Controls.Add(FixedModulesLabel);
             FixedModulesPanel.Location = new System.Drawing.Point(255, 0);
             FixedModulesPanel.Name = "FixedModulesPanel";
-            FixedModulesPanel.Size = new System.Drawing.Size(154, 361);
+            FixedModulesPanel.Size = new System.Drawing.Size(154, 415);
             FixedModulesPanel.TabIndex = 11;
             // 
-            // FinLabel
+            // IncendiaryBodyFixedLabel
             // 
-            FinLabel.AutoSize = true;
-            FinLabel.Location = new System.Drawing.Point(4, 181);
-            FinLabel.Name = "FinLabel";
-            FinLabel.Size = new System.Drawing.Size(73, 15);
-            FinLabel.TabIndex = 20;
-            FinLabel.Text = "Stabilizer Fin";
+            IncendiaryBodyFixedLabel.AutoSize = true;
+            IncendiaryBodyFixedLabel.Location = new System.Drawing.Point(4, 231);
+            IncendiaryBodyFixedLabel.Name = "IncendiaryBodyFixedLabel";
+            IncendiaryBodyFixedLabel.Size = new System.Drawing.Size(92, 15);
+            IncendiaryBodyFixedLabel.TabIndex = 62;
+            IncendiaryBodyFixedLabel.Text = "Incendiary Body";
+            // 
+            // SmokeBodyFixedLabel
+            // 
+            SmokeBodyFixedLabel.AutoSize = true;
+            SmokeBodyFixedLabel.Location = new System.Drawing.Point(4, 206);
+            SmokeBodyFixedLabel.Name = "SmokeBodyFixedLabel";
+            SmokeBodyFixedLabel.Size = new System.Drawing.Size(73, 15);
+            SmokeBodyFixedLabel.TabIndex = 28;
+            SmokeBodyFixedLabel.Text = "Smoke Body";
+            // 
+            // FinFixedLabel
+            // 
+            FinFixedLabel.AutoSize = true;
+            FinFixedLabel.Location = new System.Drawing.Point(4, 181);
+            FinFixedLabel.Name = "FinFixedLabel";
+            FinFixedLabel.Size = new System.Drawing.Size(73, 15);
+            FinFixedLabel.TabIndex = 20;
+            FinFixedLabel.Text = "Stabilizer Fin";
             // 
             // HEBodyFixedLabel
             // 
@@ -1138,9 +1188,9 @@ namespace ApsCalcUI
             FlakBodyFixedLabel.AutoSize = true;
             FlakBodyFixedLabel.Location = new System.Drawing.Point(4, 106);
             FlakBodyFixedLabel.Name = "FlakBodyFixedLabel";
-            FlakBodyFixedLabel.Size = new System.Drawing.Size(58, 15);
+            FlakBodyFixedLabel.Size = new System.Drawing.Size(110, 15);
             FlakBodyFixedLabel.TabIndex = 12;
-            FlakBodyFixedLabel.Text = "Flak Body";
+            FlakBodyFixedLabel.Text = "Munition Def. Body";
             // 
             // EmpBodyFixedLabel
             // 
@@ -1182,7 +1232,7 @@ namespace ApsCalcUI
             // 
             VariableModulesPanel.Controls.Add(VariableModulesCL);
             VariableModulesPanel.Controls.Add(VariableModulesLabel);
-            VariableModulesPanel.Location = new System.Drawing.Point(255, 353);
+            VariableModulesPanel.Location = new System.Drawing.Point(255, 421);
             VariableModulesPanel.Name = "VariableModulesPanel";
             VariableModulesPanel.Size = new System.Drawing.Size(154, 187);
             VariableModulesPanel.TabIndex = 12;
@@ -1191,9 +1241,9 @@ namespace ApsCalcUI
             // 
             VariableModulesCL.CheckOnClick = true;
             VariableModulesCL.FormattingEnabled = true;
-            VariableModulesCL.Location = new System.Drawing.Point(3, 34);
+            VariableModulesCL.Location = new System.Drawing.Point(3, 16);
             VariableModulesCL.Name = "VariableModulesCL";
-            VariableModulesCL.Size = new System.Drawing.Size(147, 148);
+            VariableModulesCL.Size = new System.Drawing.Size(147, 166);
             VariableModulesCL.TabIndex = 14;
             // 
             // MaxGPLabel
@@ -1365,7 +1415,7 @@ namespace ApsCalcUI
             // TestsInQueueLabel
             // 
             TestsInQueueLabel.AutoSize = true;
-            TestsInQueueLabel.Location = new System.Drawing.Point(678, 579);
+            TestsInQueueLabel.Location = new System.Drawing.Point(678, 647);
             TestsInQueueLabel.Name = "TestsInQueueLabel";
             TestsInQueueLabel.Size = new System.Drawing.Size(95, 15);
             TestsInQueueLabel.TabIndex = 35;
@@ -1404,7 +1454,7 @@ namespace ApsCalcUI
             // 
             DisruptorPanel.Controls.Add(DisruptorUD);
             DisruptorPanel.Controls.Add(DisruptorLabel);
-            DisruptorPanel.Location = new System.Drawing.Point(436, 527);
+            DisruptorPanel.Location = new System.Drawing.Point(436, 595);
             DisruptorPanel.Name = "DisruptorPanel";
             DisruptorPanel.Size = new System.Drawing.Size(169, 69);
             DisruptorPanel.TabIndex = 48;
@@ -1483,7 +1533,7 @@ namespace ApsCalcUI
             RofRpmPanel.Controls.Add(RofRpmLabel);
             RofRpmPanel.Controls.Add(RofRpmUD);
             RofRpmPanel.Enabled = false;
-            RofRpmPanel.Location = new System.Drawing.Point(41, 616);
+            RofRpmPanel.Location = new System.Drawing.Point(41, 691);
             RofRpmPanel.Name = "RofRpmPanel";
             RofRpmPanel.Size = new System.Drawing.Size(154, 40);
             RofRpmPanel.TabIndex = 58;
@@ -1500,7 +1550,7 @@ namespace ApsCalcUI
             ClipCountPanel.Controls.Add(ClipCountLabel);
             ClipCountPanel.Controls.Add(RegularClipCountLabel);
             ClipCountPanel.Controls.Add(BeltfedClipCountLabel);
-            ClipCountPanel.Location = new System.Drawing.Point(233, 544);
+            ClipCountPanel.Location = new System.Drawing.Point(233, 612);
             ClipCountPanel.Name = "ClipCountPanel";
             ClipCountPanel.Size = new System.Drawing.Size(202, 107);
             ClipCountPanel.TabIndex = 60;
@@ -1546,7 +1596,7 @@ namespace ApsCalcUI
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoScroll = true;
-            ClientSize = new System.Drawing.Size(800, 656);
+            ClientSize = new System.Drawing.Size(800, 731);
             Controls.Add(ClipCountPanel);
             Controls.Add(CommaDecimalCB);
             Controls.Add(RofRpmPanel);
@@ -1641,6 +1691,8 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)BeltfedInputsPerLoaderUD).EndInit();
             ((System.ComponentModel.ISupportInitialize)RegularClipsPerLoaderUD).EndInit();
             ((System.ComponentModel.ISupportInitialize)RegularInputsPerLoaderUD).EndInit();
+            ((System.ComponentModel.ISupportInitialize)SmokeBodyFixedUD).EndInit();
+            ((System.ComponentModel.ISupportInitialize)IncendiaryBodyFixedUD).EndInit();
             BasePanel.ResumeLayout(false);
             BasePanel.PerformLayout();
             FixedModulesPanel.ResumeLayout(false);
@@ -1682,7 +1734,7 @@ namespace ApsCalcUI
         private System.Windows.Forms.Panel FixedModulesPanel;
         private System.Windows.Forms.Label SolidBodyFixedLabel;
         private System.Windows.Forms.Label FixedModulesLabel;
-        private System.Windows.Forms.Label FinLabel;
+        private System.Windows.Forms.Label FinFixedLabel;
         private System.Windows.Forms.Label HEBodyFixedLabel;
         private System.Windows.Forms.Label FragBodyFixedLabel;
         private System.Windows.Forms.Label FlakBodyFixedLabel;
@@ -1792,6 +1844,10 @@ namespace ApsCalcUI
         private System.Windows.Forms.Label RegularClipCountLabel;
         private System.Windows.Forms.Label BeltfedClipCountLabel;
         private System.Windows.Forms.CheckBox AmmoEjectorCB;
+        private System.Windows.Forms.NumericUpDown SmokeBodyFixedUD;
+        private System.Windows.Forms.Label SmokeBodyFixedLabel;
+        private System.Windows.Forms.NumericUpDown IncendiaryBodyFixedUD;
+        private System.Windows.Forms.Label IncendiaryBodyFixedLabel;
     }
 }
 

@@ -76,10 +76,11 @@ namespace ApsCalcUI
             [
                 new DamageTypeItem(DamageType.Kinetic, "Kinetic"),
                 new DamageTypeItem(DamageType.EMP, "EMP"),
-                new DamageTypeItem(DamageType.Flak, "Flak"),
+                new DamageTypeItem(DamageType.MunitionDefense, "Munition defense"),
                 new DamageTypeItem(DamageType.Frag, "Frag"),
                 new DamageTypeItem(DamageType.HE, "HE" ),
                 new DamageTypeItem(DamageType.HEAT, "HEAT"),
+                new DamageTypeItem(DamageType.Incendiary, "Incendiary"),
                 new DamageTypeItem(DamageType.Disruptor, "Disruptor"),
                 new DamageTypeItem(DamageType.Smoke, "Smoke")
             ];
@@ -150,47 +151,14 @@ namespace ApsCalcUI
             decimal maxCasingCount;
 
             SolidBodyFixedUD.Maximum = maxFixedCount;
-            if (SolidBodyFixedUD.Value > SolidBodyFixedUD.Maximum)
-            {
-                SolidBodyFixedUD.Value = SolidBodyFixedUD.Maximum;
-            }
-
             SabotBodyFixedUD.Maximum = SolidBodyFixedUD.Maximum - SolidBodyFixedUD.Value;
-            if (SabotBodyFixedUD.Value > SabotBodyFixedUD.Maximum)
-            {
-                SabotBodyFixedUD.Value = SabotBodyFixedUD.Maximum;
-            }
-
             EmpBodyFixedUD.Maximum = SabotBodyFixedUD.Maximum - SabotBodyFixedUD.Value;
-            if (EmpBodyFixedUD.Value > EmpBodyFixedUD.Maximum)
-            {
-                EmpBodyFixedUD.Value = EmpBodyFixedUD.Maximum;
-            }
-
             FlakBodyFixedUD.Maximum = EmpBodyFixedUD.Maximum - EmpBodyFixedUD.Value;
-            if (FlakBodyFixedUD.Value > FlakBodyFixedUD.Maximum)
-            {
-                FlakBodyFixedUD.Value = FlakBodyFixedUD.Maximum;
-            }
-
             FragBodyFixedUD.Maximum = FlakBodyFixedUD.Maximum - FlakBodyFixedUD.Value;
-            if (FragBodyFixedUD.Value > FragBodyFixedUD.Maximum)
-            {
-                FragBodyFixedUD.Value = FragBodyFixedUD.Maximum;
-            }
-
             HEBodyFixedUD.Maximum = FragBodyFixedUD.Maximum - FragBodyFixedUD.Value;
-            if (HEBodyFixedUD.Value > HEBodyFixedUD.Maximum)
-            {
-                HEBodyFixedUD.Value = HEBodyFixedUD.Maximum;
-            }
-
             FinFixedUD.Maximum = HEBodyFixedUD.Maximum - HEBodyFixedUD.Value;
-            if (FinFixedUD.Value > FinFixedUD.Maximum)
-            {
-                FinFixedUD.Value = FinFixedUD.Maximum;
-            }
-
+            SmokeBodyFixedUD.Maximum = FinFixedUD.Maximum - FinFixedUD.Value;
+            IncendiaryBodyFixedUD.Maximum = SmokeBodyFixedUD.Maximum - SmokeBodyFixedUD.Value;
 
             maxCasingCount = HEBodyFixedUD.Maximum - HEBodyFixedUD.Value;
             // Check whether max GP casing count is current set to maximum possible value
@@ -219,7 +187,7 @@ namespace ApsCalcUI
             minLength += (float)SolidBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.SolidBody.MaxLength);
             minLength += (float)SabotBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.SabotBody.MaxLength);
             minLength += (float)EmpBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.EmpBody.MaxLength);
-            minLength += (float)FlakBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.FlakBody.MaxLength);
+            minLength += (float)FlakBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.MunitionDefenseBody.MaxLength);
             minLength += (float)FragBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.FragBody.MaxLength);
             minLength += (float)HEBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.HEBody.MaxLength);
             minLength += (float)FinFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.FinBody.MaxLength);
@@ -334,6 +302,16 @@ namespace ApsCalcUI
         }
 
         private void FinFixedUD_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateModuleCounts();
+        }
+
+        private void SmokeBodyFixedUD_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateModuleCounts();
+        }
+
+        private void IncendiaryBodyFixedUD_ValueChanged(object sender, EventArgs e)
         {
             UpdateModuleCounts();
         }
@@ -747,6 +725,8 @@ namespace ApsCalcUI
                     (float)FragBodyFixedUD.Value,
                     (float)HEBodyFixedUD.Value,
                     (float)FinFixedUD.Value,
+                    (float)SmokeBodyFixedUD.Value,
+                    (float)IncendiaryBodyFixedUD.Value,
                     pendepthFuzeCount,
                     timedFuzeCount,
                     inertialFuzeCount,
@@ -768,13 +748,15 @@ namespace ApsCalcUI
                 minModuleCount += (float)fixedModuleCounts.Sum();
                 testParameters.MinModulecount = minModuleCount;
 
+                // Add all selected variable module indicies to list
                 List<int> varModIndices = [];
                 foreach (VariableModuleItem varMod in VariableModulesCL.CheckedItems)
                 {
                     varModIndices.Add(varMod.Index);
                 }
-                // Array must have 9 items. Duplicates of item 0 will be ignored by ShellCalc
-                while (varModIndices.Count < 9)
+                // Pad list length to equal number of possible variable mod indices.
+                // Duplicates of item 0 will be ignored by ShellCalc, so padding is done by copying first index in list
+                while (varModIndices.Count < Module.GetVariableModuleCount())
                 {
                     varModIndices.Add(varModIndices[0]);
                 }

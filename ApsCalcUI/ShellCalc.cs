@@ -11,18 +11,10 @@ using System.Runtime.InteropServices.JavaScript;
 
 namespace ApsCalcUI
 {
-    public struct ModuleCount
+    public struct ModuleConfig
     {
         public int HeadIndex;
-        public float Var0Count;
-        public float Var1Count;
-        public float Var2Count;
-        public float Var3Count;
-        public float Var4Count;
-        public float Var5Count;
-        public float Var6Count;
-        public float Var7Count;
-        public float Var8Count;
+        public float[] BodyModCounts;
         public float GPCount;
         public float RGCount;
     }
@@ -32,11 +24,12 @@ namespace ApsCalcUI
     {
         Kinetic,
         EMP,
-        Flak,
         Frag,
         HE,
         HEAT,
+        Incendiary,
         Disruptor,
+        MunitionDefense,
         Smoke
     }
 
@@ -55,7 +48,7 @@ namespace ApsCalcUI
         /// </summary>
         /// <param name="barrelCount">Number of barrels</param>
         /// <param name="gauge">Desired gauge in mm</param>
-        /// <param name="gaugeCoefficient">(gauge / 500mm)^1.8; used for many calculations</param>
+        /// <param name="gaugeMultiplier">(gauge / 500mm)^1.8; used for many calculations</param>
         /// <param name="headList">List of module indices for every module to be used as head</param>
         /// <param name="baseModule">The special base module, if any</param>
         /// <param name="fixedModuleCounts">An array of integers representing number of shells at that index in module list</param>
@@ -102,7 +95,7 @@ namespace ApsCalcUI
         public ShellCalc(
             int barrelCount,
             float gauge,
-            float gaugeCoefficient,
+            float gaugeMultiplier,
             List<int> headList,
             Module baseModule,
             float[] fixedModuleCounts,
@@ -150,7 +143,7 @@ namespace ApsCalcUI
         {
             BarrelCount = barrelCount;
             Gauge = gauge;
-            GaugeCoefficient = gaugeCoefficient;
+            GaugeMultiplier = gaugeMultiplier;
             HeadList = headList;
             BaseModule = baseModule;
             FixedModuleCounts = fixedModuleCounts;
@@ -216,7 +209,7 @@ namespace ApsCalcUI
 
         public int BarrelCount { get; }
         public float Gauge { get; }
-        public float GaugeCoefficient { get; }
+        public float GaugeMultiplier { get; }
         public List<int> HeadList { get; }
         public Module BaseModule { get; }
         public float[] FixedModuleCounts { get; }
@@ -299,7 +292,7 @@ namespace ApsCalcUI
         /// GenerateModuleCounts() to ignore unused indices to avoid generating duplicate shell configurations.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<ModuleCount> GenerateModuleCounts()
+        public IEnumerable<ModuleConfig> GenerateModuleCounts()
         {
             float var0Max = 20f - FixedModuleTotal;
             float var1Max;
@@ -308,6 +301,8 @@ namespace ApsCalcUI
             float var4Max;
             float var5Max;
             float var6Max;
+            float var7Max;
+            float var8Max;
             float gpMax;
             float rgMax;
 
@@ -389,48 +384,102 @@ namespace ApsCalcUI
 
                                         for (float var6Count = 0; var6Count <= var6Max; var6Count++)
                                         {
-                                            gpMax = MathF.Min(
-                                                20f 
-                                                - FixedModuleTotal
-                                                - var0Count
-                                                - var1Count
-                                                - var2Count
-                                                - var3Count
-                                                - var4Count
-                                                - var5Count
-                                                - var6Count
-                                                , MaxGP);
-
-                                            for (float gpCount = 0; gpCount <= gpMax; gpCount += 0.01f)
+                                            if (VariableModuleIndices[7] == VariableModuleIndices[0])
                                             {
-                                                rgMax = MathF.Min(
-                                                    20f 
-                                                    - FixedModuleTotal 
-                                                    - var0Count 
-                                                    - var1Count 
+                                                var7Max = 0; // No need to add duplicates
+                                            }
+                                            else
+                                            {
+                                                var7Max =
+                                                    20f
+                                                    - FixedModuleTotal
+                                                    - var0Count
+                                                    - var1Count
                                                     - var2Count
                                                     - var3Count
                                                     - var4Count
                                                     - var5Count
-                                                    - var6Count
-                                                    - gpCount
-                                                    , MaxRGInput);
+                                                    - var6Count;
+                                            }
 
-                                                for (float rgCount = 0; rgCount <= rgMax; rgCount++)
+                                            for (float var7Count = 0; var7Count <= var7Max; var7Count++)
+                                            {
+                                                if (VariableModuleIndices[8] == VariableModuleIndices[0])
                                                 {
-                                                    yield return new ModuleCount
+                                                    var8Max = 0; // No need to add duplicates
+                                                }
+                                                else
+                                                {
+                                                    var8Max =
+                                                        20f
+                                                        - FixedModuleTotal
+                                                        - var0Count
+                                                        - var1Count
+                                                        - var2Count
+                                                        - var3Count
+                                                        - var4Count
+                                                        - var5Count
+                                                        - var6Count
+                                                        - var7Count;
+                                                }
+
+                                                for (float var8Count = 0; var8Count <= var8Max; var8Count++)
+                                                {
+                                                    gpMax = MathF.Min(
+                                                        20f
+                                                        - FixedModuleTotal
+                                                        - var0Count
+                                                        - var1Count
+                                                        - var2Count
+                                                        - var3Count
+                                                        - var4Count
+                                                        - var5Count
+                                                        - var6Count
+                                                        - var7Count
+                                                        - var8Count
+                                                        , MaxGP);
+
+                                                    for (float gpCount = 0; gpCount <= gpMax; gpCount += 0.01f)
                                                     {
-                                                        HeadIndex = index,
-                                                        Var0Count = var0Count,
-                                                        Var1Count = var1Count,
-                                                        Var2Count = var2Count,
-                                                        Var3Count = var3Count,
-                                                        Var4Count = var4Count,
-                                                        Var5Count = var5Count,
-                                                        Var6Count = var6Count,
-                                                        GPCount = gpCount,
-                                                        RGCount = rgCount
-                                                    };
+                                                        rgMax = MathF.Min(
+                                                            20f
+                                                            - FixedModuleTotal
+                                                            - var0Count
+                                                            - var1Count
+                                                            - var2Count
+                                                            - var3Count
+                                                            - var4Count
+                                                            - var5Count
+                                                            - var6Count
+                                                            - var7Count
+                                                            - var8Count
+                                                            - gpCount
+                                                            , MaxRGInput);
+
+                                                        for (float rgCount = 0; rgCount <= rgMax; rgCount++)
+                                                        {
+                                                            // Start with all-zero mod count array
+                                                            float[] modCounts = new float[Module.GetBodyModuleCount()];
+                                                            // Add variable counts
+                                                            modCounts[VariableModuleIndices[0]] = var0Count;
+                                                            modCounts[VariableModuleIndices[1]] = var1Count;
+                                                            modCounts[VariableModuleIndices[2]] = var2Count;
+                                                            modCounts[VariableModuleIndices[3]] = var3Count;
+                                                            modCounts[VariableModuleIndices[4]] = var4Count;
+                                                            modCounts[VariableModuleIndices[5]] = var5Count;
+                                                            modCounts[VariableModuleIndices[6]] = var6Count;
+                                                            modCounts[VariableModuleIndices[7]] = var7Count;
+                                                            modCounts[VariableModuleIndices[8]] = var8Count;
+                                                            yield return new ModuleConfig
+                                                            {
+                                                                HeadIndex = index,
+                                                                BodyModCounts = modCounts,
+                                                                GPCount = gpCount,
+                                                                RGCount = rgCount
+                                                            };
+                                                        }
+                                                    }
+
                                                 }
                                             }
                                         }
@@ -451,35 +500,33 @@ namespace ApsCalcUI
             // Set up target armor scheme for testing
             TargetArmorScheme.CalculateLayerAC();
 
-            foreach (ModuleCount counts in GenerateModuleCounts())
+            foreach (ModuleConfig modConfig in GenerateModuleCounts())
             {
                 Shell shellUnderTesting = new(
                     BarrelCount,
                     Gauge,
-                    GaugeCoefficient,
+                    GaugeMultiplier,
                     false,
-                    Module.AllModules[counts.HeadIndex],
+                    Module.AllModules[modConfig.HeadIndex],
                     BaseModule,
                     RegularClipsPerLoader,
                     RegularInputsPerLoader,
                     BeltfedClipsPerLoader,
                     BeltfedInputsPerLoader,
                     UsesAmmoEjector,
-                    counts.GPCount,
-                    counts.RGCount,
+                    modConfig.GPCount,
+                    modConfig.RGCount,
                     RateOfFireRpm,
                     GunUsesRecoilAbsorbers,
                     FiringPieceIsDif
                     );
                 FixedModuleCounts.CopyTo(shellUnderTesting.BodyModuleCounts, 0);
 
-                shellUnderTesting.BodyModuleCounts[VariableModuleIndices[0]] += counts.Var0Count;
-                shellUnderTesting.BodyModuleCounts[VariableModuleIndices[1]] += counts.Var1Count;
-                shellUnderTesting.BodyModuleCounts[VariableModuleIndices[2]] += counts.Var2Count;
-                shellUnderTesting.BodyModuleCounts[VariableModuleIndices[3]] += counts.Var3Count;
-                shellUnderTesting.BodyModuleCounts[VariableModuleIndices[4]] += counts.Var4Count;
-                shellUnderTesting.BodyModuleCounts[VariableModuleIndices[5]] += counts.Var5Count;
-                shellUnderTesting.BodyModuleCounts[VariableModuleIndices[6]] += counts.Var6Count;
+                // Add variable modules
+                for (int i = 0; i <  shellUnderTesting.BodyModuleCounts.Length; i++)
+                {
+                    shellUnderTesting.BodyModuleCounts[i] += modConfig.BodyModCounts[i];
+                }
 
                 shellUnderTesting.CalculateLengths();
                 shellUnderTesting.CalculateRecoil();
@@ -881,30 +928,28 @@ namespace ApsCalcUI
                                 Shell shellUnderTestingBelt = new(
                                     BarrelCount,
                                     Gauge,
-                                    GaugeCoefficient,
+                                    GaugeMultiplier,
                                     true,
-                                    Module.AllModules[counts.HeadIndex],
+                                    Module.AllModules[modConfig.HeadIndex],
                                     BaseModule,
                                     RegularClipsPerLoader,
                                     RegularInputsPerLoader,
                                     BeltfedClipsPerLoader,
                                     BeltfedInputsPerLoader,
                                     UsesAmmoEjector,
-                                    counts.GPCount,
-                                    counts.RGCount,
+                                    modConfig.GPCount,
+                                    modConfig.RGCount,
                                     RateOfFireRpm,
                                     GunUsesRecoilAbsorbers,
                                     FiringPieceIsDif);
                                 FixedModuleCounts.CopyTo(shellUnderTestingBelt.BodyModuleCounts, 0);
 
 
-                                shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[0]] += counts.Var0Count;
-                                shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[1]] += counts.Var1Count;
-                                shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[2]] += counts.Var2Count;
-                                shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[3]] += counts.Var3Count;
-                                shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[4]] += counts.Var4Count;
-                                shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[5]] += counts.Var5Count;
-                                shellUnderTestingBelt.BodyModuleCounts[VariableModuleIndices[6]] += counts.Var6Count;
+                                // Add variable modules
+                                for (int i = 0; i < shellUnderTestingBelt.BodyModuleCounts.Length; i++)
+                                {
+                                    shellUnderTestingBelt.BodyModuleCounts[i] += modConfig.BodyModCounts[i];
+                                }
 
                                 // Beltfed loaders cannot use ejectors
                                 int modIndex = 0;
@@ -1458,7 +1503,7 @@ namespace ApsCalcUI
             {
                 { DamageType.Kinetic, true },
                 { DamageType.EMP, false },
-                { DamageType.Flak, false },
+                { DamageType.MunitionDefense, false },
                 { DamageType.Frag, false },
                 { DamageType.HE, false },
                 { DamageType.HEAT, false },
@@ -1477,9 +1522,9 @@ namespace ApsCalcUI
                     {
                         dtToShow[DamageType.EMP] = true;
                     }
-                    else if (Module.AllModules[index] == Module.FlakBody)
+                    else if (Module.AllModules[index] == Module.MunitionDefenseBody)
                     {
-                        dtToShow[DamageType.Flak] = true;
+                        dtToShow[DamageType.MunitionDefense] = true;
                     }
                     else if (Module.AllModules[index] == Module.FragBody)
                     {
@@ -1502,9 +1547,9 @@ namespace ApsCalcUI
                 {
                     dtToShow[DamageType.EMP] = true;
                 }
-                else if (Module.AllModules[index] == Module.FlakHead || Module.AllModules[index] == Module.FlakBody)
+                else if (Module.AllModules[index] == Module.MunitionDefenseHead || Module.AllModules[index] == Module.MunitionDefenseBody)
                 {
-                    dtToShow[DamageType.Flak] = true;
+                    dtToShow[DamageType.MunitionDefense] = true;
                 }
                 else if (Module.AllModules[index] == Module.FragHead || Module.AllModules[index] == Module.FragBody)
                 {
@@ -1742,7 +1787,7 @@ namespace ApsCalcUI
                     topShellPair.Value.CalculateRequiredBarrelLengths(MaxInaccuracy);
                     if (dtToShow[DamageType.Disruptor] 
                         || dtToShow[DamageType.EMP]
-                        || dtToShow[DamageType.Flak] 
+                        || dtToShow[DamageType.MunitionDefense] 
                         || dtToShow[DamageType.Frag] 
                         || dtToShow[DamageType.HE]
                         || dtToShow[DamageType.HEAT])
@@ -2008,7 +2053,7 @@ namespace ApsCalcUI
                             }
                             writer.WriteLine(string.Join(ColumnDelimiter, damagePerFragList));
                         }
-                        else if (dt == DamageType.Flak)
+                        else if (dt == DamageType.MunitionDefense)
                         {
                             /*
                             List<string> rawFlakDamageList = new()
@@ -2158,15 +2203,19 @@ namespace ApsCalcUI
                     }
                     writer.WriteLine(string.Join(ColumnDelimiter, engineVolumeList));
 
-                    List<string> fuelAccessVolumeList =
-                    [
-                        "Fuel access volume"
-                    ];
-                    foreach (Shell topShell in TopDpsShells.Values)
+                    if (EngineUsesFuel)
                     {
-                        fuelAccessVolumeList.Add(topShell.FuelAccessVolume.ToString());
+                        List<string> fuelAccessVolumeList =
+                        [
+                            "Fuel access volume"
+                        ];
+                        foreach (Shell topShell in TopDpsShells.Values)
+                        {
+                            fuelAccessVolumeList.Add(topShell.FuelAccessVolume.ToString());
+                        }
+                        writer.WriteLine(string.Join(ColumnDelimiter, fuelAccessVolumeList));
                     }
-                    writer.WriteLine(string.Join(ColumnDelimiter, fuelAccessVolumeList));
+
 
                     List<string> fuelStorageVolumeList =
                     [
@@ -2300,15 +2349,18 @@ namespace ApsCalcUI
                     }
                     writer.WriteLine(string.Join(ColumnDelimiter, engineCostList));
 
-                    List<string> fuelAccessCostList =
-                    [
-                        "Fuel access cost"
-                    ];
-                    foreach (Shell topShell in TopDpsShells.Values)
+                    if (EngineUsesFuel)
                     {
-                        fuelAccessCostList.Add(topShell.FuelAccessCost.ToString());
+                        List<string> fuelAccessCostList =
+                        [
+                            "Fuel access cost"
+                        ];
+                        foreach (Shell topShell in TopDpsShells.Values)
+                        {
+                            fuelAccessCostList.Add(topShell.FuelAccessCost.ToString());
+                        }
+                        writer.WriteLine(string.Join(ColumnDelimiter, fuelAccessCostList));
                     }
-                    writer.WriteLine(string.Join(ColumnDelimiter, fuelAccessCostList));
 
                     List<string> fuelStorageCostList =
                     [

@@ -8,7 +8,7 @@ namespace ApsCalcUI
     public class Shell(
         int barrelCount,
         float gauge,
-        float gaugeCoefficient,
+        float gaugeMultiplier,
         bool isBelt,
         Module headModule,
         Module baseModule,
@@ -26,12 +26,12 @@ namespace ApsCalcUI
     {
         private const float ApsModifier = 23; // Used as global multiplier in damage calculations
         public float Gauge { get; set; } = gauge;
-        public float GaugeCoefficient { get; set; } = gaugeCoefficient;
+        public float GaugeMultiplier { get; set; } = gaugeMultiplier;
 
         public bool IsBelt = isBelt;
 
         // Keep counts of body modules.
-        public float[] BodyModuleCounts { get; set; } = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        public float[] BodyModuleCounts { get; set; } = new float[Module.GetBodyModuleCount()];
         public float ModuleCountTotal { get; set; }
 
 
@@ -102,16 +102,20 @@ namespace ApsCalcUI
         public float RawHE { get; set; }
         public float HEExplosionRadius { get; set; }
         public float FlakExplosionRadius { get; set; }
+        public float Fuel { get; set; }
+        public float Intensity { get; set; }
+        public float Oxidizer { get; set; }
 
         public Dictionary<DamageType, float> DamageDict = new()
         {
             { DamageType.Kinetic, 0 },
             { DamageType.EMP, 0 },
-            { DamageType.Flak, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
             { DamageType.HEAT, 0 },
+            { DamageType.Incendiary, 0 },
             { DamageType.Disruptor, 0 },
+            { DamageType.MunitionDefense, 0 },
             { DamageType.Smoke, 0 }
         };
 
@@ -119,11 +123,12 @@ namespace ApsCalcUI
         {
             { DamageType.Kinetic, 0 },
             { DamageType.EMP, 0 },
-            { DamageType.Flak, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
             { DamageType.HEAT, 0 },
+            { DamageType.Incendiary, 0 },
             { DamageType.Disruptor, 0 },
+            { DamageType.MunitionDefense, 0 },
             { DamageType.Smoke, 0 }
         };
 
@@ -131,11 +136,12 @@ namespace ApsCalcUI
         {
             { DamageType.Kinetic, 0 },
             { DamageType.EMP, 0 },
-            { DamageType.Flak, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
             { DamageType.HEAT, 0 },
+            { DamageType.Incendiary, 0 },
             { DamageType.Disruptor, 0 },
+            { DamageType.MunitionDefense, 0 },
             { DamageType.Smoke, 0 }
         };
 
@@ -143,14 +149,14 @@ namespace ApsCalcUI
         {
             { DamageType.Kinetic, 0 },
             { DamageType.EMP, 0 },
-            { DamageType.Flak, 0 },
             { DamageType.Frag, 0 },
             { DamageType.HE, 0 },
             { DamageType.HEAT, 0 },
+            { DamageType.Incendiary, 0 },
             { DamageType.Disruptor, 0 },
+            { DamageType.MunitionDefense, 0 },
             { DamageType.Smoke, 0 }
         };
-
 
         // Volume
         public float LoaderVolume { get; set; }
@@ -413,7 +419,7 @@ namespace ApsCalcUI
 
             if (!GunUsesRecoilAbsorbers)
             {
-                OverallInaccuracyModifier *= 1f + 0.6f * TotalRecoil / 12500f / GaugeCoefficient;
+                OverallInaccuracyModifier *= 1f + 0.6f * TotalRecoil / 12500f / GaugeMultiplier;
             }
         }
 
@@ -427,7 +433,7 @@ namespace ApsCalcUI
                 (MathF.Pow(
                     MathF.Pow(ProjectileLength / 1000f, 3f / 4f) / maxBarrelLengthInM * 4f, 1f / 2.5f)
                 / 0.3f * desiredInaccuracy / OverallInaccuracyModifier - 1f)
-                / 0.6f * 12500f * GaugeCoefficient - GPRecoil;
+                / 0.6f * 12500f * GaugeMultiplier - GPRecoil;
 
             return maxDraw;
         }
@@ -439,7 +445,8 @@ namespace ApsCalcUI
         public float CalculateMaxProjectileLengthForInaccuracy(float maxBarrelLengthInM, float desiredInaccuracy)
         {
             CalculateInaccuracyModifier();
-            float maxProjectileLength = MathF.Pow(maxBarrelLengthInM / 4f / MathF.Pow(0.3f / desiredInaccuracy * OverallInaccuracyModifier, 2.5f), 4f / 3f);
+            float maxProjectileLength =
+                MathF.Pow(maxBarrelLengthInM / 4f / MathF.Pow(0.3f / desiredInaccuracy * OverallInaccuracyModifier, 2.5f), 4f / 3f);
 
             return maxProjectileLength * 1000f;
         }
@@ -451,7 +458,10 @@ namespace ApsCalcUI
         public void CalculateRequiredBarrelLengths(float desiredInaccuracy)
         {
             CalculateInaccuracyModifier();
-            BarrelLengthForInaccuracy = 4 * MathF.Pow(ProjectileLength / 1000f, 0.75f) * MathF.Pow(0.3f / desiredInaccuracy * OverallInaccuracyModifier, 2.5f);
+            BarrelLengthForInaccuracy =
+                4
+                * MathF.Pow(ProjectileLength / 1000f, 0.75f)
+                * MathF.Pow(0.3f / desiredInaccuracy * OverallInaccuracyModifier, 2.5f);
 
             BarrelLengthForPropellant = 2.2f * GPCasingCount * MathF.Pow(Gauge / 1000f, 0.55f);
         }
@@ -462,7 +472,7 @@ namespace ApsCalcUI
         /// </summary>
         public void CalculateMaxDraw()
         {
-            MaxDraw = 12500f * GaugeCoefficient * (EffectiveProjectileModuleCount + (0.5f * RGCasingCount));
+            MaxDraw = 12500f * GaugeMultiplier * (EffectiveProjectileModuleCount + (0.5f * RGCasingCount));
         }
 
 
@@ -471,7 +481,7 @@ namespace ApsCalcUI
         /// </summary>
         public void CalculateRecoil()
         {
-            GPRecoil = GaugeCoefficient * GPCasingCount * 2500f;
+            GPRecoil = GaugeMultiplier * GPCasingCount * 2500f;
             TotalRecoil = GPRecoil + RailDraw;
         }
 
@@ -481,7 +491,7 @@ namespace ApsCalcUI
         /// </summary>
         public void CalculateVelocity()
         {
-            Velocity = MathF.Sqrt(TotalRecoil * 85f * Gauge / (GaugeCoefficient * ProjectileLength)) * OverallVelocityModifier;
+            Velocity = MathF.Sqrt(TotalRecoil * 85f * Gauge / (GaugeMultiplier * ProjectileLength)) * OverallVelocityModifier;
         }
 
 
@@ -513,7 +523,7 @@ namespace ApsCalcUI
 
             // Calculate draw required for either range or velocity
             float minDrawVelocity = MathF.Pow(minVelocity / OverallVelocityModifier, 2)
-                * (GaugeCoefficient * ProjectileLength)
+                * (GaugeMultiplier * ProjectileLength)
                 / (Gauge * 85f)
                 - GPRecoil;
 
@@ -584,7 +594,7 @@ namespace ApsCalcUI
         {
             CooldownTime =
                 3.75f
-                * GaugeCoefficient
+                * GaugeMultiplier
                 / MathF.Pow(Gauge * Gauge * Gauge / 125000000f, 0.15f)
                 * 17.5f
                 * MathF.Pow(GPCasingCount, 0.35f)
@@ -633,7 +643,7 @@ namespace ApsCalcUI
             {
                 CalculateEmpDamage();
             }
-            else if (dt == DamageType.Flak)
+            else if (dt == DamageType.MunitionDefense)
             {
                 CalculateFlakDamage();
             }
@@ -649,6 +659,10 @@ namespace ApsCalcUI
             {
                 CalculateHeatDamage();
             }
+            else if (dt == DamageType.Incendiary)
+            {
+                CalculateIncendiaryDamage();
+            }
             else if (dt == DamageType.Disruptor)
             {
                 CalculateShieldReduction();
@@ -656,6 +670,10 @@ namespace ApsCalcUI
             else if (dt == DamageType.Smoke)
             {
                 CalculateSmokeStrength();
+            }
+            else if (dt == DamageType.Incendiary)
+            {
+                CalculateIncendiaryDamage();
             }
         }
 
@@ -670,7 +688,7 @@ namespace ApsCalcUI
             if (HeadModule == Module.HollowPoint)
             {
                 RawKD =
-                    GaugeCoefficient
+                    GaugeMultiplier
                     * EffectiveProjectileModuleCount
                     * Velocity
                     * OverallKineticDamageModifier
@@ -681,7 +699,7 @@ namespace ApsCalcUI
             {
                 RawKD =
                     MathF.Pow(500 / MathF.Max(Gauge, 100f), 0.15f)
-                    * GaugeCoefficient
+                    * GaugeMultiplier
                     * EffectiveProjectileModuleCount
                     * Velocity
                     * OverallKineticDamageModifier
@@ -720,7 +738,7 @@ namespace ApsCalcUI
             {
                 empBodies++;
             }
-            DamageDict[DamageType.EMP] = GaugeCoefficient * empBodies * OverallChemModifier * 75f * ApsModifier;
+            DamageDict[DamageType.EMP] = GaugeMultiplier * empBodies * OverallChemModifier * 75f * ApsModifier;
         }
 
         /// <summary>
@@ -732,7 +750,7 @@ namespace ApsCalcUI
             int flakIndex = int.MaxValue;
             for (int i = 0; i < Module.AllModules.Length; i++)
             {
-                if (Module.AllModules[i] == Module.FlakBody)
+                if (Module.AllModules[i] == Module.MunitionDefenseBody)
                 {
                     flakIndex = i;
                     break;
@@ -741,12 +759,12 @@ namespace ApsCalcUI
 
             float flaKBodies = BodyModuleCounts[flakIndex];
 
-            if (HeadModule == Module.FlakHead || HeadModule == Module.FlakBody)
+            if (HeadModule == Module.MunitionDefenseHead || HeadModule == Module.MunitionDefenseBody)
             {
                 flaKBodies++;
             }
-            DamageDict[DamageType.Flak] = 3000f * MathF.Pow(GaugeCoefficient * flaKBodies * 108f * ApsModifier / 3000f * OverallChemModifier, 0.9f);
-            FlakExplosionRadius = MathF.Min(MathF.Pow(DamageDict[DamageType.Flak], 0.3f) * 3f, 30f);
+            DamageDict[DamageType.MunitionDefense] = 3000f * MathF.Pow(GaugeMultiplier * flaKBodies / 31.25f * ApsModifier * OverallChemModifier, 0.9f);
+            FlakExplosionRadius = MathF.Min(MathF.Pow(DamageDict[DamageType.MunitionDefense], 0.3f) * 3f, 30f);
             /* 
              * Multiply by volume to approximate applied damage; divide by 1000 to make result more manageable
             float sphereVolume = MathF.Pow(FlakExplosionRadius, 3) * MathF.PI * 4f / 3f;
@@ -777,7 +795,7 @@ namespace ApsCalcUI
             {
                 fragBodies++;
             }
-            DamageDict[DamageType.Frag] = GaugeCoefficient * fragBodies * OverallChemModifier * 3000f * ApsModifier;
+            DamageDict[DamageType.Frag] = GaugeMultiplier * fragBodies * OverallChemModifier * 3000f * ApsModifier;
             // Frag count is based on raw damage before angle multiplier
             FragCount = MathF.Floor(MathF.Pow(DamageDict[DamageType.Frag], 0.25f));
             DamageDict[DamageType.Frag] *= fragAngleMultiplier;
@@ -810,7 +828,7 @@ namespace ApsCalcUI
             {
                 heBodies++;
             }
-            RawHE = 3000f * MathF.Pow(GaugeCoefficient * heBodies * 120f * ApsModifier / 3000f * OverallChemModifier, 0.9f);
+            RawHE = 3000f * MathF.Pow(GaugeMultiplier * heBodies * 120f * ApsModifier / 3000f * OverallChemModifier, 0.9f);
             HEExplosionRadius = MathF.Min(MathF.Pow(RawHE, 0.3f), 30f);
             // Multiply by volume to approximate applied damage; divide by 1000 to make result more manageable
             float sphereVolume = MathF.Pow(HEExplosionRadius, 3) * MathF.PI * 4f / 3f;
@@ -839,14 +857,14 @@ namespace ApsCalcUI
                 float heBodies = BodyModuleCounts[heIndex];
                 // Calculate HE damage assuming special factor of 1 for HE bodies
                 // Special heads count as HE body with special factor of 0.8, leaving 0.2 body equivalents for actual HE damage
-                RawHE = 3000f * MathF.Pow(GaugeCoefficient * 0.2f * 120f * ApsModifier / 3000f * OverallChemModifier, 0.9f);
+                RawHE = 3000f * MathF.Pow(GaugeMultiplier * 0.2f * 120f * ApsModifier / 3000f * OverallChemModifier, 0.9f);
                 HEExplosionRadius = MathF.Min(MathF.Pow(RawHE, 0.3f), 30f);
                 // Multiply by volume to approximate applied damage
                 float sphereVolume = MathF.Pow(HEExplosionRadius, 3) * MathF.PI * 4f / 3f;
                 DamageDict[DamageType.HE] = RawHE * sphereVolume / 1000f;
 
                 DamageDict[DamageType.HEAT] =
-                    GaugeCoefficient
+                    GaugeMultiplier
                     * (heBodies + 0.8f)
                     * OverallChemModifier
                     * ApsModifier
@@ -857,6 +875,38 @@ namespace ApsCalcUI
                 DamageDict[DamageType.HE] = 0;
                 DamageDict[DamageType.HEAT] = 0;
             }
+        }
+
+        /// <summary>
+        /// Calculates incendiary damage, assuming default settings
+        /// </summary>
+        void CalculateIncendiaryDamage()
+        {
+            // Default controller settings
+            float intensityFactor = 0;
+            float oxidizerFactor = 0;
+            // Get index of incendiary body
+            int incendiaryIndex = int.MaxValue;
+            for (int i = 0; i < Module.AllModules.Length; i++)
+            {
+                if (Module.AllModules[i] == Module.IncendiaryBody)
+                {
+                    incendiaryIndex = i;
+                    break;
+                }
+            }
+
+            float incendiaryBodies = BodyModuleCounts[incendiaryIndex];
+
+            if (HeadModule == Module.IncendiaryHead || HeadModule == Module.IncendiaryBody)
+            {
+                incendiaryBodies++;
+            }
+            DamageDict[DamageType.Incendiary] = GaugeMultiplier * incendiaryBodies * OverallChemModifier * 330f * ApsModifier;
+
+            Intensity = 20f + intensityFactor * 20f;
+            Oxidizer = intensityFactor * DamageDict[DamageType.Incendiary] / 20f;
+            Fuel = (1f - oxidizerFactor) * DamageDict[DamageType.Incendiary] / Intensity;
         }
 
         /// <summary>
@@ -896,7 +946,7 @@ namespace ApsCalcUI
                 float smokeBodies = BodyModuleCounts[smokeIndex];
 
                 // Smoke is not affected by chem multiplier
-                DamageDict[DamageType.Smoke] = GaugeCoefficient * smokeBodies * 1000;
+                DamageDict[DamageType.Smoke] = GaugeMultiplier * smokeBodies * 1000;
             }
             else
             {
@@ -908,7 +958,7 @@ namespace ApsCalcUI
         public void CalculateDpsByType(
             DamageType dt,
             float targetAC,
-            int testIntervalSeconds,
+            float testIntervalSeconds,
             float storagePerVolume,
             float storagePerCost,
             float ppm,
@@ -940,7 +990,7 @@ namespace ApsCalcUI
                 {
                     CalculateEmpDps();
                 }
-                else if (dt == DamageType.Flak)
+                else if (dt == DamageType.MunitionDefense)
                 {
                     CalculateFlakDps();
                 }
@@ -963,6 +1013,10 @@ namespace ApsCalcUI
                 else if (dt == DamageType.Smoke)
                 {
                     CalculateSmokeDPS();
+                }
+                else if (dt == DamageType.Incendiary)
+                {
+                    CalculateIncendiaryDPS();
                 }
             }
             else
@@ -1026,9 +1080,9 @@ namespace ApsCalcUI
         /// </summary>
         void CalculateFlakDps()
         {
-            DpsDict[DamageType.Flak] = DamageDict[DamageType.Flak] / ClusterReloadTime * Uptime;
-            DpsPerVolumeDict[DamageType.Flak] = DpsDict[DamageType.Flak] / VolumePerLoader;
-            DpsPerCostDict[DamageType.Flak] = DpsDict[DamageType.Flak] / CostPerLoader;
+            DpsDict[DamageType.MunitionDefense] = DamageDict[DamageType.MunitionDefense] / ClusterReloadTime * Uptime;
+            DpsPerVolumeDict[DamageType.MunitionDefense] = DpsDict[DamageType.MunitionDefense] / VolumePerLoader;
+            DpsPerCostDict[DamageType.MunitionDefense] = DpsDict[DamageType.MunitionDefense] / CostPerLoader;
         }
 
         /// <summary>
@@ -1107,6 +1161,16 @@ namespace ApsCalcUI
             DpsDict[DamageType.Smoke] = DamageDict[DamageType.Smoke] / ClusterReloadTime * Uptime;
             DpsPerVolumeDict[DamageType.Smoke] = DpsDict[DamageType.Smoke] / VolumePerLoader;
             DpsPerCostDict[DamageType.Smoke] = DpsDict[DamageType.Smoke] / CostPerLoader;
+        }
+
+        /// <summary>
+        /// Calculates incendiary damage per second
+        /// </summary>
+        void CalculateIncendiaryDPS()
+        {
+            DpsDict[DamageType.Incendiary] = DamageDict[DamageType.Incendiary] / ClusterReloadTime * Uptime;
+            DpsPerVolumeDict[DamageType.Incendiary] = DpsDict[DamageType.Incendiary] / VolumePerLoader;
+            DpsPerCostDict[DamageType.Incendiary] = DpsDict[DamageType.Incendiary] / CostPerLoader;
         }
 
         /// <summary>
@@ -1221,7 +1285,7 @@ namespace ApsCalcUI
         /// Calculates marginal volume per loader of rail chargers and engines
         /// </summary>
         public void CalculateRailVolumeAndCost(
-            int testIntervalSeconds,
+            float testIntervalSeconds,
             float storagePerVolume,
             float storagePerCost,
             float ppm,
@@ -1283,12 +1347,12 @@ namespace ApsCalcUI
         /// <summary>
         /// Calculates all volumes and costs dependent on testing interval
         /// </summary>
-        public void CalculateVariableVolumesAndCosts(int testIntervalSeconds, float storagePerVolume, float storagePerCost)
+        public void CalculateVariableVolumesAndCosts(float testIntervalSeconds, float storagePerVolume, float storagePerCost)
         {
             // Calculate cost of shell itself
             CostPerShell = (ProjectileLength + (GPCasingCount + RGCasingCount) / 4)
                 * 5f
-                * GaugeCoefficient
+                * GaugeMultiplier
                 / Gauge;
 
             AmmoUsed = CostPerShell * testIntervalSeconds / ClusterReloadTime * Uptime;
