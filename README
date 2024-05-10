@@ -146,7 +146,7 @@ Damage Type: damage type to optimize.
   Kinetic. Prompts entry of target AC value(s). Note that more than one AC
   value can be entered; each will be run as a separate test.
   
-  EMP, FlaK, and HE speak for themselves, but note that it is not
+  EMP, Munition defense, and HE speak for themselves, but note that it is not
   possible to convert between the damage types due to the complex damage
   application models used for each type.
 
@@ -167,6 +167,8 @@ Damage Type: damage type to optimize.
   optimizer will reject shells.
 
   Smoke. Calculates smoke strength.
+
+  Incendiary. Calculates fuel, assuming default settings.
 
 
 Test Type: whether to optimize for DPS per Volume or DPS per Cost. "Volume"
@@ -225,9 +227,11 @@ Length without casings (mm): length of the part of the shell which will
 Total modules: total APS modules used by the controller.
 
 GP casing: number of gunpowder casings, if any. Decimal casing counts can be 
-set by adjusting the "Propellant" slider in the APS ammo controller.
+set by adjusting the "Propellant" slider in the APS ammo controller. Not shown
+for tests with 0 max GP casings.
 
-RG casing: number of railgun casings, if any.
+RG casing: number of railgun casings, if any. Not shown for tests with 0 max
+RG casings.
 
 Solid body/Sabot body/HE body/&c: number of each type of body module.
 
@@ -249,13 +253,15 @@ Barrel length for ful propellant burn (m): same value as shown ingame.
 Damage:
 	Kinetic shells will show raw damage, AP, reduction due to impact 
 		angle, and effective damage after applying AC reduction.
-	Flak shells show damage and explosion radius.
+	Munition defense shells show damage and explosion radius.
 	Frag shells show frag count, damage per frag, and total damage.
 	HE shells show raw damage (which should match ingame value),
 		explosion radius, and an approximation of applied damage 
 		equal to raw damage multiplied by explosion volume (divided 
 		by 1000 to make the resulting figures more manageable). Note 
 		explosion radius is capped at 30m.
+        Incendiary shells show fuel (which should match ingame value with
+	default settings)
 	Other chemical shells will show damage of their respective types.
 	Disruptor shells will show EMP damage and shield reduction (decimal%).
 
@@ -282,23 +288,24 @@ Loader volume: cubic metres taken up by loader, clips, inputs, and ejector.
 If the Emergency Ejection Defuze checkbox is checked, all non-beltfed loaders
 will get an ejector (2 volume, 10 cost).
 
-Cooler volume: volume of gauge coolers. Will always be 0 for shells with no
+Cooler volume: volume of gauge coolers. Not shown for shells with no
 GP casings.
 
-Charger volume: volume of rail chargers. Will always be 0 for shells with no
+Charger volume: volume of rail chargers. Not shown for shells with no
 rail draw.
 
-Engine volume: volume of engine needed to keep up with rail charge. Will 
-always be 0 for shells with no rail draw.
+Engine volume: volume of engine needed to keep up with rail charge. Not
+shown for shells with no rail draw.
 
 Fuel access volume: volume of fuel tanks/beams needed to keep up with rail 
-charge. Will always be 0 for shells with no rail draw, or if the "Fuel" 
-checkbox is not checked.
+charge. Not shown for shells with no rail draw, or if the "Fuel" checkbox is
+not checked.
 
 Fuel storage volume: volume of material storage containers needed to hold
 the materials the engine will burn as fuel. Fuel access tanks/beams hold 
 enough materials to run themselves for 10 minutes, so this number will be 0
-if the testing interval is <= 10 minutes, or if the shell has no rail draw.
+if the testing interval is <= 10 minutes. Not shown if the shell has no rail
+draw.
 
 Recoil volume: volume of recoil absorbers. Will always be 0 if "Recoil 
 absorbers" is unchecked.
