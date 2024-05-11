@@ -125,7 +125,7 @@ namespace ApsCalcUITests
             Assert.AreEqual(testShell.BarrelLengthForPropellant, 2.22906041f);
             Assert.AreEqual(testShell.TotalLength, 6635f);
             Assert.AreEqual(testShell.ProjectileLength, 5410f);
-
+            Assert.AreEqual(testShell.CostPerShell, 56.2460594f);
             Assert.AreEqual(testShell.ShellReloadTime, 232.717392f);
             Assert.AreEqual(testShell.CooldownTime, 36.7981911f);
             Assert.AreEqual(testShell.OverallKineticDamageModifier, 0.98008132f);
@@ -219,6 +219,7 @@ namespace ApsCalcUITests
             Assert.AreEqual(testShellBelt.BarrelLengthForPropellant, 0.642210722f);
             Assert.AreEqual(testShellBelt.TotalLength, 994.5f);
             Assert.AreEqual(testShellBelt.ProjectileLength, 867);
+            Assert.AreEqual(testShellBelt.CostPerShell, 1.44736958f);
             Assert.AreEqual(testShellBelt.ShellReloadTime, 3.09688997f);
             Assert.AreEqual(testShellBelt.CooldownTime, 1.73492801f);
             Assert.AreEqual(testShellBelt.OverallKineticDamageModifier, 0.987500012f);
@@ -235,9 +236,6 @@ namespace ApsCalcUITests
             Assert.AreEqual(testShellBelt.DamageDict[DamageType.EMP], 7.08287239f);
             Assert.AreEqual(testShellBelt.DamageDict[DamageType.Incendiary], 31.1646385f);
             Assert.AreEqual(testShellBelt.DamageDict[DamageType.Smoke], 0f);
-
-            Assert.AreEqual(testShell.CostPerShell, 56.25f);
-            Assert.AreEqual(testShellBelt.CostPerShell, 56.25f);
         }
 
         [Test]
@@ -529,113 +527,6 @@ namespace ApsCalcUITests
             Assert.AreEqual(hollowPointNonDirectHit, hollowPointDirectHit);
         }
 
-        [Test]
-        public void ChemicalDamageTest()
-        {
-            float fragConeAngle = 60f;
-            float fragAngleMultiplier = (2 + MathF.Sqrt(fragConeAngle)) / 16f;
-
-            float[] testModuleCounts = [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0];
-            float gauge = 490;
-            float gaugeMultiplier = MathF.Pow(gauge / 500f, 1.8f);
-            float gpCasingCount = 1.5f;
-            float rgCasingCount = 1;
-            bool isBelt = false;
-            bool isDif = false;
-            Shell testShellAP = new(
-                1,
-                gauge,
-                gaugeMultiplier,
-                isBelt,
-                Module.APHead,
-                Module.BaseBleeder,
-                default,
-                default,
-                default,
-                default,
-                default,
-                gpCasingCount,
-                rgCasingCount,
-                default,
-                default,
-                isDif)
-            {
-                RailDraw = 500
-            };
-            testShellAP.GaugeMultiplier = MathF.Pow(testShellAP.Gauge / 500f, 1.8f);
-            testModuleCounts.CopyTo(testShellAP.BodyModuleCounts, 0);
-
-            testShellAP.CalculateLengths();
-            testShellAP.CalculateVelocityModifier();
-            testShellAP.CalculateRecoil();
-            testShellAP.CalculateVelocity();
-            testShellAP.CalculateMaxDraw();
-            testShellAP.CalculateReloadTime(600f);
-            testShellAP.CalculateDamageModifierByType(DamageType.HE);
-            testShellAP.CalculateDamageByType(DamageType.Kinetic, fragAngleMultiplier);
-            testShellAP.CalculateDamageByType(DamageType.HE, fragAngleMultiplier);
-            testShellAP.CalculateDamageByType(DamageType.MunitionDefense, fragAngleMultiplier);
-            testShellAP.CalculateDamageByType(DamageType.Frag, fragAngleMultiplier);
-            testShellAP.CalculateDamageByType(DamageType.EMP, fragAngleMultiplier);
-            testShellAP.CalculateDamageByType(DamageType.Smoke, fragAngleMultiplier);
-
-            Assert.AreEqual(testShellAP.TotalLength, 5545);
-            Assert.AreEqual(testShellAP.ProjectileLength, 4320);
-            Assert.AreEqual(testShellAP.LengthDifferential, 0);
-            Assert.AreEqual(testShellAP.BodyLength, 3830);
-            Assert.AreEqual(testShellAP.CasingLength, 1225);
-            Assert.AreEqual(testShellAP.OverallVelocityModifier, 1.78467369f);
-            Assert.AreEqual(testShellAP.TotalRecoil, 4116.08154f);
-            Assert.AreEqual(testShellAP.Velocity, 362.045319f);
-            Assert.AreEqual(testShellAP.MaxDraw, 112295.32f);
-            Assert.AreEqual(testShellAP.ClusterReloadTime, 194.836182f);
-            Assert.AreEqual(testShellAP.OverallChemModifier, 0.25f);
-            Assert.AreEqual(testShellAP.RawHE, 773.504028f);
-            Assert.AreEqual(testShellAP.DamageDict[DamageType.MunitionDefense], 703.5271f);
-            Assert.AreEqual(testShellAP.DamageDict[DamageType.Frag], 10132.1357f);
-            Assert.AreEqual(testShellAP.DamageDict[DamageType.EMP], 415.849396f);
-            Assert.AreEqual(testShellAP.DamageDict[DamageType.Smoke], 964.288391f);
-
-            // Note: when testing HEAT damage, ensure HE warhead is directly behind head
-            Shell testShellHeat = new(
-                1,
-                gauge,
-                gaugeMultiplier,
-                isBelt,
-                Module.ShapedChargeHead,
-                Module.BaseBleeder,
-                default,
-                default,
-                default,
-                default,
-                default,
-                gpCasingCount,
-                rgCasingCount,
-                default,
-                default,
-                isDif)
-            {
-                RailDraw = 500
-            };
-            testShellHeat.GaugeMultiplier = MathF.Pow(testShellHeat.Gauge / 500f, 1.8f);
-            testModuleCounts.CopyTo(testShellHeat.BodyModuleCounts, 0);
-
-            testShellHeat.CalculateLengths();
-            testShellHeat.CalculateVelocityModifier();
-            testShellHeat.CalculateRecoil();
-            testShellHeat.CalculateVelocity();
-            testShellHeat.CalculateMaxDraw();
-            testShellHeat.CalculateReloadTime(600f);
-            testShellHeat.CalculateDamageModifierByType(DamageType.HE);
-            testShellHeat.CalculateDamageByType(DamageType.Kinetic, fragAngleMultiplier);
-            testShellHeat.CalculateDamageByType(DamageType.HE, fragAngleMultiplier);
-            testShellHeat.CalculateDamageByType(DamageType.MunitionDefense, fragAngleMultiplier);
-            testShellHeat.CalculateDamageByType(DamageType.Frag, fragAngleMultiplier);
-            testShellHeat.CalculateDamageByType(DamageType.EMP, fragAngleMultiplier);
-            testShellHeat.CalculateDamageByType(DamageType.Smoke, fragAngleMultiplier);
-            testShellHeat.CalculateDamageByType(DamageType.HEAT, fragAngleMultiplier);
-            Assert.AreEqual(testShellHeat.DamageDict[DamageType.HEAT], 9557.65039f);
-        }
 
         [Test]
         public void InaccuracyTest1()

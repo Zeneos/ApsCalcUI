@@ -1350,10 +1350,9 @@ namespace ApsCalcUI
         public void CalculateVariableVolumesAndCosts(float testIntervalSeconds, float storagePerVolume, float storagePerCost)
         {
             // Calculate cost of shell itself
-            CostPerShell = (ProjectileLength + (GPCasingCount + RGCasingCount) / 4)
+            CostPerShell = (EffectiveProjectileModuleCount + (GPCasingCount + RGCasingCount) / 4)
                 * 5f
-                * GaugeMultiplier
-                / Gauge;
+                * GaugeMultiplier;
 
             AmmoUsed = CostPerShell * testIntervalSeconds / ClusterReloadTime * Uptime;
 
