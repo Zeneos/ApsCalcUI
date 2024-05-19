@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
+using System.Resources;
 
 namespace ApsCalcUI
 {
@@ -283,209 +284,37 @@ namespace ApsCalcUI
         public Dictionary<string, Shell> TopDpsShells { get; set; } = [];
         public List<Shell> TopShellsLocal { get; set; } = [];
 
-
-        /// <summary>
-        /// The iterable generator for shells.  Generates all shell possible permutations of shell within given parameters.
-        /// The "var_Max" and such represent number of each variable module. During test parameter creation, user selects variable
-        /// module types; these are represented by indices corresponding to position in Module.AllModules array
-        /// There must always be 7 indices; unassigned/unused indices are set to value of first index (index 0) - this allows
-        /// GenerateModuleCounts() to ignore unused indices to avoid generating duplicate shell configurations.
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<ModuleConfig> GenerateModuleCounts()
+        private IEnumerable<ModuleConfig> GenerateModConfigs(float[] current, int position, float remainingSum)
         {
-            float var0Max = 20f - FixedModuleTotal;
-            float var1Max;
-            float var2Max;
-            float var3Max;
-            float var4Max;
-            float var5Max;
-            float var6Max;
-            float var7Max;
-            float var8Max;
-            float gpMax;
-            float rgMax;
-
-            foreach (int index in HeadList)
+            for (int headListIndex = 0; headListIndex < HeadList.Count; headListIndex++)
             {
-                for (float var0Count = 0; var0Count <= var0Max; var0Count++)
+                // Reached end of variable module array
+                if (position == current.Length)
                 {
-                    if (VariableModuleIndices[1] == VariableModuleIndices[0])
+                    float gpMax = MathF.Min(MaxGP, remainingSum);
+                    for (float gpCount = 0; gpCount <= gpMax; gpCount += 0.01f)
                     {
-                        var1Max = 0; // No need to add duplicates
-                    }
-                    else
-                    {
-                        var1Max = 20f - FixedModuleTotal - var0Count;
-                    }
-
-                    for (float var1Count = 0; var1Count <= var1Max; var1Count++)
-                    {
-                        if (VariableModuleIndices[2] == VariableModuleIndices[0])
+                        float rgMax = MathF.Min(MaxRGInput, MathF.Floor(remainingSum - gpCount));
+                        for (float rgCount = 0; rgCount <= rgMax; rgCount++)
                         {
-                            var2Max = 0; // No need to add duplicates
+                            yield return new ModuleConfig
+                            {
+                                HeadIndex = HeadList[headListIndex],
+                                BodyModCounts = current,
+                                GPCount = gpCount,
+                                RGCount = rgCount
+                            };
                         }
-                        else
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i <= remainingSum; i++)
+                    {
+                        current[position] = i;
+                        foreach (var permutation in GenerateModConfigs(current, position + 1, remainingSum - i))
                         {
-                            var2Max = 20f - FixedModuleTotal - var0Count - var1Count;
-                        }
-
-                        for (float var2Count = 0; var2Count <= var2Max; var2Count++)
-                        {
-                            if (VariableModuleIndices[3] == VariableModuleIndices[0])
-                            {
-                                var3Max = 0; // No need to add duplicates
-                            }
-                            else
-                            {
-                                var3Max = 20f - FixedModuleTotal - var0Count - var1Count - var2Count;
-                            }
-
-                            for (float var3Count = 0; var3Count <= var3Max; var3Count++)
-                            {
-                                if (VariableModuleIndices[4] == VariableModuleIndices[0])
-                                {
-                                    var4Max = 0; // No need to add duplicates
-                                }
-                                else
-                                {
-                                    var4Max = 20f - FixedModuleTotal - var0Count - var1Count - var2Count - var3Count;
-                                }
-
-                                for (float var4Count = 0; var4Count <= var4Max; var4Count++)
-                                {
-                                    if (VariableModuleIndices[5] == VariableModuleIndices[0])
-                                    {
-                                        var5Max = 0; // No need to add duplicates
-                                    }
-                                    else
-                                    {
-                                        var5Max = 20f - FixedModuleTotal - var0Count - var1Count - var2Count - var3Count - var4Count;
-                                    }
-
-                                    for (float var5Count = 0; var5Count <= var5Max; var5Count++)
-                                    {
-                                        if (VariableModuleIndices[6] == VariableModuleIndices[0])
-                                        {
-                                            var6Max = 0; // No need to add duplicates
-                                        }
-                                        else
-                                        {
-                                            var6Max = 
-                                                20f 
-                                                - FixedModuleTotal 
-                                                - var0Count 
-                                                - var1Count 
-                                                - var2Count 
-                                                - var3Count 
-                                                - var4Count 
-                                                - var5Count;
-                                        }
-
-                                        for (float var6Count = 0; var6Count <= var6Max; var6Count++)
-                                        {
-                                            if (VariableModuleIndices[7] == VariableModuleIndices[0])
-                                            {
-                                                var7Max = 0; // No need to add duplicates
-                                            }
-                                            else
-                                            {
-                                                var7Max =
-                                                    20f
-                                                    - FixedModuleTotal
-                                                    - var0Count
-                                                    - var1Count
-                                                    - var2Count
-                                                    - var3Count
-                                                    - var4Count
-                                                    - var5Count
-                                                    - var6Count;
-                                            }
-
-                                            for (float var7Count = 0; var7Count <= var7Max; var7Count++)
-                                            {
-                                                if (VariableModuleIndices[8] == VariableModuleIndices[0])
-                                                {
-                                                    var8Max = 0; // No need to add duplicates
-                                                }
-                                                else
-                                                {
-                                                    var8Max =
-                                                        20f
-                                                        - FixedModuleTotal
-                                                        - var0Count
-                                                        - var1Count
-                                                        - var2Count
-                                                        - var3Count
-                                                        - var4Count
-                                                        - var5Count
-                                                        - var6Count
-                                                        - var7Count;
-                                                }
-
-                                                for (float var8Count = 0; var8Count <= var8Max; var8Count++)
-                                                {
-                                                    gpMax = MathF.Min(
-                                                        20f
-                                                        - FixedModuleTotal
-                                                        - var0Count
-                                                        - var1Count
-                                                        - var2Count
-                                                        - var3Count
-                                                        - var4Count
-                                                        - var5Count
-                                                        - var6Count
-                                                        - var7Count
-                                                        - var8Count
-                                                        , MaxGP);
-
-                                                    for (float gpCount = 0; gpCount <= gpMax; gpCount += 0.01f)
-                                                    {
-                                                        rgMax = MathF.Min(
-                                                            20f
-                                                            - FixedModuleTotal
-                                                            - var0Count
-                                                            - var1Count
-                                                            - var2Count
-                                                            - var3Count
-                                                            - var4Count
-                                                            - var5Count
-                                                            - var6Count
-                                                            - var7Count
-                                                            - var8Count
-                                                            - gpCount
-                                                            , MaxRGInput);
-
-                                                        for (float rgCount = 0; rgCount <= rgMax; rgCount++)
-                                                        {
-                                                            // Start with all-zero mod count array
-                                                            float[] modCounts = new float[Module.GetBodyModuleCount()];
-                                                            // Add variable counts
-                                                            modCounts[VariableModuleIndices[0]] = var0Count;
-                                                            modCounts[VariableModuleIndices[1]] = var1Count;
-                                                            modCounts[VariableModuleIndices[2]] = var2Count;
-                                                            modCounts[VariableModuleIndices[3]] = var3Count;
-                                                            modCounts[VariableModuleIndices[4]] = var4Count;
-                                                            modCounts[VariableModuleIndices[5]] = var5Count;
-                                                            modCounts[VariableModuleIndices[6]] = var6Count;
-                                                            modCounts[VariableModuleIndices[7]] = var7Count;
-                                                            modCounts[VariableModuleIndices[8]] = var8Count;
-                                                            yield return new ModuleConfig
-                                                            {
-                                                                HeadIndex = index,
-                                                                BodyModCounts = modCounts,
-                                                                GPCount = gpCount,
-                                                                RGCount = rgCount
-                                                            };
-                                                        }
-                                                    }
-
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            yield return permutation;
                         }
                     }
                 }
@@ -500,7 +329,10 @@ namespace ApsCalcUI
             // Set up target armor scheme for testing
             TargetArmorScheme.CalculateLayerAC();
 
-            foreach (ModuleConfig modConfig in GenerateModuleCounts())
+            int variableModIndexCount = VariableModuleIndices.Length;
+            float[] varModCounts = new float[variableModIndexCount];
+            float variableModuleMaxCount = 20f - FixedModuleTotal;
+            foreach (ModuleConfig modConfig in GenerateModConfigs(varModCounts, 0, variableModuleMaxCount))
             {
                 Shell shellUnderTesting = new(
                     BarrelCount,
@@ -523,9 +355,11 @@ namespace ApsCalcUI
                 FixedModuleCounts.CopyTo(shellUnderTesting.BodyModuleCounts, 0);
 
                 // Add variable modules
-                for (int i = 0; i <  shellUnderTesting.BodyModuleCounts.Length; i++)
+                for (int i = 0; i <  modConfig.BodyModCounts.Length; i++)
                 {
-                    shellUnderTesting.BodyModuleCounts[i] += modConfig.BodyModCounts[i];
+                    int moduleIndex = VariableModuleIndices[i];
+                    float moduleCount = modConfig.BodyModCounts[i];
+                    shellUnderTesting.BodyModuleCounts[moduleIndex] += moduleCount;
                 }
 
                 shellUnderTesting.CalculateLengths();
@@ -564,8 +398,14 @@ namespace ApsCalcUI
                         shellUnderTesting.NonSabotAngleMultiplier = NonSabotAngleMultiplier;
                         shellUnderTesting.CalculateDamageByType(DamageType, FragAngleMultiplier);
 
-                        if ((DamageType == DamageType.Disruptor && shellUnderTesting.DamageDict[DamageType.Disruptor] >= MinDisruptor)
-                            || DamageType != DamageType.Disruptor)
+                        // Users can enter minimum disruptor values even when optimizing for other damage types
+                        if (MinDisruptor > 0 && DamageType != DamageType.Disruptor)
+                        {
+                            shellUnderTesting.CalculateDamageByType(DamageType.EMP, FragAngleMultiplier);
+                            shellUnderTesting.CalculateDamageByType(DamageType.Disruptor, FragAngleMultiplier);
+                        }
+
+                        if ((shellUnderTesting.DamageDict[DamageType.Disruptor] >= MinDisruptor) || MinDisruptor == 0)
                         {
                             shellUnderTesting.CalculateCooldownTime();
                             shellUnderTesting.CalculateCoolerVolumeAndCost();
@@ -946,7 +786,7 @@ namespace ApsCalcUI
 
 
                                 // Add variable modules
-                                for (int i = 0; i < shellUnderTestingBelt.BodyModuleCounts.Length; i++)
+                                for (int i = 0; i < modConfig.BodyModCounts.Length; i++)
                                 {
                                     shellUnderTestingBelt.BodyModuleCounts[i] += modConfig.BodyModCounts[i];
                                 }

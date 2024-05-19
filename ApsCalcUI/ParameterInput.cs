@@ -754,12 +754,6 @@ namespace ApsCalcUI
                 {
                     varModIndices.Add(varMod.Index);
                 }
-                // Pad list length to equal number of possible variable mod indices.
-                // Duplicates of item 0 will be ignored by ShellCalc, so padding is done by copying first index in list
-                while (varModIndices.Count < Module.GetVariableModuleCount())
-                {
-                    varModIndices.Add(varModIndices[0]);
-                }
                 int[] variableModuleIndices = [.. varModIndices];
                 testParameters.VariableModuleIndices = variableModuleIndices;
 
