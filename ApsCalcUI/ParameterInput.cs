@@ -4,7 +4,6 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using PenCalc;
 
 namespace ApsCalcUI
 {
@@ -426,6 +425,8 @@ namespace ApsCalcUI
             DisruptorPanel.Visible = disruptorSelected;
             DisruptorLabel.Visible = disruptorSelected;
             DisruptorUD.Visible = disruptorSelected;
+            // Set value to 0 when not in use; default to 100% when in use
+            DisruptorUD.Value = disruptorSelected ? 100m : 0m;
         }
 
 

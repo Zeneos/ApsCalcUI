@@ -1,7 +1,6 @@
 using NUnit.Framework;
 using ApsCalcUI;
 using System;
-using System.Diagnostics;
 
 namespace ApsCalcUITests
 {
@@ -52,7 +51,7 @@ namespace ApsCalcUITests
             float ppv = 60f;
             float ppc = 5f;
             bool engineUsesFuel = true;
-            PenCalc.Scheme testScheme = new();
+            Scheme testScheme = new();
 
             Shell testShell = new(
                 barrelCount,
@@ -316,7 +315,7 @@ namespace ApsCalcUITests
             float nonDirectHitAngleFromPerpendicularDegrees = 15f;
 
             float[] testModuleCounts = [1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0];
-            PenCalc.Scheme testScheme = new();
+            Scheme testScheme = new();
             float gauge = 490;
             float gaugeMultiplier = MathF.Pow(gauge / 500f, 1.8f);
             float gpCasingCount = 1.5f;

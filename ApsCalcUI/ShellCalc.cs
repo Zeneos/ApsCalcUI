@@ -2,13 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
-using PenCalc;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Runtime.InteropServices.JavaScript;
-using System.Resources;
 
 namespace ApsCalcUI
 {
@@ -76,7 +70,7 @@ namespace ApsCalcUI
         /// <param name="fragConeAngle">Frag cone angle in °</param>
         /// <param name="fragAngleMultiplier">(2 + sqrt(angle °)) / 16</param>
         /// <param name="minDisruptor">Minimum allowed disruptor shield reduction</param>
-        /// <param name="targetArmorScheme">Target armor scheme, from Pencalc namespace</param>
+        /// <param name="targetArmorScheme">Target armor scheme</param>
         /// <param name="testType">0 for DPS per volume, 1 for DPS per cost</param>
         /// <param name="testIntervalMinutes">Test interval in min</param>
         /// <param name="storagePerVolume">Material storage per container volume</param>

@@ -1,6 +1,4 @@
-﻿using PenCalc;
-
-namespace ApsCalcUI
+﻿namespace ApsCalcUI
 {
     class ArmorLayerItem(string name, Layer layer)
     {

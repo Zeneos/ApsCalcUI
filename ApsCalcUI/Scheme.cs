@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
 
-namespace PenCalc
+namespace ApsCalcUI
 {
     public class Scheme
     {
