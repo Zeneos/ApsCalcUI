@@ -1347,6 +1347,7 @@ namespace ApsCalcUI
 
             List<int> modsToShow = [];
 
+            dtToShow[DamageType] = true;
             for (int index = 0; index < FixedModuleCounts.Length; index++)
             {
                 if (FixedModuleCounts[index] > 0 || VariableModuleIndices.Contains(index))
@@ -1367,6 +1368,10 @@ namespace ApsCalcUI
                     else if (Module.AllModules[index] == Module.HEBody)
                     {
                         dtToShow[DamageType.HE] = true;
+                    }
+                    else if (Module.AllModules[index] == Module.IncendiaryBody)
+                    {
+                        dtToShow[DamageType.Incendiary] = true;
                     }
                     else if (Module.AllModules[index] == Module.SmokeBody)
                     {
@@ -1392,6 +1397,10 @@ namespace ApsCalcUI
                 else if (Module.AllModules[index] == Module.HEHead || Module.AllModules[index] == Module.HEBody)
                 {
                     dtToShow[DamageType.HE] = true;
+                }
+                else if (Module.AllModules[index] == Module.IncendiaryHead || Module.AllModules[index] == Module.IncendiaryBody)
+                {
+                    dtToShow[DamageType.Incendiary] = true;
                 }
                 else if (Module.AllModules[index] == Module.ShapedChargeHead)
                 {
@@ -1624,7 +1633,8 @@ namespace ApsCalcUI
                         || dtToShow[DamageType.MunitionDefense] 
                         || dtToShow[DamageType.Frag] 
                         || dtToShow[DamageType.HE]
-                        || dtToShow[DamageType.HEAT])
+                        || dtToShow[DamageType.HEAT]
+                        || dtToShow[DamageType.Incendiary])
                     {
                         topShellPair.Value.CalculateChemModifier();
                     }
@@ -1903,7 +1913,7 @@ namespace ApsCalcUI
 
                             List<string> flakExplosionRadiusList =
                             [
-                                "Flak explosion radius (m)"
+                                "Munition defense explosion radius (m)"
                             ];
                             foreach (Shell topShell in TopDpsShells.Values)
                             {
