@@ -278,37 +278,48 @@ namespace ApsCalcUI
         public Dictionary<string, Shell> TopDpsShells { get; set; } = [];
         public List<Shell> TopShellsLocal { get; set; } = [];
 
-        private IEnumerable<ModuleConfig> GenerateModConfigs(float[] current, int position, float remainingSum)
+        private IEnumerable<ModuleConfig> GenerateModConfigs()
         {
-            for (int headListIndex = 0; headListIndex < HeadList.Count; headListIndex++)
+            int variableModIndexCount = VariableModuleIndices.Length;
+            float maxModuleCount = 20f - FixedModuleTotal;
+            float gpMax = MathF.Min(MaxGP, maxModuleCount);
+            for (int headIndex = 0; headIndex < HeadList.Count; headIndex++)
             {
-                // Reached end of variable module array
-                if (position == current.Length)
+                for (float gpCount = 0; gpCount <= gpMax; gpCount += 0.01f)
                 {
-                    float gpMax = MathF.Min(MaxGP, remainingSum);
-                    for (float gpCount = 0; gpCount <= gpMax; gpCount += 0.01f)
+                    float rgMax = MathF.Min(MaxRGInput, MathF.Floor(maxModuleCount - gpCount));
+                    for (float rgCount = 0; rgCount <= rgMax; rgCount++)
                     {
-                        float rgMax = MathF.Min(MaxRGInput, MathF.Floor(remainingSum - gpCount));
-                        for (float rgCount = 0; rgCount <= rgMax; rgCount++)
+                        // number of indices to split over
+                        float[] indices = new float[variableModIndexCount];
+
+                        // naively each index needs to go from 0 to n, giving (n+1)^p total iterations required
+                        long maxIterationCount = (long)Math.Pow(maxModuleCount + 1, variableModIndexCount);
+                        for (long iteration = 0; iteration < maxIterationCount; iteration++)
                         {
+                            // generate individual indices using the one loop index:
+                            // this is equivalent to converting to base n representation
+                            for (int moduleIndex = 0; moduleIndex < variableModIndexCount; moduleIndex++)
+                            {
+                                indices[moduleIndex] = (iteration / (int)Math.Pow(maxModuleCount + 1, moduleIndex)) % (maxModuleCount + 1);
+                            }
+
+                            // now we just skip any iterations which give a sum > n
+                            float total = 0;
+                            for (int moduleIndex = 0; moduleIndex < variableModIndexCount; moduleIndex++)
+                            {
+                                total += indices[moduleIndex];
+                            }
+                            if (total > maxModuleCount) continue;
+
+                            // iterations that get to this point are good for use
                             yield return new ModuleConfig
                             {
-                                HeadIndex = HeadList[headListIndex],
-                                BodyModCounts = current,
                                 GPCount = gpCount,
-                                RGCount = rgCount
+                                RGCount = rgCount,
+                                BodyModCounts = indices,
+                                HeadIndex = headIndex
                             };
-                        }
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i <= remainingSum; i++)
-                    {
-                        current[position] = i;
-                        foreach (var permutation in GenerateModConfigs(current, position + 1, remainingSum - i))
-                        {
-                            yield return permutation;
                         }
                     }
                 }
@@ -323,10 +334,7 @@ namespace ApsCalcUI
             // Set up target armor scheme for testing
             TargetArmorScheme.CalculateLayerAC();
 
-            int variableModIndexCount = VariableModuleIndices.Length;
-            float[] varModCounts = new float[variableModIndexCount];
-            float variableModuleMaxCount = 20f - FixedModuleTotal;
-            foreach (ModuleConfig modConfig in GenerateModConfigs(varModCounts, 0, variableModuleMaxCount))
+            foreach (ModuleConfig modConfig in GenerateModConfigs())
             {
                 Shell shellUnderTesting = new(
                     BarrelCount,
