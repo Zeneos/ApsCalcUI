@@ -755,6 +755,13 @@ namespace ApsCalcUI
                 {
                     varModIndices.Add(varMod.Index);
                 }
+                // Pad list out to number of possible variable modules by duplicating first index
+                // Copies of first index will be ignored but are necessary to avoid errors in
+                // ShellCalc.GenerateModConfigs
+                while (varModIndices.Count < Module.GetVariableModuleCount())
+                {
+                    varModIndices.Add(varModIndices[0]);
+                }
                 int[] variableModuleIndices = [.. varModIndices];
                 testParameters.VariableModuleIndices = variableModuleIndices;
 

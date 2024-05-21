@@ -280,7 +280,6 @@ namespace ApsCalcUI
 
         private IEnumerable<ModuleConfig> GenerateModConfigs()
         {
-            int variableModIndexCount = VariableModuleIndices.Length;
             float maxModuleCount = 20f - FixedModuleTotal;
             float gpMax = MathF.Min(MaxGP, maxModuleCount);
             for (int headIndex = 0; headIndex < HeadList.Count; headIndex++)
@@ -290,36 +289,105 @@ namespace ApsCalcUI
                     float rgMax = MathF.Min(MaxRGInput, MathF.Floor(maxModuleCount - gpCount));
                     for (float rgCount = 0; rgCount <= rgMax; rgCount++)
                     {
-                        // number of indices to split over
-                        float[] indices = new float[variableModIndexCount];
-
-                        // naively each index needs to go from 0 to n, giving (n+1)^p total iterations required
-                        long maxIterationCount = (long)Math.Pow(maxModuleCount + 1, variableModIndexCount);
-                        for (long iteration = 0; iteration < maxIterationCount; iteration++)
+                        float var0Max = maxModuleCount - gpCount - rgCount;
+                        for (float var0Count = 0; var0Count <= var0Max; var0Count++)
                         {
-                            // generate individual indices using the one loop index:
-                            // this is equivalent to converting to base n representation
-                            for (int moduleIndex = 0; moduleIndex < variableModIndexCount; moduleIndex++)
+                            float var1Max = VariableModuleIndices[1] == VariableModuleIndices[0] ?
+                                0 : maxModuleCount - gpCount - rgCount - var0Count;
+                            for (float var1Count = 0; var1Count <= var1Max; var1Count++)
                             {
-                                indices[moduleIndex] = (iteration / (int)Math.Pow(maxModuleCount + 1, moduleIndex)) % (maxModuleCount + 1);
+                                float var2Max = VariableModuleIndices[2] == VariableModuleIndices[0] ?
+                                    0 : maxModuleCount - gpCount - rgCount - var0Count - var1Count;
+                                for (float var2Count = 0; var2Count <= var2Max; var2Count++)
+                                {
+                                    float var3Max = VariableModuleIndices[3] == VariableModuleIndices[0] ?
+                                        0 : maxModuleCount - gpCount - rgCount - var0Count - var1Count - var2Count;
+                                    for (float var3Count = 0; var3Count <= var3Max; var3Count++)
+                                    {
+                                        float var4Max = VariableModuleIndices[4] == VariableModuleIndices[0] ?
+                                            0 : maxModuleCount - gpCount - rgCount - var0Count - var1Count - var2Count - var3Count;
+                                        for (float var4Count = 0; var4Count <= var4Max; var4Count++)
+                                        {
+                                            float var5Max = VariableModuleIndices[5] == VariableModuleIndices[0] ?
+                                                0 : 
+                                                maxModuleCount
+                                                - gpCount
+                                                - rgCount
+                                                - var0Count
+                                                - var1Count
+                                                - var2Count
+                                                - var3Count
+                                                - var4Count;
+                                            for (float var5Count = 0; var5Count <= var5Max; var5Count++)
+                                            {
+                                                float var6Max = VariableModuleIndices[6] == VariableModuleIndices[0] ?
+                                                    0 :
+                                                    maxModuleCount
+                                                    - gpCount
+                                                    - rgCount
+                                                    - var0Count
+                                                    - var1Count
+                                                    - var2Count
+                                                    - var3Count
+                                                    - var4Count
+                                                    - var5Count;
+                                                for (float var6Count = 0; var6Count <= var6Max; var6Count++)
+                                                {
+                                                    float var7Max = VariableModuleIndices[7] == VariableModuleIndices[0] ?
+                                                        0 :
+                                                        maxModuleCount
+                                                        - gpCount
+                                                        - rgCount
+                                                        - var0Count
+                                                        - var1Count
+                                                        - var2Count
+                                                        - var3Count
+                                                        - var4Count
+                                                        - var5Count
+                                                        - var6Count;
+                                                    for (float var7Count = 0; var7Count <= var7Max; var7Count++)
+                                                    {
+                                                        float var8Max = VariableModuleIndices[8] == VariableModuleIndices[0] ?
+                                                            0 :
+                                                            maxModuleCount
+                                                            - gpCount
+                                                            - rgCount
+                                                            - var0Count
+                                                            - var1Count
+                                                            - var2Count
+                                                            - var3Count
+                                                            - var4Count
+                                                            - var5Count
+                                                            - var6Count
+                                                            - var7Count;
+                                                        for (float var8Count = 0; var8Count <= var8Max; var8Count++)
+                                                        {
+                                                            yield return new ModuleConfig
+                                                            {
+                                                                GPCount = gpCount,
+                                                                RGCount = rgCount,
+                                                                HeadIndex = HeadList[headIndex],
+                                                                BodyModCounts =
+                                                                [
+                                                                    var0Count,
+                                                                    var1Count,
+                                                                    var2Count,
+                                                                    var3Count,
+                                                                    var4Count,
+                                                                    var5Count,
+                                                                    var6Count,
+                                                                    var7Count,
+                                                                    var8Count
+                                                                ]
+                                                            };
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
-
-                            // now we just skip any iterations which give a sum > n
-                            float total = 0;
-                            for (int moduleIndex = 0; moduleIndex < variableModIndexCount; moduleIndex++)
-                            {
-                                total += indices[moduleIndex];
-                            }
-                            if (total > maxModuleCount) continue;
-
-                            // iterations that get to this point are good for use
-                            yield return new ModuleConfig
-                            {
-                                GPCount = gpCount,
-                                RGCount = rgCount,
-                                BodyModCounts = indices,
-                                HeadIndex = headIndex
-                            };
                         }
                     }
                 }
@@ -1349,6 +1417,7 @@ namespace ApsCalcUI
                 { DamageType.Frag, false },
                 { DamageType.HE, false },
                 { DamageType.HEAT, false },
+                { DamageType.Incendiary, false },
                 { DamageType.Disruptor, false },
                 { DamageType.Smoke, false }
             };
