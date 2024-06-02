@@ -93,6 +93,11 @@ Max Gunpowder Casings: maximum allowed number of GP casings. Note that GP
 casing length is adjustable up to two decimal places, although a decimal
 casing counts as a complete module for module count limit purposes.
 
+GP Interval: Propellant amount can be varied by increments of 0.01. By default,
+every possible increment will be tested (ie, 0.00 through Max GP Casings, 
+adding 0.01 casings between tests). Larger intervals, up to 1 casing, skip
+shells but greatly speed testing.
+
 Max Railgun Casings: maximum allowed number of RG casings. RG casings
 increase the max rail draw of the shell, but are not part of the projectile,
 and so do not reduce the shell velocity for a given amount of charge. This
@@ -202,6 +207,13 @@ Fuel Checkbox: Check if the engine supplyning power for railguns is of a type
 which requires Fuel access (as shown on the default tab of the V menu). This
 includes Fuel engines and Custom jet engines. Disabled unless Max Rail Draw
 > 0.
+
+Raw Number Output Checkbox: By default, all numbers are rounded to the number
+of decimal places shown ingame when output to .csv. Note that rounding takes
+place AFTER all calculations and does not affect test accuracy.
+Check this box to output unrounded values. Note that calculated values (DPS, 
+volumes, DPS / volume, costs, DPS / cost, cost / volume) are always raw
+because they have no ingame equivalent.
 
 Comma Decimal Separator Checkbox: Check if your computer uses commas to 
 indicate decimals (if "five and three tenths" appears as '5,3' instead of 
