@@ -134,8 +134,8 @@ namespace ApsCalcUITests
             Assert.AreEqual(testShell.OverallChemModifier, 0.25f);
             Assert.AreEqual(testShell.RawHE, 773.504028f);
             Assert.AreEqual(testShell.HEExplosionRadius, 7.35425711f);
-            Assert.AreEqual(testShell.DamageDict[DamageType.MunitionDefense], 632.766663f);
-            Assert.AreEqual(testShell.FlakExplosionRadius, 20.772768f);
+            Assert.AreEqual(testShell.DamageDict[DamageType.MD], 632.766663f);
+            Assert.AreEqual(testShell.MDExplosionRadius, 20.772768f);
             Assert.AreEqual(testShell.FragCount, 11);
             Assert.AreEqual(testShell.DamagePerFrag, 921.103271f);
             Assert.AreEqual(testShell.DamageDict[DamageType.EMP], 415.849396f);
@@ -228,8 +228,8 @@ namespace ApsCalcUITests
             Assert.AreEqual(testShellBelt.OverallChemModifier, 0.25f);
             Assert.AreEqual(testShellBelt.RawHE, 19.7974224f);
             Assert.AreEqual(testShellBelt.HEExplosionRadius, 2.44896507f);
-            Assert.AreEqual(testShellBelt.DamageDict[DamageType.MunitionDefense], 16.1953239f);
-            Assert.AreEqual(testShellBelt.FlakExplosionRadius, 6.91732502f);
+            Assert.AreEqual(testShellBelt.DamageDict[DamageType.MD], 16.1953239f);
+            Assert.AreEqual(testShellBelt.MDExplosionRadius, 6.91732502f);
             Assert.AreEqual(testShellBelt.FragCount, 4);
             Assert.AreEqual(testShellBelt.DamagePerFrag, 43.1433983f);
             Assert.AreEqual(testShellBelt.DamageDict[DamageType.EMP], 7.08287239f);

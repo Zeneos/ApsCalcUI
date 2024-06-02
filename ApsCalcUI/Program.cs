@@ -20,6 +20,7 @@ namespace ApsCalcUI
         public int BeltfedInputsPerLoader;
         public bool UsesAmmoEjector;
         public float MaxGPCasingCount;
+        public float GPIncrement;
         public float MaxRGCasingCount;
         public float MinLength;
         public float MaxLength;
@@ -53,6 +54,7 @@ namespace ApsCalcUI
         public bool LimitBarrelLength;
         public float MaxBarrelLength;
         public BarrelLengthLimit BarrelLengthLimitType;
+        public bool RawNumberOutputIsChecked;
         public char ColumnDelimiter;
     }
 

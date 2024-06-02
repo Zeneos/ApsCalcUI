@@ -100,6 +100,8 @@ namespace ApsCalcUI
             AmmoEjectorCB = new System.Windows.Forms.CheckBox();
             SmokeBodyFixedUD = new System.Windows.Forms.NumericUpDown();
             IncendiaryBodyFixedUD = new System.Windows.Forms.NumericUpDown();
+            RawNumberOutputCB = new System.Windows.Forms.CheckBox();
+            GPIncrementUD = new System.Windows.Forms.NumericUpDown();
             BarrelCountLabel = new System.Windows.Forms.Label();
             MinGaugeLabel = new System.Windows.Forms.Label();
             MaxGaugeLabel = new System.Windows.Forms.Label();
@@ -160,6 +162,7 @@ namespace ApsCalcUI
             ClipCountLabel = new System.Windows.Forms.Label();
             RegularClipCountLabel = new System.Windows.Forms.Label();
             BeltfedClipCountLabel = new System.Windows.Forms.Label();
+            GPIncrementLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)MinGaugeUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)MaxGaugeUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)SolidBodyFixedUD).BeginInit();
@@ -194,6 +197,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)RegularInputsPerLoaderUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)SmokeBodyFixedUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)IncendiaryBodyFixedUD).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)GPIncrementUD).BeginInit();
             BasePanel.SuspendLayout();
             FixedModulesPanel.SuspendLayout();
             VariableModulesPanel.SuspendLayout();
@@ -208,6 +212,12 @@ namespace ApsCalcUI
             RofRpmPanel.SuspendLayout();
             ClipCountPanel.SuspendLayout();
             SuspendLayout();
+            // 
+            // ToolTip
+            // 
+            ToolTip.AutoPopDelay = 10000;
+            ToolTip.InitialDelay = 500;
+            ToolTip.ReshowDelay = 100;
             // 
             // BarrelCountDD
             // 
@@ -256,7 +266,7 @@ namespace ApsCalcUI
             // 
             DamageTypeDD.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             DamageTypeDD.FormattingEnabled = true;
-            DamageTypeDD.Location = new System.Drawing.Point(504, 278);
+            DamageTypeDD.Location = new System.Drawing.Point(504, 313);
             DamageTypeDD.Name = "DamageTypeDD";
             DamageTypeDD.Size = new System.Drawing.Size(121, 23);
             DamageTypeDD.TabIndex = 23;
@@ -347,7 +357,7 @@ namespace ApsCalcUI
             // 
             // SolidBodyFixedUD
             // 
-            SolidBodyFixedUD.Location = new System.Drawing.Point(110, 29);
+            SolidBodyFixedUD.Location = new System.Drawing.Point(125, 29);
             SolidBodyFixedUD.Maximum = new decimal(new int[] { 19, 0, 0, 0 });
             SolidBodyFixedUD.Name = "SolidBodyFixedUD";
             SolidBodyFixedUD.Size = new System.Drawing.Size(40, 23);
@@ -358,7 +368,7 @@ namespace ApsCalcUI
             // 
             // SabotBodyFixedUD
             // 
-            SabotBodyFixedUD.Location = new System.Drawing.Point(110, 54);
+            SabotBodyFixedUD.Location = new System.Drawing.Point(125, 54);
             SabotBodyFixedUD.Maximum = new decimal(new int[] { 19, 0, 0, 0 });
             SabotBodyFixedUD.Name = "SabotBodyFixedUD";
             SabotBodyFixedUD.Size = new System.Drawing.Size(40, 23);
@@ -368,7 +378,7 @@ namespace ApsCalcUI
             // 
             // EmpBodyFixedUD
             // 
-            EmpBodyFixedUD.Location = new System.Drawing.Point(110, 79);
+            EmpBodyFixedUD.Location = new System.Drawing.Point(125, 79);
             EmpBodyFixedUD.Maximum = new decimal(new int[] { 19, 0, 0, 0 });
             EmpBodyFixedUD.Name = "EmpBodyFixedUD";
             EmpBodyFixedUD.Size = new System.Drawing.Size(40, 23);
@@ -378,7 +388,7 @@ namespace ApsCalcUI
             // 
             // FlakBodyFixedUD
             // 
-            FlakBodyFixedUD.Location = new System.Drawing.Point(110, 104);
+            FlakBodyFixedUD.Location = new System.Drawing.Point(125, 104);
             FlakBodyFixedUD.Maximum = new decimal(new int[] { 19, 0, 0, 0 });
             FlakBodyFixedUD.Name = "FlakBodyFixedUD";
             FlakBodyFixedUD.Size = new System.Drawing.Size(40, 23);
@@ -388,7 +398,7 @@ namespace ApsCalcUI
             // 
             // FragBodyFixedUD
             // 
-            FragBodyFixedUD.Location = new System.Drawing.Point(110, 129);
+            FragBodyFixedUD.Location = new System.Drawing.Point(125, 129);
             FragBodyFixedUD.Maximum = new decimal(new int[] { 19, 0, 0, 0 });
             FragBodyFixedUD.Name = "FragBodyFixedUD";
             FragBodyFixedUD.Size = new System.Drawing.Size(40, 23);
@@ -398,7 +408,7 @@ namespace ApsCalcUI
             // 
             // HEBodyFixedUD
             // 
-            HEBodyFixedUD.Location = new System.Drawing.Point(110, 154);
+            HEBodyFixedUD.Location = new System.Drawing.Point(125, 154);
             HEBodyFixedUD.Maximum = new decimal(new int[] { 19, 0, 0, 0 });
             HEBodyFixedUD.Name = "HEBodyFixedUD";
             HEBodyFixedUD.Size = new System.Drawing.Size(40, 23);
@@ -408,7 +418,7 @@ namespace ApsCalcUI
             // 
             // FinFixedUD
             // 
-            FinFixedUD.Location = new System.Drawing.Point(110, 179);
+            FinFixedUD.Location = new System.Drawing.Point(125, 179);
             FinFixedUD.Maximum = new decimal(new int[] { 19, 0, 0, 0 });
             FinFixedUD.Name = "FinFixedUD";
             FinFixedUD.Size = new System.Drawing.Size(40, 23);
@@ -431,7 +441,7 @@ namespace ApsCalcUI
             // 
             // MaxRGUD
             // 
-            MaxRGUD.Location = new System.Drawing.Point(550, 39);
+            MaxRGUD.Location = new System.Drawing.Point(550, 64);
             MaxRGUD.Maximum = new decimal(new int[] { 19, 0, 0, 0 });
             MaxRGUD.Name = "MaxRGUD";
             MaxRGUD.Size = new System.Drawing.Size(65, 23);
@@ -442,7 +452,7 @@ namespace ApsCalcUI
             // 
             // MaxDrawUD
             // 
-            MaxDrawUD.Location = new System.Drawing.Point(550, 64);
+            MaxDrawUD.Location = new System.Drawing.Point(550, 89);
             MaxDrawUD.Maximum = new decimal(new int[] { 200000, 0, 0, 0 });
             MaxDrawUD.Name = "MaxDrawUD";
             MaxDrawUD.Size = new System.Drawing.Size(65, 23);
@@ -454,7 +464,7 @@ namespace ApsCalcUI
             // 
             // MaxRecoilUD
             // 
-            MaxRecoilUD.Location = new System.Drawing.Point(550, 89);
+            MaxRecoilUD.Location = new System.Drawing.Point(550, 114);
             MaxRecoilUD.Maximum = new decimal(new int[] { 250000, 0, 0, 0 });
             MaxRecoilUD.Name = "MaxRecoilUD";
             MaxRecoilUD.Size = new System.Drawing.Size(65, 23);
@@ -466,7 +476,7 @@ namespace ApsCalcUI
             // 
             // MaxLengthUD
             // 
-            MaxLengthUD.Location = new System.Drawing.Point(550, 139);
+            MaxLengthUD.Location = new System.Drawing.Point(550, 164);
             MaxLengthUD.Maximum = new decimal(new int[] { 8000, 0, 0, 0 });
             MaxLengthUD.Name = "MaxLengthUD";
             MaxLengthUD.Size = new System.Drawing.Size(65, 23);
@@ -479,7 +489,7 @@ namespace ApsCalcUI
             // 
             // MinVelocityUD
             // 
-            MinVelocityUD.Location = new System.Drawing.Point(550, 164);
+            MinVelocityUD.Location = new System.Drawing.Point(550, 189);
             MinVelocityUD.Maximum = new decimal(new int[] { 5000, 0, 0, 0 });
             MinVelocityUD.Name = "MinVelocityUD";
             MinVelocityUD.Size = new System.Drawing.Size(65, 23);
@@ -490,7 +500,7 @@ namespace ApsCalcUI
             // 
             // MinRangeUD
             // 
-            MinRangeUD.Location = new System.Drawing.Point(550, 189);
+            MinRangeUD.Location = new System.Drawing.Point(550, 214);
             MinRangeUD.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             MinRangeUD.Name = "MinRangeUD";
             MinRangeUD.Size = new System.Drawing.Size(65, 23);
@@ -535,7 +545,7 @@ namespace ApsCalcUI
             // 
             // MinLengthUD
             // 
-            MinLengthUD.Location = new System.Drawing.Point(550, 114);
+            MinLengthUD.Location = new System.Drawing.Point(550, 139);
             MinLengthUD.Maximum = new decimal(new int[] { 7999, 0, 0, 0 });
             MinLengthUD.Name = "MinLengthUD";
             MinLengthUD.Size = new System.Drawing.Size(65, 23);
@@ -702,7 +712,7 @@ namespace ApsCalcUI
             // PendepthCB
             // 
             PendepthCB.AutoSize = true;
-            PendepthCB.Location = new System.Drawing.Point(686, 318);
+            PendepthCB.Location = new System.Drawing.Point(686, 353);
             PendepthCB.Name = "PendepthCB";
             PendepthCB.Size = new System.Drawing.Size(77, 19);
             PendepthCB.TabIndex = 42;
@@ -810,7 +820,7 @@ namespace ApsCalcUI
             // BarrelLengthLimitCB
             // 
             BarrelLengthLimitCB.AutoSize = true;
-            BarrelLengthLimitCB.Location = new System.Drawing.Point(446, 243);
+            BarrelLengthLimitCB.Location = new System.Drawing.Point(446, 278);
             BarrelLengthLimitCB.Name = "BarrelLengthLimitCB";
             BarrelLengthLimitCB.Size = new System.Drawing.Size(137, 19);
             BarrelLengthLimitCB.TabIndex = 45;
@@ -824,7 +834,7 @@ namespace ApsCalcUI
             BarrelLengthLimitDD.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             BarrelLengthLimitDD.Enabled = false;
             BarrelLengthLimitDD.FormattingEnabled = true;
-            BarrelLengthLimitDD.Location = new System.Drawing.Point(648, 240);
+            BarrelLengthLimitDD.Location = new System.Drawing.Point(648, 275);
             BarrelLengthLimitDD.Name = "BarrelLengthLimitDD";
             BarrelLengthLimitDD.Size = new System.Drawing.Size(121, 23);
             BarrelLengthLimitDD.TabIndex = 46;
@@ -833,7 +843,7 @@ namespace ApsCalcUI
             // BarrelLengthLimitUD
             // 
             BarrelLengthLimitUD.Enabled = false;
-            BarrelLengthLimitUD.Location = new System.Drawing.Point(585, 240);
+            BarrelLengthLimitUD.Location = new System.Drawing.Point(585, 275);
             BarrelLengthLimitUD.Minimum = new decimal(new int[] { 2, 0, 0, 0 });
             BarrelLengthLimitUD.Name = "BarrelLengthLimitUD";
             BarrelLengthLimitUD.Size = new System.Drawing.Size(50, 23);
@@ -858,7 +868,7 @@ namespace ApsCalcUI
             MaxInaccUD.DecimalPlaces = 2;
             MaxInaccUD.Enabled = false;
             MaxInaccUD.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
-            MaxInaccUD.Location = new System.Drawing.Point(550, 214);
+            MaxInaccUD.Location = new System.Drawing.Point(550, 239);
             MaxInaccUD.Maximum = new decimal(new int[] { 5, 0, 0, 65536 });
             MaxInaccUD.Name = "MaxInaccUD";
             MaxInaccUD.Size = new System.Drawing.Size(65, 23);
@@ -992,7 +1002,7 @@ namespace ApsCalcUI
             // 
             // SmokeBodyFixedUD
             // 
-            SmokeBodyFixedUD.Location = new System.Drawing.Point(110, 204);
+            SmokeBodyFixedUD.Location = new System.Drawing.Point(125, 204);
             SmokeBodyFixedUD.Maximum = new decimal(new int[] { 19, 0, 0, 0 });
             SmokeBodyFixedUD.Name = "SmokeBodyFixedUD";
             SmokeBodyFixedUD.Size = new System.Drawing.Size(40, 23);
@@ -1003,7 +1013,7 @@ namespace ApsCalcUI
             // 
             // IncendiaryBodyFixedUD
             // 
-            IncendiaryBodyFixedUD.Location = new System.Drawing.Point(110, 229);
+            IncendiaryBodyFixedUD.Location = new System.Drawing.Point(125, 229);
             IncendiaryBodyFixedUD.Maximum = new decimal(new int[] { 19, 0, 0, 0 });
             IncendiaryBodyFixedUD.Name = "IncendiaryBodyFixedUD";
             IncendiaryBodyFixedUD.Size = new System.Drawing.Size(40, 23);
@@ -1011,6 +1021,33 @@ namespace ApsCalcUI
             IncendiaryBodyFixedUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             ToolTip.SetToolTip(IncendiaryBodyFixedUD, "Minimum Incendiary bodies to include in every shell");
             IncendiaryBodyFixedUD.ValueChanged += IncendiaryBodyFixedUD_ValueChanged;
+            // 
+            // RawNumberOutputCB
+            // 
+            RawNumberOutputCB.AutoSize = true;
+            RawNumberOutputCB.Location = new System.Drawing.Point(629, 601);
+            RawNumberOutputCB.Name = "RawNumberOutputCB";
+            RawNumberOutputCB.Size = new System.Drawing.Size(136, 19);
+            RawNumberOutputCB.TabIndex = 61;
+            RawNumberOutputCB.Text = "Raw Number Output";
+            ToolTip.SetToolTip(RawNumberOutputCB, "Check to output unrounded numbers.\r\nIf unchecked, outputs wil be rounded to match values shown ingame.");
+            RawNumberOutputCB.UseVisualStyleBackColor = true;
+            // 
+            // GPIncrementUD
+            // 
+            GPIncrementUD.DecimalPlaces = 2;
+            GPIncrementUD.Enabled = false;
+            GPIncrementUD.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
+            GPIncrementUD.Location = new System.Drawing.Point(550, 39);
+            GPIncrementUD.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
+            GPIncrementUD.Minimum = new decimal(new int[] { 1, 0, 0, 131072 });
+            GPIncrementUD.Name = "GPIncrementUD";
+            GPIncrementUD.Size = new System.Drawing.Size(65, 23);
+            GPIncrementUD.TabIndex = 63;
+            GPIncrementUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            ToolTip.SetToolTip(GPIncrementUD, "Amount of gunpowder added between tests.\r\nLarger increments may skip better shells, but greatly decrease calculation time.");
+            GPIncrementUD.Value = new decimal(new int[] { 1, 0, 0, 131072 });
+            GPIncrementUD.Visible = false;
             // 
             // BarrelCountLabel
             // 
@@ -1135,7 +1172,7 @@ namespace ApsCalcUI
             FixedModulesPanel.Controls.Add(FixedModulesLabel);
             FixedModulesPanel.Location = new System.Drawing.Point(255, 0);
             FixedModulesPanel.Name = "FixedModulesPanel";
-            FixedModulesPanel.Size = new System.Drawing.Size(154, 415);
+            FixedModulesPanel.Size = new System.Drawing.Size(173, 415);
             FixedModulesPanel.TabIndex = 11;
             // 
             // IncendiaryBodyFixedLabel
@@ -1223,7 +1260,7 @@ namespace ApsCalcUI
             // 
             FixedModulesLabel.Location = new System.Drawing.Point(0, 0);
             FixedModulesLabel.Name = "FixedModulesLabel";
-            FixedModulesLabel.Size = new System.Drawing.Size(154, 27);
+            FixedModulesLabel.Size = new System.Drawing.Size(173, 27);
             FixedModulesLabel.TabIndex = 0;
             FixedModulesLabel.Text = "Fixed Modules";
             FixedModulesLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1249,7 +1286,7 @@ namespace ApsCalcUI
             // MaxGPLabel
             // 
             MaxGPLabel.AutoSize = true;
-            MaxGPLabel.Location = new System.Drawing.Point(446, 18);
+            MaxGPLabel.Location = new System.Drawing.Point(441, 18);
             MaxGPLabel.Name = "MaxGPLabel";
             MaxGPLabel.Size = new System.Drawing.Size(92, 15);
             MaxGPLabel.TabIndex = 13;
@@ -1258,7 +1295,7 @@ namespace ApsCalcUI
             // MaxRGLabel
             // 
             MaxRGLabel.AutoSize = true;
-            MaxRGLabel.Location = new System.Drawing.Point(446, 43);
+            MaxRGLabel.Location = new System.Drawing.Point(441, 68);
             MaxRGLabel.Name = "MaxRGLabel";
             MaxRGLabel.Size = new System.Drawing.Size(92, 15);
             MaxRGLabel.TabIndex = 15;
@@ -1267,7 +1304,7 @@ namespace ApsCalcUI
             // MaxDrawLabel
             // 
             MaxDrawLabel.AutoSize = true;
-            MaxDrawLabel.Location = new System.Drawing.Point(446, 68);
+            MaxDrawLabel.Location = new System.Drawing.Point(441, 93);
             MaxDrawLabel.Name = "MaxDrawLabel";
             MaxDrawLabel.Size = new System.Drawing.Size(82, 15);
             MaxDrawLabel.TabIndex = 17;
@@ -1276,7 +1313,7 @@ namespace ApsCalcUI
             // MaxRecoilLabel
             // 
             MaxRecoilLabel.AutoSize = true;
-            MaxRecoilLabel.Location = new System.Drawing.Point(446, 93);
+            MaxRecoilLabel.Location = new System.Drawing.Point(441, 118);
             MaxRecoilLabel.Name = "MaxRecoilLabel";
             MaxRecoilLabel.Size = new System.Drawing.Size(65, 15);
             MaxRecoilLabel.TabIndex = 19;
@@ -1285,7 +1322,7 @@ namespace ApsCalcUI
             // MaxLengthLabel
             // 
             MaxLengthLabel.AutoSize = true;
-            MaxLengthLabel.Location = new System.Drawing.Point(446, 143);
+            MaxLengthLabel.Location = new System.Drawing.Point(441, 168);
             MaxLengthLabel.Name = "MaxLengthLabel";
             MaxLengthLabel.Size = new System.Drawing.Size(103, 15);
             MaxLengthLabel.TabIndex = 22;
@@ -1294,7 +1331,7 @@ namespace ApsCalcUI
             // MinVelocityLabel
             // 
             MinVelocityLabel.AutoSize = true;
-            MinVelocityLabel.Location = new System.Drawing.Point(446, 168);
+            MinVelocityLabel.Location = new System.Drawing.Point(441, 193);
             MinVelocityLabel.Name = "MinVelocityLabel";
             MinVelocityLabel.Size = new System.Drawing.Size(104, 15);
             MinVelocityLabel.TabIndex = 24;
@@ -1303,7 +1340,7 @@ namespace ApsCalcUI
             // MinRangeLabel
             // 
             MinRangeLabel.AutoSize = true;
-            MinRangeLabel.Location = new System.Drawing.Point(446, 193);
+            MinRangeLabel.Location = new System.Drawing.Point(441, 218);
             MinRangeLabel.Name = "MinRangeLabel";
             MinRangeLabel.Size = new System.Drawing.Size(106, 15);
             MinRangeLabel.TabIndex = 26;
@@ -1312,7 +1349,7 @@ namespace ApsCalcUI
             // DamageTypeLabel
             // 
             DamageTypeLabel.AutoSize = true;
-            DamageTypeLabel.Location = new System.Drawing.Point(446, 281);
+            DamageTypeLabel.Location = new System.Drawing.Point(446, 316);
             DamageTypeLabel.Name = "DamageTypeLabel";
             DamageTypeLabel.Size = new System.Drawing.Size(55, 15);
             DamageTypeLabel.TabIndex = 29;
@@ -1322,7 +1359,7 @@ namespace ApsCalcUI
             // 
             TestTypePanel.Controls.Add(PerCostRB);
             TestTypePanel.Controls.Add(PerVolumeRB);
-            TestTypePanel.Location = new System.Drawing.Point(682, 267);
+            TestTypePanel.Location = new System.Drawing.Point(682, 302);
             TestTypePanel.Name = "TestTypePanel";
             TestTypePanel.Size = new System.Drawing.Size(106, 48);
             TestTypePanel.TabIndex = 30;
@@ -1330,7 +1367,7 @@ namespace ApsCalcUI
             // PerLabel
             // 
             PerLabel.AutoSize = true;
-            PerLabel.Location = new System.Drawing.Point(629, 281);
+            PerLabel.Location = new System.Drawing.Point(629, 316);
             PerLabel.Name = "PerLabel";
             PerLabel.Size = new System.Drawing.Size(48, 15);
             PerLabel.TabIndex = 31;
@@ -1340,7 +1377,7 @@ namespace ApsCalcUI
             // 
             TargetACPanel.Controls.Add(TargetACCL);
             TargetACPanel.Controls.Add(TargetACLabel);
-            TargetACPanel.Location = new System.Drawing.Point(436, 321);
+            TargetACPanel.Location = new System.Drawing.Point(436, 356);
             TargetACPanel.Name = "TargetACPanel";
             TargetACPanel.Size = new System.Drawing.Size(169, 199);
             TargetACPanel.TabIndex = 32;
@@ -1380,7 +1417,7 @@ namespace ApsCalcUI
             TargetSchemePanel.Controls.Add(ArmorLayerLB);
             TargetSchemePanel.Controls.Add(TargetSchemeLabel);
             TargetSchemePanel.Enabled = false;
-            TargetSchemePanel.Location = new System.Drawing.Point(611, 335);
+            TargetSchemePanel.Location = new System.Drawing.Point(611, 370);
             TargetSchemePanel.Name = "TargetSchemePanel";
             TargetSchemePanel.Size = new System.Drawing.Size(177, 192);
             TargetSchemePanel.TabIndex = 34;
@@ -1424,7 +1461,7 @@ namespace ApsCalcUI
             // MinLengthLabel
             // 
             MinLengthLabel.AutoSize = true;
-            MinLengthLabel.Location = new System.Drawing.Point(446, 118);
+            MinLengthLabel.Location = new System.Drawing.Point(441, 143);
             MinLengthLabel.Name = "MinLengthLabel";
             MinLengthLabel.Size = new System.Drawing.Size(101, 15);
             MinLengthLabel.TabIndex = 36;
@@ -1473,7 +1510,7 @@ namespace ApsCalcUI
             // MinInaccLabel
             // 
             MinInaccLabel.AutoSize = true;
-            MinInaccLabel.Location = new System.Drawing.Point(446, 218);
+            MinInaccLabel.Location = new System.Drawing.Point(441, 243);
             MinInaccLabel.Name = "MinInaccLabel";
             MinInaccLabel.Size = new System.Drawing.Size(106, 15);
             MinInaccLabel.TabIndex = 49;
@@ -1502,7 +1539,7 @@ namespace ApsCalcUI
             FragAnglePanel.Controls.Add(FragAngleUD);
             FragAnglePanel.Controls.Add(FragAngleLabel);
             FragAnglePanel.Enabled = false;
-            FragAnglePanel.Location = new System.Drawing.Point(436, 321);
+            FragAnglePanel.Location = new System.Drawing.Point(436, 356);
             FragAnglePanel.Name = "FragAnglePanel";
             FragAnglePanel.Size = new System.Drawing.Size(169, 69);
             FragAnglePanel.TabIndex = 54;
@@ -1591,12 +1628,25 @@ namespace ApsCalcUI
             BeltfedClipCountLabel.TabIndex = 0;
             BeltfedClipCountLabel.Text = "Beltfed";
             // 
+            // GPIncrementLabel
+            // 
+            GPIncrementLabel.AutoSize = true;
+            GPIncrementLabel.Location = new System.Drawing.Point(441, 43);
+            GPIncrementLabel.Name = "GPIncrementLabel";
+            GPIncrementLabel.Size = new System.Drawing.Size(79, 15);
+            GPIncrementLabel.TabIndex = 62;
+            GPIncrementLabel.Text = "GP Increment";
+            GPIncrementLabel.Visible = false;
+            // 
             // ParameterInput
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoScroll = true;
             ClientSize = new System.Drawing.Size(800, 731);
+            Controls.Add(GPIncrementUD);
+            Controls.Add(GPIncrementLabel);
+            Controls.Add(RawNumberOutputCB);
             Controls.Add(ClipCountPanel);
             Controls.Add(CommaDecimalCB);
             Controls.Add(RofRpmPanel);
@@ -1693,6 +1743,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)RegularInputsPerLoaderUD).EndInit();
             ((System.ComponentModel.ISupportInitialize)SmokeBodyFixedUD).EndInit();
             ((System.ComponentModel.ISupportInitialize)IncendiaryBodyFixedUD).EndInit();
+            ((System.ComponentModel.ISupportInitialize)GPIncrementUD).EndInit();
             BasePanel.ResumeLayout(false);
             BasePanel.PerformLayout();
             FixedModulesPanel.ResumeLayout(false);
@@ -1848,6 +1899,9 @@ namespace ApsCalcUI
         private System.Windows.Forms.Label SmokeBodyFixedLabel;
         private System.Windows.Forms.NumericUpDown IncendiaryBodyFixedUD;
         private System.Windows.Forms.Label IncendiaryBodyFixedLabel;
+        private System.Windows.Forms.CheckBox RawNumberOutputCB;
+        private System.Windows.Forms.NumericUpDown GPIncrementUD;
+        private System.Windows.Forms.Label GPIncrementLabel;
     }
 }
 

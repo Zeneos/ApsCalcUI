@@ -75,7 +75,7 @@ namespace ApsCalcUI
             [
                 new DamageTypeItem(DamageType.Kinetic, "Kinetic"),
                 new DamageTypeItem(DamageType.EMP, "EMP"),
-                new DamageTypeItem(DamageType.MunitionDefense, "Munition defense"),
+                new DamageTypeItem(DamageType.MD, "Munition defense"),
                 new DamageTypeItem(DamageType.Frag, "Frag"),
                 new DamageTypeItem(DamageType.HE, "HE" ),
                 new DamageTypeItem(DamageType.HEAT, "HEAT"),
@@ -186,7 +186,7 @@ namespace ApsCalcUI
             minLength += (float)SolidBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.SolidBody.MaxLength);
             minLength += (float)SabotBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.SabotBody.MaxLength);
             minLength += (float)EmpBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.EmpBody.MaxLength);
-            minLength += (float)FlakBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.MunitionDefenseBody.MaxLength);
+            minLength += (float)FlakBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.MDBody.MaxLength);
             minLength += (float)FragBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.FragBody.MaxLength);
             minLength += (float)HEBodyFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.HEBody.MaxLength);
             minLength += (float)FinFixedUD.Value * Math.Min((float)MinGaugeUD.Value, Module.FinBody.MaxLength);
@@ -329,6 +329,11 @@ namespace ApsCalcUI
         private void MaxGPUD_ValueChanged(object sender, EventArgs e)
         {
             UpdateModuleCounts();
+            bool showIncrement = MaxGPUD.Value > 0;
+            GPIncrementLabel.Visible = showIncrement;
+            GPIncrementLabel.Enabled = showIncrement;
+            GPIncrementUD.Visible = showIncrement;
+            GPIncrementUD.Enabled = showIncrement;
         }
 
         private void MaxRGUD_ValueChanged(object sender, EventArgs e)
@@ -772,6 +777,7 @@ namespace ApsCalcUI
                 testParameters.UsesAmmoEjector = AmmoEjectorCB.Checked;
 
                 testParameters.MaxGPCasingCount = (float)MaxGPUD.Value;
+                testParameters.GPIncrement = (float)GPIncrementUD.Value;
                 testParameters.MaxRGCasingCount = (float)MaxRGUD.Value;
                 testParameters.MinLength = (float)MinLengthUD.Value;
                 testParameters.MaxLength = (float)MaxLengthUD.Value;
@@ -882,6 +888,8 @@ namespace ApsCalcUI
                 testParameters.MaxBarrelLength = (float)BarrelLengthLimitUD.Value;
                 testParameters.BarrelLengthLimitType = ((BarrelLengthLimitTypeItem)BarrelLengthLimitDD.SelectedItem).ID;
 
+                testParameters.RawNumberOutputIsChecked = RawNumberOutputCB.Checked;
+
                 // Must use semicolons to separate columns if using commas for decimals
                 testParameters.ColumnDelimiter = CommaDecimalCB.Checked ? ';' : ',';
 
@@ -936,6 +944,7 @@ namespace ApsCalcUI
                                     testParameters.BeltfedInputsPerLoader,
                                     testParameters.UsesAmmoEjector,
                                     testParameters.MaxGPCasingCount,
+                                    testParameters.GPIncrement,
                                     testParameters.MaxRGCasingCount,
                                     testParameters.MinLength,
                                     testParameters.MaxLength,
@@ -967,6 +976,7 @@ namespace ApsCalcUI
                                     testParameters.LimitBarrelLength,
                                     testParameters.MaxBarrelLength,
                                     testParameters.BarrelLengthLimitType,
+                                    testParameters.RawNumberOutputIsChecked,
                                     testParameters.ColumnDelimiter
                                     );
 
@@ -995,6 +1005,7 @@ namespace ApsCalcUI
                                     testParameters.BeltfedInputsPerLoader,
                                     testParameters.UsesAmmoEjector,
                                     testParameters.MaxGPCasingCount,
+                                    testParameters.GPIncrement,
                                     testParameters.MaxRGCasingCount,
                                     testParameters.MinLength,
                                     testParameters.MaxLength,
@@ -1026,6 +1037,7 @@ namespace ApsCalcUI
                                     testParameters.LimitBarrelLength,
                                     testParameters.MaxBarrelLength,
                                     testParameters.BarrelLengthLimitType,
+                                    testParameters.RawNumberOutputIsChecked,
                                     testParameters.ColumnDelimiter
                                 );
 
@@ -1055,6 +1067,7 @@ namespace ApsCalcUI
                                 testParameters.BeltfedInputsPerLoader,
                                 testParameters.UsesAmmoEjector,
                                 testParameters.MaxGPCasingCount,
+                                testParameters.GPIncrement,
                                 testParameters.MaxRGCasingCount,
                                 testParameters.MinLength,
                                 testParameters.MaxLength,
@@ -1086,6 +1099,7 @@ namespace ApsCalcUI
                                 testParameters.LimitBarrelLength,
                                 testParameters.MaxBarrelLength,
                                 testParameters.BarrelLengthLimitType,
+                                testParameters.RawNumberOutputIsChecked,
                                 testParameters.ColumnDelimiter
                                 );
 
@@ -1113,6 +1127,7 @@ namespace ApsCalcUI
                                 testParameters.BeltfedInputsPerLoader,
                                 testParameters.UsesAmmoEjector,
                                 testParameters.MaxGPCasingCount,
+                                testParameters.GPIncrement,
                                 testParameters.MaxRGCasingCount,
                                 testParameters.MinLength,
                                 testParameters.MaxLength,
@@ -1144,6 +1159,7 @@ namespace ApsCalcUI
                                 testParameters.LimitBarrelLength,
                                 testParameters.MaxBarrelLength,
                                 testParameters.BarrelLengthLimitType,
+                                testParameters.RawNumberOutputIsChecked,
                                 testParameters.ColumnDelimiter
                             );
 

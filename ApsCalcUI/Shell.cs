@@ -99,7 +99,7 @@ namespace ApsCalcUI
         public float DamagePerFrag { get; set; }
         public float RawHE { get; set; }
         public float HEExplosionRadius { get; set; }
-        public float FlakExplosionRadius { get; set; }
+        public float MDExplosionRadius { get; set; }
         public float Fuel { get; set; }
         public float Intensity { get; set; }
         public float Oxidizer { get; set; }
@@ -113,7 +113,7 @@ namespace ApsCalcUI
             { DamageType.HEAT, 0 },
             { DamageType.Incendiary, 0 },
             { DamageType.Disruptor, 0 },
-            { DamageType.MunitionDefense, 0 },
+            { DamageType.MD, 0 },
             { DamageType.Smoke, 0 }
         };
 
@@ -126,7 +126,7 @@ namespace ApsCalcUI
             { DamageType.HEAT, 0 },
             { DamageType.Incendiary, 0 },
             { DamageType.Disruptor, 0 },
-            { DamageType.MunitionDefense, 0 },
+            { DamageType.MD, 0 },
             { DamageType.Smoke, 0 }
         };
 
@@ -139,7 +139,7 @@ namespace ApsCalcUI
             { DamageType.HEAT, 0 },
             { DamageType.Incendiary, 0 },
             { DamageType.Disruptor, 0 },
-            { DamageType.MunitionDefense, 0 },
+            { DamageType.MD, 0 },
             { DamageType.Smoke, 0 }
         };
 
@@ -152,7 +152,7 @@ namespace ApsCalcUI
             { DamageType.HEAT, 0 },
             { DamageType.Incendiary, 0 },
             { DamageType.Disruptor, 0 },
-            { DamageType.MunitionDefense, 0 },
+            { DamageType.MD, 0 },
             { DamageType.Smoke, 0 }
         };
 
@@ -641,7 +641,7 @@ namespace ApsCalcUI
             {
                 CalculateEmpDamage();
             }
-            else if (dt == DamageType.MunitionDefense)
+            else if (dt == DamageType.MD)
             {
                 CalculateFlakDamage();
             }
@@ -748,7 +748,7 @@ namespace ApsCalcUI
             int flakIndex = int.MaxValue;
             for (int i = 0; i < Module.AllModules.Length; i++)
             {
-                if (Module.AllModules[i] == Module.MunitionDefenseBody)
+                if (Module.AllModules[i] == Module.MDBody)
                 {
                     flakIndex = i;
                     break;
@@ -757,12 +757,12 @@ namespace ApsCalcUI
 
             float flaKBodies = BodyModuleCounts[flakIndex];
 
-            if (HeadModule == Module.MunitionDefenseHead || HeadModule == Module.MunitionDefenseBody)
+            if (HeadModule == Module.MDHead || HeadModule == Module.MDBody)
             {
                 flaKBodies++;
             }
-            DamageDict[DamageType.MunitionDefense] = 3000f * MathF.Pow(GaugeMultiplier * flaKBodies / 31.25f * ApsModifier * OverallChemModifier, 0.9f);
-            FlakExplosionRadius = MathF.Min(MathF.Pow(DamageDict[DamageType.MunitionDefense], 0.3f) * 3f, 30f);
+            DamageDict[DamageType.MD] = 3000f * MathF.Pow(GaugeMultiplier * flaKBodies / 31.25f * ApsModifier * OverallChemModifier, 0.9f);
+            MDExplosionRadius = MathF.Min(MathF.Pow(DamageDict[DamageType.MD], 0.3f) * 3f, 30f);
             /* 
              * Multiply by volume to approximate applied damage; divide by 1000 to make result more manageable
             float sphereVolume = MathF.Pow(FlakExplosionRadius, 3) * MathF.PI * 4f / 3f;
@@ -988,7 +988,7 @@ namespace ApsCalcUI
                 {
                     CalculateEmpDps();
                 }
-                else if (dt == DamageType.MunitionDefense)
+                else if (dt == DamageType.MD)
                 {
                     CalculateFlakDps();
                 }
@@ -1078,9 +1078,9 @@ namespace ApsCalcUI
         /// </summary>
         void CalculateFlakDps()
         {
-            DpsDict[DamageType.MunitionDefense] = DamageDict[DamageType.MunitionDefense] / ClusterReloadTime * Uptime;
-            DpsPerVolumeDict[DamageType.MunitionDefense] = DpsDict[DamageType.MunitionDefense] / VolumePerLoader;
-            DpsPerCostDict[DamageType.MunitionDefense] = DpsDict[DamageType.MunitionDefense] / CostPerLoader;
+            DpsDict[DamageType.MD] = DamageDict[DamageType.MD] / ClusterReloadTime * Uptime;
+            DpsPerVolumeDict[DamageType.MD] = DpsDict[DamageType.MD] / VolumePerLoader;
+            DpsPerCostDict[DamageType.MD] = DpsDict[DamageType.MD] / CostPerLoader;
         }
 
         /// <summary>
