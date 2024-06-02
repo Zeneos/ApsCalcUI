@@ -1273,56 +1273,56 @@ namespace ApsCalcUI
                             TopBelt = rawShell;
                         }
                     }
-                    else if (rawShell.TotalLength <= 1000f)
+                    else if (rawShell.TotalLength <= 1_000f)
                     {
                         if (rawShell.DpsPerVolumeDict[DamageType] > Top1000.DpsPerVolumeDict[DamageType])
                         {
                             Top1000 = rawShell;
                         }
                     }
-                    else if (rawShell.TotalLength <= 2000f)
+                    else if (rawShell.TotalLength <= 2_000f)
                     {
                         if (rawShell.DpsPerVolumeDict[DamageType] > Top2000.DpsPerVolumeDict[DamageType])
                         {
                             Top2000 = rawShell;
                         }
                     }
-                    else if (rawShell.TotalLength <= 3000f)
+                    else if (rawShell.TotalLength <= 3_000f)
                     {
                         if (rawShell.DpsPerVolumeDict[DamageType] > Top3000.DpsPerVolumeDict[DamageType])
                         {
                             Top3000 = rawShell;
                         }
                     }
-                    else if (rawShell.TotalLength <= 4000f)
+                    else if (rawShell.TotalLength <= 4_000f)
                     {
                         if (rawShell.DpsPerVolumeDict[DamageType] > Top4000.DpsPerVolumeDict[DamageType])
                         {
                             Top4000 = rawShell;
                         }
                     }
-                    else if (rawShell.TotalLength <= 5000f)
+                    else if (rawShell.TotalLength <= 5_000f)
                     {
                         if (rawShell.DpsPerVolumeDict[DamageType] > Top5000.DpsPerVolumeDict[DamageType])
                         {
                             Top5000 = rawShell;
                         }
                     }
-                    else if (rawShell.TotalLength <= 6000f)
+                    else if (rawShell.TotalLength <= 6_000f)
                     {
                         if (rawShell.DpsPerVolumeDict[DamageType] > Top6000.DpsPerVolumeDict[DamageType])
                         {
                             Top6000 = rawShell;
                         }
                     }
-                    else if (rawShell.TotalLength <= 7000f)
+                    else if (rawShell.TotalLength <= 7_000f)
                     {
                         if (rawShell.DpsPerVolumeDict[DamageType] > Top7000.DpsPerVolumeDict[DamageType])
                         {
                             Top7000 = rawShell;
                         }
                     }
-                    else if (rawShell.TotalLength <= 8000f)
+                    else if (rawShell.TotalLength <= 8_000f)
                     {
                         if (rawShell.DpsPerVolumeDict[DamageType] > Top8000.DpsPerVolumeDict[DamageType])
                         {
@@ -1346,56 +1346,56 @@ namespace ApsCalcUI
                             TopBelt = rawShell;
                         }
                     }
-                    else if (rawShell.TotalLength <= 1000f)
+                    else if (rawShell.TotalLength <= 1_000f)
                     {
                         if (rawShell.DpsPerCostDict[DamageType] > Top1000.DpsPerCostDict[DamageType])
                         {
                             Top1000 = rawShell;
                         }
                     }
-                    else if (rawShell.TotalLength <= 2000f)
+                    else if (rawShell.TotalLength <= 2_000f)
                     {
                         if (rawShell.DpsPerCostDict[DamageType] > Top2000.DpsPerCostDict[DamageType])
                         {
                             Top2000 = rawShell;
                         }
                     }
-                    else if (rawShell.TotalLength <= 3000f)
+                    else if (rawShell.TotalLength <= 3_000f)
                     {
                         if (rawShell.DpsPerCostDict[DamageType] > Top3000.DpsPerCostDict[DamageType])
                         {
                             Top3000 = rawShell;
                         }
                     }
-                    else if (rawShell.TotalLength <= 4000f)
+                    else if (rawShell.TotalLength <= 4_000f)
                     {
                         if (rawShell.DpsPerCostDict[DamageType] > Top4000.DpsPerCostDict[DamageType])
                         {
                             Top4000 = rawShell;
                         }
                     }
-                    else if (rawShell.TotalLength <= 5000f)
+                    else if (rawShell.TotalLength <= 5_000f)
                     {
                         if (rawShell.DpsPerCostDict[DamageType] > Top5000.DpsPerCostDict[DamageType])
                         {
                             Top5000 = rawShell;
                         }
                     }
-                    else if (rawShell.TotalLength <= 6000f)
+                    else if (rawShell.TotalLength <= 6_000f)
                     {
                         if (rawShell.DpsPerCostDict[DamageType] > Top6000.DpsPerCostDict[DamageType])
                         {
                             Top6000 = rawShell;
                         }
                     }
-                    else if (rawShell.TotalLength <= 7000f)
+                    else if (rawShell.TotalLength <= 7_000f)
                     {
                         if (rawShell.DpsPerCostDict[DamageType] > Top7000.DpsPerCostDict[DamageType])
                         {
                             Top7000 = rawShell;
                         }
                     }
-                    else if (rawShell.TotalLength <= 8000f)
+                    else if (rawShell.TotalLength <= 8_000f)
                     {
                         if (rawShell.DpsPerCostDict[DamageType] > Top8000.DpsPerCostDict[DamageType])
                         {
