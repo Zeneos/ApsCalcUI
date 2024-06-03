@@ -208,6 +208,10 @@ which requires Fuel access (as shown on the default tab of the V menu). This
 includes Fuel engines and Custom jet engines. Disabled unless Max Rail Draw
 > 0.
 
+Verbose Output Checkbox: Check to show detailed volume and cost statistics
+(see end of Output section below). Useful mostly for debugging or for advanced
+users trying to do additional analysis using raw shell stats.
+
 Raw Number Output Checkbox: By default, all numbers are rounded to the number
 of decimal places shown ingame when output to .csv. Note that rounding takes
 place AFTER all calculations and does not affect test accuracy.
@@ -251,6 +255,10 @@ Head: the module at the head of the shell (at the bottom of the controller).
 
 Rail draw: rail draw, if any.
 
+DPS per cost/DPS per volume: the most important stats, shell damage per second
+divided by total cost (and volume) for the duration of the test interval.
+
+
 Velocity (m/s): muzzle velocity.
 
 Effective range (m): range at which velocity decreases dramatically.
@@ -258,7 +266,7 @@ Effective range (m): range at which velocity decreases dramatically.
 Barrel length for inacccuracy (m): minimum barrel length to achieve desired
 inaccuracy (default 0.3°). Note that, unlike the ingame UI, the optimizer 
 includes bonuses from Base Bleeder and Visual Tracer in the calculation, so 
-this number may not match what is shown ingame.
+this number may not match what is shown in the APS Shell Editor.
 
 Barrel length for ful propellant burn (m): same value as shown ingame.
 
@@ -286,7 +294,8 @@ to the firing piece.
 
 DPS: Damage per Second.
 
-Volumes and Costs
+
+Volumes and Costs (only shown if "Verbose Output" is checked)
 The various volumes and costs shown are the hypothetical amounts of each
 type of block needed to support a single loader. The values -- cubic metres
 for volume, and materials for cost -- will almost always be decimals because

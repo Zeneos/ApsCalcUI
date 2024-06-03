@@ -888,8 +888,8 @@ namespace ApsCalcUI
                 testParameters.MaxBarrelLength = (float)BarrelLengthLimitUD.Value;
                 testParameters.BarrelLengthLimitType = ((BarrelLengthLimitTypeItem)BarrelLengthLimitDD.SelectedItem).ID;
 
+                testParameters.VerboseOutputIsChecked = VerboseOutputCB.Checked;
                 testParameters.RawNumberOutputIsChecked = RawNumberOutputCB.Checked;
-
                 // Must use semicolons to separate columns if using commas for decimals
                 testParameters.ColumnDelimiter = CommaDecimalCB.Checked ? ';' : ',';
 
@@ -976,6 +976,7 @@ namespace ApsCalcUI
                                     testParameters.LimitBarrelLength,
                                     testParameters.MaxBarrelLength,
                                     testParameters.BarrelLengthLimitType,
+                                    testParameters.VerboseOutputIsChecked,
                                     testParameters.RawNumberOutputIsChecked,
                                     testParameters.ColumnDelimiter
                                     );
@@ -1037,6 +1038,7 @@ namespace ApsCalcUI
                                     testParameters.LimitBarrelLength,
                                     testParameters.MaxBarrelLength,
                                     testParameters.BarrelLengthLimitType,
+                                    testParameters.VerboseOutputIsChecked,
                                     testParameters.RawNumberOutputIsChecked,
                                     testParameters.ColumnDelimiter
                                 );
@@ -1099,6 +1101,7 @@ namespace ApsCalcUI
                                 testParameters.LimitBarrelLength,
                                 testParameters.MaxBarrelLength,
                                 testParameters.BarrelLengthLimitType,
+                                testParameters.VerboseOutputIsChecked,
                                 testParameters.RawNumberOutputIsChecked,
                                 testParameters.ColumnDelimiter
                                 );
@@ -1159,6 +1162,7 @@ namespace ApsCalcUI
                                 testParameters.LimitBarrelLength,
                                 testParameters.MaxBarrelLength,
                                 testParameters.BarrelLengthLimitType,
+                                testParameters.VerboseOutputIsChecked,
                                 testParameters.RawNumberOutputIsChecked,
                                 testParameters.ColumnDelimiter
                             );

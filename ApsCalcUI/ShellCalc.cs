@@ -36,7 +36,6 @@ namespace ApsCalcUI
         Calibers
     }
 
-
     public class ShellCalc
     {
         /// <summary>
@@ -88,6 +87,7 @@ namespace ApsCalcUI
         /// <param name="limitBarrelLength">Whether to limit max barrel length</param>
         /// <param name="maxBarrelLength">Max barrel length in m or calibers</param>
         /// <param name="barrelLengthLimitType">Whether to limit barrel length by m or calibers (multiples of gauge)</param>
+        /// <param name="verboseOutputIsChecked">Whether to show volume and cost numbers for debugging/details</param>
         /// <param name="rawNumberOutputIsChecked">Do not round numbers in output if true</param>
         /// <param name="columnDelimiter">Character used to separate columns in .csv output; either comma or semicolon</param>
         public ShellCalc(
@@ -137,6 +137,7 @@ namespace ApsCalcUI
             bool limitBarrelLength,
             float maxBarrelLength,
             BarrelLengthLimit barrelLengthLimitType,
+            bool verboseOutputIsChecked,
             bool rawNumberOutputIsChecked,
             char columnDelimiter
             )
@@ -205,6 +206,7 @@ namespace ApsCalcUI
             {
                 MaxGP = MaxGPInput;
             }
+            VerboseOutputIsChecked = verboseOutputIsChecked;
             RawNumberOutputIsChecked = rawNumberOutputIsChecked;
             ColumnDelimiter = columnDelimiter;
         }
@@ -258,6 +260,7 @@ namespace ApsCalcUI
         public float MaxBarrelLengthInM { get; }
         public float MaxBarrelLengthInCalibers { get; }
         public BarrelLengthLimit BarrelLengthLimitType { get; }
+        public bool VerboseOutputIsChecked { get; }
         public bool RawNumberOutputIsChecked { get; }
         public char ColumnDelimiter { get; }
 
@@ -1722,7 +1725,7 @@ namespace ApsCalcUI
             {
                 writer.WriteLine("Rounding numbers to match values shown ingame");
             }
-            writer.WriteLine("\n");
+            writer.WriteLine();
 
 
             // Determine whether any shells met test criteria
@@ -1741,14 +1744,15 @@ namespace ApsCalcUI
             }
             else
             {
+                writer.WriteLine("Shells");
                 foreach (KeyValuePair<string, Shell> topShellPair in TopDpsShells)
                 {
                     // Calculate barrel lengths
                     topShellPair.Value.CalculateRequiredBarrelLengths(MaxInaccuracy);
-                    if (dtToShow[DamageType.Disruptor] 
+                    if (dtToShow[DamageType.Disruptor]
                         || dtToShow[DamageType.EMP]
-                        || dtToShow[DamageType.MD] 
-                        || dtToShow[DamageType.Frag] 
+                        || dtToShow[DamageType.MD]
+                        || dtToShow[DamageType.Frag]
                         || dtToShow[DamageType.HE]
                         || dtToShow[DamageType.HEAT]
                         || dtToShow[DamageType.Incendiary])
@@ -1825,8 +1829,6 @@ namespace ApsCalcUI
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, totalModulesList));
 
-
-
                 if (showGP)
                 {
                     List<string> gpCasingList =
@@ -1850,6 +1852,18 @@ namespace ApsCalcUI
                         AddValueToList(rgCasingList, topShell.RGCasingCount, 0);
                     }
                     writer.WriteLine(string.Join(ColumnDelimiter, rgCasingList));
+                }
+                if (showDraw)
+                {
+                    List<string> railDrawList =
+                    [
+                        "Rail draw"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        AddValueToList(railDrawList, topShell.RailDraw, 0);
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, railDrawList));
                 }
 
                 foreach (int index in modsToShow)
@@ -1875,19 +1889,34 @@ namespace ApsCalcUI
                 }
                 writer.WriteLine(string.Join(ColumnDelimiter, headList));
 
-                if (showDraw)
+                foreach (DamageType dt in dtToShow.Keys)
                 {
-                    List<string> railDrawList =
-                    [
-                        "Rail draw"
-                    ];
-                    foreach (Shell topShell in TopDpsShells.Values)
+                    if (dtToShow[dt])
                     {
-                        AddValueToList(railDrawList, topShell.RailDraw, 0);
+                        List<string> dpsPerVolumeList =
+                        [
+                            (DamageType)(int)dt + " DPS per volume"
+                        ];
+                        foreach (Shell topShell in TopDpsShells.Values)
+                        {
+                            dpsPerVolumeList.Add(topShell.DpsPerVolumeDict[dt].ToString());
+                        }
+                        writer.WriteLine(string.Join(ColumnDelimiter, dpsPerVolumeList));
+
+                        List<string> dpsPerCostList =
+                        [
+                            (DamageType)(int)dt + " DPS per cost"
+                        ];
+                        foreach (Shell topShell in TopDpsShells.Values)
+                        {
+                            dpsPerCostList.Add(topShell.DpsPerCostDict[dt].ToString());
+                        }
+                        writer.WriteLine(string.Join(ColumnDelimiter, dpsPerCostList));
                     }
-                    writer.WriteLine(string.Join(ColumnDelimiter, railDrawList));
                 }
 
+                writer.WriteLine();
+                writer.WriteLine("Shell Stats");
                 // Recoil = draw if no GP
                 if (showGP)
                 {
@@ -2161,296 +2190,272 @@ namespace ApsCalcUI
                     }
                 }
 
-                List<string> loaderVolumeList =
-                [
-                    "Loader volume"
-                ];
-                foreach (Shell topShell in TopDpsShells.Values)
+                if (VerboseOutputIsChecked)
                 {
-                    loaderVolumeList.Add(topShell.LoaderVolume.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, loaderVolumeList));
-
-                if (showGP)
-                {
-                    List<string> coolerVolumeList = 
+                    writer.WriteLine();
+                    writer.WriteLine("Volume Stats");
+                    List<string> loaderVolumeList =
                     [
-                    "Cooler volume"
+                        "Loader volume"
                     ];
                     foreach (Shell topShell in TopDpsShells.Values)
                     {
-                        coolerVolumeList.Add(topShell.CoolerVolume.ToString());
+                        loaderVolumeList.Add(topShell.LoaderVolume.ToString());
                     }
-                    writer.WriteLine(string.Join(ColumnDelimiter, coolerVolumeList));
-                }
+                    writer.WriteLine(string.Join(ColumnDelimiter, loaderVolumeList));
 
-                if (showDraw)
-                {
-                    List<string> chargerVolumeList = 
-                    [
-                        "Charger volume"
-                    ];
-                    foreach (Shell topShell in TopDpsShells.Values)
+                    if (showGP)
                     {
-                        chargerVolumeList.Add(topShell.ChargerVolume.ToString());
-                    }
-                    writer.WriteLine(string.Join(ColumnDelimiter, chargerVolumeList));
-
-                    List<string> engineVolumeList = 
-                    [
-                        "Engine volume"
-                    ];
-                    foreach (Shell topShell in TopDpsShells.Values)
-                    {
-                        engineVolumeList.Add(topShell.EngineVolume.ToString());
-                    }
-                    writer.WriteLine(string.Join(ColumnDelimiter, engineVolumeList));
-
-                    if (EngineUsesFuel)
-                    {
-                        List<string> fuelAccessVolumeList =
+                        List<string> coolerVolumeList =
                         [
-                            "Fuel access volume"
+                        "Cooler volume"
                         ];
                         foreach (Shell topShell in TopDpsShells.Values)
                         {
-                            fuelAccessVolumeList.Add(topShell.FuelAccessVolume.ToString());
+                            coolerVolumeList.Add(topShell.CoolerVolume.ToString());
                         }
-                        writer.WriteLine(string.Join(ColumnDelimiter, fuelAccessVolumeList));
+                        writer.WriteLine(string.Join(ColumnDelimiter, coolerVolumeList));
                     }
 
-
-                    List<string> fuelStorageVolumeList =
-                    [
-                        "Fuel storage volume"
-                    ];
-                    foreach (Shell topShell in TopDpsShells.Values)
+                    if (showDraw)
                     {
-                        fuelStorageVolumeList.Add(topShell.FuelStorageVolume.ToString());
-                    }
-                    writer.WriteLine(string.Join(ColumnDelimiter, fuelStorageVolumeList));
-                }
-
-                List<string> recoilVolumeList =
-                [
-                    "Recoil volume"
-                ];
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    recoilVolumeList.Add(topShell.RecoilVolume.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, recoilVolumeList));
-
-                List<string> ammoAccessVolumeList =
-                [
-                    "Ammo access volume"
-                ];
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    ammoAccessVolumeList.Add(topShell.AmmoAccessVolume.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, ammoAccessVolumeList));
-
-                List<string> ammoStorageVolumeList =
-                [
-                    "Ammo storage volume"
-                ];
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    ammoStorageVolumeList.Add(topShell.AmmoStorageVolume.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, ammoStorageVolumeList));
-
-                List<string> totalVolumeList =
-                [
-                    "Total volume"
-                ];
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    totalVolumeList.Add(topShell.VolumePerLoader.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, totalVolumeList));
-
-                foreach (DamageType dt in dtToShow.Keys)
-                {
-                    if (dtToShow[dt])
-                    {
-                        List<string> dpsPerVolumeList =
+                        List<string> chargerVolumeList =
                         [
-                            (DamageType)(int)dt + " DPS per volume"
+                            "Charger volume"
                         ];
                         foreach (Shell topShell in TopDpsShells.Values)
                         {
-                            dpsPerVolumeList.Add(topShell.DpsPerVolumeDict[dt].ToString());
+                            chargerVolumeList.Add(topShell.ChargerVolume.ToString());
                         }
-                        writer.WriteLine(string.Join(ColumnDelimiter, dpsPerVolumeList));
-                    }
-                }
+                        writer.WriteLine(string.Join(ColumnDelimiter, chargerVolumeList));
 
-                List<string> costPerShellList =
-                [
-                    "Cost per shell"
-                ];
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    costPerShellList.Add(topShell.CostPerShell.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, costPerShellList));
-
-                List<string> loaderCostList =
-                [
-                    "Loader cost"
-                ];
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    loaderCostList.Add(topShell.LoaderCost.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, loaderCostList));
-
-                if (showGP)
-                {
-                    List<string> coolerCostList =
-                    [
-                        "Cooler cost"
-                    ];
-                    foreach (Shell topShell in TopDpsShells.Values)
-                    {
-                        coolerCostList.Add(topShell.CoolerCost.ToString());
-                    }
-                    writer.WriteLine(string.Join(ColumnDelimiter, coolerCostList));
-                }
-
-                if (showDraw)
-                {
-                    List<string> chargerCostList =
-                    [
-                        "Charger cost"
-                    ];
-                    foreach (Shell topShell in TopDpsShells.Values)
-                    {
-                        chargerCostList.Add(topShell.ChargerCost.ToString());
-                    }
-                    writer.WriteLine(string.Join(ColumnDelimiter, chargerCostList));
-
-                    List<string> fuelBurnedList =
-                    [
-                        "Fuel burned"
-                    ];
-                    foreach (Shell topShell in TopDpsShells.Values)
-                    {
-                        fuelBurnedList.Add(topShell.FuelBurned.ToString());
-                    }
-                    writer.WriteLine(string.Join(ColumnDelimiter, fuelBurnedList));
-
-                    List<string> engineCostList =
-                    [
-                        "Engine cost"
-                    ];
-                    foreach (Shell topShell in TopDpsShells.Values)
-                    {
-                        engineCostList.Add(topShell.EngineCost.ToString());
-                    }
-                    writer.WriteLine(string.Join(ColumnDelimiter, engineCostList));
-
-                    if (EngineUsesFuel)
-                    {
-                        List<string> fuelAccessCostList =
+                        List<string> engineVolumeList =
                         [
-                            "Fuel access cost"
+                            "Engine volume"
                         ];
                         foreach (Shell topShell in TopDpsShells.Values)
                         {
-                            fuelAccessCostList.Add(topShell.FuelAccessCost.ToString());
+                            engineVolumeList.Add(topShell.EngineVolume.ToString());
                         }
-                        writer.WriteLine(string.Join(ColumnDelimiter, fuelAccessCostList));
-                    }
+                        writer.WriteLine(string.Join(ColumnDelimiter, engineVolumeList));
 
-                    List<string> fuelStorageCostList =
-                    [
-                        "Fuel storage cost"
-                    ];
-                    foreach (Shell topShell in TopDpsShells.Values)
-                    {
-                        fuelStorageCostList.Add(topShell.FuelStorageCost.ToString());
-                    }
-                    writer.WriteLine(string.Join(ColumnDelimiter, fuelStorageCostList));
-                }
+                        if (EngineUsesFuel)
+                        {
+                            List<string> fuelAccessVolumeList =
+                            [
+                                "Fuel access volume"
+                            ];
+                            foreach (Shell topShell in TopDpsShells.Values)
+                            {
+                                fuelAccessVolumeList.Add(topShell.FuelAccessVolume.ToString());
+                            }
+                            writer.WriteLine(string.Join(ColumnDelimiter, fuelAccessVolumeList));
+                        }
 
 
-                List<string> recoilCostList =
-                [
-                    "Recoil cost"
-                ];
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    recoilCostList.Add(topShell.RecoilCost.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, recoilCostList));
-
-                List<string> ammoUsedList =
-                [
-                    "Ammo used"
-                ];
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    ammoUsedList.Add(topShell.AmmoUsed.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, ammoUsedList));
-
-                List<string> ammoAccessCostList =
-                [
-                    "Ammo access cost"
-                ];
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    ammoAccessCostList.Add(topShell.AmmoAccessCost.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, ammoAccessCostList));
-
-                List<string> ammoStorageCostList =
-                [
-                    "Ammo storage cost"
-                ];
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    ammoStorageCostList.Add(topShell.AmmoStorageCost.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, ammoStorageCostList));
-
-                List<string> totalCostList =
-                [
-                    "Total cost"
-                ];
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    totalCostList.Add(topShell.CostPerLoader.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, totalCostList));
-
-                List<string> costPerVolumeList =
-                [
-                    "Cost per volume"
-                ];
-                foreach (Shell topShell in TopDpsShells.Values)
-                {
-                    costPerVolumeList.Add(topShell.CostPerVolume.ToString());
-                }
-                writer.WriteLine(string.Join(ColumnDelimiter, costPerVolumeList));
-
-                foreach (DamageType dt in dtToShow.Keys)
-                {
-                    if (dtToShow[dt])
-                    {
-                        List<string> dpsPerCostList =
+                        List<string> fuelStorageVolumeList =
                         [
-                            (DamageType)(int)dt + " DPS per cost"
+                            "Fuel storage volume"
                         ];
                         foreach (Shell topShell in TopDpsShells.Values)
                         {
-                            dpsPerCostList.Add(topShell.DpsPerCostDict[dt].ToString());
+                            fuelStorageVolumeList.Add(topShell.FuelStorageVolume.ToString());
                         }
-                        writer.WriteLine(string.Join(ColumnDelimiter, dpsPerCostList));
+                        writer.WriteLine(string.Join(ColumnDelimiter, fuelStorageVolumeList));
                     }
+
+                    List<string> recoilVolumeList =
+                    [
+                        "Recoil volume"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        recoilVolumeList.Add(topShell.RecoilVolume.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, recoilVolumeList));
+
+                    List<string> ammoAccessVolumeList =
+                    [
+                        "Ammo access volume"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        ammoAccessVolumeList.Add(topShell.AmmoAccessVolume.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, ammoAccessVolumeList));
+
+                    List<string> ammoStorageVolumeList =
+                    [
+                        "Ammo storage volume"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        ammoStorageVolumeList.Add(topShell.AmmoStorageVolume.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, ammoStorageVolumeList));
+
+                    List<string> totalVolumeList =
+                    [
+                        "Total volume"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        totalVolumeList.Add(topShell.VolumePerLoader.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, totalVolumeList));
+
+                    writer.WriteLine();
+                    writer.WriteLine("Cost Stats");
+
+                    List<string> costPerShellList =
+                    [
+                        "Cost per shell"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        costPerShellList.Add(topShell.CostPerShell.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, costPerShellList));
+
+                    List<string> loaderCostList =
+                    [
+                        "Loader cost"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        loaderCostList.Add(topShell.LoaderCost.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, loaderCostList));
+
+                    if (showGP)
+                    {
+                        List<string> coolerCostList =
+                        [
+                            "Cooler cost"
+                        ];
+                        foreach (Shell topShell in TopDpsShells.Values)
+                        {
+                            coolerCostList.Add(topShell.CoolerCost.ToString());
+                        }
+                        writer.WriteLine(string.Join(ColumnDelimiter, coolerCostList));
+                    }
+
+                    if (showDraw)
+                    {
+                        List<string> chargerCostList =
+                        [
+                            "Charger cost"
+                        ];
+                        foreach (Shell topShell in TopDpsShells.Values)
+                        {
+                            chargerCostList.Add(topShell.ChargerCost.ToString());
+                        }
+                        writer.WriteLine(string.Join(ColumnDelimiter, chargerCostList));
+
+                        List<string> fuelBurnedList =
+                        [
+                            "Fuel burned"
+                        ];
+                        foreach (Shell topShell in TopDpsShells.Values)
+                        {
+                            fuelBurnedList.Add(topShell.FuelBurned.ToString());
+                        }
+                        writer.WriteLine(string.Join(ColumnDelimiter, fuelBurnedList));
+
+                        List<string> engineCostList =
+                        [
+                            "Engine cost"
+                        ];
+                        foreach (Shell topShell in TopDpsShells.Values)
+                        {
+                            engineCostList.Add(topShell.EngineCost.ToString());
+                        }
+                        writer.WriteLine(string.Join(ColumnDelimiter, engineCostList));
+
+                        if (EngineUsesFuel)
+                        {
+                            List<string> fuelAccessCostList =
+                            [
+                                "Fuel access cost"
+                            ];
+                            foreach (Shell topShell in TopDpsShells.Values)
+                            {
+                                fuelAccessCostList.Add(topShell.FuelAccessCost.ToString());
+                            }
+                            writer.WriteLine(string.Join(ColumnDelimiter, fuelAccessCostList));
+                        }
+
+                        List<string> fuelStorageCostList =
+                        [
+                            "Fuel storage cost"
+                        ];
+                        foreach (Shell topShell in TopDpsShells.Values)
+                        {
+                            fuelStorageCostList.Add(topShell.FuelStorageCost.ToString());
+                        }
+                        writer.WriteLine(string.Join(ColumnDelimiter, fuelStorageCostList));
+                    }
+
+
+                    List<string> recoilCostList =
+                    [
+                        "Recoil cost"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        recoilCostList.Add(topShell.RecoilCost.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, recoilCostList));
+
+                    List<string> ammoUsedList =
+                    [
+                        "Ammo used"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        ammoUsedList.Add(topShell.AmmoUsed.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, ammoUsedList));
+
+                    List<string> ammoAccessCostList =
+                    [
+                        "Ammo access cost"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        ammoAccessCostList.Add(topShell.AmmoAccessCost.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, ammoAccessCostList));
+
+                    List<string> ammoStorageCostList =
+                    [
+                        "Ammo storage cost"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        ammoStorageCostList.Add(topShell.AmmoStorageCost.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, ammoStorageCostList));
+
+                    List<string> totalCostList =
+                    [
+                        "Total cost"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        totalCostList.Add(topShell.CostPerLoader.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, totalCostList));
+
+                    List<string> costPerVolumeList =
+                    [
+                        "Cost per volume"
+                    ];
+                    foreach (Shell topShell in TopDpsShells.Values)
+                    {
+                        costPerVolumeList.Add(topShell.CostPerVolume.ToString());
+                    }
+                    writer.WriteLine(string.Join(ColumnDelimiter, costPerVolumeList));
                 }
             }
         }

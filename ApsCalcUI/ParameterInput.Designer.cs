@@ -163,6 +163,7 @@ namespace ApsCalcUI
             RegularClipCountLabel = new System.Windows.Forms.Label();
             BeltfedClipCountLabel = new System.Windows.Forms.Label();
             GPIncrementLabel = new System.Windows.Forms.Label();
+            VerboseOutputCB = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)MinGaugeUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)MaxGaugeUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)SolidBodyFixedUD).BeginInit();
@@ -1638,12 +1639,24 @@ namespace ApsCalcUI
             GPIncrementLabel.Text = "GP Increment";
             GPIncrementLabel.Visible = false;
             // 
+            // VerboseOutputCB
+            // 
+            VerboseOutputCB.AutoSize = true;
+            VerboseOutputCB.Location = new System.Drawing.Point(629, 578);
+            VerboseOutputCB.Name = "VerboseOutputCB";
+            VerboseOutputCB.Size = new System.Drawing.Size(108, 19);
+            VerboseOutputCB.TabIndex = 64;
+            VerboseOutputCB.Text = "Verbose Output";
+            ToolTip.SetToolTip(VerboseOutputCB, "Check to output detailed volume and cost statistics.");
+            VerboseOutputCB.UseVisualStyleBackColor = true;
+            // 
             // ParameterInput
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoScroll = true;
             ClientSize = new System.Drawing.Size(800, 731);
+            Controls.Add(VerboseOutputCB);
             Controls.Add(GPIncrementUD);
             Controls.Add(GPIncrementLabel);
             Controls.Add(RawNumberOutputCB);
@@ -1902,6 +1915,7 @@ namespace ApsCalcUI
         private System.Windows.Forms.CheckBox RawNumberOutputCB;
         private System.Windows.Forms.NumericUpDown GPIncrementUD;
         private System.Windows.Forms.Label GPIncrementLabel;
+        private System.Windows.Forms.CheckBox VerboseOutputCB;
     }
 }
 
