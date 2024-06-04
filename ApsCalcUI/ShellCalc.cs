@@ -2396,7 +2396,6 @@ namespace ApsCalcUI
                         writer.WriteLine(string.Join(ColumnDelimiter, fuelStorageCostList));
                     }
 
-
                     List<string> recoilCostList =
                     [
                         "Recoil cost"

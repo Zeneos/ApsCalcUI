@@ -762,7 +762,7 @@ namespace ApsCalcUI
                 flaKBodies++;
             }
             DamageDict[DamageType.MD] = 3000f * MathF.Pow(GaugeMultiplier * flaKBodies / 31.25f * ApsModifier * OverallChemModifier, 0.9f);
-            MDExplosionRadius = MathF.Min(MathF.Pow(DamageDict[DamageType.MD], 0.3f) * 3f, 30f);
+            MDExplosionRadius = MathF.Pow(DamageDict[DamageType.MD], 0.3f) * 3f;
             /* 
              * Multiply by volume to approximate applied damage; divide by 1000 to make result more manageable
             float sphereVolume = MathF.Pow(FlakExplosionRadius, 3) * MathF.PI * 4f / 3f;
