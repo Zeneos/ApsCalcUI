@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace ApsCalcUI
 {
@@ -613,6 +614,11 @@ namespace ApsCalcUI
             {
                 error = true;
                 QueueErrorProvider.SetError(AddParametersButton, "Increase max gunpowder or rail draw allowance, or else set min velocity to 0");
+            }
+            else if (PendepthCB.Checked && ArmorLayerLB.Items.Count == 0)
+            {
+                error = true;
+                QueueErrorProvider.SetError(AddParametersButton, "Add at least one armor layer with \"Add\" or uncheck \"Pendepth\"");
             }
 
             if (!error)
