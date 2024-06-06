@@ -38,7 +38,7 @@ namespace ApsCalcUI
         public float MinDisruptor;
         public Scheme ArmorScheme;
         public bool Penpdepth;
-        public int TestType;
+        public TestType TestType;
         public bool Labels;
         public int TestInterval;
         public float StoragePerVolume;
