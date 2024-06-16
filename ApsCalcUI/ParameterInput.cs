@@ -859,7 +859,7 @@ namespace ApsCalcUI
                 testParameters.NonSabotAngleMultiplier =
                     MathF.Abs(MathF.Cos((testParameters.ImpactAngle + targetArmorScheme.LayerList[0].BaseAngle) * MathF.PI / 180f));
 
-                testParameters.TestType = PerVolumeRB.Checked ? 0 : 1;
+                testParameters.TestType = PerVolumeRB.Checked ? TestType.DpsPerVolume : TestType.DpsPerCost;
 
                 testParameters.TestInterval = (int)TestIntervalUD.Value;
 
