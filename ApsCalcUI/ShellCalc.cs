@@ -428,14 +428,71 @@ namespace ApsCalcUI
         /// Runs nested binary search algorithm on rail draw to determine optimum for a given GP count
         /// </summary>
         /// <param name="shellUnderTesting">Shell being tested (normal or belt)</param>
-        void CalculateOptimumRailDraw(Shell shellUnderTesting)
+        float CalculateOptimalRailDraw(Shell shellUnderTesting,
+            float maxDraw,
+            float minDraw,
+            Dictionary<DamageType, float> referenceDict)
         {
-            // Establish which value will be used for comparison: DPS per volume or DPS per cost
-            Dictionary<DamageType, float> referenceDict =
-                TestType == TestType.DpsPerVolume ?
-                shellUnderTesting.DpsPerVolumeDict : shellUnderTesting.DpsPerCostDict;
+            float optimalDraw = 0;
 
+            // Binary search to find optimal draw without testing every value
+            float midRangeLower;
+            float midRangeLowerScore;
+            float midRangeUpper;
+            float midRangeUpperScore;
+            float topOfRange = maxDraw;
+            float bottomOfRange = minDraw;
 
+            int iterations = 0;
+            while (bottomOfRange < topOfRange)
+            {
+                iterations++;
+                midRangeLower = MathF.Floor((topOfRange + bottomOfRange) / 2f);
+                midRangeUpper = midRangeLower + 1f;
+
+                shellUnderTesting.RailDraw = midRangeLower;
+                shellUnderTesting.CalculateDpsByType(
+                    DamageType,
+                    TargetAC,
+                    TestIntervalSeconds,
+                    StoragePerVolume,
+                    StoragePerCost,
+                    EnginePpm,
+                    EnginePpv,
+                    EnginePpc,
+                    EngineUsesFuel,
+                    TargetArmorScheme,
+                    ImpactAngleFromPerpendicularDegrees);
+                midRangeLowerScore = referenceDict[DamageType];
+
+                shellUnderTesting.RailDraw = midRangeUpper;
+                shellUnderTesting.CalculateDpsByType(
+                    DamageType,
+                    TargetAC,
+                    TestIntervalSeconds,
+                    StoragePerVolume,
+                    StoragePerCost,
+                    EnginePpm,
+                    EnginePpv,
+                    EnginePpc,
+                    EngineUsesFuel,
+                    TargetArmorScheme,
+                    ImpactAngleFromPerpendicularDegrees);
+                midRangeUpperScore = referenceDict[DamageType];
+
+                if (midRangeLowerScore >= midRangeUpperScore)
+                {
+                    topOfRange = midRangeLower;
+                    optimalDraw = midRangeLower;
+                }
+                else
+                {
+                    bottomOfRange = midRangeUpper;
+                    optimalDraw = midRangeUpper;
+                }
+            }
+
+            return optimalDraw;
         }
 
         /// <summary>
@@ -635,77 +692,10 @@ namespace ApsCalcUI
                             // Determine which "DPS Per" dictionary will be used for testing
                             Dictionary<DamageType, float> referenceDict = TestType == TestType.DpsPerVolume ?
                                 shellUnderTesting.DpsPerVolumeDict : shellUnderTesting.DpsPerCostDict;
-                            // Determine optimum rail draw
-                            float optimalDraw = 0;
-                            if (maxDraw > 0)
-                            {
-                                float midRangeLower;
-                                float midRangeLowerScore;
-                                float midRangeUpper;
-                                float midRangeUpperScore;
-                                float bestScore = 0;
-
-                                float topOfRange = maxDraw;
-                                // Binary search to find optimal draw without testing every value
-                                float bottomOfRange = minDraw;
-                                while (topOfRange - bottomOfRange > 1)
-                                {
-
-                                    midRangeLower = MathF.Floor((topOfRange + bottomOfRange) / 2f);
-                                    midRangeUpper = midRangeLower + 1f;
-
-                                    shellUnderTesting.RailDraw = midRangeLower;
-                                    shellUnderTesting.CalculateDpsByType(
-                                        DamageType,
-                                        TargetAC,
-                                        TestIntervalSeconds,
-                                        StoragePerVolume,
-                                        StoragePerCost,
-                                        EnginePpm,
-                                        EnginePpv,
-                                        EnginePpc,
-                                        EngineUsesFuel,
-                                        TargetArmorScheme,
-                                        ImpactAngleFromPerpendicularDegrees);
-                                    midRangeLowerScore = referenceDict[DamageType];
-
-                                    shellUnderTesting.RailDraw = midRangeUpper;
-                                    shellUnderTesting.CalculateDpsByType(
-                                        DamageType,
-                                        TargetAC,
-                                        TestIntervalSeconds,
-                                        StoragePerVolume,
-                                        StoragePerCost,
-                                        EnginePpm,
-                                        EnginePpv,
-                                        EnginePpc,
-                                        EngineUsesFuel,
-                                        TargetArmorScheme,
-                                        ImpactAngleFromPerpendicularDegrees);
-                                    midRangeUpperScore = referenceDict[DamageType];
-
-                                    if (midRangeUpperScore > bestScore)
-                                    {
-                                        bestScore = midRangeUpperScore;
-                                        optimalDraw = midRangeUpper;
-                                    }
-                                    if (midRangeLowerScore > bestScore)
-                                    {
-                                        bestScore = midRangeLowerScore;
-                                        optimalDraw = midRangeLower;
-                                    }
-
-                                    if (midRangeLowerScore >= midRangeUpperScore)
-                                    {
-                                        topOfRange = midRangeLower - 1f;
-                                    }
-                                    else
-                                    {
-                                        bottomOfRange = midRangeUpper;
-                                    }
-                                }
-                            }
-
+                            // Determine optimal rail draw
+                            float optimalDraw = maxDraw > 0 ? 
+                                CalculateOptimalRailDraw(shellUnderTesting, maxDraw, minDraw, referenceDict)
+                                : 0;
                             shellUnderTesting.RailDraw = optimalDraw;
                             CompareToTopShells(shellUnderTesting, referenceDict);
 
@@ -773,73 +763,9 @@ namespace ApsCalcUI
                                 // Determine which "DPS Per" dictionary will be used for testing
                                 Dictionary<DamageType, float> referenceDictBelt = TestType == TestType.DpsPerVolume ?
                                     shellUnderTestingBelt.DpsPerVolumeDict : shellUnderTestingBelt.DpsPerCostDict;
-                                optimalDraw = 0;
-                                if (maxDraw > 0)
-                                {
-                                    float midRangeLower;
-                                    float midRangeLowerScore;
-                                    float midRangeUpper;
-                                    float midRangeUpperScore;
-                                    float bestScore = 0;
-
-                                    float topOfRange = maxDraw;
-                                    float bottomOfRange = minDraw;
-                                    while (bottomOfRange <= topOfRange)
-                                    {
-                                        midRangeLower = MathF.Floor((topOfRange + bottomOfRange) / 2f);
-                                        midRangeUpper = midRangeLower + 1f;
-
-                                        shellUnderTestingBelt.RailDraw = midRangeLower;
-                                        shellUnderTestingBelt.CalculateDpsByType(
-                                            DamageType,
-                                            TargetAC,
-                                            TestIntervalSeconds,
-                                            StoragePerVolume,
-                                            StoragePerCost,
-                                            EnginePpm,
-                                            EnginePpv,
-                                            EnginePpc,
-                                            EngineUsesFuel,
-                                            TargetArmorScheme,
-                                            ImpactAngleFromPerpendicularDegrees);
-                                        midRangeLowerScore = referenceDictBelt[DamageType];
-
-                                        shellUnderTestingBelt.RailDraw = midRangeUpper;
-                                        shellUnderTestingBelt.CalculateDpsByType(
-                                            DamageType,
-                                            TargetAC,
-                                            TestIntervalSeconds,
-                                            StoragePerVolume,
-                                            StoragePerCost,
-                                            EnginePpm,
-                                            EnginePpv,
-                                            EnginePpc,
-                                            EngineUsesFuel,
-                                            TargetArmorScheme,
-                                            ImpactAngleFromPerpendicularDegrees);
-                                        midRangeUpperScore = referenceDictBelt[DamageType];
-
-                                        if (midRangeUpperScore > bestScore)
-                                        {
-                                            bestScore = midRangeUpperScore;
-                                            optimalDraw = midRangeUpper;
-                                        }
-                                        if (midRangeLowerScore > bestScore)
-                                        {
-                                            bestScore = midRangeLowerScore;
-                                            optimalDraw = midRangeLower;
-                                        }
-
-                                        if (midRangeLowerScore >= midRangeUpperScore)
-                                        {
-                                            topOfRange = midRangeLower - 1f;
-                                        }
-                                        else
-                                        {
-                                            bottomOfRange = midRangeUpper;
-                                        }
-                                    }
-                                }
+                                optimalDraw = maxDraw > 0 ?
+                                    CalculateOptimalRailDraw(shellUnderTestingBelt, maxDraw, minDraw, referenceDictBelt)
+                                    : 0;
 
                                 // Check performance against top shell
                                 shellUnderTestingBelt.RailDraw = optimalDraw;
