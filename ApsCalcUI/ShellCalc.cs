@@ -414,17 +414,6 @@ namespace ApsCalcUI
         }
 
         /// <summary>
-        /// Runs nested binary search algorithm on GP casings and rail draw to determine optimum for both
-        /// </summary>
-        /// <param name="shellUnderTesting">Shell being tested</param>
-        void CalculateOptimumGPAndRail(Shell shellUnderTesting)
-        {
-            Dictionary<DamageType, float> referenceDict =
-                TestType == TestType.DpsPerVolume ?
-                shellUnderTesting.DpsPerVolumeDict : shellUnderTesting.DpsPerCostDict;
-        }
-
-        /// <summary>
         /// Runs nested binary search algorithm on rail draw to determine optimum for a given GP count
         /// </summary>
         /// <param name="shellUnderTesting">Shell being tested (normal or belt)</param>
