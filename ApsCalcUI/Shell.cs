@@ -1235,7 +1235,7 @@ namespace ApsCalcUI
                         LoaderCost = 480f + 320f * RegularClipsPerLoader + 50 * RegularInputsPerLoader;
                     }
 
-                    if (UsesAmmoEjector && !IsBelt)
+                    if (UsesAmmoEjector)
                     {
                         LoaderVolume += 2f;
                         LoaderCost += 10f;
