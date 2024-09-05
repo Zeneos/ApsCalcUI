@@ -11,7 +11,7 @@ namespace ApsCalcUI
     public struct ModuleConfig
     {
         public int HeadIndex;
-        public float[] BodyModCounts;
+        public float[] VariableModCounts;
         public float GPCount;
         public float RGCount;
     }
@@ -386,7 +386,7 @@ namespace ApsCalcUI
                                                                 GPCount = gpCount,
                                                                 RGCount = rgCount,
                                                                 HeadIndex = HeadList[headIndex],
-                                                                BodyModCounts =
+                                                                VariableModCounts =
                                                                 [
                                                                     var0Count,
                                                                     var1Count,
@@ -621,10 +621,10 @@ namespace ApsCalcUI
                 FixedModuleCounts.CopyTo(shellUnderTesting.BodyModuleCounts, 0);
 
                 // Add variable modules
-                for (int i = 0; i <  modConfig.BodyModCounts.Length; i++)
+                for (int i = 0; i <  modConfig.VariableModCounts.Length; i++)
                 {
                     int moduleIndex = VariableModuleIndices[i];
-                    float moduleCount = modConfig.BodyModCounts[i];
+                    float moduleCount = modConfig.VariableModCounts[i];
                     shellUnderTesting.BodyModuleCounts[moduleIndex] += moduleCount;
                 }
 
@@ -708,19 +708,13 @@ namespace ApsCalcUI
                                     RateOfFireRpm,
                                     GunUsesRecoilAbsorbers,
                                     FiringPieceIsDif);
-                                FixedModuleCounts.CopyTo(shellUnderTestingBelt.BodyModuleCounts, 0);
-
-
-                                // Add variable modules
-                                for (int i = 0; i < modConfig.BodyModCounts.Length; i++)
-                                {
-                                    shellUnderTestingBelt.BodyModuleCounts[i] += modConfig.BodyModCounts[i];
-                                }
+                                shellUnderTesting.BodyModuleCounts.CopyTo(shellUnderTestingBelt.BodyModuleCounts, 0);
 
                                 // Beltfed loaders cannot use ejectors
                                 int modIndex = 0;
                                 foreach (float modCount in shellUnderTestingBelt.BodyModuleCounts)
                                 {
+                                    // Debug.WriteLine("Mod index: " + modIndex + ": " + Module.AllModules[modIndex].Name + ": " + shellUnderTestingBelt.BodyModuleCounts[modIndex]);
                                     if (Module.AllModules[modIndex] == Module.Defuse)
                                     {
                                         shellUnderTestingBelt.BodyModuleCounts[modIndex] = 0f;
@@ -732,6 +726,8 @@ namespace ApsCalcUI
                                     }
                                 }
                                 shellUnderTestingBelt.CalculateLengths();
+                                shellUnderTestingBelt.GetModuleCounts();
+                                shellUnderTestingBelt.CalculateRequiredBarrelLengths(MaxInaccuracy);
                                 shellUnderTestingBelt.CalculateVelocityModifier();
                                 shellUnderTestingBelt.CalculateRecoil();
                                 shellUnderTestingBelt.CalculateMaxDraw();
