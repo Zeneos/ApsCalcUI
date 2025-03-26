@@ -5,6 +5,8 @@ using System.Linq;
 using System.IO;
 using System.Timers;
 using System.Diagnostics;
+using System.Reflection.Metadata.Ecma335;
+using System.DirectoryServices;
 
 namespace ApsCalcUI
 {
@@ -437,25 +439,33 @@ namespace ApsCalcUI
                 EngineUsesFuel,
                 TargetArmorScheme,
                 ImpactAngleFromPerpendicularDegrees);
-            float optimalScore = referenceDict[DamageType];
-            if (optimalScore == 0)
+            if (referenceDict[DamageType] == 0)
             {
                 return 0;
             }
 
-            // Binary search to find optimal draw without testing every value
+            // Binary gradient ascent to find optimal draw without testing every value
             float optimalDraw = 0;
             float midRange;
             float midRangeScore;
+            float midRangePlus;
+            float midRangePlusScore;
             float topOfRange = maxDraw;
             float bottomOfRange = minDraw;
-
             int iterations = 0;
             int maxCycles = (int)MathF.Ceiling(MathF.Log2(maxDraw));
+
+            /* try
+            {
+                File.AppendAllText("log.txt", $"\nStarting rail calc with max = {maxCycles}\n");
+            }
+            catch { } */
+
             while (bottomOfRange + 1 < topOfRange && iterations < maxCycles)
             {
                 iterations++;
                 midRange = MathF.Floor((topOfRange + bottomOfRange) / 2f);
+                midRangePlus = midRange + 1;
 
                 shellUnderTesting.RailDraw = midRange;
                 shellUnderTesting.CalculateDpsByType(
@@ -472,18 +482,46 @@ namespace ApsCalcUI
                     ImpactAngleFromPerpendicularDegrees);
                 midRangeScore = referenceDict[DamageType];
 
-                if (midRangeScore >= optimalScore)
+                shellUnderTesting.RailDraw = midRangePlus;
+                shellUnderTesting.CalculateDpsByType(
+                    DamageType,
+                    TargetAC,
+                    TestIntervalSeconds,
+                    StoragePerVolume,
+                    StoragePerCost,
+                    EnginePpm,
+                    EnginePpv,
+                    EnginePpc,
+                    EngineUsesFuel,
+                    TargetArmorScheme,
+                    ImpactAngleFromPerpendicularDegrees);
+                midRangePlusScore = referenceDict[DamageType];
+
+                if (midRangePlusScore == 0)
+                {
+                    bottomOfRange = midRangePlus;
+                }
+                else if (midRangeScore >= midRangePlusScore)
                 {
                     topOfRange = midRange;
                     optimalDraw = midRange;
                 }
                 else
                 {
-                    bottomOfRange = midRange;
+                    bottomOfRange = midRangePlus;
+                    optimalDraw = midRangePlus;
                 }
-                // File.AppendAllText("log.txt", $"[Optimal Rail Draw Calc]: Lower - {bottomOfRange}, Mid - {midRange}, Top - {topOfRange}, Dps - {optimalScore}\n");
+                /* try
+                {
+                    File.AppendAllText("log.txt", $"[Optimal Rail Draw Calc]: Lower - {bottomOfRange}, Mid - {midRange}, Mid+ - {midRangePlus}, Top - {topOfRange}\n");
+                }
+                catch { } */
             }
-
+            /* try 
+            {
+                File.AppendAllText("log.txt", "\n");
+            }
+            catch { } */
             return optimalDraw;
         }
 
