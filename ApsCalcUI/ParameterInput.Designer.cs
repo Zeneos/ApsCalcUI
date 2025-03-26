@@ -102,6 +102,8 @@ namespace ApsCalcUI
             IncendiaryBodyFixedUD = new System.Windows.Forms.NumericUpDown();
             RawNumberOutputCB = new System.Windows.Forms.CheckBox();
             GPIncrementUD = new System.Windows.Forms.NumericUpDown();
+            VerboseOutputCB = new System.Windows.Forms.CheckBox();
+            CoolingFreeGPCB = new System.Windows.Forms.CheckBox();
             BarrelCountLabel = new System.Windows.Forms.Label();
             MinGaugeLabel = new System.Windows.Forms.Label();
             MaxGaugeLabel = new System.Windows.Forms.Label();
@@ -163,7 +165,6 @@ namespace ApsCalcUI
             RegularClipCountLabel = new System.Windows.Forms.Label();
             BeltfedClipCountLabel = new System.Windows.Forms.Label();
             GPIncrementLabel = new System.Windows.Forms.Label();
-            VerboseOutputCB = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)MinGaugeUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)MaxGaugeUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)SolidBodyFixedUD).BeginInit();
@@ -1050,6 +1051,28 @@ namespace ApsCalcUI
             GPIncrementUD.Value = new decimal(new int[] { 1, 0, 0, 131072 });
             GPIncrementUD.Visible = false;
             // 
+            // VerboseOutputCB
+            // 
+            VerboseOutputCB.AutoSize = true;
+            VerboseOutputCB.Location = new System.Drawing.Point(629, 578);
+            VerboseOutputCB.Name = "VerboseOutputCB";
+            VerboseOutputCB.Size = new System.Drawing.Size(108, 19);
+            VerboseOutputCB.TabIndex = 64;
+            VerboseOutputCB.Text = "Verbose Output";
+            ToolTip.SetToolTip(VerboseOutputCB, "Check to output detailed volume and cost statistics.");
+            VerboseOutputCB.UseVisualStyleBackColor = true;
+            // 
+            // CoolingFreeGPCB
+            // 
+            CoolingFreeGPCB.AutoSize = true;
+            CoolingFreeGPCB.Location = new System.Drawing.Point(133, 92);
+            CoolingFreeGPCB.Name = "CoolingFreeGPCB";
+            CoolingFreeGPCB.Size = new System.Drawing.Size(111, 19);
+            CoolingFreeGPCB.TabIndex = 65;
+            CoolingFreeGPCB.Text = "Cooling Free GP";
+            ToolTip.SetToolTip(CoolingFreeGPCB, "Check if cooling of GP casings is covered by existing minimum cooler snake. Don't check unless you know exactly what this does.");
+            CoolingFreeGPCB.UseVisualStyleBackColor = true;
+            // 
             // BarrelCountLabel
             // 
             BarrelCountLabel.AutoSize = true;
@@ -1639,23 +1662,13 @@ namespace ApsCalcUI
             GPIncrementLabel.Text = "GP Increment";
             GPIncrementLabel.Visible = false;
             // 
-            // VerboseOutputCB
-            // 
-            VerboseOutputCB.AutoSize = true;
-            VerboseOutputCB.Location = new System.Drawing.Point(629, 578);
-            VerboseOutputCB.Name = "VerboseOutputCB";
-            VerboseOutputCB.Size = new System.Drawing.Size(108, 19);
-            VerboseOutputCB.TabIndex = 64;
-            VerboseOutputCB.Text = "Verbose Output";
-            ToolTip.SetToolTip(VerboseOutputCB, "Check to output detailed volume and cost statistics.");
-            VerboseOutputCB.UseVisualStyleBackColor = true;
-            // 
             // ParameterInput
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoScroll = true;
             ClientSize = new System.Drawing.Size(800, 731);
+            Controls.Add(CoolingFreeGPCB);
             Controls.Add(VerboseOutputCB);
             Controls.Add(GPIncrementUD);
             Controls.Add(GPIncrementLabel);
@@ -1916,6 +1929,7 @@ namespace ApsCalcUI
         private System.Windows.Forms.NumericUpDown GPIncrementUD;
         private System.Windows.Forms.Label GPIncrementLabel;
         private System.Windows.Forms.CheckBox VerboseOutputCB;
+        private System.Windows.Forms.CheckBox CoolingFreeGPCB;
     }
 }
 

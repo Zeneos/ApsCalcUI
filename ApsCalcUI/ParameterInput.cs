@@ -887,6 +887,7 @@ namespace ApsCalcUI
 
                 testParameters.FiringPieceIsDif = DifCB.Checked;
                 testParameters.GunUsesRecoilAbsorbers = GunUsesRecoilAbsorbersCB.Checked;
+                testParameters.CoolingFreeGP = CoolingFreeGPCB.Checked;
 
                 testParameters.MaxInaccuracy = (float)MaxInaccUD.Value;
                 testParameters.RateOfFireRpm = (float)RofRpmUD.Value;
@@ -977,6 +978,7 @@ namespace ApsCalcUI
                                     testParameters.EngineUsesFuel,
                                     testParameters.FiringPieceIsDif,
                                     testParameters.GunUsesRecoilAbsorbers,
+                                    testParameters.CoolingFreeGP,
                                     testParameters.MaxInaccuracy,
                                     testParameters.RateOfFireRpm,
                                     testParameters.LimitBarrelLength,
@@ -1039,6 +1041,7 @@ namespace ApsCalcUI
                                     testParameters.EngineUsesFuel,
                                     testParameters.FiringPieceIsDif,
                                     testParameters.GunUsesRecoilAbsorbers,
+                                    testParameters.CoolingFreeGP,
                                     testParameters.MaxInaccuracy,
                                     testParameters.RateOfFireRpm,
                                     testParameters.LimitBarrelLength,
@@ -1102,6 +1105,7 @@ namespace ApsCalcUI
                                 testParameters.EngineUsesFuel,
                                 testParameters.FiringPieceIsDif,
                                 testParameters.GunUsesRecoilAbsorbers,
+                                testParameters.CoolingFreeGP,
                                 testParameters.MaxInaccuracy,
                                 testParameters.RateOfFireRpm,
                                 testParameters.LimitBarrelLength,
@@ -1163,6 +1167,7 @@ namespace ApsCalcUI
                                 testParameters.EngineUsesFuel,
                                 testParameters.FiringPieceIsDif,
                                 testParameters.GunUsesRecoilAbsorbers,
+                                testParameters.CoolingFreeGP,
                                 testParameters.MaxInaccuracy,
                                 testParameters.RateOfFireRpm,
                                 testParameters.LimitBarrelLength,

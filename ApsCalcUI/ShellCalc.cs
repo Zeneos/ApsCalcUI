@@ -89,6 +89,7 @@ namespace ApsCalcUI
         /// <param name="engineUsesFuel">Whether engine uses special Fuel storage</param>
         /// <param name="firingPieceIsDif">Whether gun is using Direct Input Feed</param>
         /// <param name="gunUsesRecoilAbsorbers">Whether gun uses recoil absorbers; less inaccuracy, higher cost and volume</param>
+        /// <param name="coolingFreeGP">Whether max GP usage cooling is covered by minimum spanning coolers</param>"
         /// <param name="maxInaccuracy">Max allowed inaccuracy within barrel length limits</param>
         /// <param name="rateOfFireRpm">Rate of fire in rounds per minute</param>
         /// <param name="limitBarrelLength">Whether to limit max barrel length</param>
@@ -139,6 +140,7 @@ namespace ApsCalcUI
             bool engineUsesFuel,
             bool firingPieceIsDif,
             bool gunUsesRecoilAbsorbers,
+            bool coolingFreeGP,
             float maxInaccuracy,
             float rateOfFireRpm,
             bool limitBarrelLength,
@@ -191,6 +193,7 @@ namespace ApsCalcUI
             EngineUsesFuel = engineUsesFuel;
             FiringPieceIsDif = firingPieceIsDif;
             GunUsesRecoilAbsorbers = gunUsesRecoilAbsorbers;
+            CoolingFreeGP = coolingFreeGP;
             MaxInaccuracy = maxInaccuracy;
             RateOfFireRpm = rateOfFireRpm;
             LimitBarrelLength = limitBarrelLength;
@@ -261,6 +264,7 @@ namespace ApsCalcUI
         public bool EngineUsesFuel { get; }
         public bool FiringPieceIsDif { get; }
         public bool GunUsesRecoilAbsorbers { get; }
+        public bool CoolingFreeGP { get; }
         public float MaxInaccuracy { get; }
         public float RateOfFireRpm { get; }
         public bool LimitBarrelLength { get; }
@@ -274,25 +278,25 @@ namespace ApsCalcUI
 
         // Store top-DPS shells by loader length
         public Shell TopBelt { get; set; } = new(default, default, default, default, default, default, default, default,
-            default, default, default, default, default, default, default, default);
+            default, default, default, default, default, default, default, default, default);
         public Shell Top1000 { get; set; } = new(default, default, default, default, default, default, default, default,
-            default, default, default, default, default, default, default, default);
+            default, default, default, default, default, default, default, default, default);
         public Shell Top2000 { get; set; } = new(default, default, default, default, default, default, default, default,
-            default, default, default, default, default, default, default, default);
+            default, default, default, default, default, default, default, default, default);
         public Shell Top3000 { get; set; } = new(default, default, default, default, default, default, default, default,
-            default, default, default, default, default, default, default, default);
+            default, default, default, default, default, default, default, default, default);
         public Shell Top4000 { get; set; } = new(default, default, default, default, default, default, default, default,
-            default, default, default, default, default, default, default, default);
+            default, default, default, default, default, default, default, default, default);
         public Shell Top5000 { get; set; } = new(default, default, default, default, default, default, default, default,
-            default, default, default, default, default, default, default, default);
+            default, default, default, default, default, default, default, default, default);
         public Shell Top6000 { get; set; } = new(default, default, default, default, default, default, default, default,
-            default, default, default, default, default, default, default, default);
+            default, default, default, default, default, default, default, default, default);
         public Shell Top7000 { get; set; } = new(default, default, default, default, default, default, default, default,
-            default, default, default, default, default, default, default, default);
+            default, default, default, default, default, default, default, default, default);
         public Shell Top8000 { get; set; } = new(default, default, default, default, default, default, default, default,
-            default, default, default, default, default, default, default, default);
+            default, default, default, default, default, default, default, default, default);
         public Shell TopDif { get; set; } = new(default, default, default, default, default, default, default, default,
-            default, default, default, default, default, default, default, default);
+            default, default, default, default, default, default, default, default, default);
 
         public Dictionary<string, Shell> TopDpsShells { get; set; } = [];
         public List<Shell> TopShellsLocal { get; set; } = [];
@@ -481,7 +485,14 @@ namespace ApsCalcUI
                 {
                     bottomOfRange = midRange;
                 }
-                // File.AppendAllText("log.txt", $"[Optimal Rail Draw Calc]: Lower - {bottomOfRange}, Mid - {midRange}, Top - {topOfRange}, Dps - {optimalScore}\n");
+                /*try
+                {
+                    File.AppendAllText("log.txt", $"[Optimal Rail Draw Calc]: Lower - {bottomOfRange}, Mid - {midRange}, Top - {topOfRange}, Dps - {optimalScore}\n");
+                }
+                catch
+                {
+                    continue;
+                }*/
             }
 
             return optimalDraw;
@@ -619,7 +630,8 @@ namespace ApsCalcUI
                     modConfig.RGCount,
                     RateOfFireRpm,
                     GunUsesRecoilAbsorbers,
-                    FiringPieceIsDif
+                    FiringPieceIsDif,
+                    CoolingFreeGP
                     );
                 FixedModuleCounts.CopyTo(shellUnderTesting.BodyModuleCounts, 0);
 
@@ -710,7 +722,8 @@ namespace ApsCalcUI
                                     modConfig.RGCount,
                                     RateOfFireRpm,
                                     GunUsesRecoilAbsorbers,
-                                    FiringPieceIsDif);
+                                    FiringPieceIsDif,
+                                    CoolingFreeGP);
                                 shellUnderTesting.BodyModuleCounts.CopyTo(shellUnderTestingBelt.BodyModuleCounts, 0);
 
                                 // Beltfed loaders cannot use ejectors
