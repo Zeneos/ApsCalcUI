@@ -39,6 +39,7 @@ namespace ApsCalcUI
             }
 
             // Last layer is left at default
+            LayerList[^1].AC = LayerList[^1].RawAC;
         }
 
 
