@@ -422,24 +422,41 @@ namespace ApsCalcUI
             float minDraw,
             Dictionary<DamageType, float> referenceDict)
         {
-            float optimalDraw = 0;
+
+            // Shortcut impossible requirement
+            shellUnderTesting.RailDraw = maxDraw;
+            shellUnderTesting.CalculateDpsByType(
+                DamageType,
+                TargetAC,
+                TestIntervalSeconds,
+                StoragePerVolume,
+                StoragePerCost,
+                EnginePpm,
+                EnginePpv,
+                EnginePpc,
+                EngineUsesFuel,
+                TargetArmorScheme,
+                ImpactAngleFromPerpendicularDegrees);
+            float optimalScore = referenceDict[DamageType];
+            if (optimalScore == 0)
+            {
+                return 0;
+            }
 
             // Binary search to find optimal draw without testing every value
-            float midRangeLower;
-            float midRangeLowerScore;
-            float midRangeUpper;
-            float midRangeUpperScore;
+            float optimalDraw = 0;
+            float midRange;
+            float midRangeScore;
             float topOfRange = maxDraw;
             float bottomOfRange = minDraw;
 
             int iterations = 0;
-            while (bottomOfRange < topOfRange)
+            while (bottomOfRange + 1 < topOfRange)
             {
                 iterations++;
-                midRangeLower = MathF.Floor((topOfRange + bottomOfRange) / 2f);
-                midRangeUpper = midRangeLower + 1f;
+                midRange = MathF.Floor((topOfRange + bottomOfRange) / 2f);
 
-                shellUnderTesting.RailDraw = midRangeLower;
+                shellUnderTesting.RailDraw = midRange;
                 shellUnderTesting.CalculateDpsByType(
                     DamageType,
                     TargetAC,
@@ -452,32 +469,16 @@ namespace ApsCalcUI
                     EngineUsesFuel,
                     TargetArmorScheme,
                     ImpactAngleFromPerpendicularDegrees);
-                midRangeLowerScore = referenceDict[DamageType];
+                midRangeScore = referenceDict[DamageType];
 
-                shellUnderTesting.RailDraw = midRangeUpper;
-                shellUnderTesting.CalculateDpsByType(
-                    DamageType,
-                    TargetAC,
-                    TestIntervalSeconds,
-                    StoragePerVolume,
-                    StoragePerCost,
-                    EnginePpm,
-                    EnginePpv,
-                    EnginePpc,
-                    EngineUsesFuel,
-                    TargetArmorScheme,
-                    ImpactAngleFromPerpendicularDegrees);
-                midRangeUpperScore = referenceDict[DamageType];
-
-                if (midRangeLowerScore >= midRangeUpperScore)
+                if (midRangeScore >= optimalScore)
                 {
-                    topOfRange = midRangeLower;
-                    optimalDraw = midRangeLower;
+                    topOfRange = midRange;
+                    optimalDraw = midRange;
                 }
                 else
                 {
-                    bottomOfRange = midRangeUpper;
-                    optimalDraw = midRangeUpper;
+                    bottomOfRange = midRange;
                 }
             }
 
@@ -647,8 +648,9 @@ namespace ApsCalcUI
                 {
                     shellUnderTesting.CalculateVelocityModifier();
                     shellUnderTesting.CalculateMaxDraw();
-
+                    
                     float maxDraw = MathF.Min(shellUnderTesting.MaxDraw, MaxDrawInput);
+                    File.AppendAllText("log.txt", $"Max rail draw calculated to be {shellUnderTesting.MaxDraw}.\n");
                     maxDraw = MathF.Min(maxDraw, MaxRecoilInput - shellUnderTesting.GPRecoil);
                     if (!shellUnderTesting.GunUsesRecoilAbsorbers)
                     {
