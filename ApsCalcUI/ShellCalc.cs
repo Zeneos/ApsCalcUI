@@ -5,6 +5,8 @@ using System.Linq;
 using System.IO;
 using System.Timers;
 using System.Diagnostics;
+using System.Reflection.Metadata.Ecma335;
+using System.DirectoryServices;
 
 namespace ApsCalcUI
 {
@@ -422,24 +424,41 @@ namespace ApsCalcUI
             float minDraw,
             Dictionary<DamageType, float> referenceDict)
         {
-            float optimalDraw = 0;
 
-            // Binary search to find optimal draw without testing every value
-            float midRangeLower;
-            float midRangeLowerScore;
-            float midRangeUpper;
-            float midRangeUpperScore;
+            // Shortcut impossible requirement
+            shellUnderTesting.RailDraw = maxDraw;
+            shellUnderTesting.CalculateDpsByType(
+                DamageType,
+                TargetAC,
+                TestIntervalSeconds,
+                StoragePerVolume,
+                StoragePerCost,
+                EnginePpm,
+                EnginePpv,
+                EnginePpc,
+                EngineUsesFuel,
+                TargetArmorScheme,
+                ImpactAngleFromPerpendicularDegrees);
+            if (referenceDict[DamageType] == 0)
+            {
+                return 0;
+            }
+
+            // Binary gradient ascent to find optimal draw without testing every value
+            float optimalDraw = maxDraw;
+            float midRange;
+            float midRangeScore;
+            float midRangePlus;
+            float midRangePlusScore;
             float topOfRange = maxDraw;
             float bottomOfRange = minDraw;
 
-            int iterations = 0;
-            while (bottomOfRange < topOfRange)
+            while (bottomOfRange + 1 < topOfRange)
             {
-                iterations++;
-                midRangeLower = MathF.Floor((topOfRange + bottomOfRange) / 2f);
-                midRangeUpper = midRangeLower + 1f;
+                midRange = MathF.Floor((topOfRange + bottomOfRange) / 2f);
+                midRangePlus = midRange + 1;
 
-                shellUnderTesting.RailDraw = midRangeLower;
+                shellUnderTesting.RailDraw = midRange;
                 shellUnderTesting.CalculateDpsByType(
                     DamageType,
                     TargetAC,
@@ -452,9 +471,9 @@ namespace ApsCalcUI
                     EngineUsesFuel,
                     TargetArmorScheme,
                     ImpactAngleFromPerpendicularDegrees);
-                midRangeLowerScore = referenceDict[DamageType];
+                midRangeScore = referenceDict[DamageType];
 
-                shellUnderTesting.RailDraw = midRangeUpper;
+                shellUnderTesting.RailDraw = midRangePlus;
                 shellUnderTesting.CalculateDpsByType(
                     DamageType,
                     TargetAC,
@@ -467,20 +486,23 @@ namespace ApsCalcUI
                     EngineUsesFuel,
                     TargetArmorScheme,
                     ImpactAngleFromPerpendicularDegrees);
-                midRangeUpperScore = referenceDict[DamageType];
+                midRangePlusScore = referenceDict[DamageType];
 
-                if (midRangeLowerScore >= midRangeUpperScore)
+                if (midRangePlusScore == 0)
                 {
-                    topOfRange = midRangeLower;
-                    optimalDraw = midRangeLower;
+                    bottomOfRange = midRangePlus;
+                }
+                else if (midRangeScore >= midRangePlusScore)
+                {
+                    topOfRange = midRange;
+                    optimalDraw = midRange;
                 }
                 else
                 {
-                    bottomOfRange = midRangeUpper;
-                    optimalDraw = midRangeUpper;
+                    bottomOfRange = midRangePlus;
+                    optimalDraw = midRangePlus;
                 }
             }
-
             return optimalDraw;
         }
 
@@ -647,7 +669,7 @@ namespace ApsCalcUI
                 {
                     shellUnderTesting.CalculateVelocityModifier();
                     shellUnderTesting.CalculateMaxDraw();
-
+                    
                     float maxDraw = MathF.Min(shellUnderTesting.MaxDraw, MaxDrawInput);
                     maxDraw = MathF.Min(maxDraw, MaxRecoilInput - shellUnderTesting.GPRecoil);
                     if (!shellUnderTesting.GunUsesRecoilAbsorbers)
