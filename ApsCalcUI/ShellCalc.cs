@@ -650,7 +650,6 @@ namespace ApsCalcUI
                     shellUnderTesting.CalculateMaxDraw();
                     
                     float maxDraw = MathF.Min(shellUnderTesting.MaxDraw, MaxDrawInput);
-                    File.AppendAllText("log.txt", $"Max rail draw calculated to be {shellUnderTesting.MaxDraw}.\n");
                     maxDraw = MathF.Min(maxDraw, MaxRecoilInput - shellUnderTesting.GPRecoil);
                     if (!shellUnderTesting.GunUsesRecoilAbsorbers)
                     {
