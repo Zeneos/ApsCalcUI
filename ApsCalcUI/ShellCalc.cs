@@ -445,25 +445,16 @@ namespace ApsCalcUI
             }
 
             // Binary gradient ascent to find optimal draw without testing every value
-            float optimalDraw = 0;
+            float optimalDraw = maxDraw;
             float midRange;
             float midRangeScore;
             float midRangePlus;
             float midRangePlusScore;
             float topOfRange = maxDraw;
             float bottomOfRange = minDraw;
-            int iterations = 0;
-            int maxCycles = (int)MathF.Ceiling(MathF.Log2(maxDraw));
 
-            /* try
+            while (bottomOfRange + 1 < topOfRange)
             {
-                File.AppendAllText("log.txt", $"\nStarting rail calc with max = {maxCycles}\n");
-            }
-            catch { } */
-
-            while (bottomOfRange + 1 < topOfRange && iterations < maxCycles)
-            {
-                iterations++;
                 midRange = MathF.Floor((topOfRange + bottomOfRange) / 2f);
                 midRangePlus = midRange + 1;
 
@@ -511,17 +502,7 @@ namespace ApsCalcUI
                     bottomOfRange = midRangePlus;
                     optimalDraw = midRangePlus;
                 }
-                /* try
-                {
-                    File.AppendAllText("log.txt", $"[Optimal Rail Draw Calc]: Lower - {bottomOfRange}, Mid - {midRange}, Mid+ - {midRangePlus}, Top - {topOfRange}\n");
-                }
-                catch { } */
             }
-            /* try 
-            {
-                File.AppendAllText("log.txt", "\n");
-            }
-            catch { } */
             return optimalDraw;
         }
 
