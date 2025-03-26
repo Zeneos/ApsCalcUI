@@ -669,7 +669,7 @@ namespace ApsCalcUI
                 {
                     shellUnderTesting.CalculateVelocityModifier();
                     shellUnderTesting.CalculateMaxDraw();
-
+                    
                     float maxDraw = MathF.Min(shellUnderTesting.MaxDraw, MaxDrawInput);
                     maxDraw = MathF.Min(maxDraw, MaxRecoilInput - shellUnderTesting.GPRecoil);
                     if (!shellUnderTesting.GunUsesRecoilAbsorbers)
