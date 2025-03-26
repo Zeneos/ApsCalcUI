@@ -451,7 +451,8 @@ namespace ApsCalcUI
             float bottomOfRange = minDraw;
 
             int iterations = 0;
-            while (bottomOfRange + 1 < topOfRange)
+            int maxCycles = (int)MathF.Ceiling(MathF.Log2(maxDraw));
+            while (bottomOfRange + 1 < topOfRange && iterations < maxCycles)
             {
                 iterations++;
                 midRange = MathF.Floor((topOfRange + bottomOfRange) / 2f);
@@ -480,6 +481,7 @@ namespace ApsCalcUI
                 {
                     bottomOfRange = midRange;
                 }
+                // File.AppendAllText("log.txt", $"[Optimal Rail Draw Calc]: Lower - {bottomOfRange}, Mid - {midRange}, Top - {topOfRange}, Dps - {optimalScore}\n");
             }
 
             return optimalDraw;
