@@ -19,7 +19,8 @@ namespace ApsCalcUI
         float rgCasingCount,
         float rateOfFireRpm,
         bool gunUsesRecoilAbsorbers,
-        bool isDif
+        bool isDif,
+        bool coolingFreeGP
             )
     {
         private const float ApsModifier = 23; // Used as global multiplier in damage calculations
@@ -85,6 +86,7 @@ namespace ApsCalcUI
         public float Uptime { get; set; }
         public int BarrelCount { get; set; } = barrelCount;
         public float CooldownTime { get; set; }
+        public bool CoolingFreeGP { get; set; } = coolingFreeGP;
 
         // Effective range
         public float EffectiveRange { get; set; }
@@ -1262,6 +1264,12 @@ namespace ApsCalcUI
         /// </summary>
         public void CalculateCoolerVolumeAndCost()
         {
+            if (CoolingFreeGP)
+            {
+                CoolerVolume = 0;
+                CoolerCost = 0;
+                return;
+            }
             float coolerVolume;
             float coolerCost;
             if (GPCasingCount > 0)

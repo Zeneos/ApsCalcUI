@@ -103,6 +103,7 @@ namespace ApsCalcUI
             RawNumberOutputCB = new System.Windows.Forms.CheckBox();
             GPIncrementUD = new System.Windows.Forms.NumericUpDown();
             VerboseOutputCB = new System.Windows.Forms.CheckBox();
+            CoolingFreeGPCB = new System.Windows.Forms.CheckBox();
             BarrelCountLabel = new System.Windows.Forms.Label();
             MinGaugeLabel = new System.Windows.Forms.Label();
             MaxGaugeLabel = new System.Windows.Forms.Label();
@@ -1162,6 +1163,17 @@ namespace ApsCalcUI
             ToolTip.SetToolTip(VerboseOutputCB, "Check to output detailed volume and cost statistics.");
             VerboseOutputCB.UseVisualStyleBackColor = true;
             // 
+            // CoolingFreeGPCB
+            // 
+            CoolingFreeGPCB.AutoSize = true;
+            CoolingFreeGPCB.Location = new System.Drawing.Point(133, 92);
+            CoolingFreeGPCB.Name = "CoolingFreeGPCB";
+            CoolingFreeGPCB.Size = new System.Drawing.Size(111, 19);
+            CoolingFreeGPCB.TabIndex = 65;
+            CoolingFreeGPCB.Text = "Cooling Free GP";
+            ToolTip.SetToolTip(CoolingFreeGPCB, "Check if cooling of GP casings is covered by existing minimum cooler snake. Don't check unless you know exactly what this does.");
+            CoolingFreeGPCB.UseVisualStyleBackColor = true;
+            // 
             // BarrelCountLabel
             // 
             BarrelCountLabel.AutoSize = true;
@@ -1857,6 +1869,7 @@ namespace ApsCalcUI
             AutoScroll = true;
             BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             ClientSize = new System.Drawing.Size(1486, 1559);
+            Controls.Add(CoolingFreeGPCB);
             Controls.Add(VerboseOutputCB);
             Controls.Add(GPIncrementUD);
             Controls.Add(GPIncrementLabel);
@@ -2118,6 +2131,7 @@ namespace ApsCalcUI
         private System.Windows.Forms.NumericUpDown GPIncrementUD;
         private System.Windows.Forms.Label GPIncrementLabel;
         private System.Windows.Forms.CheckBox VerboseOutputCB;
+        private System.Windows.Forms.CheckBox CoolingFreeGPCB;
     }
 }
 

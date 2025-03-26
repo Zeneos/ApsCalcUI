@@ -49,6 +49,7 @@ namespace ApsCalcUI
         public bool EngineUsesFuel;
         public bool FiringPieceIsDif;
         public bool GunUsesRecoilAbsorbers;
+        public bool CoolingFreeGP;
         public float MaxInaccuracy;
         public float RateOfFireRpm;
         public bool LimitBarrelLength;
