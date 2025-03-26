@@ -37,6 +37,10 @@ mod), but limits the gun to 4 inputs max, and doubles reload time.
 1 000mm APS Mod: if checked, allows the max gauge to be set as high as 
 1 000mm. This gauge is not possible ingame without mods.
 
+Cooling Free GP Checkbox: If checked, the optimizer will ignore cooler volume
+and cost for GP casings. Intended to be used in testing optimal shells in
+pure rail setups with unavoidable cooler snakes.
+
 Impact Angle: Angle of impact from perpendicular, in °. Kinetic damage is 
 multiplied by the absolute value of the cosine of this angle: a 0° impact
 angle is a perfect hit against a flat surface (beams), and will deal full 
