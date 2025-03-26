@@ -498,7 +498,7 @@ namespace ApsCalcUI
         /// <summary>
         /// Calculates minimum rail draw needed to achieve given velocity and effective range
         /// </summary>
-        public float CalculateMinimumDrawForVelocityandRange(float minVelocityInput, float minRangeInput)
+        public float CalculateMinDrawForVelocityandRange(float minVelocityInput, float minRangeInput)
         {
             CalculateRecoil();
             // Calculate effective time

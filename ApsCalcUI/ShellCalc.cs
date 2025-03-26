@@ -5,6 +5,8 @@ using System.Linq;
 using System.IO;
 using System.Timers;
 using System.Diagnostics;
+using System.Reflection.Metadata.Ecma335;
+using System.DirectoryServices;
 
 namespace ApsCalcUI
 {
@@ -332,7 +334,7 @@ namespace ApsCalcUI
                                         for (float var4Count = 0; var4Count <= var4Max; var4Count++)
                                         {
                                             float var5Max = VariableModuleIndices[5] == VariableModuleIndices[0] ?
-                                                0 : 
+                                                0 :
                                                 maxModuleCount
                                                 - gpCount
                                                 - rgCount
@@ -447,25 +449,16 @@ namespace ApsCalcUI
             }
 
             // Binary gradient ascent to find optimal draw without testing every value
-            float optimalDraw = 0;
+            float optimalDraw = maxDraw;
             float midRange;
             float midRangeScore;
             float midRangePlus;
             float midRangePlusScore;
             float topOfRange = maxDraw;
             float bottomOfRange = minDraw;
-            int iterations = 0;
-            int maxCycles = (int)MathF.Ceiling(MathF.Log2(maxDraw));
 
-            /* try
+            while (bottomOfRange + 1 < topOfRange)
             {
-                File.AppendAllText("log.txt", $"\nStarting rail calc with max = {maxCycles}\n");
-            }
-            catch { } */
-
-            while (bottomOfRange + 1 < topOfRange && iterations < maxCycles)
-            {
-                iterations++;
                 midRange = MathF.Floor((topOfRange + bottomOfRange) / 2f);
                 midRangePlus = midRange + 1;
 
@@ -513,17 +506,7 @@ namespace ApsCalcUI
                     bottomOfRange = midRangePlus;
                     optimalDraw = midRangePlus;
                 }
-                /* try
-                {
-                    File.AppendAllText("log.txt", $"[Optimal Rail Draw Calc]: Lower - {bottomOfRange}, Mid - {midRange}, Mid+ - {midRangePlus}, Top - {topOfRange}\n");
-                }
-                catch { } */
             }
-            /* try 
-            {
-                File.AppendAllText("log.txt", "\n");
-            }
-            catch { } */
             return optimalDraw;
         }
 
@@ -665,7 +648,7 @@ namespace ApsCalcUI
                 FixedModuleCounts.CopyTo(shellUnderTesting.BodyModuleCounts, 0);
 
                 // Add variable modules
-                for (int i = 0; i <  modConfig.VariableModCounts.Length; i++)
+                for (int i = 0; i < modConfig.VariableModCounts.Length; i++)
                 {
                     int moduleIndex = VariableModuleIndices[i];
                     float moduleCount = modConfig.VariableModCounts[i];
@@ -676,7 +659,7 @@ namespace ApsCalcUI
                 shellUnderTesting.CalculateRecoil();
                 bool lengthWithinBounds = true;
                 if (LimitBarrelLength
-                    && shellUnderTesting.ProjectileLength 
+                    && shellUnderTesting.ProjectileLength
                         > shellUnderTesting.CalculateMaxProjectileLengthForInaccuracy(MaxBarrelLengthInM, MaxInaccuracy))
                 {
                     lengthWithinBounds = false;
@@ -698,7 +681,7 @@ namespace ApsCalcUI
                     {
                         maxDraw = MathF.Min(maxDraw, shellUnderTesting.CalculateMaxDrawForInaccuracy(MaxBarrelLengthInM, MaxInaccuracy));
                     }
-                    float minDraw = shellUnderTesting.CalculateMinimumDrawForVelocityandRange(MinVelocityInput, MinEffectiveRangeInput);
+                    float minDraw = shellUnderTesting.CalculateMinDrawForVelocityandRange(MinVelocityInput, MinEffectiveRangeInput);
 
                     if (maxDraw >= minDraw)
                     {
@@ -726,7 +709,7 @@ namespace ApsCalcUI
                             Dictionary<DamageType, float> referenceDict = TestType == TestType.DpsPerVolume ?
                                 shellUnderTesting.DpsPerVolumeDict : shellUnderTesting.DpsPerCostDict;
                             // Determine optimal rail draw
-                            float optimalDraw = maxDraw > 0 ? 
+                            float optimalDraw = maxDraw > 0 ?
                                 CalculateOptimalRailDraw(shellUnderTesting, maxDraw, minDraw, referenceDict)
                                 : 0;
                             shellUnderTesting.RailDraw = optimalDraw;
@@ -778,8 +761,8 @@ namespace ApsCalcUI
                                 shellUnderTestingBelt.CalculateMaxDraw();
                                 shellUnderTestingBelt.CalculateReloadTime(TestIntervalSeconds);
                                 shellUnderTestingBelt.CalculateVariableVolumesAndCosts(
-                                    TestIntervalSeconds, 
-                                    StoragePerVolume, 
+                                    TestIntervalSeconds,
+                                    StoragePerVolume,
                                     StoragePerCost);
                                 shellUnderTestingBelt.CalculateCooldownTime();
                                 shellUnderTestingBelt.CalculateDamageModifierByType(DamageType);
