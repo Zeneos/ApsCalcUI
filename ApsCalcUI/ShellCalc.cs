@@ -671,7 +671,10 @@ namespace ApsCalcUI
                     shellUnderTesting.CalculateMaxDraw();
                     
                     float maxDraw = MathF.Min(shellUnderTesting.MaxDraw, MaxDrawInput);
-                    maxDraw = MathF.Min(maxDraw, MaxRecoilInput - shellUnderTesting.GPRecoil);
+                    float maxDrawForRecoil = shellUnderTesting.GPCasingCount == 0
+                        ? MaxRecoilInput / 0.6f
+                        : MaxRecoilInput - shellUnderTesting.GPRecoil;
+                    maxDraw = MathF.Min(maxDraw, maxDrawForRecoil);
                     if (!shellUnderTesting.GunUsesRecoilAbsorbers)
                     {
                         maxDraw = MathF.Min(maxDraw, shellUnderTesting.CalculateMaxDrawForInaccuracy(MaxBarrelLengthInM, MaxInaccuracy));

@@ -427,11 +427,15 @@ namespace ApsCalcUI
         /// </summary>
         public float CalculateMaxDrawForInaccuracy(float maxBarrelLengthInM, float desiredInaccuracy)
         {
-            float maxDraw = 
+            float effectiveRecoilBudget =
                 (MathF.Pow(
                     MathF.Pow(ProjectileLength / 1000f, 3f / 4f) / maxBarrelLengthInM * 4f, 1f / 2.5f)
                 / 0.3f * desiredInaccuracy / OverallInaccuracyModifier - 1f)
-                / 0.6f * 12500f * GaugeMultiplier - GPRecoil;
+                / 0.6f * 12500f * GaugeMultiplier;
+
+            float maxDraw = GPCasingCount == 0
+                ? effectiveRecoilBudget / 0.6f
+                : effectiveRecoilBudget - GPRecoil;
 
             return maxDraw;
         }
@@ -481,6 +485,10 @@ namespace ApsCalcUI
         {
             GPRecoil = GaugeMultiplier * GPCasingCount * 2500f;
             TotalRecoil = GPRecoil + RailDraw;
+            if (GPCasingCount == 0)
+            {
+                TotalRecoil *= 0.6f;
+            }
         }
 
 
