@@ -470,7 +470,7 @@ namespace ApsCalcUI
         /// </summary>
         public void CalculateMaxDraw()
         {
-            MaxDraw = 12500f * GaugeMultiplier * (EffectiveProjectileModuleCount + (0.5f * RGCasingCount));
+            MaxDraw = 12500f * GaugeMultiplier * (EffectiveProjectileModuleCount + (1.25f * RGCasingCount));
         }
 
 
@@ -1294,7 +1294,7 @@ namespace ApsCalcUI
             if (RailDraw > 0)
             {
                 float drawPerSecond = RailDraw / ClusterReloadTime;
-                ChargerVolume = drawPerSecond / 200f; // Chargers provide 200 Energy per second
+                ChargerVolume = drawPerSecond / 280f; // Chargers provide 280 Energy per second
                 ChargerCost = ChargerVolume * 400f; // Chargers cost 400 per metre
 
                 // Volume and cost of engine
@@ -1348,7 +1348,7 @@ namespace ApsCalcUI
         public void CalculateVariableVolumesAndCosts(float testIntervalSeconds, float storagePerVolume, float storagePerCost)
         {
             // Calculate cost of shell itself
-            CostPerShell = (EffectiveProjectileModuleCount + (GPCasingCount + RGCasingCount) / 4)
+            CostPerShell = (EffectiveProjectileModuleCount + GPCasingCount * 0.25f + RGCasingCount * 0.15f)
                 * 5f
                 * GaugeMultiplier;
 
