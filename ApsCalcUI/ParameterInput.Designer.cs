@@ -1132,7 +1132,6 @@ namespace ApsCalcUI
             // 
             // MaxGaugeLabel
             // 
-            MaxGaugeLabel.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             MaxGaugeLabel.AutoSize = true;
             MaxGaugeLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             MaxGaugeLabel.Location = new System.Drawing.Point(225, 25);
