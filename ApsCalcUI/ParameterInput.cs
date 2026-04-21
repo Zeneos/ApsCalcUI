@@ -1202,5 +1202,10 @@ namespace ApsCalcUI
                 RunButton.Text = "Run Queued Tests";
             }
         }
+
+        private void GPIncrementLabel_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
