@@ -277,6 +277,10 @@ namespace ApsCalcUI
         public char ColumnDelimiter { get; }
 
 
+        // Climb cache: (gp, rg) -> metric. Shared across hill-climbs within one body config to avoid
+        // redundant re-evaluation by multiple seeds.
+        private Dictionary<(float, float), float> _climbCache = null;
+
         // Store top-DPS shells by loader length
         public Shell TopBelt { get; set; } = new(default, default, default, default, default, default, default, default,
             default, default, default, default, default, default, default, default);
@@ -644,105 +648,254 @@ namespace ApsCalcUI
                     continue;
                 }
 
-                float gpMax = MathF.Min(MaxGP, maxModuleCount - bodyConfig.VarsTotal);
-                for (float gpCount = 0; gpCount <= gpMax; gpCount += MathF.Min(GPIncrement, gpMax - gpCount + 0.01f))
+                OptimizeCasingsForBody(template, headModule, bodyConfig.VarsTotal);
+            }
+        }
+
+        /// <summary>
+        /// Finds optimal (GP, RG) casing layout for a given body template using a seed + hill-climb
+        /// strategy. Seeds at max-recoil/max-draw config (upper bound on achievable pendepth); if the
+        /// seed fails pendepth the entire body is skipped. Hill-climbs GP in 1D with adaptive
+        /// coarse-to-fine step size. RG is auto-tuned analytically per eval to the minimum needed
+        /// to support the optimal rail draw. Runs both regular and beltfed passes where applicable.
+        /// </summary>
+        private void OptimizeCasingsForBody(Shell bodyTemplate, Module headModule, float varsTotal)
+        {
+            float moduleBudget = 20f - FixedModuleTotal - varsTotal;
+
+            OptimizeCasingsPath(bodyTemplate, headModule, moduleBudget, isBelt: false);
+
+            // Belt variant only relevant if body alone fits within 1000mm and not using DIF
+            if (!FiringPieceIsDif && bodyTemplate.ProjectileLength <= 1000f)
+            {
+                Shell beltTemplate = CloneTemplateForBelt(bodyTemplate, headModule);
+                OptimizeCasingsPath(beltTemplate, headModule, moduleBudget, isBelt: true);
+            }
+        }
+
+        /// <summary>
+        /// 2D hill-climb over (GP, RG) casing space. Seeds at every integer (gp, rg) pair within
+        /// module/length budget to guarantee coverage of distinct DPS-per-metric basins. Each seed
+        /// runs a greedy ±δ neighbor search with adaptive coarse-to-fine step. Deduplicates via a
+        /// shared tried-set to skip re-evaluating the same point across seeds.
+        /// </summary>
+        private void OptimizeCasingsPath(Shell bodyTemplate, Module headModule, float moduleBudget, bool isBelt)
+        {
+            float lengthCap = isBelt ? MathF.Min(MaxShellLength, 1000f) : MaxShellLength;
+            if (bodyTemplate.ProjectileLength > lengthCap)
+            {
+                return;
+            }
+
+            float casingSumMaxByLength = Gauge > 0f
+                ? MathF.Max(0f, (lengthCap - bodyTemplate.ProjectileLength) / Gauge)
+                : 0f;
+
+            int gpMaxInt = (int)MathF.Floor(MathF.Min(MaxGP, MathF.Min(moduleBudget, casingSumMaxByLength)));
+            int rgMaxInt = (int)MathF.Floor(MathF.Min(MaxRGInput, MathF.Min(moduleBudget, casingSumMaxByLength)));
+            if (gpMaxInt < 0) gpMaxInt = 0;
+            if (rgMaxInt < 0) rgMaxInt = 0;
+
+            _climbCache = new Dictionary<(float, float), float>();
+
+            for (int gpInt = 0; gpInt <= gpMaxInt; gpInt++)
+            {
+                int rgCeilBudgetForGP = (int)MathF.Floor(MathF.Min(
+                    MaxRGInput,
+                    MathF.Min(moduleBudget - gpInt, casingSumMaxByLength - gpInt)));
+                if (rgCeilBudgetForGP < 0) continue;
+                int rgUpper = Math.Min(rgMaxInt, rgCeilBudgetForGP);
+                for (int rgInt = 0; rgInt <= rgUpper; rgInt++)
                 {
-                    float rgMax = MathF.Min(MaxRGInput, maxModuleCount - bodyConfig.VarsTotal - gpCount);
-                    for (float rgCount = 0; rgCount <= rgMax; rgCount += MathF.Min(RGIncrement, rgMax - rgCount + 0.01f))
+                    HillClimb2D(bodyTemplate, headModule, gpInt, rgInt, moduleBudget, casingSumMaxByLength, isBelt, lengthCap);
+                }
+            }
+
+            _climbCache = null;
+        }
+
+        /// <summary>
+        /// 2D hill-climb in (GP, RG) space from given integer seed. Neighbors are ±δ along each
+        /// axis; accepts first improvement. Adaptive δ halves on no-improvement until reaching
+        /// axis increment. Shared triedSeeds prevents re-eval across seeds.
+        /// </summary>
+        private void HillClimb2D(
+            Shell bodyTemplate, Module headModule,
+            float gpSeed, float rgSeed,
+            float moduleBudget, float casingSumMaxByLength,
+            bool isBelt, float lengthCap)
+        {
+            float bestMetric = EvalOrCache(bodyTemplate, headModule, gpSeed, rgSeed, isBelt, lengthCap);
+            if (bestMetric <= 0f)
+            {
+                return;
+            }
+            float bestGP = gpSeed;
+            float bestRG = rgSeed;
+
+            float minDelta = MathF.Max(MathF.Min(GPIncrement, RGIncrement), 0.01f);
+            float delta = MathF.Max(1f, minDelta);
+
+            (float dgp, float drg)[] moves = new (float, float)[]
+            {
+                (-1f, 0f), (1f, 0f), (0f, -1f), (0f, 1f)
+            };
+
+            while (true)
+            {
+                bool improved = false;
+                foreach (var (dgp, drg) in moves)
+                {
+                    float trialGP = bestGP + dgp * delta;
+                    float trialRG = bestRG + drg * delta;
+                    if (trialGP < 0f || trialRG < 0f) continue;
+                    if (trialGP > MaxGP || trialRG > MaxRGInput) continue;
+                    if (MathF.Ceiling(trialGP) + MathF.Ceiling(trialRG) > moduleBudget) continue;
+                    if (trialGP + trialRG > casingSumMaxByLength) continue;
+                    float metric = EvalOrCache(bodyTemplate, headModule, trialGP, trialRG, isBelt, lengthCap);
+                    if (metric > bestMetric)
                     {
-                        TestCasingConfig(template, headModule, gpCount, rgCount);
+                        bestMetric = metric;
+                        bestGP = trialGP;
+                        bestRG = trialRG;
+                        improved = true;
+                        break;
                     }
+                }
+                if (!improved)
+                {
+                    if (delta <= minDelta) break;
+                    delta = MathF.Max(minDelta, delta / 2f);
                 }
             }
         }
 
         /// <summary>
-        /// Tests a single (gp, rg) casing configuration against the given body template. Clones body
-        /// state, runs length/draw/DPS pipeline, and compares to top shells (including belt variant).
+        /// Cached eval wrapper. If (gp, rg) already in _climbCache, returns cached metric without
+        /// re-evaluating. Otherwise calls EvalCasingConfig, caches the result, and returns it.
         /// </summary>
-        private void TestCasingConfig(Shell template, Module headModule, float gpCount, float rgCount)
+        private float EvalOrCache(
+            Shell bodyTemplate, Module headModule,
+            float gpCount, float rgCount, bool isBelt, float lengthCap)
         {
-            Shell shellUnderTesting = new(
-                BarrelCount, Gauge, GaugeMultiplier, false, headModule, BaseModule,
-                RegularClipsPerLoader, RegularInputsPerLoader,
-                BeltfedClipsPerLoader, BeltfedInputsPerLoader,
-                UsesAmmoEjector, gpCount, rgCount, RateOfFireRpm, GunUsesRecoilAbsorbers,
-                FiringPieceIsDif);
-            Array.Copy(template.BodyModuleCounts, shellUnderTesting.BodyModuleCounts, template.BodyModuleCounts.Length);
-            shellUnderTesting.CopyBodyStateFrom(template);
-            shellUnderTesting.UpdateCasingLengths();
-            shellUnderTesting.CalculateRecoil();
-
-            if (LimitBarrelLength
-                && shellUnderTesting.ProjectileLength
-                    > shellUnderTesting.CalculateMaxProjectileLengthForInaccuracy(MaxBarrelLengthInM, MaxInaccuracy))
+            var key = (gpCount, rgCount);
+            if (_climbCache != null && _climbCache.TryGetValue(key, out float cached))
             {
-                return;
+                return cached;
             }
-            if (shellUnderTesting.TotalLength <= MinShellLength || shellUnderTesting.TotalLength > MaxShellLength)
+            float metric = EvalCasingConfig(bodyTemplate, headModule, gpCount, rgCount, isBelt, lengthCap);
+            if (_climbCache != null)
             {
-                return;
+                _climbCache[key] = metric;
             }
-
-            shellUnderTesting.CalculateMaxDraw();
-
-            float maxDraw = MathF.Min(shellUnderTesting.MaxDraw, MaxDrawInput);
-            float maxDrawForRecoil = shellUnderTesting.GPCasingCount == 0
-                ? MaxRecoilInput / 0.6f
-                : MaxRecoilInput - shellUnderTesting.GPRecoil;
-            maxDraw = MathF.Min(maxDraw, maxDrawForRecoil);
-            if (!shellUnderTesting.GunUsesRecoilAbsorbers)
-            {
-                maxDraw = MathF.Min(maxDraw, shellUnderTesting.CalculateMaxDrawForInaccuracy(MaxBarrelLengthInM, MaxInaccuracy));
-            }
-            float minDraw = shellUnderTesting.CalculateMinDrawForVelocityandRange(MinVelocityInput, MinEffectiveRangeInput);
-            if (maxDraw < minDraw)
-            {
-                return;
-            }
-
-            shellUnderTesting.CalculateReloadTime(TestIntervalSeconds);
-            shellUnderTesting.CalculateCooldownTime();
-            shellUnderTesting.CalculateCoolerVolumeAndCost();
-            shellUnderTesting.CalculateLoaderVolumeAndCost();
-            shellUnderTesting.CalculateVariableVolumesAndCosts(TestIntervalSeconds, StoragePerVolume, StoragePerCost);
-
-            Dictionary<DamageType, float> referenceDict = TestType == TestType.DpsPerVolume ?
-                shellUnderTesting.DpsPerVolumeDict : shellUnderTesting.DpsPerCostDict;
-            float optimalDraw = maxDraw > 0 ?
-                CalculateOptimalRailDraw(shellUnderTesting, maxDraw, minDraw, referenceDict)
-                : 0;
-            shellUnderTesting.RailDraw = optimalDraw;
-            CompareToTopShells(shellUnderTesting, referenceDict);
-
-            if (shellUnderTesting.TotalLength <= 1000f && !FiringPieceIsDif)
-            {
-                TestBeltCasingConfig(template, headModule, gpCount, rgCount, maxDraw, minDraw);
-            }
+            return metric;
         }
 
         /// <summary>
-        /// Beltfed variant of TestCasingConfig. Belt loaders cannot use ejectors, so Emergency Defuse
-        /// is stripped; this invalidates some body-derived state, which is recomputed here.
+        /// Evaluates a shell at (gpCount, rgCount) against the body template. Runs the draw-search
+        /// pipeline, final DPS calc, and updates top shells. Returns the metric (DpsPerVolume or
+        /// DpsPerCost) for hill-climb comparison, or 0 if rejected.
         /// </summary>
-        private void TestBeltCasingConfig(
-            Shell template, Module headModule, float gpCount, float rgCount, float maxDraw, float minDraw)
+        private float EvalCasingConfig(
+            Shell bodyTemplate, Module headModule,
+            float gpCount, float rgCount, bool isBelt, float lengthCap)
         {
-            Shell shellUnderTestingBelt = new(
-                BarrelCount, Gauge, GaugeMultiplier, true, headModule, BaseModule,
+            Shell probe = new(
+                BarrelCount, Gauge, GaugeMultiplier, isBelt, headModule, BaseModule,
                 RegularClipsPerLoader, RegularInputsPerLoader,
                 BeltfedClipsPerLoader, BeltfedInputsPerLoader,
                 UsesAmmoEjector, gpCount, rgCount, RateOfFireRpm, GunUsesRecoilAbsorbers,
                 FiringPieceIsDif);
-            Array.Copy(template.BodyModuleCounts, shellUnderTestingBelt.BodyModuleCounts, template.BodyModuleCounts.Length);
+            Array.Copy(bodyTemplate.BodyModuleCounts, probe.BodyModuleCounts, bodyTemplate.BodyModuleCounts.Length);
+            probe.CopyBodyStateFrom(bodyTemplate);
+            probe.UpdateCasingLengths();
+            probe.CalculateRecoil();
 
-            // Beltfed loaders cannot use ejectors — strip Defuse
-            bool defuseStripped = false;
-            for (int modIndex = 0; modIndex < shellUnderTestingBelt.BodyModuleCounts.Length; modIndex++)
+            if (LimitBarrelLength
+                && probe.ProjectileLength > probe.CalculateMaxProjectileLengthForInaccuracy(MaxBarrelLengthInM, MaxInaccuracy))
             {
-                if (Module.AllModules[modIndex] == Module.Defuse && shellUnderTestingBelt.BodyModuleCounts[modIndex] > 0f)
+                return 0f;
+            }
+            if (probe.TotalLength <= MinShellLength || probe.TotalLength > lengthCap)
+            {
+                return 0f;
+            }
+
+            probe.CalculateMaxDraw();
+
+            float maxDraw = MathF.Min(probe.MaxDraw, MaxDrawInput);
+            float maxDrawForRecoil = probe.GPCasingCount == 0
+                ? MaxRecoilInput / 0.6f
+                : MaxRecoilInput - probe.GPRecoil;
+            maxDraw = MathF.Min(maxDraw, maxDrawForRecoil);
+            if (!probe.GunUsesRecoilAbsorbers)
+            {
+                maxDraw = MathF.Min(maxDraw, probe.CalculateMaxDrawForInaccuracy(MaxBarrelLengthInM, MaxInaccuracy));
+            }
+            float minDraw = probe.CalculateMinDrawForVelocityandRange(MinVelocityInput, MinEffectiveRangeInput);
+            if (maxDraw < minDraw)
+            {
+                return 0f;
+            }
+
+            probe.CalculateReloadTime(TestIntervalSeconds);
+            probe.CalculateCooldownTime();
+            probe.CalculateCoolerVolumeAndCost();
+            probe.CalculateLoaderVolumeAndCost();
+            probe.CalculateVariableVolumesAndCosts(TestIntervalSeconds, StoragePerVolume, StoragePerCost);
+
+            Dictionary<DamageType, float> referenceDict = TestType == TestType.DpsPerVolume ?
+                probe.DpsPerVolumeDict : probe.DpsPerCostDict;
+            float optimalDraw = maxDraw > 0 ?
+                CalculateOptimalRailDraw(probe, maxDraw, minDraw, referenceDict)
+                : 0f;
+
+            probe.RailDraw = optimalDraw;
+            probe.CalculateVelocity();
+            probe.CalculateEffectiveRange();
+            probe.CalculateDpsByType(
+                DamageType, TargetAC, TestIntervalSeconds,
+                StoragePerVolume, StoragePerCost,
+                EnginePpm, EnginePpv, EnginePpc, EngineUsesFuel,
+                TargetArmorScheme, ImpactAngleFromPerpendicularDegrees);
+
+            if (isBelt)
+            {
+                Dictionary<DamageType, float> topRef = TestType == TestType.DpsPerVolume ?
+                    TopBelt.DpsPerVolumeDict : TopBelt.DpsPerCostDict;
+                if (referenceDict[DamageType] > topRef[DamageType])
                 {
-                    shellUnderTestingBelt.BodyModuleCounts[modIndex] = 0f;
+                    TopBelt = probe;
+                }
+            }
+            else
+            {
+                CompareToTopShells(probe, referenceDict);
+            }
+
+            return referenceDict[DamageType];
+        }
+
+        /// <summary>
+        /// Creates a beltfed body template by cloning and stripping Emergency Defuse (belt loaders
+        /// cannot use ejectors). Recomputes body-derived state only if Defuse was stripped.
+        /// </summary>
+        private Shell CloneTemplateForBelt(Shell mainTemplate, Module headModule)
+        {
+            Shell beltTpl = new(
+                BarrelCount, Gauge, GaugeMultiplier, true, headModule, BaseModule,
+                RegularClipsPerLoader, RegularInputsPerLoader,
+                BeltfedClipsPerLoader, BeltfedInputsPerLoader,
+                UsesAmmoEjector, 0f, 0f, RateOfFireRpm, GunUsesRecoilAbsorbers,
+                FiringPieceIsDif);
+            Array.Copy(mainTemplate.BodyModuleCounts, beltTpl.BodyModuleCounts, mainTemplate.BodyModuleCounts.Length);
+
+            bool defuseStripped = false;
+            for (int i = 0; i < beltTpl.BodyModuleCounts.Length; i++)
+            {
+                if (Module.AllModules[i] == Module.Defuse && beltTpl.BodyModuleCounts[i] > 0f)
+                {
+                    beltTpl.BodyModuleCounts[i] = 0f;
                     defuseStripped = true;
                     break;
                 }
@@ -750,59 +903,27 @@ namespace ApsCalcUI
 
             if (defuseStripped)
             {
-                // Defuse removal changes body geometry and modifier weights; recompute.
-                shellUnderTestingBelt.CalculateBodyLengths();
-                shellUnderTestingBelt.CalculateVelocityModifier();
-                shellUnderTestingBelt.CalculateDamageModifierByType(DamageType);
-                shellUnderTestingBelt.SabotAngleMultiplier = SabotAngleMultiplier;
-                shellUnderTestingBelt.NonSabotAngleMultiplier = NonSabotAngleMultiplier;
+                beltTpl.CalculateBodyLengths();
+                beltTpl.CalculateVelocityModifier();
+                beltTpl.CalculateDamageModifierByType(DamageType);
+                beltTpl.SabotAngleMultiplier = SabotAngleMultiplier;
+                beltTpl.NonSabotAngleMultiplier = NonSabotAngleMultiplier;
                 if (DamageType != DamageType.Kinetic)
                 {
-                    shellUnderTestingBelt.CalculateDamageByType(DamageType, FragAngleMultiplier);
+                    beltTpl.CalculateDamageByType(DamageType, FragAngleMultiplier);
                 }
                 if (MinDisruptor > 0 && DamageType != DamageType.Disruptor)
                 {
-                    shellUnderTestingBelt.CalculateDamageByType(DamageType.EMP, FragAngleMultiplier);
-                    shellUnderTestingBelt.CalculateDamageByType(DamageType.Disruptor, FragAngleMultiplier);
+                    beltTpl.CalculateDamageByType(DamageType.EMP, FragAngleMultiplier);
+                    beltTpl.CalculateDamageByType(DamageType.Disruptor, FragAngleMultiplier);
                 }
             }
             else
             {
-                shellUnderTestingBelt.CopyBodyStateFrom(template);
+                beltTpl.CopyBodyStateFrom(mainTemplate);
             }
 
-            shellUnderTestingBelt.UpdateCasingLengths();
-            shellUnderTestingBelt.GetModuleCounts();
-            shellUnderTestingBelt.CalculateRequiredBarrelLengths(MaxInaccuracy);
-            shellUnderTestingBelt.CalculateRecoil();
-            shellUnderTestingBelt.CalculateMaxDraw();
-            shellUnderTestingBelt.CalculateReloadTime(TestIntervalSeconds);
-            shellUnderTestingBelt.CalculateVariableVolumesAndCosts(TestIntervalSeconds, StoragePerVolume, StoragePerCost);
-            shellUnderTestingBelt.CalculateCooldownTime();
-            shellUnderTestingBelt.CalculateLoaderVolumeAndCost();
-            shellUnderTestingBelt.CalculateCoolerVolumeAndCost();
-
-            Dictionary<DamageType, float> referenceDictBelt = TestType == TestType.DpsPerVolume ?
-                shellUnderTestingBelt.DpsPerVolumeDict : shellUnderTestingBelt.DpsPerCostDict;
-            float optimalDraw = maxDraw > 0 ?
-                CalculateOptimalRailDraw(shellUnderTestingBelt, maxDraw, minDraw, referenceDictBelt)
-                : 0;
-
-            shellUnderTestingBelt.RailDraw = optimalDraw;
-            shellUnderTestingBelt.CalculateVelocity();
-            shellUnderTestingBelt.CalculateEffectiveRange();
-            shellUnderTestingBelt.CalculateDpsByType(
-                DamageType, TargetAC, TestIntervalSeconds,
-                StoragePerVolume, StoragePerCost,
-                EnginePpm, EnginePpv, EnginePpc, EngineUsesFuel,
-                TargetArmorScheme, ImpactAngleFromPerpendicularDegrees);
-
-            Dictionary<DamageType, float> topReferenceDictBelt = TestType == TestType.DpsPerVolume ?
-                TopBelt.DpsPerVolumeDict : TopBelt.DpsPerCostDict;
-            if (referenceDictBelt[DamageType] > topReferenceDictBelt[DamageType])
-            {
-                TopBelt = shellUnderTestingBelt;
-            }
+            return beltTpl;
         }
 
         /// <summary>

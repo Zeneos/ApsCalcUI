@@ -74,7 +74,8 @@ namespace ApsCalcUI
         public float GPRecoil { get; set; }
         public float MaxDraw { get; set; }
         public float RailDraw { get; set; }
-        public float TotalRecoil { get; set; }
+        public float TotalRecoil { get; set; }       // Drives velocity: GPRecoil + RailDraw (unreduced)
+        public float EffectiveRecoil { get; set; }   // Drives absorbers + inaccuracy: TotalRecoil × 0.6 when GP=0 (pure rail), else = TotalRecoil
         public bool GunUsesRecoilAbsorbers { get; set; } = gunUsesRecoilAbsorbers;
         public float Velocity { get; set; }
 
@@ -466,7 +467,7 @@ namespace ApsCalcUI
 
             if (!GunUsesRecoilAbsorbers)
             {
-                OverallInaccuracyModifier *= 1f + 0.6f * TotalRecoil / 12500f / GaugeMultiplier;
+                OverallInaccuracyModifier *= 1f + 0.6f * EffectiveRecoil / 12500f / GaugeMultiplier;
             }
         }
 
@@ -534,10 +535,7 @@ namespace ApsCalcUI
         {
             GPRecoil = GaugeMultiplier * GPCasingCount * 2500f;
             TotalRecoil = GPRecoil + RailDraw;
-            if (GPCasingCount == 0)
-            {
-                TotalRecoil *= 0.6f;
-            }
+            EffectiveRecoil = GPCasingCount == 0 ? TotalRecoil * 0.6f : TotalRecoil;
         }
 
 
@@ -1308,7 +1306,7 @@ namespace ApsCalcUI
         {
             if (GunUsesRecoilAbsorbers)
             {
-                RecoilVolume = TotalRecoil / (ClusterReloadTime * 120f); // Absorbers absorb 120 per second per metre
+                RecoilVolume = EffectiveRecoil / (ClusterReloadTime * 120f); // Absorbers absorb 120 per second per metre
                 RecoilCost = RecoilVolume * 80f; // Absorbers cost 80 per metre
             }
         }
