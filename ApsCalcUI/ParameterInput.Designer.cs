@@ -483,7 +483,7 @@ namespace ApsCalcUI
             // 
             // MaxDrawUD
             // 
-            MaxDrawUD.Location = new System.Drawing.Point(1021, 190);
+            MaxDrawUD.Location = new System.Drawing.Point(1021, 243);
             MaxDrawUD.Margin = new System.Windows.Forms.Padding(6);
             MaxDrawUD.Maximum = new decimal(new int[] { 200000, 0, 0, 0 });
             MaxDrawUD.Name = "MaxDrawUD";
@@ -496,7 +496,7 @@ namespace ApsCalcUI
             // 
             // MaxRecoilUD
             // 
-            MaxRecoilUD.Location = new System.Drawing.Point(1021, 243);
+            MaxRecoilUD.Location = new System.Drawing.Point(1021, 296);
             MaxRecoilUD.Margin = new System.Windows.Forms.Padding(6);
             MaxRecoilUD.Maximum = new decimal(new int[] { 250000, 0, 0, 0 });
             MaxRecoilUD.Name = "MaxRecoilUD";
@@ -509,7 +509,7 @@ namespace ApsCalcUI
             // 
             // MaxLengthUD
             // 
-            MaxLengthUD.Location = new System.Drawing.Point(1021, 350);
+            MaxLengthUD.Location = new System.Drawing.Point(1021, 403);
             MaxLengthUD.Margin = new System.Windows.Forms.Padding(6);
             MaxLengthUD.Maximum = new decimal(new int[] { 8000, 0, 0, 0 });
             MaxLengthUD.Name = "MaxLengthUD";
@@ -585,7 +585,7 @@ namespace ApsCalcUI
             // 
             // MinLengthUD
             // 
-            MinLengthUD.Location = new System.Drawing.Point(1021, 297);
+            MinLengthUD.Location = new System.Drawing.Point(1021, 350);
             MinLengthUD.Margin = new System.Windows.Forms.Padding(6);
             MinLengthUD.Maximum = new decimal(new int[] { 7999, 0, 0, 0 });
             MinLengthUD.Name = "MinLengthUD";
@@ -1158,7 +1158,7 @@ namespace ApsCalcUI
             RGIncrementUD.DecimalPlaces = 2;
             RGIncrementUD.Enabled = false;
             RGIncrementUD.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
-            RGIncrementUD.Location = new System.Drawing.Point(1328, 137);
+            RGIncrementUD.Location = new System.Drawing.Point(1021, 190);
             RGIncrementUD.Margin = new System.Windows.Forms.Padding(6);
             RGIncrementUD.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
             RGIncrementUD.Minimum = new decimal(new int[] { 1, 0, 0, 131072 });
@@ -1482,7 +1482,7 @@ namespace ApsCalcUI
             // 
             MaxDrawLabel.AutoSize = true;
             MaxDrawLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            MaxDrawLabel.Location = new System.Drawing.Point(819, 198);
+            MaxDrawLabel.Location = new System.Drawing.Point(819, 251);
             MaxDrawLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             MaxDrawLabel.Name = "MaxDrawLabel";
             MaxDrawLabel.Size = new System.Drawing.Size(165, 32);
@@ -1493,7 +1493,7 @@ namespace ApsCalcUI
             // 
             MaxRecoilLabel.AutoSize = true;
             MaxRecoilLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            MaxRecoilLabel.Location = new System.Drawing.Point(819, 252);
+            MaxRecoilLabel.Location = new System.Drawing.Point(819, 305);
             MaxRecoilLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             MaxRecoilLabel.Name = "MaxRecoilLabel";
             MaxRecoilLabel.Size = new System.Drawing.Size(129, 32);
@@ -1504,7 +1504,7 @@ namespace ApsCalcUI
             // 
             MaxLengthLabel.AutoSize = true;
             MaxLengthLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            MaxLengthLabel.Location = new System.Drawing.Point(819, 358);
+            MaxLengthLabel.Location = new System.Drawing.Point(819, 411);
             MaxLengthLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             MaxLengthLabel.Name = "MaxLengthLabel";
             MaxLengthLabel.Size = new System.Drawing.Size(203, 32);
@@ -1664,7 +1664,7 @@ namespace ApsCalcUI
             // 
             MinLengthLabel.AutoSize = true;
             MinLengthLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            MinLengthLabel.Location = new System.Drawing.Point(819, 305);
+            MinLengthLabel.Location = new System.Drawing.Point(819, 358);
             MinLengthLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             MinLengthLabel.Name = "MinLengthLabel";
             MinLengthLabel.Size = new System.Drawing.Size(200, 32);
@@ -1875,7 +1875,7 @@ namespace ApsCalcUI
             //
             RGIncrementLabel.AutoSize = true;
             RGIncrementLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            RGIncrementLabel.Location = new System.Drawing.Point(1165, 145);
+            RGIncrementLabel.Location = new System.Drawing.Point(819, 198);
             RGIncrementLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             RGIncrementLabel.Name = "RGIncrementLabel";
             RGIncrementLabel.Size = new System.Drawing.Size(158, 32);
@@ -1889,7 +1889,7 @@ namespace ApsCalcUI
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoScroll = true;
             BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            ClientSize = new System.Drawing.Size(1486, 1559);
+            ClientSize = new System.Drawing.Size(1486, 1612);
             Controls.Add(VerboseOutputCB);
             Controls.Add(GPIncrementUD);
             Controls.Add(GPIncrementLabel);
