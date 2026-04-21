@@ -102,6 +102,7 @@ namespace ApsCalcUI
             IncendiaryBodyFixedUD = new System.Windows.Forms.NumericUpDown();
             RawNumberOutputCB = new System.Windows.Forms.CheckBox();
             GPIncrementUD = new System.Windows.Forms.NumericUpDown();
+            RGIncrementUD = new System.Windows.Forms.NumericUpDown();
             VerboseOutputCB = new System.Windows.Forms.CheckBox();
             BarrelCountLabel = new System.Windows.Forms.Label();
             MinGaugeLabel = new System.Windows.Forms.Label();
@@ -164,6 +165,7 @@ namespace ApsCalcUI
             RegularClipCountLabel = new System.Windows.Forms.Label();
             BeltfedClipCountLabel = new System.Windows.Forms.Label();
             GPIncrementLabel = new System.Windows.Forms.Label();
+            RGIncrementLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)MinGaugeUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)MaxGaugeUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)SolidBodyFixedUD).BeginInit();
@@ -199,6 +201,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)SmokeBodyFixedUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)IncendiaryBodyFixedUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)GPIncrementUD).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)RGIncrementUD).BeginInit();
             BasePanel.SuspendLayout();
             FixedModulesPanel.SuspendLayout();
             VariableModulesPanel.SuspendLayout();
@@ -467,6 +470,7 @@ namespace ApsCalcUI
             // 
             // MaxRGUD
             // 
+            MaxRGUD.DecimalPlaces = 2;
             MaxRGUD.Location = new System.Drawing.Point(1021, 137);
             MaxRGUD.Margin = new System.Windows.Forms.Padding(6);
             MaxRGUD.Maximum = new decimal(new int[] { 19, 0, 0, 0 });
@@ -1148,7 +1152,24 @@ namespace ApsCalcUI
             ToolTip.SetToolTip(GPIncrementUD, "Amount of gunpowder added between tests.\r\nLarger increments may skip better shells, but greatly decrease calculation time.");
             GPIncrementUD.Value = new decimal(new int[] { 1, 0, 0, 131072 });
             GPIncrementUD.Visible = false;
-            // 
+            //
+            // RGIncrementUD
+            //
+            RGIncrementUD.DecimalPlaces = 2;
+            RGIncrementUD.Enabled = false;
+            RGIncrementUD.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
+            RGIncrementUD.Location = new System.Drawing.Point(1328, 137);
+            RGIncrementUD.Margin = new System.Windows.Forms.Padding(6);
+            RGIncrementUD.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
+            RGIncrementUD.Minimum = new decimal(new int[] { 1, 0, 0, 131072 });
+            RGIncrementUD.Name = "RGIncrementUD";
+            RGIncrementUD.Size = new System.Drawing.Size(121, 39);
+            RGIncrementUD.TabIndex = 65;
+            RGIncrementUD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            ToolTip.SetToolTip(RGIncrementUD, "Amount of railgun casing added between tests.\r\nLarger increments may skip better shells, but greatly decrease calculation time.");
+            RGIncrementUD.Value = new decimal(new int[] { 1, 0, 0, 131072 });
+            RGIncrementUD.Visible = false;
+            //
             // VerboseOutputCB
             // 
             VerboseOutputCB.AutoSize = true;
@@ -1849,7 +1870,19 @@ namespace ApsCalcUI
             GPIncrementLabel.TabIndex = 62;
             GPIncrementLabel.Text = "GP Increment";
             GPIncrementLabel.Visible = false;
-            // 
+            //
+            // RGIncrementLabel
+            //
+            RGIncrementLabel.AutoSize = true;
+            RGIncrementLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            RGIncrementLabel.Location = new System.Drawing.Point(1165, 145);
+            RGIncrementLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            RGIncrementLabel.Name = "RGIncrementLabel";
+            RGIncrementLabel.Size = new System.Drawing.Size(158, 32);
+            RGIncrementLabel.TabIndex = 64;
+            RGIncrementLabel.Text = "RG Increment";
+            RGIncrementLabel.Visible = false;
+            //
             // ParameterInput
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
@@ -1860,6 +1893,8 @@ namespace ApsCalcUI
             Controls.Add(VerboseOutputCB);
             Controls.Add(GPIncrementUD);
             Controls.Add(GPIncrementLabel);
+            Controls.Add(RGIncrementUD);
+            Controls.Add(RGIncrementLabel);
             Controls.Add(RawNumberOutputCB);
             Controls.Add(ClipCountPanel);
             Controls.Add(CommaDecimalCB);
@@ -1959,6 +1994,7 @@ namespace ApsCalcUI
             ((System.ComponentModel.ISupportInitialize)SmokeBodyFixedUD).EndInit();
             ((System.ComponentModel.ISupportInitialize)IncendiaryBodyFixedUD).EndInit();
             ((System.ComponentModel.ISupportInitialize)GPIncrementUD).EndInit();
+            ((System.ComponentModel.ISupportInitialize)RGIncrementUD).EndInit();
             BasePanel.ResumeLayout(false);
             BasePanel.PerformLayout();
             FixedModulesPanel.ResumeLayout(false);
@@ -2117,6 +2153,8 @@ namespace ApsCalcUI
         private System.Windows.Forms.CheckBox RawNumberOutputCB;
         private System.Windows.Forms.NumericUpDown GPIncrementUD;
         private System.Windows.Forms.Label GPIncrementLabel;
+        private System.Windows.Forms.NumericUpDown RGIncrementUD;
+        private System.Windows.Forms.Label RGIncrementLabel;
         private System.Windows.Forms.CheckBox VerboseOutputCB;
     }
 }

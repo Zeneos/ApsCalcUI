@@ -1425,7 +1425,7 @@ namespace ApsCalcUI
                 ModuleCountTotal += modCount;
             }
 
-            ModuleCountTotal += MathF.Ceiling(GPCasingCount) + RGCasingCount;
+            ModuleCountTotal += MathF.Ceiling(GPCasingCount) + MathF.Ceiling(RGCasingCount);
         }        
     }
 }

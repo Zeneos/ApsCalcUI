@@ -22,6 +22,7 @@ namespace ApsCalcUI
         public float MaxGPCasingCount;
         public float GPIncrement;
         public float MaxRGCasingCount;
+        public float RGIncrement;
         public float MinLength;
         public float MaxLength;
         public float MaxDraw;

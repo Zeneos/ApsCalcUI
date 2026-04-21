@@ -116,6 +116,7 @@ namespace ApsCalcUI
             float maxGPInput,
             float gpIncrement,
             float maxRGInput,
+            float rgIncrement,
             float minShellLengthInput,
             float maxShellLengthInput,
             float maxDrawInput,
@@ -167,6 +168,7 @@ namespace ApsCalcUI
             MaxGPInput = maxGPInput;
             GPIncrement = gpIncrement;
             MaxRGInput = maxRGInput;
+            RGIncrement = rgIncrement;
             MinShellLength = minShellLengthInput;
             MaxShellLength = maxShellLengthInput;
             MaxDrawInput = maxDrawInput;
@@ -237,6 +239,7 @@ namespace ApsCalcUI
         public float MaxGP { get; }
         public float GPIncrement { get; }
         public float MaxRGInput { get; }
+        public float RGIncrement { get; }
         public float MinShellLength { get; }
         public float MaxShellLength { get; }
         public float MaxDrawInput { get; }
@@ -307,8 +310,8 @@ namespace ApsCalcUI
             {
                 for (float gpCount = 0; gpCount <= gpMax; gpCount += MathF.Min(GPIncrement, gpMax - gpCount + 0.01f))
                 {
-                    float rgMax = MathF.Min(MaxRGInput, MathF.Floor(maxModuleCount - gpCount));
-                    for (float rgCount = 0; rgCount <= rgMax; rgCount++)
+                    float rgMax = MathF.Min(MaxRGInput, maxModuleCount - gpCount);
+                    for (float rgCount = 0; rgCount <= rgMax; rgCount += MathF.Min(RGIncrement, rgMax - rgCount + 0.01f))
                     {
                         float var0Max = maxModuleCount - gpCount - rgCount;
                         for (float var0Count = 0; var0Count <= var0Max; var0Count++)
@@ -1239,6 +1242,10 @@ namespace ApsCalcUI
                 writer.WriteLine("GP Increment" + ColumnDelimiter + GPIncrement);
             }
             writer.WriteLine("Max RG casings" + ColumnDelimiter + MaxRGInput);
+            if (MaxRGInput > 0)
+            {
+                writer.WriteLine("RG Increment" + ColumnDelimiter + RGIncrement);
+            }
             writer.WriteLine("Max draw" + ColumnDelimiter + MaxDrawInput);
             if (MaxDrawInput > 0)
             {
@@ -1466,7 +1473,7 @@ namespace ApsCalcUI
                     ];
                     foreach (Shell topShell in TopDpsShells.Values)
                     {
-                        AddValueToList(rgCasingList, topShell.RGCasingCount, 0);
+                        AddValueToList(rgCasingList, topShell.RGCasingCount, 2);
                     }
                     writer.WriteLine(string.Join(ColumnDelimiter, rgCasingList));
                 }

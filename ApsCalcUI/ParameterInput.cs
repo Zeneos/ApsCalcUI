@@ -340,6 +340,11 @@ namespace ApsCalcUI
         private void MaxRGUD_ValueChanged(object sender, EventArgs e)
         {
             UpdateModuleCounts();
+            bool showIncrement = MaxRGUD.Value > 0;
+            RGIncrementLabel.Visible = showIncrement;
+            RGIncrementLabel.Enabled = showIncrement;
+            RGIncrementUD.Visible = showIncrement;
+            RGIncrementUD.Enabled = showIncrement;
         }
 
         private void MinLengthUD_ValueChanged(object sender, EventArgs e)
@@ -785,6 +790,7 @@ namespace ApsCalcUI
                 testParameters.MaxGPCasingCount = (float)MaxGPUD.Value;
                 testParameters.GPIncrement = (float)GPIncrementUD.Value;
                 testParameters.MaxRGCasingCount = (float)MaxRGUD.Value;
+                testParameters.RGIncrement = (float)RGIncrementUD.Value;
                 testParameters.MinLength = (float)MinLengthUD.Value;
                 testParameters.MaxLength = (float)MaxLengthUD.Value;
                 testParameters.MaxDraw = (float)MaxDrawUD.Value;
@@ -952,6 +958,7 @@ namespace ApsCalcUI
                                     testParameters.MaxGPCasingCount,
                                     testParameters.GPIncrement,
                                     testParameters.MaxRGCasingCount,
+                                    testParameters.RGIncrement,
                                     testParameters.MinLength,
                                     testParameters.MaxLength,
                                     testParameters.MaxDraw,
@@ -1014,6 +1021,7 @@ namespace ApsCalcUI
                                     testParameters.MaxGPCasingCount,
                                     testParameters.GPIncrement,
                                     testParameters.MaxRGCasingCount,
+                                    testParameters.RGIncrement,
                                     testParameters.MinLength,
                                     testParameters.MaxLength,
                                     testParameters.MaxDraw,
@@ -1077,6 +1085,7 @@ namespace ApsCalcUI
                                 testParameters.MaxGPCasingCount,
                                 testParameters.GPIncrement,
                                 testParameters.MaxRGCasingCount,
+                                testParameters.RGIncrement,
                                 testParameters.MinLength,
                                 testParameters.MaxLength,
                                 testParameters.MaxDraw,
@@ -1138,6 +1147,7 @@ namespace ApsCalcUI
                                 testParameters.MaxGPCasingCount,
                                 testParameters.GPIncrement,
                                 testParameters.MaxRGCasingCount,
+                                testParameters.RGIncrement,
                                 testParameters.MinLength,
                                 testParameters.MaxLength,
                                 testParameters.MaxDraw,
