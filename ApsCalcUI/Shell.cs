@@ -189,9 +189,11 @@ namespace ApsCalcUI
 
 
         /// <summary>
-        /// Calculates body, projectile, casing, and total lengths, as well as length differential, which is used to penalize short shells
+        /// Body-only length calculations; casing-independent. Sets BodyLength, ProjectileLength,
+        /// ShortLength, LengthDifferential, EffectiveBodyLength, EffectiveBodyModuleCount,
+        /// EffectiveProjectileModuleCount. Call once per body configuration.
         /// </summary>
-        public void CalculateLengths()
+        public void CalculateBodyLengths()
         {
             BodyLength = 0;
             if (BaseModule != null)
@@ -207,12 +209,8 @@ namespace ApsCalcUI
                 modIndex++;
             }
 
-            CasingLength = (GPCasingCount + RGCasingCount) * Gauge;
-
             float HeadLength = MathF.Min(Gauge, HeadModule.MaxLength);
             ProjectileLength = BodyLength + HeadLength;
-
-            TotalLength = CasingLength + ProjectileLength;
 
             ShortLength = 2 * Gauge;
             LengthDifferential = MathF.Max(ShortLength - BodyLength, 0);
@@ -220,6 +218,57 @@ namespace ApsCalcUI
 
             EffectiveBodyModuleCount = BodyLength / Gauge;
             EffectiveProjectileModuleCount = ProjectileLength / Gauge;
+        }
+
+        /// <summary>
+        /// Casing-dependent length update. Assumes CalculateBodyLengths has been run.
+        /// </summary>
+        public void UpdateCasingLengths()
+        {
+            CasingLength = (GPCasingCount + RGCasingCount) * Gauge;
+            TotalLength = CasingLength + ProjectileLength;
+        }
+
+        /// <summary>
+        /// Full length recompute (body + casings).
+        /// </summary>
+        public void CalculateLengths()
+        {
+            CalculateBodyLengths();
+            UpdateCasingLengths();
+        }
+
+        /// <summary>
+        /// Copy body-derived state (lengths, modifiers, casing-independent damage) from template shell.
+        /// Assumes BodyModuleCounts already matches template.
+        /// </summary>
+        public void CopyBodyStateFrom(Shell template)
+        {
+            BodyLength = template.BodyLength;
+            ProjectileLength = template.ProjectileLength;
+            ShortLength = template.ShortLength;
+            LengthDifferential = template.LengthDifferential;
+            EffectiveBodyLength = template.EffectiveBodyLength;
+            EffectiveBodyModuleCount = template.EffectiveBodyModuleCount;
+            EffectiveProjectileModuleCount = template.EffectiveProjectileModuleCount;
+            OverallVelocityModifier = template.OverallVelocityModifier;
+            OverallKineticDamageModifier = template.OverallKineticDamageModifier;
+            OverallArmorPierceModifier = template.OverallArmorPierceModifier;
+            OverallChemModifier = template.OverallChemModifier;
+            SabotAngleMultiplier = template.SabotAngleMultiplier;
+            NonSabotAngleMultiplier = template.NonSabotAngleMultiplier;
+            RawHE = template.RawHE;
+            HEExplosionRadius = template.HEExplosionRadius;
+            MDExplosionRadius = template.MDExplosionRadius;
+            FragCount = template.FragCount;
+            DamagePerFrag = template.DamagePerFrag;
+            Fuel = template.Fuel;
+            Intensity = template.Intensity;
+            Oxidizer = template.Oxidizer;
+            foreach (DamageType dt in template.DamageDict.Keys)
+            {
+                DamageDict[dt] = template.DamageDict[dt];
+            }
         }
 
         /// <summary>

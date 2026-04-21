@@ -302,110 +302,75 @@ namespace ApsCalcUI
         public Dictionary<string, Shell> TopDpsShells { get; set; } = [];
         public List<Shell> TopShellsLocal { get; set; } = [];
 
-        private IEnumerable<ModuleConfig> GenerateModConfigs()
+        private struct BodyConfig
+        {
+            public int HeadIndex;
+            public float[] VariableModCounts;
+            public float VarsTotal;
+        }
+
+        /// <summary>
+        /// Enumerates body-only configs (head + variable module counts). Casings enumerated
+        /// separately in ShellTest inner loop so body-dependent calcs can be hoisted.
+        /// </summary>
+        private IEnumerable<BodyConfig> GenerateBodyConfigs()
         {
             float maxModuleCount = 20f - FixedModuleTotal;
-            float gpMax = MathF.Min(MaxGP, maxModuleCount);
             for (int headIndex = 0; headIndex < HeadList.Count; headIndex++)
             {
-                for (float gpCount = 0; gpCount <= gpMax; gpCount += MathF.Min(GPIncrement, gpMax - gpCount + 0.01f))
+                float var0Max = maxModuleCount;
+                for (float var0Count = 0; var0Count <= var0Max; var0Count++)
                 {
-                    float rgMax = MathF.Min(MaxRGInput, maxModuleCount - gpCount);
-                    for (float rgCount = 0; rgCount <= rgMax; rgCount += MathF.Min(RGIncrement, rgMax - rgCount + 0.01f))
+                    float var1Max = VariableModuleIndices[1] == VariableModuleIndices[0] ?
+                        0 : maxModuleCount - var0Count;
+                    for (float var1Count = 0; var1Count <= var1Max; var1Count++)
                     {
-                        float var0Max = maxModuleCount - gpCount - rgCount;
-                        for (float var0Count = 0; var0Count <= var0Max; var0Count++)
+                        float var2Max = VariableModuleIndices[2] == VariableModuleIndices[0] ?
+                            0 : maxModuleCount - var0Count - var1Count;
+                        for (float var2Count = 0; var2Count <= var2Max; var2Count++)
                         {
-                            float var1Max = VariableModuleIndices[1] == VariableModuleIndices[0] ?
-                                0 : maxModuleCount - gpCount - rgCount - var0Count;
-                            for (float var1Count = 0; var1Count <= var1Max; var1Count++)
+                            float var3Max = VariableModuleIndices[3] == VariableModuleIndices[0] ?
+                                0 : maxModuleCount - var0Count - var1Count - var2Count;
+                            for (float var3Count = 0; var3Count <= var3Max; var3Count++)
                             {
-                                float var2Max = VariableModuleIndices[2] == VariableModuleIndices[0] ?
-                                    0 : maxModuleCount - gpCount - rgCount - var0Count - var1Count;
-                                for (float var2Count = 0; var2Count <= var2Max; var2Count++)
+                                float var4Max = VariableModuleIndices[4] == VariableModuleIndices[0] ?
+                                    0 : maxModuleCount - var0Count - var1Count - var2Count - var3Count;
+                                for (float var4Count = 0; var4Count <= var4Max; var4Count++)
                                 {
-                                    float var3Max = VariableModuleIndices[3] == VariableModuleIndices[0] ?
-                                        0 : maxModuleCount - gpCount - rgCount - var0Count - var1Count - var2Count;
-                                    for (float var3Count = 0; var3Count <= var3Max; var3Count++)
+                                    float var5Max = VariableModuleIndices[5] == VariableModuleIndices[0] ?
+                                        0 : maxModuleCount - var0Count - var1Count - var2Count - var3Count - var4Count;
+                                    for (float var5Count = 0; var5Count <= var5Max; var5Count++)
                                     {
-                                        float var4Max = VariableModuleIndices[4] == VariableModuleIndices[0] ?
-                                            0 : maxModuleCount - gpCount - rgCount - var0Count - var1Count - var2Count - var3Count;
-                                        for (float var4Count = 0; var4Count <= var4Max; var4Count++)
+                                        float var6Max = VariableModuleIndices[6] == VariableModuleIndices[0] ?
+                                            0 : maxModuleCount - var0Count - var1Count - var2Count - var3Count - var4Count - var5Count;
+                                        for (float var6Count = 0; var6Count <= var6Max; var6Count++)
                                         {
-                                            float var5Max = VariableModuleIndices[5] == VariableModuleIndices[0] ?
-                                                0 :
-                                                maxModuleCount
-                                                - gpCount
-                                                - rgCount
-                                                - var0Count
-                                                - var1Count
-                                                - var2Count
-                                                - var3Count
-                                                - var4Count;
-                                            for (float var5Count = 0; var5Count <= var5Max; var5Count++)
+                                            float var7Max = VariableModuleIndices[7] == VariableModuleIndices[0] ?
+                                                0 : maxModuleCount - var0Count - var1Count - var2Count - var3Count - var4Count - var5Count - var6Count;
+                                            for (float var7Count = 0; var7Count <= var7Max; var7Count++)
                                             {
-                                                float var6Max = VariableModuleIndices[6] == VariableModuleIndices[0] ?
-                                                    0 :
-                                                    maxModuleCount
-                                                    - gpCount
-                                                    - rgCount
-                                                    - var0Count
-                                                    - var1Count
-                                                    - var2Count
-                                                    - var3Count
-                                                    - var4Count
-                                                    - var5Count;
-                                                for (float var6Count = 0; var6Count <= var6Max; var6Count++)
+                                                float var8Max = VariableModuleIndices[8] == VariableModuleIndices[0] ?
+                                                    0 : maxModuleCount - var0Count - var1Count - var2Count - var3Count - var4Count - var5Count - var6Count - var7Count;
+                                                for (float var8Count = 0; var8Count <= var8Max; var8Count++)
                                                 {
-                                                    float var7Max = VariableModuleIndices[7] == VariableModuleIndices[0] ?
-                                                        0 :
-                                                        maxModuleCount
-                                                        - gpCount
-                                                        - rgCount
-                                                        - var0Count
-                                                        - var1Count
-                                                        - var2Count
-                                                        - var3Count
-                                                        - var4Count
-                                                        - var5Count
-                                                        - var6Count;
-                                                    for (float var7Count = 0; var7Count <= var7Max; var7Count++)
+                                                    float varsTotal = var0Count + var1Count + var2Count + var3Count + var4Count + var5Count + var6Count + var7Count + var8Count;
+                                                    yield return new BodyConfig
                                                     {
-                                                        float var8Max = VariableModuleIndices[8] == VariableModuleIndices[0] ?
-                                                            0 :
-                                                            maxModuleCount
-                                                            - gpCount
-                                                            - rgCount
-                                                            - var0Count
-                                                            - var1Count
-                                                            - var2Count
-                                                            - var3Count
-                                                            - var4Count
-                                                            - var5Count
-                                                            - var6Count
-                                                            - var7Count;
-                                                        for (float var8Count = 0; var8Count <= var8Max; var8Count++)
-                                                        {
-                                                            yield return new ModuleConfig
-                                                            {
-                                                                GPCount = gpCount,
-                                                                RGCount = rgCount,
-                                                                HeadIndex = HeadList[headIndex],
-                                                                VariableModCounts =
-                                                                [
-                                                                    var0Count,
-                                                                    var1Count,
-                                                                    var2Count,
-                                                                    var3Count,
-                                                                    var4Count,
-                                                                    var5Count,
-                                                                    var6Count,
-                                                                    var7Count,
-                                                                    var8Count
-                                                                ]
-                                                            };
-                                                        }
-                                                    }
+                                                        HeadIndex = HeadList[headIndex],
+                                                        VariableModCounts =
+                                                        [
+                                                            var0Count,
+                                                            var1Count,
+                                                            var2Count,
+                                                            var3Count,
+                                                            var4Count,
+                                                            var5Count,
+                                                            var6Count,
+                                                            var7Count,
+                                                            var8Count
+                                                        ],
+                                                        VarsTotal = varsTotal
+                                                    };
                                                 }
                                             }
                                         }
@@ -616,197 +581,227 @@ namespace ApsCalcUI
         }
 
         /// <summary>
-        /// Iterates over possible configurations and stores the best according to test parameters
+        /// Iterates over possible configurations and stores the best according to test parameters.
+        /// Body-dependent modifiers and non-kinetic damage dict entries are precomputed once per
+        /// body config and reused across the casing enumeration inner loop.
         /// </summary>
         public void ShellTest()
         {
-            // Set up target armor scheme for testing
             TargetArmorScheme.CalculateLayerAC();
+            float maxModuleCount = 20f - FixedModuleTotal;
 
-            foreach (ModuleConfig modConfig in GenerateModConfigs())
+            foreach (BodyConfig bodyConfig in GenerateBodyConfigs())
             {
-                Shell shellUnderTesting = new(
-                    BarrelCount,
-                    Gauge,
-                    GaugeMultiplier,
-                    false,
-                    Module.AllModules[modConfig.HeadIndex],
-                    BaseModule,
-                    RegularClipsPerLoader,
-                    RegularInputsPerLoader,
-                    BeltfedClipsPerLoader,
-                    BeltfedInputsPerLoader,
-                    UsesAmmoEjector,
-                    modConfig.GPCount,
-                    modConfig.RGCount,
-                    RateOfFireRpm,
-                    GunUsesRecoilAbsorbers,
-                    FiringPieceIsDif
-                    );
-                FixedModuleCounts.CopyTo(shellUnderTesting.BodyModuleCounts, 0);
+                Module headModule = Module.AllModules[bodyConfig.HeadIndex];
 
-                // Add variable modules
-                for (int i = 0; i < modConfig.VariableModCounts.Length; i++)
+                // Build template shell (body only, zero casings) and cache body-derived state
+                Shell template = new(
+                    BarrelCount, Gauge, GaugeMultiplier, false, headModule, BaseModule,
+                    RegularClipsPerLoader, RegularInputsPerLoader,
+                    BeltfedClipsPerLoader, BeltfedInputsPerLoader,
+                    UsesAmmoEjector, 0f, 0f, RateOfFireRpm, GunUsesRecoilAbsorbers,
+                    FiringPieceIsDif);
+                FixedModuleCounts.CopyTo(template.BodyModuleCounts, 0);
+                for (int i = 0; i < bodyConfig.VariableModCounts.Length; i++)
                 {
-                    int moduleIndex = VariableModuleIndices[i];
-                    float moduleCount = modConfig.VariableModCounts[i];
-                    shellUnderTesting.BodyModuleCounts[moduleIndex] += moduleCount;
+                    template.BodyModuleCounts[VariableModuleIndices[i]] += bodyConfig.VariableModCounts[i];
                 }
 
-                shellUnderTesting.CalculateLengths();
-                shellUnderTesting.CalculateRecoil();
-                bool lengthWithinBounds = true;
+                template.CalculateBodyLengths();
+                template.CalculateVelocityModifier();
+                template.CalculateDamageModifierByType(DamageType);
+                template.SabotAngleMultiplier = SabotAngleMultiplier;
+                template.NonSabotAngleMultiplier = NonSabotAngleMultiplier;
+
+                // Non-kinetic damage is casing/draw independent — compute once per body config.
+                // Kinetic damage depends on velocity (per draw) and is computed inside the binary search.
+                if (DamageType != DamageType.Kinetic)
+                {
+                    template.CalculateDamageByType(DamageType, FragAngleMultiplier);
+                }
+                if (MinDisruptor > 0 && DamageType != DamageType.Disruptor)
+                {
+                    template.CalculateDamageByType(DamageType.EMP, FragAngleMultiplier);
+                    template.CalculateDamageByType(DamageType.Disruptor, FragAngleMultiplier);
+                }
+
+                // Early reject by body-only geometry: TotalLength = ProjectileLength + CasingLength (>= 0),
+                // so if ProjectileLength already exceeds the cap, no casing count can make the shell fit.
                 if (LimitBarrelLength
-                    && shellUnderTesting.ProjectileLength
-                        > shellUnderTesting.CalculateMaxProjectileLengthForInaccuracy(MaxBarrelLengthInM, MaxInaccuracy))
+                    && template.ProjectileLength
+                        > template.CalculateMaxProjectileLengthForInaccuracy(MaxBarrelLengthInM, MaxInaccuracy))
                 {
-                    lengthWithinBounds = false;
+                    continue;
                 }
-                if (shellUnderTesting.TotalLength <= MinShellLength || shellUnderTesting.TotalLength > MaxShellLength)
+                if (template.ProjectileLength > MaxShellLength)
                 {
-                    lengthWithinBounds = false;
+                    continue;
                 }
 
-
-                if (lengthWithinBounds)
+                // Skip body configs that fail the MinDisruptor gate outright (damage dict already set)
+                if (MinDisruptor > 0 && !(template.DamageDict[DamageType.Disruptor] >= MinDisruptor))
                 {
-                    shellUnderTesting.CalculateVelocityModifier();
-                    shellUnderTesting.CalculateMaxDraw();
-                    
-                    float maxDraw = MathF.Min(shellUnderTesting.MaxDraw, MaxDrawInput);
-                    float maxDrawForRecoil = shellUnderTesting.GPCasingCount == 0
-                        ? MaxRecoilInput / 0.6f
-                        : MaxRecoilInput - shellUnderTesting.GPRecoil;
-                    maxDraw = MathF.Min(maxDraw, maxDrawForRecoil);
-                    if (!shellUnderTesting.GunUsesRecoilAbsorbers)
+                    continue;
+                }
+
+                float gpMax = MathF.Min(MaxGP, maxModuleCount - bodyConfig.VarsTotal);
+                for (float gpCount = 0; gpCount <= gpMax; gpCount += MathF.Min(GPIncrement, gpMax - gpCount + 0.01f))
+                {
+                    float rgMax = MathF.Min(MaxRGInput, maxModuleCount - bodyConfig.VarsTotal - gpCount);
+                    for (float rgCount = 0; rgCount <= rgMax; rgCount += MathF.Min(RGIncrement, rgMax - rgCount + 0.01f))
                     {
-                        maxDraw = MathF.Min(maxDraw, shellUnderTesting.CalculateMaxDrawForInaccuracy(MaxBarrelLengthInM, MaxInaccuracy));
-                    }
-                    float minDraw = shellUnderTesting.CalculateMinDrawForVelocityandRange(MinVelocityInput, MinEffectiveRangeInput);
-
-                    if (maxDraw >= minDraw)
-                    {
-                        shellUnderTesting.CalculateReloadTime(TestIntervalSeconds);
-                        shellUnderTesting.CalculateDamageModifierByType(DamageType);
-                        shellUnderTesting.SabotAngleMultiplier = SabotAngleMultiplier;
-                        shellUnderTesting.NonSabotAngleMultiplier = NonSabotAngleMultiplier;
-                        shellUnderTesting.CalculateDamageByType(DamageType, FragAngleMultiplier);
-
-                        // Users can enter minimum disruptor values even when optimizing for other damage types
-                        if (MinDisruptor > 0 && DamageType != DamageType.Disruptor)
-                        {
-                            shellUnderTesting.CalculateDamageByType(DamageType.EMP, FragAngleMultiplier);
-                            shellUnderTesting.CalculateDamageByType(DamageType.Disruptor, FragAngleMultiplier);
-                        }
-
-                        if ((shellUnderTesting.DamageDict[DamageType.Disruptor] >= MinDisruptor) || MinDisruptor == 0)
-                        {
-                            shellUnderTesting.CalculateCooldownTime();
-                            shellUnderTesting.CalculateCoolerVolumeAndCost();
-                            shellUnderTesting.CalculateLoaderVolumeAndCost();
-                            shellUnderTesting.CalculateVariableVolumesAndCosts(TestIntervalSeconds, StoragePerVolume, StoragePerCost);
-
-                            // Determine which "DPS Per" dictionary will be used for testing
-                            Dictionary<DamageType, float> referenceDict = TestType == TestType.DpsPerVolume ?
-                                shellUnderTesting.DpsPerVolumeDict : shellUnderTesting.DpsPerCostDict;
-                            // Determine optimal rail draw
-                            float optimalDraw = maxDraw > 0 ?
-                                CalculateOptimalRailDraw(shellUnderTesting, maxDraw, minDraw, referenceDict)
-                                : 0;
-                            shellUnderTesting.RailDraw = optimalDraw;
-                            CompareToTopShells(shellUnderTesting, referenceDict);
-
-                            // Beltfed testing
-                            if (shellUnderTesting.TotalLength <= 1000f && !FiringPieceIsDif)
-                            {
-                                Shell shellUnderTestingBelt = new(
-                                    BarrelCount,
-                                    Gauge,
-                                    GaugeMultiplier,
-                                    true,
-                                    Module.AllModules[modConfig.HeadIndex],
-                                    BaseModule,
-                                    RegularClipsPerLoader,
-                                    RegularInputsPerLoader,
-                                    BeltfedClipsPerLoader,
-                                    BeltfedInputsPerLoader,
-                                    UsesAmmoEjector,
-                                    modConfig.GPCount,
-                                    modConfig.RGCount,
-                                    RateOfFireRpm,
-                                    GunUsesRecoilAbsorbers,
-                                    FiringPieceIsDif);
-                                shellUnderTesting.BodyModuleCounts.CopyTo(shellUnderTestingBelt.BodyModuleCounts, 0);
-
-                                // Beltfed loaders cannot use ejectors
-                                int modIndex = 0;
-                                foreach (float modCount in shellUnderTestingBelt.BodyModuleCounts)
-                                {
-                                    // Debug.WriteLine("Mod index: " + modIndex + ": " + Module.AllModules[modIndex].Name + ": " + shellUnderTestingBelt.BodyModuleCounts[modIndex]);
-                                    if (Module.AllModules[modIndex] == Module.Defuse)
-                                    {
-                                        shellUnderTestingBelt.BodyModuleCounts[modIndex] = 0f;
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        modIndex++;
-                                    }
-                                }
-                                shellUnderTestingBelt.CalculateLengths();
-                                shellUnderTestingBelt.GetModuleCounts();
-                                shellUnderTestingBelt.CalculateRequiredBarrelLengths(MaxInaccuracy);
-                                shellUnderTestingBelt.CalculateVelocityModifier();
-                                shellUnderTestingBelt.CalculateRecoil();
-                                shellUnderTestingBelt.CalculateMaxDraw();
-                                shellUnderTestingBelt.CalculateReloadTime(TestIntervalSeconds);
-                                shellUnderTestingBelt.CalculateVariableVolumesAndCosts(
-                                    TestIntervalSeconds,
-                                    StoragePerVolume,
-                                    StoragePerCost);
-                                shellUnderTestingBelt.CalculateCooldownTime();
-                                shellUnderTestingBelt.CalculateDamageModifierByType(DamageType);
-                                shellUnderTestingBelt.SabotAngleMultiplier = SabotAngleMultiplier;
-                                shellUnderTestingBelt.NonSabotAngleMultiplier = NonSabotAngleMultiplier;
-                                shellUnderTestingBelt.CalculateDamageByType(DamageType, FragAngleMultiplier);
-                                shellUnderTestingBelt.CalculateLoaderVolumeAndCost();
-                                shellUnderTestingBelt.CalculateCoolerVolumeAndCost();
-
-                                // Binary search to find optimal draw without testing every value
-                                // Determine which "DPS Per" dictionary will be used for testing
-                                Dictionary<DamageType, float> referenceDictBelt = TestType == TestType.DpsPerVolume ?
-                                    shellUnderTestingBelt.DpsPerVolumeDict : shellUnderTestingBelt.DpsPerCostDict;
-                                optimalDraw = maxDraw > 0 ?
-                                    CalculateOptimalRailDraw(shellUnderTestingBelt, maxDraw, minDraw, referenceDictBelt)
-                                    : 0;
-
-                                // Check performance against top shell
-                                shellUnderTestingBelt.RailDraw = optimalDraw;
-                                shellUnderTestingBelt.CalculateVelocity();
-                                shellUnderTestingBelt.CalculateEffectiveRange();
-                                shellUnderTestingBelt.CalculateDpsByType(
-                                    DamageType,
-                                    TargetAC,
-                                    TestIntervalSeconds,
-                                    StoragePerVolume,
-                                    StoragePerCost,
-                                    EnginePpm,
-                                    EnginePpv,
-                                    EnginePpc,
-                                    EngineUsesFuel,
-                                    TargetArmorScheme,
-                                    ImpactAngleFromPerpendicularDegrees);
-
-                                Dictionary<DamageType, float> topReferenceDictBelt = TestType == TestType.DpsPerVolume ?
-                                    TopBelt.DpsPerVolumeDict : TopBelt.DpsPerCostDict;
-                                if (referenceDictBelt[DamageType] > topReferenceDictBelt[DamageType])
-                                {
-                                    TopBelt = shellUnderTestingBelt;
-                                }
-                            }
-                        }
+                        TestCasingConfig(template, headModule, gpCount, rgCount);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Tests a single (gp, rg) casing configuration against the given body template. Clones body
+        /// state, runs length/draw/DPS pipeline, and compares to top shells (including belt variant).
+        /// </summary>
+        private void TestCasingConfig(Shell template, Module headModule, float gpCount, float rgCount)
+        {
+            Shell shellUnderTesting = new(
+                BarrelCount, Gauge, GaugeMultiplier, false, headModule, BaseModule,
+                RegularClipsPerLoader, RegularInputsPerLoader,
+                BeltfedClipsPerLoader, BeltfedInputsPerLoader,
+                UsesAmmoEjector, gpCount, rgCount, RateOfFireRpm, GunUsesRecoilAbsorbers,
+                FiringPieceIsDif);
+            Array.Copy(template.BodyModuleCounts, shellUnderTesting.BodyModuleCounts, template.BodyModuleCounts.Length);
+            shellUnderTesting.CopyBodyStateFrom(template);
+            shellUnderTesting.UpdateCasingLengths();
+            shellUnderTesting.CalculateRecoil();
+
+            if (LimitBarrelLength
+                && shellUnderTesting.ProjectileLength
+                    > shellUnderTesting.CalculateMaxProjectileLengthForInaccuracy(MaxBarrelLengthInM, MaxInaccuracy))
+            {
+                return;
+            }
+            if (shellUnderTesting.TotalLength <= MinShellLength || shellUnderTesting.TotalLength > MaxShellLength)
+            {
+                return;
+            }
+
+            shellUnderTesting.CalculateMaxDraw();
+
+            float maxDraw = MathF.Min(shellUnderTesting.MaxDraw, MaxDrawInput);
+            float maxDrawForRecoil = shellUnderTesting.GPCasingCount == 0
+                ? MaxRecoilInput / 0.6f
+                : MaxRecoilInput - shellUnderTesting.GPRecoil;
+            maxDraw = MathF.Min(maxDraw, maxDrawForRecoil);
+            if (!shellUnderTesting.GunUsesRecoilAbsorbers)
+            {
+                maxDraw = MathF.Min(maxDraw, shellUnderTesting.CalculateMaxDrawForInaccuracy(MaxBarrelLengthInM, MaxInaccuracy));
+            }
+            float minDraw = shellUnderTesting.CalculateMinDrawForVelocityandRange(MinVelocityInput, MinEffectiveRangeInput);
+            if (maxDraw < minDraw)
+            {
+                return;
+            }
+
+            shellUnderTesting.CalculateReloadTime(TestIntervalSeconds);
+            shellUnderTesting.CalculateCooldownTime();
+            shellUnderTesting.CalculateCoolerVolumeAndCost();
+            shellUnderTesting.CalculateLoaderVolumeAndCost();
+            shellUnderTesting.CalculateVariableVolumesAndCosts(TestIntervalSeconds, StoragePerVolume, StoragePerCost);
+
+            Dictionary<DamageType, float> referenceDict = TestType == TestType.DpsPerVolume ?
+                shellUnderTesting.DpsPerVolumeDict : shellUnderTesting.DpsPerCostDict;
+            float optimalDraw = maxDraw > 0 ?
+                CalculateOptimalRailDraw(shellUnderTesting, maxDraw, minDraw, referenceDict)
+                : 0;
+            shellUnderTesting.RailDraw = optimalDraw;
+            CompareToTopShells(shellUnderTesting, referenceDict);
+
+            if (shellUnderTesting.TotalLength <= 1000f && !FiringPieceIsDif)
+            {
+                TestBeltCasingConfig(template, headModule, gpCount, rgCount, maxDraw, minDraw);
+            }
+        }
+
+        /// <summary>
+        /// Beltfed variant of TestCasingConfig. Belt loaders cannot use ejectors, so Emergency Defuse
+        /// is stripped; this invalidates some body-derived state, which is recomputed here.
+        /// </summary>
+        private void TestBeltCasingConfig(
+            Shell template, Module headModule, float gpCount, float rgCount, float maxDraw, float minDraw)
+        {
+            Shell shellUnderTestingBelt = new(
+                BarrelCount, Gauge, GaugeMultiplier, true, headModule, BaseModule,
+                RegularClipsPerLoader, RegularInputsPerLoader,
+                BeltfedClipsPerLoader, BeltfedInputsPerLoader,
+                UsesAmmoEjector, gpCount, rgCount, RateOfFireRpm, GunUsesRecoilAbsorbers,
+                FiringPieceIsDif);
+            Array.Copy(template.BodyModuleCounts, shellUnderTestingBelt.BodyModuleCounts, template.BodyModuleCounts.Length);
+
+            // Beltfed loaders cannot use ejectors — strip Defuse
+            bool defuseStripped = false;
+            for (int modIndex = 0; modIndex < shellUnderTestingBelt.BodyModuleCounts.Length; modIndex++)
+            {
+                if (Module.AllModules[modIndex] == Module.Defuse && shellUnderTestingBelt.BodyModuleCounts[modIndex] > 0f)
+                {
+                    shellUnderTestingBelt.BodyModuleCounts[modIndex] = 0f;
+                    defuseStripped = true;
+                    break;
+                }
+            }
+
+            if (defuseStripped)
+            {
+                // Defuse removal changes body geometry and modifier weights; recompute.
+                shellUnderTestingBelt.CalculateBodyLengths();
+                shellUnderTestingBelt.CalculateVelocityModifier();
+                shellUnderTestingBelt.CalculateDamageModifierByType(DamageType);
+                shellUnderTestingBelt.SabotAngleMultiplier = SabotAngleMultiplier;
+                shellUnderTestingBelt.NonSabotAngleMultiplier = NonSabotAngleMultiplier;
+                if (DamageType != DamageType.Kinetic)
+                {
+                    shellUnderTestingBelt.CalculateDamageByType(DamageType, FragAngleMultiplier);
+                }
+                if (MinDisruptor > 0 && DamageType != DamageType.Disruptor)
+                {
+                    shellUnderTestingBelt.CalculateDamageByType(DamageType.EMP, FragAngleMultiplier);
+                    shellUnderTestingBelt.CalculateDamageByType(DamageType.Disruptor, FragAngleMultiplier);
+                }
+            }
+            else
+            {
+                shellUnderTestingBelt.CopyBodyStateFrom(template);
+            }
+
+            shellUnderTestingBelt.UpdateCasingLengths();
+            shellUnderTestingBelt.GetModuleCounts();
+            shellUnderTestingBelt.CalculateRequiredBarrelLengths(MaxInaccuracy);
+            shellUnderTestingBelt.CalculateRecoil();
+            shellUnderTestingBelt.CalculateMaxDraw();
+            shellUnderTestingBelt.CalculateReloadTime(TestIntervalSeconds);
+            shellUnderTestingBelt.CalculateVariableVolumesAndCosts(TestIntervalSeconds, StoragePerVolume, StoragePerCost);
+            shellUnderTestingBelt.CalculateCooldownTime();
+            shellUnderTestingBelt.CalculateLoaderVolumeAndCost();
+            shellUnderTestingBelt.CalculateCoolerVolumeAndCost();
+
+            Dictionary<DamageType, float> referenceDictBelt = TestType == TestType.DpsPerVolume ?
+                shellUnderTestingBelt.DpsPerVolumeDict : shellUnderTestingBelt.DpsPerCostDict;
+            float optimalDraw = maxDraw > 0 ?
+                CalculateOptimalRailDraw(shellUnderTestingBelt, maxDraw, minDraw, referenceDictBelt)
+                : 0;
+
+            shellUnderTestingBelt.RailDraw = optimalDraw;
+            shellUnderTestingBelt.CalculateVelocity();
+            shellUnderTestingBelt.CalculateEffectiveRange();
+            shellUnderTestingBelt.CalculateDpsByType(
+                DamageType, TargetAC, TestIntervalSeconds,
+                StoragePerVolume, StoragePerCost,
+                EnginePpm, EnginePpv, EnginePpc, EngineUsesFuel,
+                TargetArmorScheme, ImpactAngleFromPerpendicularDegrees);
+
+            Dictionary<DamageType, float> topReferenceDictBelt = TestType == TestType.DpsPerVolume ?
+                TopBelt.DpsPerVolumeDict : TopBelt.DpsPerCostDict;
+            if (referenceDictBelt[DamageType] > topReferenceDictBelt[DamageType])
+            {
+                TopBelt = shellUnderTestingBelt;
             }
         }
 
