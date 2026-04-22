@@ -663,13 +663,37 @@ namespace ApsCalcUI
         {
             float moduleBudget = 20f - FixedModuleTotal - varsTotal;
 
-            OptimizeCasingsPath(bodyTemplate, headModule, moduleBudget, isBelt: false);
-
-            // Belt variant only relevant if body alone fits within 1000mm and not using DIF
-            if (!FiringPieceIsDif && bodyTemplate.ProjectileLength <= 1000f)
+            if (FiringPieceIsDif)
             {
-                Shell beltTemplate = CloneTemplateForBelt(bodyTemplate, headModule);
-                OptimizeCasingsPath(beltTemplate, headModule, moduleBudget, isBelt: true);
+                // DIF uses a single bucket — no 1m/2m/.../8m subdivision
+                OptimizeCasingsPath(bodyTemplate, headModule, moduleBudget, isBelt: false,
+                    minLength: MinShellLength, maxLength: MaxShellLength);
+                return;
+            }
+
+            // Per-bucket hard-bound search: each 1m loader slot gets its own independent optimization.
+            // CompareToTopShells classifies by TotalLength thresholds (1000, 2000, ..., 8000mm);
+            // aligning search bounds to those thresholds guarantees a dedicated optimum per bucket.
+            float[] edges = { 0f, 1000f, 2000f, 3000f, 4000f, 5000f, 6000f, 7000f, 8000f };
+            for (int b = 0; b < edges.Length - 1; b++)
+            {
+                float minLen = MathF.Max(MinShellLength, edges[b]);
+                float maxLen = MathF.Min(MaxShellLength, edges[b + 1]);
+                if (maxLen <= minLen) continue;
+                OptimizeCasingsPath(bodyTemplate, headModule, moduleBudget, isBelt: false,
+                    minLength: minLen, maxLength: maxLen);
+            }
+
+            // Belt variant: ≤1000mm, own bucket
+            if (bodyTemplate.ProjectileLength <= 1000f)
+            {
+                float beltMax = MathF.Min(MaxShellLength, 1000f);
+                if (beltMax > MinShellLength)
+                {
+                    Shell beltTemplate = CloneTemplateForBelt(bodyTemplate, headModule);
+                    OptimizeCasingsPath(beltTemplate, headModule, moduleBudget, isBelt: true,
+                        minLength: MinShellLength, maxLength: beltMax);
+                }
             }
         }
 
@@ -679,23 +703,37 @@ namespace ApsCalcUI
         /// runs a greedy ±δ neighbor search with adaptive coarse-to-fine step. Deduplicates via a
         /// shared tried-set to skip re-evaluating the same point across seeds.
         /// </summary>
-        private void OptimizeCasingsPath(Shell bodyTemplate, Module headModule, float moduleBudget, bool isBelt)
+        private void OptimizeCasingsPath(Shell bodyTemplate, Module headModule, float moduleBudget, bool isBelt, float minLength, float maxLength)
         {
-            float lengthCap = isBelt ? MathF.Min(MaxShellLength, 1000f) : MaxShellLength;
-            if (bodyTemplate.ProjectileLength > lengthCap)
+            if (bodyTemplate.ProjectileLength > maxLength)
             {
                 return;
             }
 
             float casingSumMaxByLength = Gauge > 0f
-                ? MathF.Max(0f, (lengthCap - bodyTemplate.ProjectileLength) / Gauge)
+                ? MathF.Max(0f, (maxLength - bodyTemplate.ProjectileLength) / Gauge)
                 : 0f;
+
+            // Minimum integer casing sum that satisfies TotalLength > minLength (strict).
+            // TotalLength = ProjectileLength + sum*Gauge, require > minLength.
+            int sumMinInt;
+            if (Gauge <= 0f || bodyTemplate.ProjectileLength > minLength)
+            {
+                sumMinInt = 0;
+            }
+            else
+            {
+                float sumMinRaw = (minLength - bodyTemplate.ProjectileLength) / Gauge;
+                sumMinInt = (int)MathF.Floor(sumMinRaw) + 1;
+            }
 
             int gpMaxInt = (int)MathF.Floor(MathF.Min(MaxGP, MathF.Min(moduleBudget, casingSumMaxByLength)));
             int rgMaxInt = (int)MathF.Floor(MathF.Min(MaxRGInput, MathF.Min(moduleBudget, casingSumMaxByLength)));
             if (gpMaxInt < 0) gpMaxInt = 0;
             if (rgMaxInt < 0) rgMaxInt = 0;
 
+            // Cache reset per bucket: same (gp, rg) may be rejected in one bucket (length out of range)
+            // but valid in another, so cached metrics can't cross bucket boundaries.
             _climbCache = new Dictionary<(float, float), float>();
 
             for (int gpInt = 0; gpInt <= gpMaxInt; gpInt++)
@@ -705,9 +743,11 @@ namespace ApsCalcUI
                     MathF.Min(moduleBudget - gpInt, casingSumMaxByLength - gpInt)));
                 if (rgCeilBudgetForGP < 0) continue;
                 int rgUpper = Math.Min(rgMaxInt, rgCeilBudgetForGP);
-                for (int rgInt = 0; rgInt <= rgUpper; rgInt++)
+                int rgLower = Math.Max(0, sumMinInt - gpInt);
+                if (rgLower > rgUpper) continue;
+                for (int rgInt = rgLower; rgInt <= rgUpper; rgInt++)
                 {
-                    HillClimb2D(bodyTemplate, headModule, gpInt, rgInt, moduleBudget, casingSumMaxByLength, isBelt, lengthCap);
+                    HillClimb2D(bodyTemplate, headModule, gpInt, rgInt, moduleBudget, casingSumMaxByLength, isBelt, minLength, maxLength);
                 }
             }
 
@@ -723,9 +763,9 @@ namespace ApsCalcUI
             Shell bodyTemplate, Module headModule,
             float gpSeed, float rgSeed,
             float moduleBudget, float casingSumMaxByLength,
-            bool isBelt, float lengthCap)
+            bool isBelt, float minLength, float maxLength)
         {
-            float bestMetric = EvalOrCache(bodyTemplate, headModule, gpSeed, rgSeed, isBelt, lengthCap);
+            float bestMetric = EvalOrCache(bodyTemplate, headModule, gpSeed, rgSeed, isBelt, minLength, maxLength);
             if (bestMetric <= 0f)
             {
                 return;
@@ -752,7 +792,7 @@ namespace ApsCalcUI
                     if (trialGP > MaxGP || trialRG > MaxRGInput) continue;
                     if (MathF.Ceiling(trialGP) + MathF.Ceiling(trialRG) > moduleBudget) continue;
                     if (trialGP + trialRG > casingSumMaxByLength) continue;
-                    float metric = EvalOrCache(bodyTemplate, headModule, trialGP, trialRG, isBelt, lengthCap);
+                    float metric = EvalOrCache(bodyTemplate, headModule, trialGP, trialRG, isBelt, minLength, maxLength);
                     if (metric > bestMetric)
                     {
                         bestMetric = metric;
@@ -776,14 +816,14 @@ namespace ApsCalcUI
         /// </summary>
         private float EvalOrCache(
             Shell bodyTemplate, Module headModule,
-            float gpCount, float rgCount, bool isBelt, float lengthCap)
+            float gpCount, float rgCount, bool isBelt, float minLength, float maxLength)
         {
             var key = (gpCount, rgCount);
             if (_climbCache != null && _climbCache.TryGetValue(key, out float cached))
             {
                 return cached;
             }
-            float metric = EvalCasingConfig(bodyTemplate, headModule, gpCount, rgCount, isBelt, lengthCap);
+            float metric = EvalCasingConfig(bodyTemplate, headModule, gpCount, rgCount, isBelt, minLength, maxLength);
             if (_climbCache != null)
             {
                 _climbCache[key] = metric;
@@ -798,7 +838,7 @@ namespace ApsCalcUI
         /// </summary>
         private float EvalCasingConfig(
             Shell bodyTemplate, Module headModule,
-            float gpCount, float rgCount, bool isBelt, float lengthCap)
+            float gpCount, float rgCount, bool isBelt, float minLength, float maxLength)
         {
             Shell probe = new(
                 BarrelCount, Gauge, GaugeMultiplier, isBelt, headModule, BaseModule,
@@ -816,7 +856,7 @@ namespace ApsCalcUI
             {
                 return 0f;
             }
-            if (probe.TotalLength <= MinShellLength || probe.TotalLength > lengthCap)
+            if (probe.TotalLength <= minLength || probe.TotalLength > maxLength)
             {
                 return 0f;
             }
