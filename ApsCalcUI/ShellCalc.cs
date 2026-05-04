@@ -864,9 +864,13 @@ namespace ApsCalcUI
             probe.CalculateMaxDraw();
 
             float maxDraw = MathF.Min(probe.MaxDraw, MaxDrawInput);
-            float maxDrawForRecoil = probe.GPCasingCount == 0
-                ? MaxRecoilInput / 0.6f
-                : MaxRecoilInput - probe.GPRecoil;
+            // EffectiveRecoil = GPRecoil + 0.6×min(rail, rgCap) + max(0, rail - rgCap) ≤ MaxRecoilInput.
+            // Solve max rail in two regimes (all rail RG-covered vs rail exceeds RG capacity).
+            float rgRecoilCapacity = 15625f * GaugeMultiplier * probe.RGCasingCount;
+            float coveredOnlyMax = (MaxRecoilInput - probe.GPRecoil) / 0.6f;
+            float maxDrawForRecoil = coveredOnlyMax <= rgRecoilCapacity
+                ? coveredOnlyMax
+                : MaxRecoilInput - probe.GPRecoil + 0.4f * rgRecoilCapacity;
             maxDraw = MathF.Min(maxDraw, maxDrawForRecoil);
             if (!probe.GunUsesRecoilAbsorbers)
             {

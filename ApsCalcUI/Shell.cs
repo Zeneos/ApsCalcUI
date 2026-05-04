@@ -75,7 +75,7 @@ namespace ApsCalcUI
         public float MaxDraw { get; set; }
         public float RailDraw { get; set; }
         public float TotalRecoil { get; set; }       // Drives velocity: GPRecoil + RailDraw (unreduced)
-        public float EffectiveRecoil { get; set; }   // Drives absorbers + inaccuracy: TotalRecoil × 0.6 when GP=0 (pure rail), else = TotalRecoil
+        public float EffectiveRecoil { get; set; }   // Drives absorbers + inaccuracy: GPRecoil + 0.6×(rail covered by RG) + 1.0×(rail uncovered)
         public bool GunUsesRecoilAbsorbers { get; set; } = gunUsesRecoilAbsorbers;
         public float Velocity { get; set; }
 
@@ -483,9 +483,13 @@ namespace ApsCalcUI
                 / 0.3f * desiredInaccuracy / OverallInaccuracyModifier - 1f)
                 / 0.6f * 12500f * GaugeMultiplier;
 
-            float maxDraw = GPCasingCount == 0
-                ? effectiveRecoilBudget / 0.6f
-                : effectiveRecoilBudget - GPRecoil;
+            // EffectiveRecoil = GPRecoil + 0.6×min(rail, rgCap) + max(0, rail - rgCap) ≤ budget.
+            // Two regimes: all rail RG-covered (rail ≤ rgCap), or rail spills into uncovered region.
+            float rgCapacity = 15625f * GaugeMultiplier * RGCasingCount;
+            float coveredOnly = (effectiveRecoilBudget - GPRecoil) / 0.6f;
+            float maxDraw = coveredOnly <= rgCapacity
+                ? coveredOnly
+                : effectiveRecoilBudget - GPRecoil + 0.4f * rgCapacity;
 
             return maxDraw;
         }
@@ -535,7 +539,15 @@ namespace ApsCalcUI
         {
             GPRecoil = GaugeMultiplier * GPCasingCount * 2500f;
             TotalRecoil = GPRecoil + RailDraw;
-            EffectiveRecoil = GPCasingCount == 0 ? TotalRecoil * 0.6f : TotalRecoil;
+
+            // Each RG casing supplies 1.25 × 12500 × GM rail-draw capacity. Rail draw within that
+            // capacity is "RG-covered" and gets a 40% recoil reduction; rail draw above that capacity
+            // (i.e. supplied by projectile-module max draw, not RG) gets full recoil. GP recoil is
+            // never reduced.
+            float rgCapacity = 15625f * GaugeMultiplier * RGCasingCount;
+            float coveredRail = MathF.Min(RailDraw, rgCapacity);
+            float uncoveredRail = RailDraw - coveredRail;
+            EffectiveRecoil = GPRecoil + 0.6f * coveredRail + uncoveredRail;
         }
 
 
@@ -1350,7 +1362,7 @@ namespace ApsCalcUI
             {
                 float drawPerSecond = RailDraw / ClusterReloadTime;
                 ChargerVolume = drawPerSecond / 280f; // Chargers provide 280 Energy per second
-                ChargerCost = ChargerVolume * 400f; // Chargers cost 400 per metre
+                ChargerCost = ChargerVolume * 560f; // Chargers cost 560 per metre
 
                 // Volume and cost of engine
                 EngineVolume = drawPerSecond / ppv;
