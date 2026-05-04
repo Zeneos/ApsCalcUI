@@ -381,52 +381,56 @@ namespace ApsCalcUI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void DamageTypeDD1_SelectedIndexChanged(object sender, EventArgs e)
+        private bool DamageTypeSelected(DamageType dt)
+        {
+            if (DamageTypeDD1.SelectedItem != null && ((DamageTypeItem)DamageTypeDD1.SelectedItem).ID == dt)
+            {
+                return true;
+            }
+            if (DamageTypeDD2.SelectedItem != null && ((DamageTypeItem)DamageTypeDD2.SelectedItem).ID == dt)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private void UpdateDamageTypePanels()
         {
             // Set and reset minimum gauge to compensate for smoke minimum 200 mm
-            if (((DamageTypeItem)DamageTypeDD1.SelectedItem).ID != DamageType.Smoke)
-            {
-                MinGaugeUD.Minimum = 18;
-                MinGaugeUD.Value = nonSmokeMinGauge;
-            }
-            else if (((DamageTypeItem)DamageTypeDD1.SelectedItem).ID == DamageType.Smoke)
+            if (DamageTypeSelected(DamageType.Smoke))
             {
                 MinGaugeUD.Minimum = 200;
                 MinGaugeUD.Value = Math.Max(200, nonSmokeMinGauge);
             }
-
-            if (((DamageTypeItem)DamageTypeDD1.SelectedItem).ID == DamageType.Kinetic)
-            {
-                TargetACPanel.Enabled = true;
-                TargetACPanel.Visible = true;
-                TargetACCL.Visible = true;
-                TargetACLabel.Visible = true;
-
-            }
             else
             {
-                TargetACPanel.Enabled = false;
-                TargetACPanel.Visible = false;
-                TargetACCL.Visible = false;
-                TargetACLabel.Visible = false;
+                MinGaugeUD.Minimum = 18;
+                MinGaugeUD.Value = nonSmokeMinGauge;
             }
+
+            bool kinetic = DamageTypeSelected(DamageType.Kinetic);
+            TargetACPanel.Enabled = kinetic;
+            TargetACPanel.Visible = kinetic;
+            TargetACCL.Visible = kinetic;
+            TargetACLabel.Visible = kinetic;
 
             UpdateDisruptorPanel();
 
-            if (((DamageTypeItem)DamageTypeDD1.SelectedItem).ID == DamageType.Frag)
-            {
-                FragAnglePanel.Enabled = true;
-                FragAnglePanel.Visible = true;
-                FragAngleLabel.Visible = true;
-                FragAngleUD.Visible = true;
-            }
-            else
-            {
-                FragAnglePanel.Enabled = false;
-                FragAnglePanel.Visible = false;
-                FragAngleLabel.Visible = false;
-                FragAngleUD.Visible = false;
-            }
+            bool frag = DamageTypeSelected(DamageType.Frag);
+            FragAnglePanel.Enabled = frag;
+            FragAnglePanel.Visible = frag;
+            FragAngleLabel.Visible = frag;
+            FragAngleUD.Visible = frag;
+        }
+
+        private void DamageTypeDD1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateDamageTypePanels();
+        }
+
+        private void DamageTypeDD2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateDamageTypePanels();
         }
 
         private void HeadModulesCL_SelectedIndexChanged(object sender, EventArgs e)
@@ -445,7 +449,7 @@ namespace ApsCalcUI
                     break;
                 }
             }
-            if (((DamageTypeItem)DamageTypeDD1.SelectedItem).ID == DamageType.Disruptor)
+            if (DamageTypeSelected(DamageType.Disruptor))
             {
                 disruptorSelected = true;
             }
@@ -623,10 +627,15 @@ namespace ApsCalcUI
                 error = true;
                 QueueErrorProvider.SetError(AddParametersButton, "Select at least one variable module");
             }
-            else if (((DamageTypeItem)DamageTypeDD1.SelectedItem).ID == DamageType.Kinetic && TargetACCL.SelectedItems.Count == 0)
+            else if (DamageTypeSelected(DamageType.Kinetic) && TargetACCL.SelectedItems.Count == 0)
             {
                 error = true;
                 QueueErrorProvider.SetError(AddParametersButton, "Select at least one target AC");
+            }
+            else if (DamageTypeSelected(DamageType.HEAT) && DamageTypeSelected(DamageType.Disruptor))
+            {
+                error = true;
+                QueueErrorProvider.SetError(AddParametersButton, "HEAT and Disruptor cannot be combined: each requires a different head module");
             }
             else if (PendepthCB.Checked && ArmorLayerLB.Items == null)
             {
@@ -816,14 +825,21 @@ namespace ApsCalcUI
                 testParameters.MinVelocity = (float)MinVelocityUD.Value;
                 testParameters.MinEffectiverange = (float)MinRangeUD.Value;
                 testParameters.DamageType = ((DamageTypeItem)DamageTypeDD1.SelectedItem).ID;
-                testParameters.DamageTypeWeight1 = (float)DamageTypeDD11Weight.Value;
+                testParameters.DamageTypeWeight1 = (float)DamageTypeDD1Weight.Value;
                 testParameters.DamageType2 = ((DamageTypeItem)DamageTypeDD2.SelectedItem).ID;
                 testParameters.DamageTypeWeight2 = (float)DamageTypeDD2Weight.Value;
 
                 testParameters.FragConeAngle = (float)FragAngleUD.Value;
                 testParameters.FragAngleMultiplier = (2 + MathF.Sqrt(testParameters.FragConeAngle)) / 16f;
 
-                if (testParameters.DamageType == DamageType.HEAT)
+                bool needsShapedCharge =
+                    testParameters.DamageType == DamageType.HEAT
+                    || testParameters.DamageType2 == DamageType.HEAT;
+                bool needsDisruptor =
+                    testParameters.DamageType == DamageType.Disruptor
+                    || testParameters.DamageType2 == DamageType.Disruptor;
+
+                if (needsShapedCharge)
                 {
                     // Overwrite head list with shaped charge head
                     testParameters.HeadIndices.Clear();
@@ -838,7 +854,7 @@ namespace ApsCalcUI
                         modIndex++;
                     }
                 }
-                else if (testParameters.DamageType == DamageType.Disruptor)
+                else if (needsDisruptor)
                 {
                     // Overwrite head list with disruptor conduit
                     testParameters.HeadIndices.Clear();
@@ -855,7 +871,10 @@ namespace ApsCalcUI
                 }
 
                 List<float> targetACList = [];
-                if (testParameters.DamageType == DamageType.Kinetic)
+                bool kineticInUse =
+                    testParameters.DamageType == DamageType.Kinetic
+                    || testParameters.DamageType2 == DamageType.Kinetic;
+                if (kineticInUse)
                 {
                     foreach (TargetACItem ac in TargetACCL.CheckedItems)
                     {
@@ -955,7 +974,10 @@ namespace ApsCalcUI
 
                 foreach (TestParameters testParameters in parameterList)
                 {
-                    if (testParameters.DamageType == DamageType.Kinetic)
+                    bool runPerAC =
+                        testParameters.DamageType == DamageType.Kinetic
+                        || testParameters.DamageType2 == DamageType.Kinetic;
+                    if (runPerAC)
                     {
                         foreach (float ac in testParameters.TargetACList)
                         {

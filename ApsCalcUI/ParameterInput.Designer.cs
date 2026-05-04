@@ -37,7 +37,7 @@ namespace ApsCalcUI
             GravRB = new System.Windows.Forms.RadioButton();
             DamageTypeDD1 = new System.Windows.Forms.ComboBox();
             DamageTypeDD2 = new System.Windows.Forms.ComboBox();
-            DamageTypeDD11Weight = new System.Windows.Forms.NumericUpDown();
+            DamageTypeDD1Weight = new System.Windows.Forms.NumericUpDown();
             DamageTypeDD2Weight = new System.Windows.Forms.NumericUpDown();
             PerCostRB = new System.Windows.Forms.RadioButton();
             PerVolumeRB = new System.Windows.Forms.RadioButton();
@@ -171,7 +171,7 @@ namespace ApsCalcUI
             BeltfedClipCountLabel = new System.Windows.Forms.Label();
             GPIncrementLabel = new System.Windows.Forms.Label();
             RGIncrementLabel = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)DamageTypeDD11Weight).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)DamageTypeDD1Weight).BeginInit();
             ((System.ComponentModel.ISupportInitialize)DamageTypeDD2Weight).BeginInit();
             ((System.ComponentModel.ISupportInitialize)MinGaugeUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)MaxGaugeUD).BeginInit();
@@ -297,19 +297,20 @@ namespace ApsCalcUI
             DamageTypeDD2.Size = new System.Drawing.Size(90, 23);
             DamageTypeDD2.TabIndex = 64;
             ToolTip.SetToolTip(DamageTypeDD2, "Secondary damage type to optimize (or None)");
+            DamageTypeDD2.SelectedIndexChanged += DamageTypeDD2_SelectedIndexChanged;
             // 
-            // DamageTypeDD11Weight
+            // DamageTypeDD1Weight
             // 
-            DamageTypeDD11Weight.DecimalPlaces = 1;
-            DamageTypeDD11Weight.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
-            DamageTypeDD11Weight.Location = new System.Drawing.Point(115, 25);
-            DamageTypeDD11Weight.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
-            DamageTypeDD11Weight.Name = "DamageTypeDD11Weight";
-            DamageTypeDD11Weight.Size = new System.Drawing.Size(60, 23);
-            DamageTypeDD11Weight.TabIndex = 66;
-            DamageTypeDD11Weight.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            ToolTip.SetToolTip(DamageTypeDD11Weight, "Weight for primary damage type (0.0x - 10.0x)");
-            DamageTypeDD11Weight.Value = new decimal(new int[] { 10, 0, 0, 65536 });
+            DamageTypeDD1Weight.DecimalPlaces = 1;
+            DamageTypeDD1Weight.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
+            DamageTypeDD1Weight.Location = new System.Drawing.Point(115, 25);
+            DamageTypeDD1Weight.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
+            DamageTypeDD1Weight.Name = "DamageTypeDD1Weight";
+            DamageTypeDD1Weight.Size = new System.Drawing.Size(60, 23);
+            DamageTypeDD1Weight.TabIndex = 66;
+            DamageTypeDD1Weight.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            ToolTip.SetToolTip(DamageTypeDD1Weight, "Weight for primary damage type (0.0x - 10.0x)");
+            DamageTypeDD1Weight.Value = new decimal(new int[] { 10, 0, 0, 65536 });
             // 
             // DamageTypeDD2Weight
             // 
@@ -1508,7 +1509,7 @@ namespace ApsCalcUI
             DamageTypePanel.Controls.Add(DamageTypeDD1);
             DamageTypePanel.Controls.Add(DamageTypeDD2);
             DamageTypePanel.Controls.Add(DamageTypeWeightLabel);
-            DamageTypePanel.Controls.Add(DamageTypeDD11Weight);
+            DamageTypePanel.Controls.Add(DamageTypeDD1Weight);
             DamageTypePanel.Controls.Add(DamageTypeDD2Weight);
             DamageTypePanel.Controls.Add(PerLabel);
             DamageTypePanel.Controls.Add(TestTypePanel);
@@ -1825,7 +1826,7 @@ namespace ApsCalcUI
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoScroll = true;
             BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            ClientSize = new System.Drawing.Size(800, 756);
+            ClientSize = new System.Drawing.Size(800, 781);
             Controls.Add(VerboseOutputCB);
             Controls.Add(GPIncrementUD);
             Controls.Add(GPIncrementLabel);
@@ -1890,7 +1891,7 @@ namespace ApsCalcUI
             Name = "ParameterInput";
             Text = "ApsCalc";
             Load += ParameterInput_Load;
-            ((System.ComponentModel.ISupportInitialize)DamageTypeDD11Weight).EndInit();
+            ((System.ComponentModel.ISupportInitialize)DamageTypeDD1Weight).EndInit();
             ((System.ComponentModel.ISupportInitialize)DamageTypeDD2Weight).EndInit();
             ((System.ComponentModel.ISupportInitialize)MinGaugeUD).EndInit();
             ((System.ComponentModel.ISupportInitialize)MaxGaugeUD).EndInit();
@@ -2001,7 +2002,7 @@ namespace ApsCalcUI
         private System.Windows.Forms.ComboBox DamageTypeDD1;
         private System.Windows.Forms.ComboBox DamageTypeDD2;
         private System.Windows.Forms.Label DamageTypeWeightLabel;
-        private System.Windows.Forms.NumericUpDown DamageTypeDD11Weight;
+        private System.Windows.Forms.NumericUpDown DamageTypeDD1Weight;
         private System.Windows.Forms.NumericUpDown DamageTypeDD2Weight;
         private System.Windows.Forms.Panel DamageTypePanel;
         private System.Windows.Forms.Panel TargetSchemePanel;
