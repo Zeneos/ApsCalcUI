@@ -34,6 +34,9 @@ namespace ApsCalcUI
         public float NonSabotAngleMultiplier;
         public List<float> TargetACList;
         public DamageType DamageType;
+        public float DamageTypeWeight1;
+        public DamageType DamageType2;
+        public float DamageTypeWeight2;
         public float FragConeAngle;
         public float FragAngleMultiplier;
         public float MinDisruptor;

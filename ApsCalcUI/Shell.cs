@@ -1031,7 +1031,8 @@ namespace ApsCalcUI
             float ppc,
             bool fuel,
             Scheme targetScheme,
-            float impactAngleFromPerpendicularDegrees)
+            float impactAngleFromPerpendicularDegrees,
+            DamageType dt2 = DamageType.None)
         {
             CalculateRecoil();
             CalculateRailVolumeAndCost(testIntervalSeconds, storagePerVolume, storagePerCost, ppm, ppv, ppc, fuel);
@@ -1047,41 +1048,10 @@ namespace ApsCalcUI
             if (RawKD >= targetScheme.GetRequiredKD(ArmorPierce, impactAngleFromPerpendicularDegrees, HeadModule == Module.SabotHead)
                 || (HeadModule == Module.HollowPoint && RawKD >= targetScheme.GetRequiredThump(ArmorPierce)))
             {
-                if (dt == DamageType.Kinetic)
+                DispatchDpsForType(dt, targetAC);
+                if (dt2 != DamageType.None && dt2 != dt)
                 {
-                    CalculateKineticDps(targetAC);
-                }
-                else if (dt == DamageType.EMP)
-                {
-                    CalculateEmpDps();
-                }
-                else if (dt == DamageType.MD)
-                {
-                    CalculateFlakDps();
-                }
-                else if (dt == DamageType.Frag)
-                {
-                    CalculateFragDps();
-                }
-                else if (dt == DamageType.HE)
-                {
-                    CalculateHEDps();
-                }
-                else if (dt == DamageType.HEAT)
-                {
-                    CalculateHeatDps();
-                }
-                else if (dt == DamageType.Disruptor)
-                {
-                    CalculateShieldRps();
-                }
-                else if (dt == DamageType.Smoke)
-                {
-                    CalculateSmokeDPS();
-                }
-                else if (dt == DamageType.Incendiary)
-                {
-                    CalculateIncendiaryDPS();
+                    DispatchDpsForType(dt2, targetAC);
                 }
             }
             else
@@ -1099,6 +1069,23 @@ namespace ApsCalcUI
                     DpsPerVolumeDict[dpstype] = 0;
                 }
             }
+        }
+
+        /// <summary>
+        /// Dispatches DPS calculation for a single damage type. Called once per type by
+        /// CalculateDpsByType (which handles the shared prefix work and pendepth gate).
+        /// </summary>
+        private void DispatchDpsForType(DamageType dt, float targetAC)
+        {
+            if (dt == DamageType.Kinetic) CalculateKineticDps(targetAC);
+            else if (dt == DamageType.EMP) CalculateEmpDps();
+            else if (dt == DamageType.MD) CalculateFlakDps();
+            else if (dt == DamageType.Frag) CalculateFragDps();
+            else if (dt == DamageType.HE) CalculateHEDps();
+            else if (dt == DamageType.HEAT) CalculateHeatDps();
+            else if (dt == DamageType.Disruptor) CalculateShieldRps();
+            else if (dt == DamageType.Smoke) CalculateSmokeDPS();
+            else if (dt == DamageType.Incendiary) CalculateIncendiaryDPS();
         }
 
 

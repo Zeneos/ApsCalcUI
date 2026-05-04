@@ -84,9 +84,27 @@ namespace ApsCalcUI
                 new DamageTypeItem(DamageType.Disruptor, "Disruptor"),
                 new DamageTypeItem(DamageType.Smoke, "Smoke")
             ];
-            DamageTypeDD.DataSource = damageTypes;
-            DamageTypeDD.DisplayMember = "Text";
-            DamageTypeDD.SelectedIndex = 0;
+            DamageTypeDD1.DataSource = damageTypes;
+            DamageTypeDD1.DisplayMember = "Text";
+            DamageTypeDD1.SelectedIndex = 0;
+
+            // Damage type dropdown 2 (with None option)
+            DamageTypeItem[] damageTypes2 =
+            [
+                new DamageTypeItem(DamageType.None, "None"),
+                new DamageTypeItem(DamageType.Kinetic, "Kinetic"),
+                new DamageTypeItem(DamageType.EMP, "EMP"),
+                new DamageTypeItem(DamageType.MD, "Munition defense"),
+                new DamageTypeItem(DamageType.Frag, "Frag"),
+                new DamageTypeItem(DamageType.HE, "HE" ),
+                new DamageTypeItem(DamageType.HEAT, "HEAT"),
+                new DamageTypeItem(DamageType.Incendiary, "Incendiary"),
+                new DamageTypeItem(DamageType.Disruptor, "Disruptor"),
+                new DamageTypeItem(DamageType.Smoke, "Smoke")
+            ];
+            DamageTypeDD2.DataSource = damageTypes2;
+            DamageTypeDD2.DisplayMember = "Text";
+            DamageTypeDD2.SelectedIndex = 0;
 
             // Target AC checked list
             TargetACCL.Items.Add(new TargetACItem(8, "8, wood"));
@@ -253,7 +271,7 @@ namespace ApsCalcUI
         private void MinGaugeUD_ValueChanged(object sender, EventArgs e)
         {
             // Update non-smoke minimum
-            if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID != DamageType.Smoke)
+            if (((DamageTypeItem)DamageTypeDD1.SelectedItem).ID != DamageType.Smoke)
             {
                 nonSmokeMinGauge = MinGaugeUD.Value;
             }
@@ -363,21 +381,21 @@ namespace ApsCalcUI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void DamageTypeDD_SelectedIndexChanged(object sender, EventArgs e)
+        private void DamageTypeDD1_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Set and reset minimum gauge to compensate for smoke minimum 200 mm
-            if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID != DamageType.Smoke)
+            if (((DamageTypeItem)DamageTypeDD1.SelectedItem).ID != DamageType.Smoke)
             {
                 MinGaugeUD.Minimum = 18;
                 MinGaugeUD.Value = nonSmokeMinGauge;
             }
-            else if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID == DamageType.Smoke)
+            else if (((DamageTypeItem)DamageTypeDD1.SelectedItem).ID == DamageType.Smoke)
             {
                 MinGaugeUD.Minimum = 200;
                 MinGaugeUD.Value = Math.Max(200, nonSmokeMinGauge);
             }
 
-            if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID == DamageType.Kinetic)
+            if (((DamageTypeItem)DamageTypeDD1.SelectedItem).ID == DamageType.Kinetic)
             {
                 TargetACPanel.Enabled = true;
                 TargetACPanel.Visible = true;
@@ -395,7 +413,7 @@ namespace ApsCalcUI
 
             UpdateDisruptorPanel();
 
-            if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID == DamageType.Frag)
+            if (((DamageTypeItem)DamageTypeDD1.SelectedItem).ID == DamageType.Frag)
             {
                 FragAnglePanel.Enabled = true;
                 FragAnglePanel.Visible = true;
@@ -427,7 +445,7 @@ namespace ApsCalcUI
                     break;
                 }
             }
-            if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID == DamageType.Disruptor)
+            if (((DamageTypeItem)DamageTypeDD1.SelectedItem).ID == DamageType.Disruptor)
             {
                 disruptorSelected = true;
             }
@@ -605,7 +623,7 @@ namespace ApsCalcUI
                 error = true;
                 QueueErrorProvider.SetError(AddParametersButton, "Select at least one variable module");
             }
-            else if (((DamageTypeItem)DamageTypeDD.SelectedItem).ID == DamageType.Kinetic && TargetACCL.SelectedItems.Count == 0)
+            else if (((DamageTypeItem)DamageTypeDD1.SelectedItem).ID == DamageType.Kinetic && TargetACCL.SelectedItems.Count == 0)
             {
                 error = true;
                 QueueErrorProvider.SetError(AddParametersButton, "Select at least one target AC");
@@ -797,7 +815,10 @@ namespace ApsCalcUI
                 testParameters.MaxRecoil = (float)MaxRecoilUD.Value;
                 testParameters.MinVelocity = (float)MinVelocityUD.Value;
                 testParameters.MinEffectiverange = (float)MinRangeUD.Value;
-                testParameters.DamageType = ((DamageTypeItem)DamageTypeDD.SelectedItem).ID;
+                testParameters.DamageType = ((DamageTypeItem)DamageTypeDD1.SelectedItem).ID;
+                testParameters.DamageTypeWeight1 = (float)DamageTypeDD11Weight.Value;
+                testParameters.DamageType2 = ((DamageTypeItem)DamageTypeDD2.SelectedItem).ID;
+                testParameters.DamageTypeWeight2 = (float)DamageTypeDD2Weight.Value;
 
                 testParameters.FragConeAngle = (float)FragAngleUD.Value;
                 testParameters.FragAngleMultiplier = (2 + MathF.Sqrt(testParameters.FragConeAngle)) / 16f;
@@ -970,6 +991,9 @@ namespace ApsCalcUI
                                     testParameters.NonSabotAngleMultiplier,
                                     ac,
                                     testParameters.DamageType,
+                                    testParameters.DamageTypeWeight1,
+                                    testParameters.DamageType2,
+                                    testParameters.DamageTypeWeight2,
                                     testParameters.FragConeAngle,
                                     testParameters.FragAngleMultiplier,
                                     testParameters.MinDisruptor,
@@ -1033,6 +1057,9 @@ namespace ApsCalcUI
                                     testParameters.NonSabotAngleMultiplier,
                                     ac,
                                     testParameters.DamageType,
+                                    testParameters.DamageTypeWeight1,
+                                    testParameters.DamageType2,
+                                    testParameters.DamageTypeWeight2,
                                     testParameters.FragConeAngle,
                                     testParameters.FragAngleMultiplier,
                                     testParameters.MinDisruptor,
@@ -1097,6 +1124,9 @@ namespace ApsCalcUI
                                 testParameters.NonSabotAngleMultiplier,
                                 0, // Target AC does not matter for non-kinetic tests
                                 testParameters.DamageType,
+                                testParameters.DamageTypeWeight1,
+                                testParameters.DamageType2,
+                                testParameters.DamageTypeWeight2,
                                 testParameters.FragConeAngle,
                                 testParameters.FragAngleMultiplier,
                                 testParameters.MinDisruptor,
@@ -1159,6 +1189,9 @@ namespace ApsCalcUI
                                 testParameters.NonSabotAngleMultiplier,
                                 0, // Target AC does not matter for non-kinetic tests
                                 testParameters.DamageType,
+                                testParameters.DamageTypeWeight1,
+                                testParameters.DamageType2,
+                                testParameters.DamageTypeWeight2,
                                 testParameters.FragConeAngle,
                                 testParameters.FragAngleMultiplier,
                                 testParameters.MinDisruptor,
@@ -1204,6 +1237,11 @@ namespace ApsCalcUI
         }
 
         private void GPIncrementLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void DamageTypeLabel_Click(object sender, EventArgs e)
         {
 
         }

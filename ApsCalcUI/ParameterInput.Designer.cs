@@ -35,7 +35,10 @@ namespace ApsCalcUI
             HeadModulesLabel = new System.Windows.Forms.Label();
             SupercavRB = new System.Windows.Forms.RadioButton();
             GravRB = new System.Windows.Forms.RadioButton();
-            DamageTypeDD = new System.Windows.Forms.ComboBox();
+            DamageTypeDD1 = new System.Windows.Forms.ComboBox();
+            DamageTypeDD2 = new System.Windows.Forms.ComboBox();
+            DamageTypeDD11Weight = new System.Windows.Forms.NumericUpDown();
+            DamageTypeDD2Weight = new System.Windows.Forms.NumericUpDown();
             PerCostRB = new System.Windows.Forms.RadioButton();
             PerVolumeRB = new System.Windows.Forms.RadioButton();
             ArmorLayerDD = new System.Windows.Forms.ComboBox();
@@ -104,6 +107,7 @@ namespace ApsCalcUI
             GPIncrementUD = new System.Windows.Forms.NumericUpDown();
             RGIncrementUD = new System.Windows.Forms.NumericUpDown();
             VerboseOutputCB = new System.Windows.Forms.CheckBox();
+            DamageTypeWeightLabel = new System.Windows.Forms.Label();
             BarrelCountLabel = new System.Windows.Forms.Label();
             MinGaugeLabel = new System.Windows.Forms.Label();
             MaxGaugeLabel = new System.Windows.Forms.Label();
@@ -135,6 +139,7 @@ namespace ApsCalcUI
             MinRangeLabel = new System.Windows.Forms.Label();
             DamageTypeLabel = new System.Windows.Forms.Label();
             TestTypePanel = new System.Windows.Forms.Panel();
+            DamageTypePanel = new System.Windows.Forms.Panel();
             PerLabel = new System.Windows.Forms.Label();
             TargetACPanel = new System.Windows.Forms.Panel();
             TargetACCL = new System.Windows.Forms.CheckedListBox();
@@ -166,6 +171,8 @@ namespace ApsCalcUI
             BeltfedClipCountLabel = new System.Windows.Forms.Label();
             GPIncrementLabel = new System.Windows.Forms.Label();
             RGIncrementLabel = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)DamageTypeDD11Weight).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)DamageTypeDD2Weight).BeginInit();
             ((System.ComponentModel.ISupportInitialize)MinGaugeUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)MaxGaugeUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)SolidBodyFixedUD).BeginInit();
@@ -206,6 +213,7 @@ namespace ApsCalcUI
             FixedModulesPanel.SuspendLayout();
             VariableModulesPanel.SuspendLayout();
             TestTypePanel.SuspendLayout();
+            DamageTypePanel.SuspendLayout();
             TargetACPanel.SuspendLayout();
             TargetSchemePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)QueueErrorProvider).BeginInit();
@@ -269,16 +277,51 @@ namespace ApsCalcUI
             ToolTip.SetToolTip(GravRB, "Graviton Ram");
             GravRB.UseVisualStyleBackColor = true;
             // 
-            // DamageTypeDD
+            // DamageTypeDD1
             // 
-            DamageTypeDD.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            DamageTypeDD.FormattingEnabled = true;
-            DamageTypeDD.Location = new System.Drawing.Point(504, 338);
-            DamageTypeDD.Name = "DamageTypeDD";
-            DamageTypeDD.Size = new System.Drawing.Size(121, 23);
-            DamageTypeDD.TabIndex = 23;
-            ToolTip.SetToolTip(DamageTypeDD, "Damage type to optimize");
-            DamageTypeDD.SelectedIndexChanged += DamageTypeDD_SelectedIndexChanged;
+            DamageTypeDD1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            DamageTypeDD1.FormattingEnabled = true;
+            DamageTypeDD1.Location = new System.Drawing.Point(6, 25);
+            DamageTypeDD1.Name = "DamageTypeDD1";
+            DamageTypeDD1.Size = new System.Drawing.Size(90, 23);
+            DamageTypeDD1.TabIndex = 23;
+            ToolTip.SetToolTip(DamageTypeDD1, "Damage type to optimize");
+            DamageTypeDD1.SelectedIndexChanged += DamageTypeDD1_SelectedIndexChanged;
+            // 
+            // DamageTypeDD2
+            // 
+            DamageTypeDD2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            DamageTypeDD2.FormattingEnabled = true;
+            DamageTypeDD2.Location = new System.Drawing.Point(6, 50);
+            DamageTypeDD2.Name = "DamageTypeDD2";
+            DamageTypeDD2.Size = new System.Drawing.Size(90, 23);
+            DamageTypeDD2.TabIndex = 64;
+            ToolTip.SetToolTip(DamageTypeDD2, "Secondary damage type to optimize (or None)");
+            // 
+            // DamageTypeDD11Weight
+            // 
+            DamageTypeDD11Weight.DecimalPlaces = 1;
+            DamageTypeDD11Weight.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
+            DamageTypeDD11Weight.Location = new System.Drawing.Point(115, 25);
+            DamageTypeDD11Weight.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
+            DamageTypeDD11Weight.Name = "DamageTypeDD11Weight";
+            DamageTypeDD11Weight.Size = new System.Drawing.Size(60, 23);
+            DamageTypeDD11Weight.TabIndex = 66;
+            DamageTypeDD11Weight.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            ToolTip.SetToolTip(DamageTypeDD11Weight, "Weight for primary damage type (0.0x - 10.0x)");
+            DamageTypeDD11Weight.Value = new decimal(new int[] { 10, 0, 0, 65536 });
+            // 
+            // DamageTypeDD2Weight
+            // 
+            DamageTypeDD2Weight.DecimalPlaces = 1;
+            DamageTypeDD2Weight.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
+            DamageTypeDD2Weight.Location = new System.Drawing.Point(115, 50);
+            DamageTypeDD2Weight.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
+            DamageTypeDD2Weight.Name = "DamageTypeDD2Weight";
+            DamageTypeDD2Weight.Size = new System.Drawing.Size(60, 23);
+            DamageTypeDD2Weight.TabIndex = 67;
+            DamageTypeDD2Weight.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            ToolTip.SetToolTip(DamageTypeDD2Weight, "Weight for secondary damage type (0.0x - 10.0x)");
             // 
             // PerCostRB
             // 
@@ -521,7 +564,7 @@ namespace ApsCalcUI
             // 
             // AddParametersButton
             // 
-            AddParametersButton.Location = new System.Drawing.Point(485, 694);
+            AddParametersButton.Location = new System.Drawing.Point(485, 719);
             AddParametersButton.Name = "AddParametersButton";
             AddParametersButton.Size = new System.Drawing.Size(157, 51);
             AddParametersButton.TabIndex = 29;
@@ -534,7 +577,7 @@ namespace ApsCalcUI
             // 
             RunButton.BackColor = System.Drawing.SystemColors.ControlLightLight;
             RunButton.Enabled = false;
-            RunButton.Location = new System.Drawing.Point(665, 694);
+            RunButton.Location = new System.Drawing.Point(665, 719);
             RunButton.Name = "RunButton";
             RunButton.Size = new System.Drawing.Size(121, 51);
             RunButton.TabIndex = 31;
@@ -732,7 +775,7 @@ namespace ApsCalcUI
             // 
             PendepthCB.AutoSize = true;
             PendepthCB.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            PendepthCB.Location = new System.Drawing.Point(686, 378);
+            PendepthCB.Location = new System.Drawing.Point(686, 403);
             PendepthCB.Name = "PendepthCB";
             PendepthCB.Size = new System.Drawing.Size(77, 19);
             PendepthCB.TabIndex = 42;
@@ -964,7 +1007,7 @@ namespace ApsCalcUI
             // 
             CommaDecimalCB.AutoSize = true;
             CommaDecimalCB.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            CommaDecimalCB.Location = new System.Drawing.Point(629, 649);
+            CommaDecimalCB.Location = new System.Drawing.Point(629, 674);
             CommaDecimalCB.Name = "CommaDecimalCB";
             CommaDecimalCB.Size = new System.Drawing.Size(168, 19);
             CommaDecimalCB.TabIndex = 59;
@@ -1058,7 +1101,7 @@ namespace ApsCalcUI
             // 
             RawNumberOutputCB.AutoSize = true;
             RawNumberOutputCB.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            RawNumberOutputCB.Location = new System.Drawing.Point(629, 626);
+            RawNumberOutputCB.Location = new System.Drawing.Point(629, 651);
             RawNumberOutputCB.Name = "RawNumberOutputCB";
             RawNumberOutputCB.Size = new System.Drawing.Size(136, 19);
             RawNumberOutputCB.TabIndex = 61;
@@ -1102,13 +1145,23 @@ namespace ApsCalcUI
             // 
             VerboseOutputCB.AutoSize = true;
             VerboseOutputCB.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            VerboseOutputCB.Location = new System.Drawing.Point(629, 603);
+            VerboseOutputCB.Location = new System.Drawing.Point(629, 628);
             VerboseOutputCB.Name = "VerboseOutputCB";
             VerboseOutputCB.Size = new System.Drawing.Size(108, 19);
             VerboseOutputCB.TabIndex = 64;
             VerboseOutputCB.Text = "Verbose Output";
             ToolTip.SetToolTip(VerboseOutputCB, "Check to output detailed volume and cost statistics.");
             VerboseOutputCB.UseVisualStyleBackColor = true;
+            // 
+            // DamageTypeWeightLabel
+            // 
+            DamageTypeWeightLabel.AutoSize = true;
+            DamageTypeWeightLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            DamageTypeWeightLabel.Location = new System.Drawing.Point(115, 5);
+            DamageTypeWeightLabel.Name = "DamageTypeWeightLabel";
+            DamageTypeWeightLabel.Size = new System.Drawing.Size(50, 15);
+            DamageTypeWeightLabel.TabIndex = 65;
+            DamageTypeWeightLabel.Text = "Weights";
             // 
             // BarrelCountLabel
             // 
@@ -1158,7 +1211,7 @@ namespace ApsCalcUI
             BasePanel.Controls.Add(TracerRB);
             BasePanel.Controls.Add(SupercavRB);
             BasePanel.Controls.Add(BaseBleederRB);
-            BasePanel.Location = new System.Drawing.Point(12, 624);
+            BasePanel.Location = new System.Drawing.Point(12, 649);
             BasePanel.Name = "BasePanel";
             BasePanel.Size = new System.Drawing.Size(206, 97);
             BasePanel.TabIndex = 4;
@@ -1434,7 +1487,7 @@ namespace ApsCalcUI
             // 
             DamageTypeLabel.AutoSize = true;
             DamageTypeLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            DamageTypeLabel.Location = new System.Drawing.Point(446, 341);
+            DamageTypeLabel.Location = new System.Drawing.Point(6, 5);
             DamageTypeLabel.Name = "DamageTypeLabel";
             DamageTypeLabel.Size = new System.Drawing.Size(55, 15);
             DamageTypeLabel.TabIndex = 29;
@@ -1444,16 +1497,31 @@ namespace ApsCalcUI
             // 
             TestTypePanel.Controls.Add(PerCostRB);
             TestTypePanel.Controls.Add(PerVolumeRB);
-            TestTypePanel.Location = new System.Drawing.Point(682, 327);
+            TestTypePanel.Location = new System.Drawing.Point(242, 27);
             TestTypePanel.Name = "TestTypePanel";
             TestTypePanel.Size = new System.Drawing.Size(106, 48);
             TestTypePanel.TabIndex = 30;
+            // 
+            // DamageTypePanel
+            // 
+            DamageTypePanel.Controls.Add(DamageTypeLabel);
+            DamageTypePanel.Controls.Add(DamageTypeDD1);
+            DamageTypePanel.Controls.Add(DamageTypeDD2);
+            DamageTypePanel.Controls.Add(DamageTypeWeightLabel);
+            DamageTypePanel.Controls.Add(DamageTypeDD11Weight);
+            DamageTypePanel.Controls.Add(DamageTypeDD2Weight);
+            DamageTypePanel.Controls.Add(PerLabel);
+            DamageTypePanel.Controls.Add(TestTypePanel);
+            DamageTypePanel.Location = new System.Drawing.Point(440, 325);
+            DamageTypePanel.Name = "DamageTypePanel";
+            DamageTypePanel.Size = new System.Drawing.Size(360, 80);
+            DamageTypePanel.TabIndex = 68;
             // 
             // PerLabel
             // 
             PerLabel.AutoSize = true;
             PerLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            PerLabel.Location = new System.Drawing.Point(629, 341);
+            PerLabel.Location = new System.Drawing.Point(189, 41);
             PerLabel.Name = "PerLabel";
             PerLabel.Size = new System.Drawing.Size(48, 15);
             PerLabel.TabIndex = 31;
@@ -1463,7 +1531,7 @@ namespace ApsCalcUI
             // 
             TargetACPanel.Controls.Add(TargetACCL);
             TargetACPanel.Controls.Add(TargetACLabel);
-            TargetACPanel.Location = new System.Drawing.Point(436, 381);
+            TargetACPanel.Location = new System.Drawing.Point(436, 406);
             TargetACPanel.Name = "TargetACPanel";
             TargetACPanel.Size = new System.Drawing.Size(169, 206);
             TargetACPanel.TabIndex = 32;
@@ -1479,7 +1547,7 @@ namespace ApsCalcUI
             // 
             // TargetACLabel
             // 
-            TargetACLabel.Location = new System.Drawing.Point(0, 2);
+            TargetACLabel.Location = new System.Drawing.Point(0, 27);
             TargetACLabel.Name = "TargetACLabel";
             TargetACLabel.Size = new System.Drawing.Size(169, 27);
             TargetACLabel.TabIndex = 0;
@@ -1504,7 +1572,7 @@ namespace ApsCalcUI
             TargetSchemePanel.Controls.Add(ArmorLayerLB);
             TargetSchemePanel.Controls.Add(TargetSchemeLabel);
             TargetSchemePanel.Enabled = false;
-            TargetSchemePanel.Location = new System.Drawing.Point(611, 395);
+            TargetSchemePanel.Location = new System.Drawing.Point(611, 420);
             TargetSchemePanel.Name = "TargetSchemePanel";
             TargetSchemePanel.Size = new System.Drawing.Size(177, 192);
             TargetSchemePanel.TabIndex = 34;
@@ -1541,7 +1609,7 @@ namespace ApsCalcUI
             // 
             TestsInQueueLabel.AutoSize = true;
             TestsInQueueLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            TestsInQueueLabel.Location = new System.Drawing.Point(678, 672);
+            TestsInQueueLabel.Location = new System.Drawing.Point(678, 697);
             TestsInQueueLabel.Name = "TestsInQueueLabel";
             TestsInQueueLabel.Size = new System.Drawing.Size(95, 15);
             TestsInQueueLabel.TabIndex = 35;
@@ -1582,7 +1650,7 @@ namespace ApsCalcUI
             // 
             DisruptorPanel.Controls.Add(DisruptorUD);
             DisruptorPanel.Controls.Add(DisruptorLabel);
-            DisruptorPanel.Location = new System.Drawing.Point(436, 620);
+            DisruptorPanel.Location = new System.Drawing.Point(436, 645);
             DisruptorPanel.Name = "DisruptorPanel";
             DisruptorPanel.Size = new System.Drawing.Size(169, 69);
             DisruptorPanel.TabIndex = 48;
@@ -1634,7 +1702,7 @@ namespace ApsCalcUI
             FragAnglePanel.Controls.Add(FragAngleUD);
             FragAnglePanel.Controls.Add(FragAngleLabel);
             FragAnglePanel.Enabled = false;
-            FragAnglePanel.Location = new System.Drawing.Point(436, 381);
+            FragAnglePanel.Location = new System.Drawing.Point(436, 406);
             FragAnglePanel.Name = "FragAnglePanel";
             FragAnglePanel.Size = new System.Drawing.Size(169, 69);
             FragAnglePanel.TabIndex = 54;
@@ -1667,7 +1735,7 @@ namespace ApsCalcUI
             RofRpmPanel.Controls.Add(RofRpmLabel);
             RofRpmPanel.Controls.Add(RofRpmUD);
             RofRpmPanel.Enabled = false;
-            RofRpmPanel.Location = new System.Drawing.Point(41, 716);
+            RofRpmPanel.Location = new System.Drawing.Point(41, 741);
             RofRpmPanel.Name = "RofRpmPanel";
             RofRpmPanel.Size = new System.Drawing.Size(154, 40);
             RofRpmPanel.TabIndex = 58;
@@ -1684,7 +1752,7 @@ namespace ApsCalcUI
             ClipCountPanel.Controls.Add(ClipCountLabel);
             ClipCountPanel.Controls.Add(RegularClipCountLabel);
             ClipCountPanel.Controls.Add(BeltfedClipCountLabel);
-            ClipCountPanel.Location = new System.Drawing.Point(233, 637);
+            ClipCountPanel.Location = new System.Drawing.Point(233, 662);
             ClipCountPanel.Name = "ClipCountPanel";
             ClipCountPanel.Size = new System.Drawing.Size(202, 107);
             ClipCountPanel.TabIndex = 60;
@@ -1802,10 +1870,7 @@ namespace ApsCalcUI
             Controls.Add(TargetSchemePanel);
             Controls.Add(GaugeLabel);
             Controls.Add(TargetACPanel);
-            Controls.Add(PerLabel);
-            Controls.Add(TestTypePanel);
-            Controls.Add(DamageTypeLabel);
-            Controls.Add(DamageTypeDD);
+            Controls.Add(DamageTypePanel);
             Controls.Add(MinRangeLabel);
             Controls.Add(MinVelocityLabel);
             Controls.Add(MaxLengthLabel);
@@ -1825,6 +1890,8 @@ namespace ApsCalcUI
             Name = "ParameterInput";
             Text = "ApsCalc";
             Load += ParameterInput_Load;
+            ((System.ComponentModel.ISupportInitialize)DamageTypeDD11Weight).EndInit();
+            ((System.ComponentModel.ISupportInitialize)DamageTypeDD2Weight).EndInit();
             ((System.ComponentModel.ISupportInitialize)MinGaugeUD).EndInit();
             ((System.ComponentModel.ISupportInitialize)MaxGaugeUD).EndInit();
             ((System.ComponentModel.ISupportInitialize)SolidBodyFixedUD).EndInit();
@@ -1869,6 +1936,8 @@ namespace ApsCalcUI
             VariableModulesPanel.ResumeLayout(false);
             TestTypePanel.ResumeLayout(false);
             TestTypePanel.PerformLayout();
+            DamageTypePanel.ResumeLayout(false);
+            DamageTypePanel.PerformLayout();
             TargetACPanel.ResumeLayout(false);
             TargetSchemePanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)QueueErrorProvider).EndInit();
@@ -1929,7 +1998,12 @@ namespace ApsCalcUI
         private System.Windows.Forms.CheckedListBox TargetACCL;
         private System.Windows.Forms.Label TargetACLabel;
         private System.Windows.Forms.Label GaugeLabel;
-        private System.Windows.Forms.ComboBox DamageTypeDD;
+        private System.Windows.Forms.ComboBox DamageTypeDD1;
+        private System.Windows.Forms.ComboBox DamageTypeDD2;
+        private System.Windows.Forms.Label DamageTypeWeightLabel;
+        private System.Windows.Forms.NumericUpDown DamageTypeDD11Weight;
+        private System.Windows.Forms.NumericUpDown DamageTypeDD2Weight;
+        private System.Windows.Forms.Panel DamageTypePanel;
         private System.Windows.Forms.Panel TargetSchemePanel;
         private System.Windows.Forms.Label TargetSchemeLabel;
         private System.Windows.Forms.ListBox ArmorLayerLB;

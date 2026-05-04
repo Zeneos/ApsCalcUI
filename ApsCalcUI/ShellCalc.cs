@@ -29,7 +29,8 @@ namespace ApsCalcUI
         Incendiary,
         Disruptor,
         MD,
-        Smoke
+        Smoke,
+        None
     }
 
     // Barrel length limit parameter
@@ -128,6 +129,9 @@ namespace ApsCalcUI
             float nonSabotAngleMultiplier,
             float targetAC,
             DamageType damageType,
+            float damageTypeWeight1,
+            DamageType damageType2,
+            float damageTypeWeight2,
             float fragConeAngle,
             float fragAngleMultiplier,
             float minDisruptor,
@@ -180,6 +184,9 @@ namespace ApsCalcUI
             NonSabotAngleMultiplier = nonSabotAngleMultiplier;
             TargetAC = targetAC;
             DamageType = damageType;
+            DamageTypeWeight1 = damageTypeWeight1;
+            DamageType2 = damageType2;
+            DamageTypeWeight2 = damageTypeWeight2;
             FragConeAngle = fragConeAngle;
             FragAngleMultiplier = fragAngleMultiplier;
             MinDisruptor = minDisruptor;
@@ -251,6 +258,9 @@ namespace ApsCalcUI
         public float NonSabotAngleMultiplier { get; }
         public float TargetAC { get; }
         public DamageType DamageType { get; }
+        public float DamageTypeWeight1 { get; }
+        public DamageType DamageType2 { get; }
+        public float DamageTypeWeight2 { get; }
         public float FragConeAngle { get; }
         public float FragAngleMultiplier { get; }
         public float MinDisruptor { get; }
@@ -410,8 +420,9 @@ namespace ApsCalcUI
                 EnginePpc,
                 EngineUsesFuel,
                 TargetArmorScheme,
-                ImpactAngleFromPerpendicularDegrees);
-            if (referenceDict[DamageType] == 0)
+                ImpactAngleFromPerpendicularDegrees,
+                DamageType2);
+            if (CombinedScore(referenceDict) == 0)
             {
                 return 0;
             }
@@ -442,8 +453,9 @@ namespace ApsCalcUI
                     EnginePpc,
                     EngineUsesFuel,
                     TargetArmorScheme,
-                    ImpactAngleFromPerpendicularDegrees);
-                midRangeScore = referenceDict[DamageType];
+                    ImpactAngleFromPerpendicularDegrees,
+                    DamageType2);
+                midRangeScore = CombinedScore(referenceDict);
 
                 shellUnderTesting.RailDraw = midRangePlus;
                 shellUnderTesting.CalculateDpsByType(
@@ -457,8 +469,9 @@ namespace ApsCalcUI
                     EnginePpc,
                     EngineUsesFuel,
                     TargetArmorScheme,
-                    ImpactAngleFromPerpendicularDegrees);
-                midRangePlusScore = referenceDict[DamageType];
+                    ImpactAngleFromPerpendicularDegrees,
+                    DamageType2);
+                midRangePlusScore = CombinedScore(referenceDict);
 
                 if (midRangePlusScore == 0)
                 {
@@ -476,6 +489,51 @@ namespace ApsCalcUI
                 }
             }
             return optimalDraw;
+        }
+
+        /// <summary>
+        /// Combined weighted DPS-per-metric score from primary and secondary damage types.
+        /// None damage types contribute 0.
+        /// </summary>
+        private float CombinedScore(Dictionary<DamageType, float> dict)
+        {
+            float s = 0f;
+            if (DamageType != DamageType.None) s += DamageTypeWeight1 * dict[DamageType];
+            if (DamageType2 != DamageType.None) s += DamageTypeWeight2 * dict[DamageType2];
+            return s;
+        }
+
+        /// <summary>
+        /// Tiebreak imbalance metric: distance between weighted contributions of the two damage types.
+        /// Lower = better (more balanced) when CombinedScore is tied.
+        /// </summary>
+        private float Imbalance(Dictionary<DamageType, float> dict)
+        {
+            float a = (DamageType != DamageType.None) ? DamageTypeWeight1 * dict[DamageType] : 0f;
+            float b = (DamageType2 != DamageType.None) ? DamageTypeWeight2 * dict[DamageType2] : 0f;
+            return MathF.Abs(a - b);
+        }
+
+        /// <summary>
+        /// True if challenger's combined score beats the current top, with imbalance tiebreak.
+        /// </summary>
+        private bool BeatsTop(Dictionary<DamageType, float> challenger, Dictionary<DamageType, float> top)
+        {
+            float cScore = CombinedScore(challenger);
+            float tScore = CombinedScore(top);
+            if (cScore > tScore) return true;
+            if (cScore < tScore) return false;
+            return Imbalance(challenger) < Imbalance(top);
+        }
+
+        /// <summary>
+        /// True if shell has any non-zero DPS on a configured (non-None) damage type.
+        /// </summary>
+        private bool HasResult(Shell s)
+        {
+            if (DamageType != DamageType.None && s.DpsDict[DamageType] > 0f) return true;
+            if (DamageType2 != DamageType.None && s.DpsDict[DamageType2] > 0f) return true;
+            return false;
         }
 
         /// <summary>
@@ -505,7 +563,7 @@ namespace ApsCalcUI
             {
                 Dictionary<DamageType, float> topReferenceDict = TestType == TestType.DpsPerVolume ?
                     TopDif.DpsPerVolumeDict : TopDif.DpsPerCostDict;
-                if (referenceDict[DamageType] > topReferenceDict[DamageType])
+                if (BeatsTop(referenceDict, topReferenceDict))
                 {
                     TopDif = shellUnderTesting;
                 }
@@ -514,7 +572,7 @@ namespace ApsCalcUI
             {
                 Dictionary<DamageType, float> topReferenceDict = TestType == TestType.DpsPerVolume ?
                     Top1000.DpsPerVolumeDict : Top1000.DpsPerCostDict;
-                if (referenceDict[DamageType] > topReferenceDict[DamageType])
+                if (BeatsTop(referenceDict, topReferenceDict))
                 {
                     Top1000 = shellUnderTesting;
                 }
@@ -523,7 +581,7 @@ namespace ApsCalcUI
             {
                 Dictionary<DamageType, float> topReferenceDict = TestType == TestType.DpsPerVolume ?
                     Top2000.DpsPerVolumeDict : Top2000.DpsPerCostDict;
-                if (referenceDict[DamageType] > topReferenceDict[DamageType])
+                if (BeatsTop(referenceDict, topReferenceDict))
                 {
                     Top2000 = shellUnderTesting;
                 }
@@ -532,7 +590,7 @@ namespace ApsCalcUI
             {
                 Dictionary<DamageType, float> topReferenceDict = TestType == TestType.DpsPerVolume ?
                     Top3000.DpsPerVolumeDict : Top3000.DpsPerCostDict;
-                if (referenceDict[DamageType] > topReferenceDict[DamageType])
+                if (BeatsTop(referenceDict, topReferenceDict))
                 {
                     Top3000 = shellUnderTesting;
                 }
@@ -541,7 +599,7 @@ namespace ApsCalcUI
             {
                 Dictionary<DamageType, float> topReferenceDict = TestType == TestType.DpsPerVolume ?
                     Top4000.DpsPerVolumeDict : Top4000.DpsPerCostDict;
-                if (referenceDict[DamageType] > topReferenceDict[DamageType])
+                if (BeatsTop(referenceDict, topReferenceDict))
                 {
                     Top4000 = shellUnderTesting;
                 }
@@ -550,7 +608,7 @@ namespace ApsCalcUI
             {
                 Dictionary<DamageType, float> topReferenceDict = TestType == TestType.DpsPerVolume ?
                     Top5000.DpsPerVolumeDict : Top5000.DpsPerCostDict;
-                if (referenceDict[DamageType] > topReferenceDict[DamageType])
+                if (BeatsTop(referenceDict, topReferenceDict))
                 {
                     Top5000 = shellUnderTesting;
                 }
@@ -559,7 +617,7 @@ namespace ApsCalcUI
             {
                 Dictionary<DamageType, float> topReferenceDict = TestType == TestType.DpsPerVolume ?
                     Top6000.DpsPerVolumeDict : Top6000.DpsPerCostDict;
-                if (referenceDict[DamageType] > topReferenceDict[DamageType])
+                if (BeatsTop(referenceDict, topReferenceDict))
                 {
                     Top6000 = shellUnderTesting;
                 }
@@ -568,7 +626,7 @@ namespace ApsCalcUI
             {
                 Dictionary<DamageType, float> topReferenceDict = TestType == TestType.DpsPerVolume ?
                     Top7000.DpsPerVolumeDict : Top7000.DpsPerCostDict;
-                if (referenceDict[DamageType] > topReferenceDict[DamageType])
+                if (BeatsTop(referenceDict, topReferenceDict))
                 {
                     Top7000 = shellUnderTesting;
                 }
@@ -577,7 +635,7 @@ namespace ApsCalcUI
             {
                 Dictionary<DamageType, float> topReferenceDict = TestType == TestType.DpsPerVolume ?
                     Top8000.DpsPerVolumeDict : Top8000.DpsPerCostDict;
-                if (referenceDict[DamageType] > topReferenceDict[DamageType])
+                if (BeatsTop(referenceDict, topReferenceDict))
                 {
                     Top8000 = shellUnderTesting;
                 }
@@ -617,13 +675,18 @@ namespace ApsCalcUI
                 template.SabotAngleMultiplier = SabotAngleMultiplier;
                 template.NonSabotAngleMultiplier = NonSabotAngleMultiplier;
 
-                // Non-kinetic damage is casing/draw independent — compute once per body config.
-                // Kinetic damage depends on velocity (per draw) and is computed inside the binary search.
-                if (DamageType != DamageType.Kinetic)
+                // Non-kinetic damage is casing/draw independent — compute once per body config for both
+                // primary and secondary damage types. Kinetic depends on velocity (per draw) and is
+                // computed inside the binary search.
+                if (DamageType != DamageType.None && DamageType != DamageType.Kinetic)
                 {
                     template.CalculateDamageByType(DamageType, FragAngleMultiplier);
                 }
-                if (MinDisruptor > 0 && DamageType != DamageType.Disruptor)
+                if (DamageType2 != DamageType.None && DamageType2 != DamageType.Kinetic && DamageType2 != DamageType)
+                {
+                    template.CalculateDamageByType(DamageType2, FragAngleMultiplier);
+                }
+                if (MinDisruptor > 0 && DamageType != DamageType.Disruptor && DamageType2 != DamageType.Disruptor)
                 {
                     template.CalculateDamageByType(DamageType.EMP, FragAngleMultiplier);
                     template.CalculateDamageByType(DamageType.Disruptor, FragAngleMultiplier);
@@ -901,13 +964,14 @@ namespace ApsCalcUI
                 DamageType, TargetAC, TestIntervalSeconds,
                 StoragePerVolume, StoragePerCost,
                 EnginePpm, EnginePpv, EnginePpc, EngineUsesFuel,
-                TargetArmorScheme, ImpactAngleFromPerpendicularDegrees);
+                TargetArmorScheme, ImpactAngleFromPerpendicularDegrees,
+                DamageType2);
 
             if (isBelt)
             {
                 Dictionary<DamageType, float> topRef = TestType == TestType.DpsPerVolume ?
                     TopBelt.DpsPerVolumeDict : TopBelt.DpsPerCostDict;
-                if (referenceDict[DamageType] > topRef[DamageType])
+                if (BeatsTop(referenceDict, topRef))
                 {
                     TopBelt = probe;
                 }
@@ -917,7 +981,7 @@ namespace ApsCalcUI
                 CompareToTopShells(probe, referenceDict);
             }
 
-            return referenceDict[DamageType];
+            return CombinedScore(referenceDict);
         }
 
         /// <summary>
@@ -952,11 +1016,15 @@ namespace ApsCalcUI
                 beltTpl.CalculateDamageModifierByType(DamageType);
                 beltTpl.SabotAngleMultiplier = SabotAngleMultiplier;
                 beltTpl.NonSabotAngleMultiplier = NonSabotAngleMultiplier;
-                if (DamageType != DamageType.Kinetic)
+                if (DamageType != DamageType.None && DamageType != DamageType.Kinetic)
                 {
                     beltTpl.CalculateDamageByType(DamageType, FragAngleMultiplier);
                 }
-                if (MinDisruptor > 0 && DamageType != DamageType.Disruptor)
+                if (DamageType2 != DamageType.None && DamageType2 != DamageType.Kinetic && DamageType2 != DamageType)
+                {
+                    beltTpl.CalculateDamageByType(DamageType2, FragAngleMultiplier);
+                }
+                if (MinDisruptor > 0 && DamageType != DamageType.Disruptor && DamageType2 != DamageType.Disruptor)
                 {
                     beltTpl.CalculateDamageByType(DamageType.EMP, FragAngleMultiplier);
                     beltTpl.CalculateDamageByType(DamageType.Disruptor, FragAngleMultiplier);
@@ -976,52 +1044,52 @@ namespace ApsCalcUI
         /// </summary>
         public void AddTopShellsToLocalList()
         {
-            if (TopBelt.DpsDict[DamageType] > 0)
+            if (HasResult(TopBelt))
             {
                 TopShellsLocal.Add(TopBelt);
             }
 
-            if (Top1000.DpsDict[DamageType] > 0)
+            if (HasResult(Top1000))
             {
                 TopShellsLocal.Add(Top1000);
             }
 
-            if (Top2000.DpsDict[DamageType] > 0)
+            if (HasResult(Top2000))
             {
                 TopShellsLocal.Add(Top2000);
             }
 
-            if (Top3000.DpsDict[DamageType] > 0)
+            if (HasResult(Top3000))
             {
                 TopShellsLocal.Add(Top3000);
             }
 
-            if (Top4000.DpsDict[DamageType] > 0)
+            if (HasResult(Top4000))
             {
                 TopShellsLocal.Add(Top4000);
             }
 
-            if (Top5000.DpsDict[DamageType] > 0)
+            if (HasResult(Top5000))
             {
                 TopShellsLocal.Add(Top5000);
             }
 
-            if (Top6000.DpsDict[DamageType] > 0)
+            if (HasResult(Top6000))
             {
                 TopShellsLocal.Add(Top6000);
             }
 
-            if (Top7000.DpsDict[DamageType] > 0)
+            if (HasResult(Top7000))
             {
                 TopShellsLocal.Add(Top7000);
             }
 
-            if (Top8000.DpsDict[DamageType] > 0)
+            if (HasResult(Top8000))
             {
                 TopShellsLocal.Add(Top8000);
             }
 
-            if (TopDif.DpsDict[DamageType] > 0)
+            if (HasResult(TopDif))
             {
                 TopShellsLocal.Add(TopDif);
             }
@@ -1034,52 +1102,52 @@ namespace ApsCalcUI
         /// </summary>
         public void AddTopShellsToDictionary()
         {
-            if (TopBelt.DpsDict[DamageType] > 0)
+            if (HasResult(TopBelt))
             {
                 TopDpsShells.Add("1m (belt)", TopBelt);
             }
 
-            if (Top1000.DpsDict[DamageType] > 0)
+            if (HasResult(Top1000))
             {
                 TopDpsShells.Add("1m", Top1000);
             }
 
-            if (Top2000.DpsDict[DamageType] > 0)
+            if (HasResult(Top2000))
             {
                 TopDpsShells.Add("2m", Top2000);
             }
 
-            if (Top3000.DpsDict[DamageType] > 0)
+            if (HasResult(Top3000))
             {
                 TopDpsShells.Add("3m", Top3000);
             }
 
-            if (Top4000.DpsDict[DamageType] > 0)
+            if (HasResult(Top4000))
             {
                 TopDpsShells.Add("4m", Top4000);
             }
 
-            if (Top5000.DpsDict[DamageType] > 0)
+            if (HasResult(Top5000))
             {
                 TopDpsShells.Add("5m", Top5000);
             }
 
-            if (Top6000.DpsDict[DamageType] > 0)
+            if (HasResult(Top6000))
             {
                 TopDpsShells.Add("6m", Top6000);
             }
 
-            if (Top7000.DpsDict[DamageType] > 0)
+            if (HasResult(Top7000))
             {
                 TopDpsShells.Add("7m", Top7000);
             }
 
-            if (Top8000.DpsDict[DamageType] > 0)
+            if (HasResult(Top8000))
             {
                 TopDpsShells.Add("8m", Top8000);
             }
 
-            if (TopDif.DpsDict[DamageType] > 0)
+            if (HasResult(TopDif))
             {
                 TopDpsShells.Add("DIF", TopDif);
             }
@@ -1100,7 +1168,7 @@ namespace ApsCalcUI
                 {
                     Dictionary<DamageType, float> topReferenceDict = TestType == TestType.DpsPerVolume ?
                         TopDif.DpsPerVolumeDict : TopDif.DpsPerCostDict;
-                    if (referenceDict[DamageType] > topReferenceDict[DamageType])
+                    if (BeatsTop(referenceDict, topReferenceDict))
                     {
                         TopDif = rawShell;
                     }
@@ -1109,7 +1177,7 @@ namespace ApsCalcUI
                 {
                     Dictionary<DamageType, float> topReferenceDict = TestType == TestType.DpsPerVolume ?
                         TopBelt.DpsPerVolumeDict : TopBelt.DpsPerCostDict;
-                    if (referenceDict[DamageType] > topReferenceDict[DamageType])
+                    if (BeatsTop(referenceDict, topReferenceDict))
                     {
                         TopBelt = rawShell;
                     }
@@ -1118,7 +1186,7 @@ namespace ApsCalcUI
                 {
                     Dictionary<DamageType, float> topReferenceDict = TestType == TestType.DpsPerVolume ?
                         Top1000.DpsPerVolumeDict : Top1000.DpsPerCostDict;
-                    if (referenceDict[DamageType] > topReferenceDict[DamageType])
+                    if (BeatsTop(referenceDict, topReferenceDict))
                     {
                         Top1000 = rawShell;
                     }
@@ -1127,7 +1195,7 @@ namespace ApsCalcUI
                 {
                     Dictionary<DamageType, float> topReferenceDict = TestType == TestType.DpsPerVolume ?
                         Top2000.DpsPerVolumeDict : Top2000.DpsPerCostDict;
-                    if (referenceDict[DamageType] > topReferenceDict[DamageType])
+                    if (BeatsTop(referenceDict, topReferenceDict))
                     {
                         Top2000 = rawShell;
                     }
@@ -1136,7 +1204,7 @@ namespace ApsCalcUI
                 {
                     Dictionary<DamageType, float> topReferenceDict = TestType == TestType.DpsPerVolume ?
                         Top3000.DpsPerVolumeDict : Top3000.DpsPerCostDict;
-                    if (referenceDict[DamageType] > topReferenceDict[DamageType])
+                    if (BeatsTop(referenceDict, topReferenceDict))
                     {
                         Top3000 = rawShell;
                     }
@@ -1145,7 +1213,7 @@ namespace ApsCalcUI
                 {
                     Dictionary<DamageType, float> topReferenceDict = TestType == TestType.DpsPerVolume ?
                         Top4000.DpsPerVolumeDict : Top4000.DpsPerCostDict;
-                    if (referenceDict[DamageType] > topReferenceDict[DamageType])
+                    if (BeatsTop(referenceDict, topReferenceDict))
                     {
                         Top4000 = rawShell;
                     }
@@ -1154,7 +1222,7 @@ namespace ApsCalcUI
                 {
                     Dictionary<DamageType, float> topReferenceDict = TestType == TestType.DpsPerVolume ?
                         Top5000.DpsPerVolumeDict : Top5000.DpsPerCostDict;
-                    if (referenceDict[DamageType] > topReferenceDict[DamageType])
+                    if (BeatsTop(referenceDict, topReferenceDict))
                     {
                         Top5000 = rawShell;
                     }
@@ -1163,7 +1231,7 @@ namespace ApsCalcUI
                 {
                     Dictionary<DamageType, float> topReferenceDict = TestType == TestType.DpsPerVolume ?
                         Top6000.DpsPerVolumeDict : Top6000.DpsPerCostDict;
-                    if (referenceDict[DamageType] > topReferenceDict[DamageType])
+                    if (BeatsTop(referenceDict, topReferenceDict))
                     {
                         Top6000 = rawShell;
                     }
@@ -1172,7 +1240,7 @@ namespace ApsCalcUI
                 {
                     Dictionary<DamageType, float> topReferenceDict = TestType == TestType.DpsPerVolume ?
                         Top7000.DpsPerVolumeDict : Top7000.DpsPerCostDict;
-                    if (referenceDict[DamageType] > topReferenceDict[DamageType])
+                    if (BeatsTop(referenceDict, topReferenceDict))
                     {
                         Top7000 = rawShell;
                     }
@@ -1181,7 +1249,7 @@ namespace ApsCalcUI
                 {
                     Dictionary<DamageType, float> topReferenceDict = TestType == TestType.DpsPerVolume ?
                         Top8000.DpsPerVolumeDict : Top8000.DpsPerCostDict;
-                    if (referenceDict[DamageType] > topReferenceDict[DamageType])
+                    if (BeatsTop(referenceDict, topReferenceDict))
                     {
                         Top8000 = rawShell;
                     }
@@ -1234,7 +1302,8 @@ namespace ApsCalcUI
 
             List<int> modsToShow = [];
 
-            dtToShow[DamageType] = true;
+            if (DamageType != DamageType.None) dtToShow[DamageType] = true;
+            if (DamageType2 != DamageType.None) dtToShow[DamageType2] = true;
             for (int index = 0; index < FixedModuleCounts.Length; index++)
             {
                 if (FixedModuleCounts[index] > 0 || VariableModuleIndices.Contains(index))
@@ -1460,22 +1529,22 @@ namespace ApsCalcUI
                 }
             }
 
-            // Determine optimized damage type
-            if (DamageType == DamageType.Kinetic)
+            // Primary damage type
+            string primaryName = DamageType switch
             {
-                writer.WriteLine("Damage type" + ColumnDelimiter + "Kinetic");
-            }
-            else if (DamageType == DamageType.Disruptor)
+                DamageType.Kinetic => "Kinetic",
+                DamageType.Disruptor => "Disruptor",
+                DamageType.Frag => "Frag",
+                _ => DamageType.ToString()
+            };
+            writer.WriteLine("Primary damage type" + ColumnDelimiter + primaryName);
+            writer.WriteLine("Primary damage weight" + ColumnDelimiter + DamageTypeWeight1);
+
+            // Secondary damage type (may be None)
+            writer.WriteLine("Secondary damage type" + ColumnDelimiter + DamageType2);
+            if (DamageType2 != DamageType.None)
             {
-                writer.WriteLine("Damage type" + ColumnDelimiter + "Disruptor");
-            }
-            else if (DamageType == DamageType.Frag)
-            {
-                writer.WriteLine("Damage type" + ColumnDelimiter + "Frag");
-            }
-            else
-            {
-                writer.WriteLine("Damage type" + ColumnDelimiter + (DamageType)(int)DamageType);
+                writer.WriteLine("Secondary damage weight" + ColumnDelimiter + DamageTypeWeight2);
             }
 
             // Display common stats for all calculated damage types
