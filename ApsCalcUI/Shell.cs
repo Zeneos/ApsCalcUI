@@ -1096,6 +1096,17 @@ namespace ApsCalcUI
             CalculateKineticDamage();
             CalculateAP();
 
+            // Guard against targetAC = 0 (would otherwise divide by zero and yield infinity / inflated
+            // damage). Treat as no-AC = no kinetic application: damage = 0.
+            if (targetAC <= 0f)
+            {
+                DamageDict[DamageType.Kinetic] = 0f;
+                DpsDict[DamageType.Kinetic] = 0f;
+                DpsPerVolumeDict[DamageType.Kinetic] = 0f;
+                DpsPerCostDict[DamageType.Kinetic] = 0f;
+                return;
+            }
+
             // Hollow point and CIWS ignore impact angle
             if (HeadModule == Module.HollowPoint || targetAC == 20f)
             {

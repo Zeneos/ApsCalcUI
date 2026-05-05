@@ -1291,10 +1291,13 @@ namespace ApsCalcUI
 
             bool showDraw = MaxDrawInput > 0;
 
-            // Determine module and damage types to show
+            // Determine module and damage types to show. All default false; only flagged true
+            // when actually selected (DT1 or DT2) or when modules/heads imply the damage type.
+            // Kinetic must NOT be shown unconditionally: TargetAC defaults to 0 when Kinetic is
+            // not selected, which would produce divide-by-zero inflated DPS.
             Dictionary<DamageType, bool> dtToShow = new()
             {
-                { DamageType.Kinetic, true },
+                { DamageType.Kinetic, false },
                 { DamageType.EMP, false },
                 { DamageType.MD, false },
                 { DamageType.Frag, false },
