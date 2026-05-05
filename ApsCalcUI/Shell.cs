@@ -315,10 +315,9 @@ namespace ApsCalcUI
         {
             CalculateKDModifier();
             CalculateAPModifier();
-            if (dt != DamageType.Kinetic)
-            {
-                CalculateChemModifier();
-            }
+            // ChemMod cheap and idempotent — always compute so secondary chem damage types
+            // (Frag/HE/EMP/MD/HEAT/Incendiary/Disruptor) get real values when primary is Kinetic.
+            CalculateChemModifier();
         }
 
 

@@ -504,13 +504,18 @@ namespace ApsCalcUI
         }
 
         /// <summary>
-        /// Tiebreak imbalance metric: distance between weighted contributions of the two damage types.
-        /// Lower = better (more balanced) when CombinedScore is tied.
+        /// Tiebreak imbalance metric: distance between damage-per-weight ratios. With weights w1, w2,
+        /// a "balanced" outcome has dmg1/w1 == dmg2/w2 (e.g. w1=1.5, w2=1 → dmg1=1500, dmg2=1000 is
+        /// balanced). Lower = better when CombinedScore is tied. Returns 0 if either side is missing
+        /// (None damage type or zero weight) since balance is undefined.
         /// </summary>
         private float Imbalance(Dictionary<DamageType, float> dict)
         {
-            float a = (DamageType != DamageType.None) ? DamageTypeWeight1 * dict[DamageType] : 0f;
-            float b = (DamageType2 != DamageType.None) ? DamageTypeWeight2 * dict[DamageType2] : 0f;
+            bool hasA = DamageType != DamageType.None && DamageTypeWeight1 > 0f;
+            bool hasB = DamageType2 != DamageType.None && DamageTypeWeight2 > 0f;
+            if (!hasA || !hasB) return 0f;
+            float a = dict[DamageType] / DamageTypeWeight1;
+            float b = dict[DamageType2] / DamageTypeWeight2;
             return MathF.Abs(a - b);
         }
 
@@ -1436,25 +1441,21 @@ namespace ApsCalcUI
                 writer.WriteLine("No special base module");
             }
 
-            writer.WriteLine("Fixed module(s):");
-
-            int modIndex = 0;
-            foreach (float modCount in FixedModuleCounts)
+            // Fixed modules: comma-joined on header line, "None" if empty
+            List<string> fixedModParts = new();
+            for (int fmi = 0; fmi < FixedModuleCounts.Length; fmi++)
             {
-                if (modCount > 0)
+                if (FixedModuleCounts[fmi] > 0)
                 {
-                    writer.WriteLine(Module.AllModules[modIndex].Name + ColumnDelimiter + modCount);
+                    fixedModParts.Add($"{Module.AllModules[fmi].Name} x{FixedModuleCounts[fmi]}");
                 }
-                modIndex++;
             }
+            writer.WriteLine("Fixed module(s)" + ColumnDelimiter + (fixedModParts.Count > 0 ? string.Join(ColumnDelimiter, fixedModParts) : "None"));
 
-            // Remove duplicate variable mod indices
+            // Variable modules: comma-joined on header line, "None" if empty
             List<int> uniqueVarModIndices = VariableModuleIndices.Distinct().ToList();
-            writer.WriteLine("Variable module(s):");
-            foreach (int index in uniqueVarModIndices)
-            {
-                writer.WriteLine(Module.AllModules[index].Name);
-            }
+            List<string> varModNames = uniqueVarModIndices.Select(i => Module.AllModules[i].Name).ToList();
+            writer.WriteLine("Variable module(s)" + ColumnDelimiter + (varModNames.Count > 0 ? string.Join(ColumnDelimiter, varModNames) : "None"));
 
             writer.WriteLine("Clips per loader" + ColumnDelimiter + RegularClipsPerLoader);
             writer.WriteLine("Inputs per loader" + ColumnDelimiter + RegularInputsPerLoader);
